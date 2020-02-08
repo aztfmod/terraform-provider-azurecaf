@@ -1,0 +1,12 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+ 		{
+			"name": "Attach",
+			"type": "go",
+			"request": "attach",
+            "mode": "local",
+            "processId": 1234   // Put any number here. We will fill this in later.
+        }
+	]
+}

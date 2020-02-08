@@ -1,4 +1,4 @@
-package main
+package caf
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -6,6 +6,8 @@ import (
 
 func Provider() *schema.Provider {
 	return &schema.Provider{
-		ResourcesMap: map[string]*schema.Resource{},
+		ResourcesMap: map[string]*schema.Resource{
+			"caf_naming_convention": resourceNamingConvention(),
+		},
 	}
 }
