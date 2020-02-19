@@ -8,7 +8,8 @@
 		"--security-opt", 
 		"seccomp=unconfined",
 		"--mount", "type=volume,source=shell,destination=/home/root",  
-		"--mount", "type=volume,source=go,destination=/go",  
+		"--mount", "type=volume,source=go,destination=/go", 
+		"--mount", "type=bind,source=~/.ssh,destination=/tmp/.ssh-localhost,readonly"
 	],
 
 	// Set *default* container specific settings.json values on container create.
@@ -17,17 +18,18 @@
 		"go.gopath": "/go"
 	},
 	
-	// Add the IDs of extensions you want installed when the container is created.
-	"extensions": [
-		"ms-vscode.go"
-	]
-
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "go version",
+	
+    "postCreateCommand": "cp -R /tmp/.ssh-localhost/* ~/.ssh && chmod 700 ~/.ssh && chmod 600 ~/.ssh/*",
 
 	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
 	// "remoteUser": "vscode"
+
+		// Add the IDs of extensions you want installed when the container is created.
+		"extensions": [
+			"ms-vscode.go"
+		]
 }
