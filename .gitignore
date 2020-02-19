@@ -1,2 +1,11 @@
 terraform-provider-caf
 go.sum
+terraform
+**/.terraform
+**/*.tfstate
+**/*.tfplan
+**/lock.json
+.DS_Store
+**/.terraform.tfstate.lock.info
+**/~*.*
+**/*.log
