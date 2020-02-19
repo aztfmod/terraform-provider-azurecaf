@@ -6,7 +6,7 @@
 			"type": "go",
 			"request": "attach",
             "mode": "local",
-            "processId": 1234   // Put any number here. We will fill this in later.
+            "processId": 23310   // pgrep terraform, put the latest number. Add time.Sleep(50 * time.Second) before the break point
         }
 	]
 }

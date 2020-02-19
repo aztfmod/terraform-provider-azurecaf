@@ -1,45 +1,50 @@
 package caf
 
-// Convention defines the naming convention to apply. Default is cafclassic. Other options include cafrandom, random and passthrough
-type Convention string
-
 const (
 	// ConventionCafClassic applies the CAF recommended naming convention
-	ConventionCafClassic Convention = "cafclassic"
+	ConventionCafClassic string = "cafclassic"
 	// ConventionCafRandom defines the CAF random naming convention
-	ConventionCafRandom Convention = "cafrandom"
+	ConventionCafRandom string = "cafrandom"
 	// ConventionRandom applies a random naming convention based on the max length of the resource
-	ConventionRandom Convention = "random"
+	ConventionRandom string = "random"
 	// ConventionPassThrough defines the CAF random naming convention
-	ConventionPassThrough Convention = "passthrough"
+	ConventionPassThrough string = "passthrough"
 )
 
-// ResourceType defines the name of the resource
-type ResourceType string
-
 const (
+	// ResourceTypeAaa defines the azure automation account
+	ResourceTypeAaa string = "aaa"
+	// ResourceTypeAcr defines the azure container registry
+	ResourceTypeAcr string = "acr"
 	// ResourceTypeRg defines the resource group
-	ResourceTypeRg ResourceType = "rg"
+	ResourceTypeRg string = "rg"
 	// ResourceTypeSt defines the storage account
-	ResourceTypeSt ResourceType = "st"
+	ResourceTypeSt string = "st"
 )
-
-// ResourcePrefix represent the CAF recommended prefix for a resource
-type ResourcePrefix string
 
 const (
-	// ResourcePrefixRg defines the resource group
-	ResourcePrefixRg ResourcePrefix = "rg-"
-	// ResourcePrefixSt defines the storage account
-	ResourcePrefixSt ResourcePrefix = "st"
+	alphanum            string = "[^0-9A-Za-z]"
+	alphanumh           string = "/[^0-9A-Za-z,-]/"
+	alphanumu           string = "/[^0-9A-Za-z,_]/"
+	alphanumhu          string = "/[^0-9A-Za-z,_,-]/"
+	alphanumhup         string = "/[^0-9A-Za-z,_,.,-]/"
+	alphanumStartletter string = "/\\A[^a-z][^0-9A-Za-z]/"
 )
 
-// ResourceMaxLength represent maximum size for an azure resource
-type ResourceMaxLength int
+// ResourceStructure stores the CafPrefix and the MaxLength of an azure resource
+type ResourceStructure struct {
+	// Resource prefix as defined in the Azure Cloud Adoption Framework
+	CafPrefix string
+	// MaxLength attribute define the maximum length of the name
+	MaxLength int
+	// Regular expression to apply to the resource type
+	RegEx string
+}
 
-const (
-	// ResourceMaxLengthRg defines the max length the resource group
-	ResourceMaxLengthRg ResourceMaxLength = 80
-	// ResourceMaxLengthSt defines the max length the storage account
-	ResourceMaxLengthSt ResourceMaxLength = 24
-)
+// Resources currently supported
+var Resources = map[string]ResourceStructure{
+	"aaa": {"aaa-", 50, alphanumh},
+	"acr": {"acr-", 49, alphanum},
+	"rg":  {"rg-", 80, alphanumhup},
+	"st":  {"st-", 24, alphanum},
+}
