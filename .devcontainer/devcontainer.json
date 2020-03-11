@@ -7,7 +7,7 @@
 		"--cap-add=SYS_PTRACE", 
 		"--security-opt", 
 		"seccomp=unconfined",
-		"--mount", "type=volume,source=shell,destination=/home/root",  
+		"--mount", "type=volume,source=shell,destination=/root",  
 		"--mount", "type=volume,source=go,destination=/go", 
 		"--mount", "type=bind,source=~/.ssh,destination=/tmp/.ssh-localhost,readonly"
 	],

@@ -39,7 +39,7 @@ RUN apt-get update \
         github.com/sqs/goreturns@latest \
         github.com/josharian/impl@latest \
         github.com/davidrjenni/reftools/cmd/fillstruct@latest \
-        github.com/uudashr/gopkgs/cmd/gopkgs@latest  \
+        github.com/uudashr/gopkgs/v2/cmd/gopkgs  \
         github.com/ramya-rao-a/go-outline@latest  \
         github.com/acroca/go-symbols@latest  \
         github.com/godoctor/godoctor@latest  \
@@ -93,5 +93,6 @@ RUN apt-get update \
     # Install Terraform
     && echo "Installing terraform ${versionTerraform}..." && \
     curl -sSL -o /tmp/terraform.zip https://releases.hashicorp.com/terraform/${versionTerraform}/terraform_${versionTerraform}_linux_amd64.zip 2>&1 && \
-    unzip -d /usr/local/bin /tmp/terraform.zip
+    unzip -d /usr/local/bin /tmp/terraform.zip \
+    && mkdir -p /root/terraform.d/plugins
 
