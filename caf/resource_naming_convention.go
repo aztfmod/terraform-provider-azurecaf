@@ -91,25 +91,29 @@ func getResult(d *schema.ResourceData, m interface{}) error {
 	// Load the regular expression based on the resource type
 	var regExFilter string = ""
 	regExFilter = string(Resources[resourceType].RegEx)
+	validationRegExPattern := string(Resources[resourceType].ValidationRegExp)
 	log.Printf(regExFilter)
 
-	var suffixRandom string = ""
+	var suffixSeparator string = ""
 	var cafPrefix string = ""
-
+	var randomSuffix string = randSeq(int(Resources[resourceType].MaxLength))
 	if convention == "cafrandom" {
-		suffixRandom = "-" + randSeq(int(Resources[resourceType].MaxLength))
+		suffixSeparator = "-"
 		cafPrefix = Resources[resourceType].CafPrefix
 	} else if convention == "cafclassic" {
 		cafPrefix = Resources[resourceType].CafPrefix
 	} else if convention == "random" {
-		suffixRandom = randSeq(int(Resources[resourceType].MaxLength - 1))
 		regExFilter = string(alphanumStartletter)
 	}
 
-	// Generate the temporary name based on the concatenation of the values
-	tmpGeneratedName := fmt.Sprintf("%s%s%s%s", prefix, cafPrefix, name, suffixRandom)
-
 	myRegex, _ := regexp.Compile(regExFilter)
+	validationRegEx, _ := regexp.Compile(validationRegExPattern)
+	// clear the name first based on the regexp filter of the resource type
+	tmpName := fmt.Sprintf("%s%s%s%s", prefix, cafPrefix, name, suffixSeparator)
+	tmpName = myRegex.ReplaceAllString(tmpName, "")
+	// Generate the temporary name based on the concatenation of the values
+	tmpGeneratedName := fmt.Sprintf("%s%s", tmpName, randomSuffix)
+
 	// Remove the characters that are not supported in the name based on the regular expression
 	filteredTmpGeneratedName := myRegex.ReplaceAllString(tmpGeneratedName, "")
 
@@ -120,7 +124,12 @@ func getResult(d *schema.ResourceData, m interface{}) error {
 		maxLength = int(Resources[resourceType].MaxLength)
 	}
 
-	d.Set("result", string(filteredTmpGeneratedName[0:maxLength]))
+	result := string(filteredTmpGeneratedName[0:maxLength])
+	if !validationRegEx.MatchString(result) {
+		return fmt.Errorf("The pattern %s doesn't match %s", validationRegExPattern, result)
+	}
+
+	d.Set("result", result)
 
 	return nil
 }

@@ -259,7 +259,7 @@ output "vnet_random" {
 # VM Windows
 resource "caf_naming_convention" "vmw" {
     convention      = "cafrandom"
-    name            = "winVM"
+    name            = "winVMToolongShouldbetrimmed"
     prefix          = "rdmi-"
     resource_type   = "vmw"
 }
