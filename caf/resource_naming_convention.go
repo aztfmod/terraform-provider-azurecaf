@@ -11,21 +11,27 @@ import (
 )
 
 func resourceNamingConvention() *schema.Resource {
+	resourceMapsKeys := make([]string, 0, len(Resources))
+	for k := range Resources {
+		resourceMapsKeys = append(resourceMapsKeys, k)
+	}
+
 	return &schema.Resource{
 		Create: resourceNamingConventionCreate,
 		Read:   resourceNamingConventionRead,
-		Update: resourceNamingConventionUpdate,
 		Delete: resourceNamingConventionDelete,
 
 		Schema: map[string]*schema.Schema{
 			"name": &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
 			},
 			"convention": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  ConventionCafRandom,
+				ForceNew: true,
 				ValidateFunc: validation.StringInSlice([]string{
 					ConventionCafClassic,
 					ConventionCafRandom,
@@ -36,20 +42,17 @@ func resourceNamingConvention() *schema.Resource {
 			"prefix": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
+				ForceNew: true,
 			},
 			"result": &schema.Schema{
 				Type:     schema.TypeString,
 				Computed: true,
-				ForceNew: true,
 			},
 			"resource_type": &schema.Schema{
-				Type:     schema.TypeString,
-				Optional: true,
-				ValidateFunc: validation.StringInSlice([]string{
-					ResourceTypeAaa,
-					ResourceTypeRg,
-					ResourceTypeSt,
-				}, false),
+				Type:         schema.TypeString,
+				Optional:     true,
+				ValidateFunc: validation.StringInSlice(resourceMapsKeys, false),
+				ForceNew:     true,
 			},
 		},
 	}
@@ -117,7 +120,7 @@ func getResult(d *schema.ResourceData, m interface{}) error {
 		maxLength = int(Resources[resourceType].MaxLength)
 	}
 
-	d.Set("result", filteredTmpGeneratedName[0:maxLength])
+	d.Set("result", string(filteredTmpGeneratedName[0:maxLength]))
 
 	return nil
 }

@@ -3,6 +3,7 @@ go.sum
 terraform
 **/.terraform
 **/*.tfstate
+**/*.tfstate.backup
 **/*.tfplan
 **/lock.json
 .DS_Store

@@ -94,5 +94,5 @@ RUN apt-get update \
     && echo "Installing terraform ${versionTerraform}..." && \
     curl -sSL -o /tmp/terraform.zip https://releases.hashicorp.com/terraform/${versionTerraform}/terraform_${versionTerraform}_linux_amd64.zip 2>&1 && \
     unzip -d /usr/local/bin /tmp/terraform.zip \
-    && mkdir -p /root/terraform.d/plugins
+    && mkdir -p /root/.terraform.d/plugins
 
