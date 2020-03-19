@@ -6,7 +6,7 @@ provider "caf" {
 resource "caf_naming_convention" "st" {
     convention      = "cafrandom"
     name            = "log"
-    prefix          = "rdmi-"
+    prefix          = "rdmi"
     resource_type   = "st"
 }
 
@@ -24,7 +24,7 @@ output "st_random" {
 resource "caf_naming_convention" "aaa" {
     convention      = "cafrandom"
     name            = "automation"
-    prefix          = "rdmi-"
+    prefix          = "rdmi"
     resource_type   = "aaa"
 }
 
@@ -43,7 +43,7 @@ output "aaa_random" {
 resource "caf_naming_convention" "acr" {
     convention      = "cafrandom"
     name            = "registry"
-    prefix          = "rdmi-"
+    prefix          = "rdmi"
     resource_type   = "acr"
 }
 
@@ -79,7 +79,7 @@ output "rg_random" {
 resource "caf_naming_convention" "afw" {
     convention      = "cafrandom"
     name            = "fire"
-    prefix          = "rdmi-"
+    prefix          = "rdmi"
     resource_type   = "afw"
 }
 
@@ -97,7 +97,7 @@ output "afw_random" {
 resource "caf_naming_convention" "asr" {
     convention      = "cafrandom"
     name            = "recov"
-    prefix          = "rdmi-"
+    prefix          = "rdmi"
     resource_type   = "asr"
 }
 
@@ -116,7 +116,7 @@ output "asr_random" {
 resource "caf_naming_convention" "evh" {
     convention      = "cafrandom"
     name            = "hub"
-    prefix          = "rdmi-"
+    prefix          = "rdmi"
     resource_type   = "evh"
 }
 
@@ -134,7 +134,7 @@ output "evh_random" {
 resource "caf_naming_convention" "kv" {
     convention      = "cafrandom"
     name            = "passepartout"
-    prefix          = "rdmi-"
+    prefix          = "rdmi"
     resource_type   = "kv"
 }
 
@@ -152,7 +152,7 @@ output "kv_random" {
 resource "caf_naming_convention" "la" {
     convention      = "cafrandom"
     name            = "logs"
-    prefix          = "rdmi-"
+    prefix          = "rdmi"
     resource_type   = "la"
 }
 
@@ -170,7 +170,7 @@ output "la_random" {
 resource "caf_naming_convention" "nic" {
     convention      = "cafrandom"
     name            = "mynetcard"
-    prefix          = "rdmi-"
+    prefix          = "rdmi"
     resource_type   = "nic"
 }
 
@@ -188,7 +188,7 @@ output "nic_random" {
 resource "caf_naming_convention" "nsg" {
     convention      = "cafrandom"
     name            = "sec"
-    prefix          = "rdmi-"
+    prefix          = "rdmi"
     resource_type   = "nsg"
 }
 
@@ -205,8 +205,8 @@ output "nsg_random" {
 # Public Ip
 resource "caf_naming_convention" "pip" {
     convention      = "cafrandom"
-    name            = "pip"
-    prefix          = "rdmi-"
+    name            = "mypip"
+    prefix          = "rdmi"
     resource_type   = "pip"
 }
 
@@ -224,7 +224,7 @@ output "pip_random" {
 resource "caf_naming_convention" "snet" {
     convention      = "cafrandom"
     name            = "snet"
-    prefix          = "rdmi-"
+    prefix          = "rdmi"
     resource_type   = "snet"
 }
 
@@ -242,7 +242,7 @@ output "snet_random" {
 resource "caf_naming_convention" "vnet" {
     convention      = "cafrandom"
     name            = "vnet"
-    prefix          = "rdmi-"
+    prefix          = "rdmi"
     resource_type   = "vnet"
 }
 
@@ -260,7 +260,7 @@ output "vnet_random" {
 resource "caf_naming_convention" "vmw" {
     convention      = "cafrandom"
     name            = "winVMToolongShouldbetrimmed"
-    prefix          = "rdmi-"
+    prefix          = "rdmi"
     resource_type   = "vmw"
 }
 
@@ -278,7 +278,7 @@ output "vmw_random" {
 resource "caf_naming_convention" "vml" {
     convention      = "cafrandom"
     name            = "linuxVM"
-    prefix          = "rdmi-"
+    prefix          = "rdmi"
     resource_type   = "vml"
 }
 

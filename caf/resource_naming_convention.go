@@ -5,6 +5,7 @@ import (
 	"log"
 	"math/rand"
 	"regexp"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
@@ -44,6 +45,11 @@ func resourceNamingConvention() *schema.Resource {
 				Optional: true,
 				ForceNew: true,
 			},
+			"postfix": &schema.Schema{
+				Type:     schema.TypeString,
+				Optional: true,
+				ForceNew: true,
+			},
 			"result": &schema.Schema{
 				Type:     schema.TypeString,
 				Computed: true,
@@ -67,8 +73,7 @@ func resourceNamingConventionCreate(d *schema.ResourceData, m interface{}) error
 }
 
 func resourceNamingConventionRead(d *schema.ResourceData, m interface{}) error {
-	getResult(d, m)
-	return nil
+	return getResult(d, m)
 }
 
 func resourceNamingConventionUpdate(d *schema.ResourceData, m interface{}) error {
@@ -81,10 +86,9 @@ func resourceNamingConventionDelete(d *schema.ResourceData, m interface{}) error
 }
 
 func getResult(d *schema.ResourceData, m interface{}) error {
-
-	// time.Sleep(30 * time.Second)
 	name := d.Get("name").(string)
 	prefix := d.Get("prefix").(string)
+	postfix := d.Get("postfix").(string)
 	resourceType := d.Get("resource_type").(string)
 	convention := d.Get("convention").(string)
 
@@ -94,25 +98,40 @@ func getResult(d *schema.ResourceData, m interface{}) error {
 	validationRegExPattern := string(Resources[resourceType].ValidationRegExp)
 	log.Printf(regExFilter)
 
-	var suffixSeparator string = ""
 	var cafPrefix string = ""
 	var randomSuffix string = randSeq(int(Resources[resourceType].MaxLength))
-	if convention == "cafrandom" {
-		suffixSeparator = "-"
+	if convention == ConventionCafRandom || convention == ConventionCafClassic {
 		cafPrefix = Resources[resourceType].CafPrefix
-	} else if convention == "cafclassic" {
-		cafPrefix = Resources[resourceType].CafPrefix
-	} else if convention == "random" {
+	} else if convention == ConventionRandom {
 		regExFilter = string(alphanumStartletter)
+		//clear all the field to generate a random
+		name = ""
+		prefix = ""
+		postfix = ""
 	}
 
 	myRegex, _ := regexp.Compile(regExFilter)
 	validationRegEx, _ := regexp.Compile(validationRegExPattern)
 	// clear the name first based on the regexp filter of the resource type
-	tmpName := fmt.Sprintf("%s%s%s%s", prefix, cafPrefix, name, suffixSeparator)
+	//tmpName := fmt.Sprintf("%s%s%s%s", prefix, cafPrefix, name, postfix)
+	nameList := []string{}
+	for _, s := range []string{prefix, cafPrefix, name, postfix} {
+		if strings.TrimSpace(s) != "" {
+			nameList = append(nameList, s)
+		}
+	}
+	tmpName := strings.Join(nameList, suffixSeparator)
+	//Perform a first filter
 	tmpName = myRegex.ReplaceAllString(tmpName, "")
-	// Generate the temporary name based on the concatenation of the values
-	tmpGeneratedName := fmt.Sprintf("%s%s", tmpName, randomSuffix)
+	// Generate the temporary name based on the concatenation of the values - default case is caf classic
+	tmpGeneratedName := tmpName
+	if convention == ConventionCafRandom {
+		tmpGeneratedName = strings.Join([]string{tmpName, randomSuffix}, suffixSeparator)
+	} else if convention == ConventionRandom {
+		tmpGeneratedName = randomSuffix
+	} else if convention == ConventionPassThrough {
+		tmpGeneratedName = name
+	}
 
 	// Remove the characters that are not supported in the name based on the regular expression
 	filteredTmpGeneratedName := myRegex.ReplaceAllString(tmpGeneratedName, "")
@@ -126,7 +145,7 @@ func getResult(d *schema.ResourceData, m interface{}) error {
 
 	result := string(filteredTmpGeneratedName[0:maxLength])
 	if !validationRegEx.MatchString(result) {
-		return fmt.Errorf("The pattern %s doesn't match %s", validationRegExPattern, result)
+		return fmt.Errorf("Invalid name for Random CAF naming %s %s Id:%s , the pattern %s doesn't match %s", Resources[resourceType].ResourceTypeName, name, d.Id(), validationRegExPattern, result)
 	}
 
 	d.Set("result", result)
