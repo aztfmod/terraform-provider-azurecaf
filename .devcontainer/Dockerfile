@@ -21,7 +21,19 @@ RUN apt-get update \
     && apt-get -y install --no-install-recommends apt-utils dialog 2>&1 \
     #
     # Verify git, process tools, lsb-release (common in install instructions for CLIs) installed
-    && apt-get -y install git openssh-client iproute2 procps lsb-release \
+    && apt-get -y install git openssh-client iproute2 procps lsb-release -y \
+    # Install Azure CLI
+    $& apt-get update \
+    && apt-get install ca-certificates curl apt-transport-https lsb-release gnupg -y \
+    && curl -sL https://packages.microsoft.com/keys/microsoft.asc | 
+    gpg --dearmor | 
+    sudo tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null \
+    && AZ_REPO=$(lsb_release -cs) \
+    && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | 
+    sudo tee /etc/apt/sources.list.d/azure-cli.list \
+    && sudo apt-get update \
+    && sudo apt-get install azure-cli -y \
+
     #
     # Install Go tools w/module support
     && mkdir -p /tmp/gotools \
@@ -74,6 +86,7 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/* /go/src /tmp/gotools
+
 
 # Update this to "on" or "off" as appropriate
 ENV GO111MODULE=auto

@@ -1,9 +1,9 @@
-provider "caf" {
+provider "azurecaf" {
 
 }
 
 #Storage account test
-resource "caf_naming_convention" "st" {
+resource "azurecaf_naming_convention" "st" {
     convention      = "cafrandom"
     name            = "log"
     prefix          = "rdmi"
@@ -11,17 +11,17 @@ resource "caf_naming_convention" "st" {
 }
 
 output "st_id" {
-  value       = caf_naming_convention.st.id
+  value       = azurecaf_naming_convention.st.id
   description = "Id of the resource's name"
 }
 
 output "st_random" {
-  value       = caf_naming_convention.st.result
+  value       = azurecaf_naming_convention.st.result
   description = "Random result based on the resource type"
 }
 
 # Azure Automation Account
-resource "caf_naming_convention" "aaa" {
+resource "azurecaf_naming_convention" "aaa" {
     convention      = "cafrandom"
     name            = "automation"
     prefix          = "rdmi"
@@ -29,18 +29,18 @@ resource "caf_naming_convention" "aaa" {
 }
 
 output "aaa_id" {
-  value       = caf_naming_convention.aaa.id
+  value       = azurecaf_naming_convention.aaa.id
   description = "Id of the resource's name"
 }
 
 output "aaa_random" {
-  value       = caf_naming_convention.aaa.result
+  value       = azurecaf_naming_convention.aaa.result
   description = "Random result based on the resource type"
 }
 
 
 # Azure Container registry
-resource "caf_naming_convention" "acr" {
+resource "azurecaf_naming_convention" "acr" {
     convention      = "cafrandom"
     name            = "registry"
     prefix          = "rdmi"
@@ -48,17 +48,17 @@ resource "caf_naming_convention" "acr" {
 }
 
 output "acr_id" {
-  value       = caf_naming_convention.acr.id
+  value       = azurecaf_naming_convention.acr.id
   description = "Id of the resource's name"
 }
 
 output "acr_random" {
-  value       = caf_naming_convention.acr.result
+  value       = azurecaf_naming_convention.acr.result
   description = "Random result based on the resource type"
 }
 
 # Resource Group
-resource "caf_naming_convention" "rg" {
+resource "azurecaf_naming_convention" "rg" {
     convention      = "cafrandom"
     name            = "myrg"
     prefix          = "(_124)-"
@@ -66,17 +66,17 @@ resource "caf_naming_convention" "rg" {
 }
 
 output "rg_id" {
-  value       = caf_naming_convention.rg.id
+  value       = azurecaf_naming_convention.rg.id
   description = "Id of the resource's name"
 }
 
 output "rg_random" {
-  value       = caf_naming_convention.rg.result
+  value       = azurecaf_naming_convention.rg.result
   description = "Random result based on the resource type"
 }
 
 # Azure Firewall
-resource "caf_naming_convention" "afw" {
+resource "azurecaf_naming_convention" "afw" {
     convention      = "cafrandom"
     name            = "fire"
     prefix          = "rdmi"
@@ -84,17 +84,17 @@ resource "caf_naming_convention" "afw" {
 }
 
 output "afw_id" {
-  value       = caf_naming_convention.afw.id
+  value       = azurecaf_naming_convention.afw.id
   description = "Id of the resource's name"
 }
 
 output "afw_random" {
-  value       = caf_naming_convention.afw.result
+  value       = azurecaf_naming_convention.afw.result
   description = "Random result based on the resource type"
 }
 
 # Azure Recovery Vault
-resource "caf_naming_convention" "asr" {
+resource "azurecaf_naming_convention" "asr" {
     convention      = "cafrandom"
     name            = "recov"
     prefix          = "rdmi"
@@ -102,18 +102,18 @@ resource "caf_naming_convention" "asr" {
 }
 
 output "asr_id" {
-  value       = caf_naming_convention.asr.id
+  value       = azurecaf_naming_convention.asr.id
   description = "Id of the resource's name"
 }
 
 output "asr_random" {
-  value       = caf_naming_convention.asr.result
+  value       = azurecaf_naming_convention.asr.result
   description = "Random result based on the resource type"
 }
 
 
 # Event Hub
-resource "caf_naming_convention" "evh" {
+resource "azurecaf_naming_convention" "evh" {
     convention      = "cafrandom"
     name            = "hub"
     prefix          = "rdmi"
@@ -121,17 +121,17 @@ resource "caf_naming_convention" "evh" {
 }
 
 output "evh_id" {
-  value       = caf_naming_convention.evh.id
+  value       = azurecaf_naming_convention.evh.id
   description = "Id of the resource's name"
 }
 
 output "evh_random" {
-  value       = caf_naming_convention.evh.result
+  value       = azurecaf_naming_convention.evh.result
   description = "Random result based on the resource type"
 }
 
 # Key Vault
-resource "caf_naming_convention" "kv" {
+resource "azurecaf_naming_convention" "kv" {
     convention      = "cafrandom"
     name            = "passepartout"
     prefix          = "rdmi"
@@ -139,17 +139,17 @@ resource "caf_naming_convention" "kv" {
 }
 
 output "kv_id" {
-  value       = caf_naming_convention.kv.id
+  value       = azurecaf_naming_convention.kv.id
   description = "Id of the resource's name"
 }
 
 output "kv_random" {
-  value       = caf_naming_convention.kv.result
+  value       = azurecaf_naming_convention.kv.result
   description = "Random result based on the resource type"
 }
 
 # Log Analytics Workspace
-resource "caf_naming_convention" "la" {
+resource "azurecaf_naming_convention" "la" {
     convention      = "cafrandom"
     name            = "logs"
     prefix          = "rdmi"
@@ -157,17 +157,17 @@ resource "caf_naming_convention" "la" {
 }
 
 output "la_id" {
-  value       = caf_naming_convention.la.id
+  value       = azurecaf_naming_convention.la.id
   description = "Id of the resource's name"
 }
 
 output "la_random" {
-  value       = caf_naming_convention.la.result
+  value       = azurecaf_naming_convention.la.result
   description = "Random result based on the resource type"
 }
 
 # Network Interface
-resource "caf_naming_convention" "nic" {
+resource "azurecaf_naming_convention" "nic" {
     convention      = "cafrandom"
     name            = "mynetcard"
     prefix          = "rdmi"
@@ -175,17 +175,17 @@ resource "caf_naming_convention" "nic" {
 }
 
 output "nic_id" {
-  value       = caf_naming_convention.nic.id
+  value       = azurecaf_naming_convention.nic.id
   description = "Id of the resource's name"
 }
 
 output "nic_random" {
-  value       = caf_naming_convention.nic.result
+  value       = azurecaf_naming_convention.nic.result
   description = "Random result based on the resource type"
 }
 
 # Network Security Group
-resource "caf_naming_convention" "nsg" {
+resource "azurecaf_naming_convention" "nsg" {
     convention      = "cafrandom"
     name            = "sec"
     prefix          = "rdmi"
@@ -193,17 +193,17 @@ resource "caf_naming_convention" "nsg" {
 }
 
 output "nsg_id" {
-  value       = caf_naming_convention.nsg.id
+  value       = azurecaf_naming_convention.nsg.id
   description = "Id of the resource's name"
 }
 
 output "nsg_random" {
-  value       = caf_naming_convention.nsg.result
+  value       = azurecaf_naming_convention.nsg.result
   description = "Random result based on the resource type"
 }
 
 # Public Ip
-resource "caf_naming_convention" "pip" {
+resource "azurecaf_naming_convention" "pip" {
     convention      = "cafrandom"
     name            = "mypip"
     prefix          = "rdmi"
@@ -211,17 +211,17 @@ resource "caf_naming_convention" "pip" {
 }
 
 output "pip_id" {
-  value       = caf_naming_convention.pip.id
+  value       = azurecaf_naming_convention.pip.id
   description = "Id of the resource's name"
 }
 
 output "pip_random" {
-  value       = caf_naming_convention.pip.result
+  value       = azurecaf_naming_convention.pip.result
   description = "Random result based on the resource type"
 }
 
 # subnet
-resource "caf_naming_convention" "snet" {
+resource "azurecaf_naming_convention" "snet" {
     convention      = "cafrandom"
     name            = "snet"
     prefix          = "rdmi"
@@ -229,17 +229,17 @@ resource "caf_naming_convention" "snet" {
 }
 
 output "snet_id" {
-  value       = caf_naming_convention.snet.id
+  value       = azurecaf_naming_convention.snet.id
   description = "Id of the resource's name"
 }
 
 output "snet_random" {
-  value       = caf_naming_convention.snet.result
+  value       = azurecaf_naming_convention.snet.result
   description = "Random result based on the resource type"
 }
 
 # Virtual Network
-resource "caf_naming_convention" "vnet" {
+resource "azurecaf_naming_convention" "vnet" {
     convention      = "cafrandom"
     name            = "vnet"
     prefix          = "rdmi"
@@ -247,17 +247,17 @@ resource "caf_naming_convention" "vnet" {
 }
 
 output "vnet_id" {
-  value       = caf_naming_convention.vnet.id
+  value       = azurecaf_naming_convention.vnet.id
   description = "Id of the resource's name"
 }
 
 output "vnet_random" {
-  value       = caf_naming_convention.vnet.result
+  value       = azurecaf_naming_convention.vnet.result
   description = "Random result based on the resource type"
 }
 
 # VM Windows
-resource "caf_naming_convention" "vmw" {
+resource "azurecaf_naming_convention" "vmw" {
     convention      = "cafrandom"
     name            = "winVMToolongShouldbetrimmed"
     prefix          = "rdmi"
@@ -265,17 +265,17 @@ resource "caf_naming_convention" "vmw" {
 }
 
 output "vmw_id" {
-  value       = caf_naming_convention.vmw.id
+  value       = azurecaf_naming_convention.vmw.id
   description = "Id of the resource's name"
 }
 
 output "vmw_random" {
-  value       = caf_naming_convention.vmw.result
+  value       = azurecaf_naming_convention.vmw.result
   description = "Random result based on the resource type"
 }
 
 # VM Linux
-resource "caf_naming_convention" "vml" {
+resource "azurecaf_naming_convention" "vml" {
     convention      = "cafrandom"
     name            = "linuxVM"
     prefix          = "rdmi"
@@ -283,12 +283,12 @@ resource "caf_naming_convention" "vml" {
 }
 
 output "vml_id" {
-  value       = caf_naming_convention.vml.id
+  value       = azurecaf_naming_convention.vml.id
   description = "Id of the resource's name"
 }
 
 output "vml_random" {
-  value       = caf_naming_convention.vml.result
+  value       = azurecaf_naming_convention.vml.result
   description = "Random result based on the resource type"
 }
 

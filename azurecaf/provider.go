@@ -1,4 +1,4 @@
-package caf
+package azurecaf
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -11,7 +11,7 @@ func Provider() terraform.ResourceProvider {
 		Schema: map[string]*schema.Schema{},
 
 		ResourcesMap: map[string]*schema.Resource{
-			"caf_naming_convention": resourceNamingConvention(),
+			"azurecaf_naming_convention": resourceNamingConvention(),
 		},
 	}
 }

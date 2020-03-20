@@ -1,4 +1,4 @@
-package caf
+package azurecaf
 
 import (
 	"fmt"
@@ -18,9 +18,10 @@ func resourceNamingConvention() *schema.Resource {
 	}
 
 	return &schema.Resource{
-		Create: resourceNamingConventionCreate,
-		Read:   resourceNamingConventionRead,
-		Delete: resourceNamingConventionDelete,
+		Create:        resourceNamingConventionCreate,
+		Read:          schema.Noop,
+		Delete:        schema.RemoveFromState,
+		SchemaVersion: 2,
 
 		Schema: map[string]*schema.Schema{
 			"name": &schema.Schema{
@@ -177,6 +178,11 @@ func getResult(d *schema.ResourceData, m interface{}) error {
 		resultRune[len(resultRune)-1] = randomLastChar
 		result = string(resultRune)
 	}
+
+	if Resources[resourceType].LowerCase {
+		result = strings.ToLower(result)
+	}
+
 	if !validationRegEx.MatchString(result) {
 		return fmt.Errorf("Invalid name for Random CAF naming %s %s Id:%s , the pattern %s doesn't match %s", Resources[resourceType].ResourceTypeName, name, d.Id(), validationRegExPattern, result)
 	}
