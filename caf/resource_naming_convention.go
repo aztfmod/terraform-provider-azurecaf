@@ -95,7 +95,7 @@ func getResult(d *schema.ResourceData, m interface{}) error {
 	postfix := d.Get("postfix").(string)
 	resourceType := d.Get("resource_type").(string)
 	convention := d.Get("convention").(string)
-	desiredMaxLength := 100 //d.Get("maxLength").(int)
+	desiredMaxLength := d.Get("max_length").(int)
 
 	// Load the regular expression based on the resource type
 	var regExFilter string = ""
