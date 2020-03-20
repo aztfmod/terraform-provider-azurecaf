@@ -99,12 +99,12 @@ func getResult(d *schema.ResourceData, m interface{}) error {
 	desiredMaxLength := d.Get("max_length").(int)
 
 	// Load the regular expression based on the resource type
-	var regExFilter string = ""
+	var regExFilter string
 	regExFilter = string(Resources[resourceType].RegEx)
 	validationRegExPattern := string(Resources[resourceType].ValidationRegExp)
 	log.Printf(regExFilter)
 
-	var cafPrefix string = ""
+	var cafPrefix string
 	var randomSuffix string = randSeq(int(Resources[resourceType].MaxLength))
 
 	// configuring the prefix, cafprefix, name, postfix depending on the naming convention
