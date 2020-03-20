@@ -120,14 +120,14 @@ convention = "cafclassic"
 describes the type of object you are requesting a name from, for instance if you are requesting a name for event hub:
 
 ```hcl
-type=evh
+type = "evh"
 ```
 
 ### Maximum length
 configure the maximum length of the returned object name, is the specified length is longer than the supported length of the Azure resource the later applies
 
 ```hcl
-max_length=24
+max_length = 24
 ```
 
 ## Limitations and planned improvements
