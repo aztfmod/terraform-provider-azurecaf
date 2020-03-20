@@ -6,5 +6,8 @@ dev_container:
 build:
 	go build -o ./terraform-provider-azurecaf
 
+unittest:
+	go test ./...
+	
 test:
 	cd ./examples && terraform init && terraform plan && terraform apply -auto-approve

@@ -25,27 +25,31 @@ If you're building the provider, follow the [terraform instructions](https://www
 
 # Developing the Provider
 
-If you wish to work on the provider, you'll first need Go installed on your machine (version 1.11+ is required). You'll also need to correctly setup a GOPATH, as well as adding $GOPATH/bin to your $PATH.
+If you wish to work on the provider, you'll first need Go installed on your machine (version 1.13+ is required). You'll also need to correctly setup a GOPATH, as well as adding $GOPATH/bin to your $PATH.
 
 To compile the provider, run make build. This will build the provider and put the provider binary in the $GOPATH/bin directory.
 
 ```
 $ make build
 ...
-$ $GOPATH/bin/terraform-provider-bigip
+$ $GOPATH/bin/terraform-provider-azurecaf
 ...
 
 ```
 # Testing
 
-Running the acceptance test suite requires an F5 to test against. Set `BIGIP_HOST`, `BIGIP_USER`
-and `BIGIP_PASSWORD` to a device to run the tests against. By default tests will use the `Common`
-partition for creating objects. You can change the partition by setting `BIGIP_TEST_PARTITION`.
+Running the acceptance test suite requires does not require an Azure subscription. 
+
+to run the unit test:
+```
+make unittest
+```
+
+to run the integration test
 
 ```
-BIGIP_HOST=f5.mycompany.com BIGIP_USER=foo BIGIP_PASSWORD=secret make testacc
+make test
 ```
-
 
 ## Methods for naming convention
 
@@ -77,10 +81,10 @@ Current prototype supports:
 | Network Security Group              | nsg                 |
 | Virtual Network Interface Card      | nic                 |
 | Virtual Network                     | vnet                |
-| Azure Firewall                      | afw                |
-| Azure Container Registry            | acr                |
-| Azure Site Recovery                 | asr                |
-| Azure Automation                    | aaa                |
+| Azure Firewall                      | afw                 |
+| Azure Container Registry            | acr                 |
+| Azure Site Recovery                 | asr                 |
+| Azure Automation                    | aaa                 |
 | generic                             | gen                 |
 
 ## Parameters
@@ -92,7 +96,7 @@ name will be sanitized as per supported character set in Azure.
 Example:
 
 ```hcl
-name = "ajkrwesdfsdfsdfsfdreau'%#d2."
+name = "samplename"
 ```
 
 ### postfix
