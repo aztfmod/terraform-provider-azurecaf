@@ -138,15 +138,21 @@ max_length=24
 - Support for VM components
 Feel free to submit your PR to add capabilities
 
+## Referencing the provider
+To reference the provider simply include
+```hcl
+provider azurecaf {}
+```
+make sure that the terraform-provider-azurecaf binary is installed as a Terraform plugin
+
 ## Outputs
 
-This provider outputs one name, the result of the naming convention query, you must specify the type of output required, example for a storage account, you will get
-<module>.st which returns the name based on the convention input.
-This output will be consumed directly by a module to name the component before calling the azurerm resource provider.
+This provider outputs one name, the result of the naming convention query, you must specify the leverage the result output value, example for a storage account, you will get azurecaf_naming_convention.cafrandom_rg.result which returns the name based on the convention input.
+This output will be consumed directly by a resource to name the component before calling the azurerm resource provider.
 
 Example:
 ```hcl
-resource "caf_naming_convention" "cafrandom_rg" {  
+resource "azurecaf_naming_convention" "cafrandom_rg" {  
   name    = "aztfmod"
   prefix  = "dev"
   resource_type    = "rg"
@@ -156,7 +162,7 @@ resource "caf_naming_convention" "cafrandom_rg" {
 }
 
 resource "azurerm_storage_account" "log" {
-  name                      = caf_naming_convention.cafrandom_rg.result
+  name                      = azurecaf_naming_convention.cafrandom_rg.result
   resource_group_name       = var.resource_group_name
   location                  = var.location
   account_kind              = "StorageV2"
