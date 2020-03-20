@@ -8,6 +8,7 @@ on:
   create:
    tags:
     - 'v*'
+  repository_dispatch:
 
 jobs:
 
