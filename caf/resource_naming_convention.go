@@ -127,11 +127,11 @@ func getResult(d *schema.ResourceData, m interface{}) error {
 			nameList = append(nameList, s)
 		}
 	}
-	tmpName := strings.Join(nameList, suffixSeparator)
-	tmpName = myRegex.ReplaceAllString(tmpName, "")
+	userInputName := strings.Join(nameList, suffixSeparator)
+	userInputName = myRegex.ReplaceAllString(userInputName, "")
 	randomSuffix = myRegex.ReplaceAllString(randomSuffix, "")
 	// Generate the temporary name based on the concatenation of the values - default case is caf classic
-	tmpGeneratedName := tmpName
+	generatedName := userInputName
 
 	//calculate the max length
 	var maxLength int = int(Resources[resourceType].MaxLength)
@@ -139,29 +139,44 @@ func getResult(d *schema.ResourceData, m interface{}) error {
 		maxLength = desiredMaxLength
 	}
 
+	//does the generated string contains random chars?
+	var containsRandomChar = false
 	switch convention {
 	case ConventionPassThrough:
-		tmpGeneratedName = name
+		generatedName = name
 	case ConventionCafClassic:
 		// the naming is already configured
 	default:
-		if len(name) != 0 {
-			tmpGeneratedName = strings.Join([]string{tmpName, randomSuffix}, suffixSeparator)
+		if len(userInputName) != 0 {
+			if len(userInputName) < (maxLength - 1) { // prevent adding a suffix separator as the last character
+				containsRandomChar = true
+				generatedName = strings.Join([]string{userInputName, randomSuffix}, suffixSeparator)
+			} else {
+				generatedName = userInputName
+			}
 		} else {
-			tmpGeneratedName = randomSuffix
+			containsRandomChar = true
+			generatedName = randomSuffix
 		}
 	}
 
 	// Remove the characters that are not supported in the name based on the regular expression
-	filteredTmpGeneratedName := myRegex.ReplaceAllString(tmpGeneratedName, "")
+	filteredGeneratedName := myRegex.ReplaceAllString(generatedName, "")
 
-	var length int = len(filteredTmpGeneratedName)
+	var length int = len(filteredGeneratedName)
 
 	if length > maxLength {
 		length = maxLength
 	}
 
-	result := string(filteredTmpGeneratedName[0:length])
+	result := string(filteredGeneratedName[0:length])
+	// making sure the last char is alpha char if we included random string
+	if containsRandomChar && len(result) > len(userInputName) {
+		randomLastChar := alphagenerator[rand.Intn(len(alphagenerator)-1)]
+		resultRune := []rune(result)
+		resultRune[len(resultRune)-1] = randomLastChar
+		result = string(resultRune)
+	}
 	if !validationRegEx.MatchString(result) {
 		return fmt.Errorf("Invalid name for Random CAF naming %s %s Id:%s , the pattern %s doesn't match %s", Resources[resourceType].ResourceTypeName, name, d.Id(), validationRegExPattern, result)
 	}
@@ -181,7 +196,7 @@ func randSeq(n int) string {
 	// generate at least one random character
 	b := make([]rune, n)
 	for i := range b {
-		b[i] = alphanumgenerator[rand.Intn(len(alphanumgenerator))]
+		b[i] = alphanumgenerator[rand.Intn(len(alphanumgenerator)-1)]
 	}
 	return string(b)
 }
