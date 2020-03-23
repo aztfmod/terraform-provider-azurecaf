@@ -68,24 +68,24 @@ We define resource types as per: https://docs.microsoft.com/en-us/azure/cloud-ad
 
 Current prototype supports:
 
-| Resource type                       | Resource type code  |
-| ----------------------------------- | --------------------|
-| Resource group                      | rg                  |
-| Azure Storage Account               | st                  |
-| Azure Event Hubs                    | evh                 |
-| Azure Monitor Log Analytics         | la                  |
-| Azure Key Vault                     | kv                  |
-| Windows Virtual Machine             | vmw                 |
-| Linux Virtual Machine               | vml                 |
-| Public IP                           | pip                 |
-| Network Security Group              | nsg                 |
-| Virtual Network Interface Card      | nic                 |
-| Virtual Network                     | vnet                |
-| Azure Firewall                      | afw                 |
-| Azure Container Registry            | acr                 |
-| Azure Site Recovery                 | asr                 |
-| Azure Automation                    | aaa                 |
-| generic                             | gen                 |
+| Resource type                       | Resource type code (short)  | Resource type code (long)               |
+| ----------------------------------- | ----------------------------|-----------------------------------------|
+| Resource group                      | rg                          | azurerm_resource_group                  |
+| Azure Storage Account               | st                          | azurerm_storage_account                 |
+| Azure Event Hubs                    | evh                         | azurerm_event_hub                       |
+| Azure Monitor Log Analytics         | la                          | azurerm_log_analytics_workspace         |
+| Azure Key Vault                     | kv                          | azurerm_key_vault                       |
+| Windows Virtual Machine             | vmw                         | azurerm_windows_virtual_machine_windows |
+| Linux Virtual Machine               | vml                         | azurerm_windows_virtual_machine_linux   |
+| Public IP                           | pip                         | azurerm_public_ip                       |
+| Network Security Group              | nsg                         | azurerm_network_security_group          |
+| Virtual Network Interface Card      | nic                         | azurerm_network_interface               |
+| Virtual Network                     | vnet                        | azurerm_virtual_network                 |
+| Azure Firewall                      | afw                         | azurerm_firewall                        |
+| Azure Container Registry            | acr                         | azurerm_container_registry              |
+| Azure Site Recovery                 | asr                         | azurerm_recovery_services_vault         |
+| Azure Automation                    | aaa                         | azurerm_automation_account              |
+| generic                             | gen                         | generic                                 |
 
 ## Parameters
 
