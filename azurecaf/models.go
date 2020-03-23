@@ -63,3 +63,24 @@ var Resources = map[string]ResourceStructure{
 	"vml":  {"virtual machine (linux)", "vml", 1, 64, false, alphanumh, "^[0-9a-zA-Z][0-9A-Za-z,_,-]{0,63}[0-9a-zA-Z,_]{0,1}$"},
 	"gen":  {"generic", "vml-", 1, 24, false, alphanum, "^[0-9a-zA-Z]{1,24}$"},
 }
+
+// ResourcesMapping enforcing new naming convention
+var ResourcesMapping = map[string]ResourceStructure{
+	"azurerm_automation_account":              Resources["aaa"],
+	"azurerm_container_registry":              Resources["acr"],
+	"azurerm_resource_group":                  Resources["rg"],
+	"azurerm_storage_account":                 Resources["st"],
+	"azurerm_firewall":                        Resources["afw"],
+	"azurerm_recovery_services_vault":         Resources["asr"],
+	"azurerm_event_hub":                       Resources["evh"],
+	"azurerm_key_vault":                       Resources["kv"],
+	"azurerm_log_analytics_workspace":         Resources["la"],
+	"azurerm_network_interface":               Resources["nic"],
+	"azurerm_network_security_group":          Resources["nsg"],
+	"azurerm_public_ip":                       Resources["pip"],
+	"azurerm_subnet":                          Resources["snet"],
+	"azurerm_virtual_network":                 Resources["vnet"],
+	"azurerm_windows_virtual_machine_windows": Resources["vmw"],
+	"azurerm_windows_virtual_machine_linux":   Resources["linux"],
+	"generic":                                 Resources["gen"],
+}

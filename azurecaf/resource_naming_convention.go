@@ -16,6 +16,9 @@ func resourceNamingConvention() *schema.Resource {
 	for k := range Resources {
 		resourceMapsKeys = append(resourceMapsKeys, k)
 	}
+	for k := range ResourcesMapping {
+		resourceMapsKeys = append(resourceMapsKeys, k)
+	}
 
 	return &schema.Resource{
 		Create:        resourceNamingConventionCreate,
@@ -100,19 +103,27 @@ func getResult(d *schema.ResourceData, m interface{}) error {
 
 	// Load the regular expression based on the resource type
 	var regExFilter string
-	regExFilter = string(Resources[resourceType].RegEx)
-	validationRegExPattern := string(Resources[resourceType].ValidationRegExp)
+	var resource ResourceStructure
+	var resourceFound bool = false
+	if resource, resourceFound = Resources[resourceType]; !resourceFound {
+		resource, resourceFound = ResourcesMapping[resourceType]
+	}
+	if !resourceFound {
+		return fmt.Errorf("Invalid resource type %s", resourceType)
+	}
+
+	regExFilter = string(resource.RegEx)
+	validationRegExPattern := string(resource.ValidationRegExp)
 	log.Printf(regExFilter)
 
 	var cafPrefix string
-	var randomSuffix string = randSeq(int(Resources[resourceType].MaxLength))
+	var randomSuffix string = randSeq(int(resource.MaxLength))
 
 	// configuring the prefix, cafprefix, name, postfix depending on the naming convention
 	switch convention {
 	case ConventionCafRandom, ConventionCafClassic:
-		cafPrefix = Resources[resourceType].CafPrefix
+		cafPrefix = resource.CafPrefix
 	case ConventionRandom:
-		regExFilter = string(alphanumStartletter)
 		//clear all the field to generate a random
 		name = ""
 		postfix = ""
@@ -135,7 +146,7 @@ func getResult(d *schema.ResourceData, m interface{}) error {
 	generatedName := userInputName
 
 	//calculate the max length
-	var maxLength int = int(Resources[resourceType].MaxLength)
+	var maxLength int = int(resource.MaxLength)
 	if desiredMaxLength > 0 && desiredMaxLength < maxLength {
 		maxLength = desiredMaxLength
 	}
@@ -179,12 +190,12 @@ func getResult(d *schema.ResourceData, m interface{}) error {
 		result = string(resultRune)
 	}
 
-	if Resources[resourceType].LowerCase {
+	if resource.LowerCase {
 		result = strings.ToLower(result)
 	}
 
 	if !validationRegEx.MatchString(result) {
-		return fmt.Errorf("Invalid name for Random CAF naming %s %s Id:%s , the pattern %s doesn't match %s", Resources[resourceType].ResourceTypeName, name, d.Id(), validationRegExPattern, result)
+		return fmt.Errorf("Invalid name for Random CAF naming %s %s Id:%s , the pattern %s doesn't match %s", resource.ResourceTypeName, name, d.Id(), validationRegExPattern, result)
 	}
 
 	d.Set("result", result)

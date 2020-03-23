@@ -266,6 +266,12 @@ func TestAccCafNamingConventionFullRandom(t *testing.T) {
 						24,
 						""),
 					regexMatch("azurecaf_naming_convention.random_st", regexp.MustCompile(Resources["st"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
+						"azurecaf_naming_convention.random_st2",
+						"test",
+						24,
+						""),
+					regexMatch("azurecaf_naming_convention.random_st2", regexp.MustCompile(Resources["st"].ValidationRegExp), 1),
 				),
 			},
 		},
@@ -914,4 +920,12 @@ resource "azurecaf_naming_convention" "random_st" {
     name            = "log"
     resource_type   = "st"
 }
+
+resource "azurecaf_naming_convention" "random_st2" {  
+	name    = "catest"
+	prefix  = "test"
+	resource_type    = "st"
+	convention  = "random"
+  }
+  
 `
