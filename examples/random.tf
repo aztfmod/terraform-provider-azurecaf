@@ -31,3 +31,20 @@ output "random_st_fullname_random" {
   value       = azurecaf_naming_convention.random_st_fullname.result
   description = "Random result based on the resource type"
 }
+
+#Event hub Random
+resource "azurecaf_naming_convention" "evh_fullrandom" {
+    name            = "evhrandseed"
+    convention      = "random"
+    resource_type   = "azurerm_eventhub_namespace"
+}
+
+output "evh_fullrandom_id" {
+  value       = azurecaf_naming_convention.evh_fullrandom.id
+  description = "Id of the resource's name"
+}
+
+output "evh_fullrandom" {
+  value       = azurecaf_naming_convention.evh_fullrandom.result
+  description = "Random result based on the resource type"
+}

@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
@@ -210,10 +211,17 @@ var (
 
 // Generate a random value to add to the resource names
 func randSeq(n int) string {
+	// initialize random seed
+	rand.Seed(time.Now().UnixNano())
 	// generate at least one random character
 	b := make([]rune, n)
 	for i := range b {
-		b[i] = alphanumgenerator[rand.Intn(len(alphanumgenerator)-1)]
+		// We need the random generated string to start with a letter
+		if i == 0 {
+			b[i] = alphagenerator[rand.Intn(len(alphagenerator)-1)]
+		} else {
+			b[i] = alphanumgenerator[rand.Intn(len(alphanumgenerator)-1)]
+		}
 	}
 	return string(b)
 }
