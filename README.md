@@ -72,7 +72,7 @@ Current prototype supports:
 | ----------------------------------- | ----------------------------|-----------------------------------------|
 | Resource group                      | rg                          | azurerm_resource_group                  |
 | Azure Storage Account               | st                          | azurerm_storage_account                 |
-| Azure Event Hubs                    | evh                         | azurerm_event_hub                       |
+| Azure Event Hubs                    | evh                         | azurerm_eventhub_namespace              |
 | Azure Monitor Log Analytics         | la                          | azurerm_log_analytics_workspace         |
 | Azure Key Vault                     | kv                          | azurerm_key_vault                       |
 | Windows Virtual Machine             | vmw                         | azurerm_windows_virtual_machine_windows |
