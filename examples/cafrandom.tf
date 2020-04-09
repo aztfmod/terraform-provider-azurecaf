@@ -2,6 +2,14 @@ provider "azurecaf" {
 
 }
 
+#Resource Group AKS Test
+resource "azurecaf_naming_convention" "rg_aks" {
+  name          = "aks"
+  prefix        = "ievb"
+  resource_type = "azurerm_resource_group"
+  convention    = "cafrandom"
+}
+
 #Storage account test
 resource "azurecaf_naming_convention" "st" {
     convention      = "cafrandom"
@@ -290,5 +298,10 @@ output "vml_id" {
 output "vml_random" {
   value       = azurecaf_naming_convention.vml.result
   description = "Random result based on the resource type"
+}
+
+output "rg_aks" {
+  value       = azurecaf_naming_convention.rg_aks.result
+  description = "AKS Resource Group demo"
 }
 
