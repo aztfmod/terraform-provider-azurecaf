@@ -79,10 +79,6 @@ func resourceNamingConvention() *schema.Resource {
 }
 
 func resourceNamingConventionCreate(d *schema.ResourceData, m interface{}) error {
-
-	// Set the attribute Id with the value
-	d.SetId(randSeq(16))
-
 	return resourceNamingConventionRead(d, m)
 }
 
@@ -200,7 +196,9 @@ func getResult(d *schema.ResourceData, m interface{}) error {
 	}
 
 	d.Set("result", result)
-
+	// Set the attribute Id with the value
+	//d.SetId("none")
+	d.SetId(randSeq(16))
 	return nil
 }
 

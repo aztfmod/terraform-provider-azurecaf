@@ -1,9 +1,11 @@
-provider "caf" {}
-
 provider "azurerm" {
     version = "=2.2.0"
     features {}
 }
+
+provider "azurecaf" {
+}
+
 
 data "azurerm_client_config" "current" {}
 
