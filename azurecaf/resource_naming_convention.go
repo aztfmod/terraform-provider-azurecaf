@@ -156,7 +156,7 @@ func getResult(d *schema.ResourceData, m interface{}) error {
 	var containsRandomChar = false
 	switch convention {
 	case ConventionPassThrough:
-		generatedName = name
+		// the naming is already configured
 	case ConventionCafClassic:
 		// the naming is already configured
 	default:

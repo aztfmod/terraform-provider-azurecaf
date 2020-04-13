@@ -55,6 +55,16 @@ resource "azurecaf_naming_convention" "acr" {
     resource_type   = "acr"
 }
 
+# Azure Container registry
+resource "azurecaf_naming_convention" "acr_max" {
+    convention      = "cafrandom"
+    name            = "registry"
+    prefix          = "rdmi"
+    max_length      = 45
+    resource_type   = "acr"
+}
+
+
 output "acr_id" {
   value       = azurecaf_naming_convention.acr.id
   description = "Id of the resource's name"
@@ -62,6 +72,11 @@ output "acr_id" {
 
 output "acr_random" {
   value       = azurecaf_naming_convention.acr.result
+  description = "Random result based on the resource type"
+}
+
+output "acr_max_random" {
+  value       = azurecaf_naming_convention.acr_max.result
   description = "Random result based on the resource type"
 }
 

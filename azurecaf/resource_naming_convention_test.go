@@ -38,6 +38,12 @@ func TestAccCafNamingConventionRandom(t *testing.T) {
 						"rdmi"),
 					regexMatch("azurecaf_naming_convention.acr", regexp.MustCompile(Resources["acr"].ValidationRegExp), 1),
 					testAccCafNamingValidation(
+						"azurecaf_naming_convention.acr_max",
+						"acrlevel0",
+						45,
+						"rdmi"),
+					regexMatch("azurecaf_naming_convention.acr_max", regexp.MustCompile(Resources["acr"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
 						"azurecaf_naming_convention.rg",
 						"myrg",
 						Resources["rg"].MaxLength,
@@ -241,8 +247,8 @@ func TestAccCafNamingConventionPassthrough(t *testing.T) {
 
 					testAccCafNamingValidation(
 						"azurecaf_naming_convention.pass_st",
-						"log",
-						3,
+						"loginv",
+						6,
 						"log"),
 					regexMatch("azurecaf_naming_convention.pass_st", regexp.MustCompile(Resources["st"].ValidationRegExp), 1),
 				),
@@ -370,13 +376,32 @@ resource "azurecaf_naming_convention" "acr" {
     resource_type   = "acr"
 }
 
+resource "azurecaf_naming_convention" "acr_max" {
+    convention      = "cafrandom"
+    name            = "acrlevel0"
+    prefix          = "rdmi"
+    max_length      = 45
+    resource_type   = "acr"
+}
+
+
+output "acr_max_id" {
+  value       = azurecaf_naming_convention.acr_max.id
+  description = "Id of the resource's name"
+}
+
+output "acr_max_random" {
+  value       = azurecaf_naming_convention.acr_max.result
+  description = "Random result based on the resource type"
+}
+
 output "acr_id" {
-  value       = azurecaf_naming_convention.acr.id
+  value       = azurecaf_naming_convention.acr_max.id
   description = "Id of the resource's name"
 }
 
 output "acr_random" {
-  value       = azurecaf_naming_convention.acr.result
+  value       = azurecaf_naming_convention.acr_max.result
   description = "Random result based on the resource type"
 }
 
@@ -904,7 +929,7 @@ provider "azurecaf" {
 #Storage account test
 resource "azurecaf_naming_convention" "pass_st" {
     convention      = "passthrough"
-    name            = "log"
+    name            = "log_inv"
     resource_type   = "st"
 }
 `

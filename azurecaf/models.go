@@ -46,7 +46,7 @@ type ResourceStructure struct {
 // Resources currently supported
 var Resources = map[string]ResourceStructure{
 	"aaa":  {"azure automation account", "aaa", 6, 50, false, alphanumh, "^[a-zA-Z][0-9A-Za-z,-]{5,49}$"},
-	"acr":  {"azure container registry", "acr", 5, 50, true, alphanum, "^[0-9A-Za-z]{5,50}$"},
+	"acr":  {"azure container registry", "acr", 5, 49, true, alphanum, "^[0-9A-Za-z]{5,50}$"},
 	"rg":   {"resource group", "rg", 1, 80, false, unicode, `^[-\w\._\(\)]{1,80}$`},
 	"st":   {"storage account", "st", 3, 24, true, alphanum, "^[0-9a-z]{3,24}$"},
 	"afw":  {"azure firewall", "afw", 1, 80, false, alphanumhup, "^[a-zA-Z][0-9A-Za-z,_,.,-]{0,79}$"},
