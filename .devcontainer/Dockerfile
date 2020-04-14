@@ -19,22 +19,16 @@ ARG USER_GID=$USER_UID
 # Configure apt, install packages and tools
 RUN apt-get update \
     && apt-get -y install --no-install-recommends apt-utils dialog 2>&1 \
-    #
-    # Verify git, process tools, lsb-release (common in install instructions for CLIs) installed
     && apt-get -y install git openssh-client iproute2 procps lsb-release -y \
-    # Install Azure CLI
-    $& apt-get update \
+    && apt-get update \
     && apt-get install ca-certificates curl apt-transport-https lsb-release gnupg -y \
-    && curl -sL https://packages.microsoft.com/keys/microsoft.asc | \ 
-    gpg --dearmor | \
+    && curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | \
     tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null \
     && AZ_REPO=$(lsb_release -cs) \
     && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | \ 
     tee /etc/apt/sources.list.d/azure-cli.list \
     && apt-get update \
     && apt-get install azure-cli -y \
-
-    #
     # Install Go tools w/module support
     && mkdir -p /tmp/gotools \
     && cd /tmp/gotools \
