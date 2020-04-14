@@ -1,7 +1,7 @@
 # Log Analytics Workspace
 resource "azurecaf_naming_convention" "la_passthrough" {
     convention      = "passthrough"
-    name            = "logsvalid"
+    name            = "logs_invalid"
     prefix          = "rdmi"
     resource_type   = "la"
 }

@@ -13,11 +13,11 @@ const (
 
 const (
 	alphanum            string = "[^0-9A-Za-z]"
-	alphanumh           string = "/[^0-9A-Za-z,-]/"
-	alphanumu           string = "/[^0-9A-Za-z,_]/"
-	alphanumhu          string = "/[^0-9A-Za-z,_,-]/"
-	alphanumhup         string = "/[^0-9A-Za-z,_,.,-]/"
-	alphanumStartletter string = "/\\A[^a-z][^0-9A-Za-z]/"
+	alphanumh           string = "[^0-9A-Za-z,-]"
+	alphanumu           string = "[^0-9A-Za-z,_]"
+	alphanumhu          string = "[^0-9A-Za-z,_,-]"
+	alphanumhup         string = "[^0-9A-Za-z,_,.,-]"
+	alphanumStartletter string = "\\A[^a-z][^0-9A-Za-z]"
 	unicode             string = `[^-\w\._\(\)]`
 )
 

@@ -1,7 +1,7 @@
 default: build
 
 dev_container:
-	go build -o $(HOME)/.terraform.d/plugins/linux_amd64/terraform-provider-azurecaf
+	go build -o ~/.terraform.d/plugins/linux_amd64/terraform-provider-azurecaf
 
 build:
 	go build -o ./terraform-provider-azurecaf

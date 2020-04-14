@@ -246,11 +246,11 @@ func TestAccCafNamingConventionPassthrough(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 
 					testAccCafNamingValidation(
-						"azurecaf_naming_convention.pass_st",
-						"loginv",
-						6,
+						"azurecaf_naming_convention.logs_inv",
+						"logsinvalid",
+						11,
 						"log"),
-					regexMatch("azurecaf_naming_convention.pass_st", regexp.MustCompile(Resources["st"].ValidationRegExp), 1),
+					regexMatch("azurecaf_naming_convention.logs_inv", regexp.MustCompile(Resources["la"].ValidationRegExp), 1),
 				),
 			},
 		},
@@ -927,10 +927,10 @@ provider "azurecaf" {
 }
 
 #Storage account test
-resource "azurecaf_naming_convention" "pass_st" {
+resource "azurecaf_naming_convention" "logs_inv" {
     convention      = "passthrough"
-    name            = "log_inv"
-    resource_type   = "st"
+    name            = "logs_invalid"
+    resource_type   = "la"
 }
 `
 
