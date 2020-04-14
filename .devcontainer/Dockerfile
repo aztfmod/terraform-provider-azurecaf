@@ -56,7 +56,7 @@ RUN apt-get update \
         github.com/go-delve/delve/cmd/dlv@latest 2>&1 \
     #
     # Install Go tools w/o module support
-    && go get -v github.com/alecthomas/gometalinter 2>&1 \
+    # && go get -v github.com/alecthomas/gometalinter 2>&1 \
     #
     # Install gocode-gomod
     && go get -x -d github.com/stamblerre/gocode 2>&1 \
