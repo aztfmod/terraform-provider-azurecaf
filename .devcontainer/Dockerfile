@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See https://go.microsoft.com/fwlink/?linkid=2090316 for license information.
 #-------------------------------------------------------------------------------------------------------------
 
-FROM golang:1 as base
+FROM golang:1.14.0 as base
 
 # Avoid warnings by switching to noninteractive
 ENV DEBIAN_FRONTEND=noninteractive
@@ -25,14 +25,14 @@ RUN apt-get update \
     # Install Azure CLI
     $& apt-get update \
     && apt-get install ca-certificates curl apt-transport-https lsb-release gnupg -y \
-    && curl -sL https://packages.microsoft.com/keys/microsoft.asc | 
-    gpg --dearmor | 
-    sudo tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null \
+    && curl -sL https://packages.microsoft.com/keys/microsoft.asc | \ 
+    gpg --dearmor | \
+    tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null \
     && AZ_REPO=$(lsb_release -cs) \
-    && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | 
-    sudo tee /etc/apt/sources.list.d/azure-cli.list \
-    && sudo apt-get update \
-    && sudo apt-get install azure-cli -y \
+    && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | \ 
+    tee /etc/apt/sources.list.d/azure-cli.list \
+    && apt-get update \
+    && apt-get install azure-cli -y \
 
     #
     # Install Go tools w/module support
