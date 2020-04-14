@@ -9,7 +9,11 @@
 		"seccomp=unconfined",
 		"--mount", "type=volume,source=shell,destination=/root",  
 		"--mount", "type=volume,source=go,destination=/go", 
-		"--mount", "type=bind,source=~/.ssh,destination=/tmp/.ssh-localhost,readonly"
+		// "--mount", "type=bind,source=${HOME}/.ssh,destination=/tmp/.ssh-localhost,readonly"
+	],
+
+	"mounts": [
+		"source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/tmp/.ssh-localhost,type=bind,consistency=cached"
 	],
 
 	// Set *default* container specific settings.json values on container create.
