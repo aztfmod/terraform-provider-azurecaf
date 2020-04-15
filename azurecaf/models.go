@@ -13,10 +13,10 @@ const (
 
 const (
 	alphanum    string = "[^0-9A-Za-z]"
-	alphanumh   string = "[^0-9A-Za-z,-]"
-	alphanumu   string = "[^0-9A-Za-z,_]"
-	alphanumhu  string = "[^0-9A-Za-z,_,-]"
-	alphanumhup string = "[^0-9A-Za-z,_,.,-]"
+	alphanumh   string = "[^0-9A-Za-z-]"
+	alphanumu   string = "[^0-9A-Za-z_]"
+	alphanumhu  string = "[^0-9A-Za-z_-]"
+	alphanumhup string = "[^0-9A-Za-z_.-]"
 	unicode     string = `[^-\w\._\(\)]`
 	invappi     string = "[%&\\?/]" //appinisghts invalid character
 
@@ -48,26 +48,26 @@ type ResourceStructure struct {
 
 // Resources currently supported
 var Resources = map[string]ResourceStructure{
-	"aaa":  {"azure automation account", "aaa", 6, 50, false, alphanumh, "^[a-zA-Z][0-9A-Za-z,-]{5,49}$"},
+	"aaa":  {"azure automation account", "aaa", 6, 50, false, alphanumh, "^[a-zA-Z][0-9A-Za-z-]{5,49}$"},
 	"acr":  {"azure container registry", "acr", 5, 49, true, alphanum, "^[0-9A-Za-z]{5,50}$"},
-	"afw":  {"azure firewall", "afw", 1, 80, false, alphanumhup, "^[a-zA-Z][0-9A-Za-z,_,.,-]{0,79}$"},
-	"agw":  {"application gateway", "agw", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z,_,.,-]{0,79}[0-9a-zA-Z,_]{0,1}$"},
-	"apim": {"api management", "apim", 1, 50, false, alphanum, "^[a-zA-Z][0-9A-Za-z,-]{0,49}$"},
-	"appi": {"application insights", "appi", 1, 260, false, invappi, "^[a-zA-Z][0-9A-Za-z,-]{0,49}$"},
-	"asr":  {"azure site recovery", "asr", 2, 50, false, alphanumh, "^[a-zA-Z][0-9A-Za-z,-]{1,49}$"},
-	"evh":  {"event hub", "evh", 1, 50, false, alphanumh, "^[a-zA-Z][0-9A-Za-z,-]{0,48}[0-9a-zA-Z]{0,1}$"},
+	"afw":  {"azure firewall", "afw", 1, 80, false, alphanumhup, "^[a-zA-Z][0-9A-Za-z_.-]{0,79}$"},
+	"agw":  {"application gateway", "agw", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,79}[0-9a-zA-Z_]{0,1}$"},
+	"apim": {"api management", "apim", 1, 50, false, alphanum, "^[a-zA-Z][0-9A-Za-z-]{0,49}$"},
+	"appi": {"application insights", "appi", 1, 260, false, invappi, "^[a-zA-Z][0-9A-Za-z-]{0,49}$"},
+	"asr":  {"azure site recovery", "asr", 2, 50, false, alphanumh, "^[a-zA-Z][0-9A-Za-z-]{1,49}$"},
+	"evh":  {"event hub", "evh", 1, 50, false, alphanumh, "^[a-zA-Z][0-9A-Za-z-]{0,48}[0-9a-zA-Z]{0,1}$"},
 	"gen":  {"generic", "gen", 1, 24, false, alphanum, "^[0-9a-zA-Z]{1,24}$"},
-	"kv":   {"keyvault", "kv", 3, 24, true, alphanumh, "^[a-zA-Z][0-9A-Za-z,-]{0,22}[0-9a-zA-Z]{0,1}$"},
-	"la":   {"loganalytics", "la", 4, 63, false, alphanumh, "^[0-9a-zA-Z][0-9A-Za-z,-]{3,62}[0-9a-zA-Z]{0,1}$"},
-	"nic":  {"network interface card", "nic", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z,_,.,-]{0,79}[0-9a-zA-Z,_]{0,1}$"},
-	"nsg":  {"network security group", "nsg", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z,_,.,-]{0,79}[0-9a-zA-Z,_]{0,1}$"},
-	"pip":  {"public ip address", "pip", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z,_,.,-]{0,79}[0-9a-zA-Z,_]{0,1}$"},
+	"kv":   {"keyvault", "kv", 3, 24, true, alphanumh, "^[a-zA-Z][0-9A-Za-z-]{0,22}[0-9a-zA-Z]{0,1}$"},
+	"la":   {"loganalytics", "la", 4, 63, false, alphanumh, "^[0-9a-zA-Z][0-9A-Za-z-]{3,62}[0-9a-zA-Z]{0,1}$"},
+	"nic":  {"network interface card", "nic", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,79}[0-9a-zA-Z_]{0,1}$"},
+	"nsg":  {"network security group", "nsg", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,79}[0-9a-zA-Z_]{0,1}$"},
+	"pip":  {"public ip address", "pip", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,79}[0-9a-zA-Z_]{0,1}$"},
 	"rg":   {"resource group", "rg", 1, 80, false, unicode, `^[-\w\._\(\)]{1,80}$`},
-	"snet": {"virtual network subnet", "snet", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z,_,.,-]{0,79}[0-9a-zA-Z,_]{0,1}$"},
+	"snet": {"virtual network subnet", "snet", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,79}[0-9a-zA-Z_]{0,1}$"},
 	"st":   {"storage account", "st", 3, 24, true, alphanum, "^[0-9a-z]{3,24}$"},
-	"vml":  {"virtual machine (linux)", "vml", 1, 64, false, alphanumh, "^[0-9a-zA-Z][0-9A-Za-z,_,-]{0,63}[0-9a-zA-Z,_]{0,1}$"},
-	"vmw":  {"virtual machine (windows)", "vmw", 1, 15, false, alphanumh, "^[0-9a-zA-Z][0-9A-Za-z,_,-]{0,13}[0-9a-zA-Z,_]{0,1}$"},
-	"vnet": {"virtual network", "vnet", 2, 64, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z,_,.,-]{0,62}[0-9a-zA-Z,_]{0,1}$"},
+	"vml":  {"virtual machine (linux)", "vml", 1, 64, false, alphanumh, "^[0-9a-zA-Z][0-9A-Za-z_-]{0,63}[0-9a-zA-Z_]{0,1}$"},
+	"vmw":  {"virtual machine (windows)", "vmw", 1, 15, false, alphanumh, "^[0-9a-zA-Z][0-9A-Za-z_-]{0,13}[0-9a-zA-Z_]{0,1}$"},
+	"vnet": {"virtual network", "vnet", 2, 64, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,62}[0-9a-zA-Z_]{0,1}$"},
 }
 
 // ResourcesMapping enforcing new naming convention
