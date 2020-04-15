@@ -82,6 +82,7 @@ Current prototype supports:
 | Network Security Group              | nsg                         | azurerm_network_security_group          |
 | Public IP                           | pip                         | azurerm_public_ip                       |
 | Resource group                      | rg                          | azurerm_resource_group                  |
+| Subnet                              | snet                        | azurerm_subnet                          |
 | Azure Storage Account               | st                          | azurerm_storage_account                 |
 | Linux Virtual Machine               | vml                         | azurerm_windows_virtual_machine_linux   |
 | Windows Virtual Machine             | vmw                         | azurerm_windows_virtual_machine_windows |
