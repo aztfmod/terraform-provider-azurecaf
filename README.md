@@ -70,22 +70,23 @@ Current prototype supports:
 
 | Resource type                       | Resource type code (short)  | Resource type code (long)               |
 | ----------------------------------- | ----------------------------|-----------------------------------------|
-| Resource group                      | rg                          | azurerm_resource_group                  |
-| Azure Storage Account               | st                          | azurerm_storage_account                 |
-| Azure Event Hubs                    | evh                         | azurerm_eventhub_namespace              |
-| Azure Monitor Log Analytics         | la                          | azurerm_log_analytics_workspace         |
-| Azure Key Vault                     | kv                          | azurerm_key_vault                       |
-| Windows Virtual Machine             | vmw                         | azurerm_windows_virtual_machine_windows |
-| Linux Virtual Machine               | vml                         | azurerm_windows_virtual_machine_linux   |
-| Public IP                           | pip                         | azurerm_public_ip                       |
-| Network Security Group              | nsg                         | azurerm_network_security_group          |
-| Virtual Network Interface Card      | nic                         | azurerm_network_interface               |
-| Virtual Network                     | vnet                        | azurerm_virtual_network                 |
-| Azure Firewall                      | afw                         | azurerm_firewall                        |
-| Azure Container Registry            | acr                         | azurerm_container_registry              |
-| Azure Site Recovery                 | asr                         | azurerm_recovery_services_vault         |
 | Azure Automation                    | aaa                         | azurerm_automation_account              |
+| Azure Container Registry            | acr                         | azurerm_container_registry              |
+| Azure Firewall                      | afw                         | azurerm_firewall                        |
+| Azure Site Recovery                 | asr                         | azurerm_recovery_services_vault         |
+| Azure Event Hubs                    | evh                         | azurerm_eventhub_namespace              |
 | generic                             | gen                         | generic                                 |
+| Azure Key Vault                     | kv                          | azurerm_key_vault                       |
+| Azure Monitor Log Analytics         | la                          | azurerm_log_analytics_workspace         |
+| Virtual Network Interface Card      | nic                         | azurerm_network_interface               |
+| Network Security Group              | nsg                         | azurerm_network_security_group          |
+| Public IP                           | pip                         | azurerm_public_ip                       |
+| Resource group                      | rg                          | azurerm_resource_group                  |
+| Subnet                              | snet                        | azurerm_subnet                          |
+| Azure Storage Account               | st                          | azurerm_storage_account                 |
+| Linux Virtual Machine               | vml                         | azurerm_windows_virtual_machine_linux   |
+| Windows Virtual Machine             | vmw                         | azurerm_windows_virtual_machine_windows |
+| Virtual Network                     | vnet                        | azurerm_virtual_network                 |
 
 ## Parameters
 
