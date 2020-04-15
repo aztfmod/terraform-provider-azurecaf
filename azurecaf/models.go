@@ -18,7 +18,8 @@ const (
 	alphanumhu  string = "[^0-9A-Za-z_-]"
 	alphanumhup string = "[^0-9A-Za-z_.-]"
 	unicode     string = `[^-\w\._\(\)]`
-	invappi     string = "[%&\\?/]" //appinisghts invalid character
+	invappi     string = "[%&\\?/]"     //appinisghts invalid character
+	invsqldb    string = "[<>*%&:\\/?]" //sql db invalid character
 
 	//Need to find a way to filter beginning and end of string
 	//alphanumstartletter string = "\\A[^a-z][^0-9A-Za-z]"
@@ -48,26 +49,30 @@ type ResourceStructure struct {
 
 // Resources currently supported
 var Resources = map[string]ResourceStructure{
-	"aaa":  {"azure automation account", "aaa", 6, 50, false, alphanumh, "^[a-zA-Z][0-9A-Za-z-]{5,49}$"},
-	"acr":  {"azure container registry", "acr", 5, 49, true, alphanum, "^[0-9A-Za-z]{5,50}$"},
-	"afw":  {"azure firewall", "afw", 1, 80, false, alphanumhup, "^[a-zA-Z][0-9A-Za-z_.-]{0,79}$"},
-	"agw":  {"application gateway", "agw", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,79}[0-9a-zA-Z_]$"},
-	"apim": {"api management", "apim", 1, 50, false, alphanum, "^[a-zA-Z][0-9A-Za-z-]{0,49}$"},
-	"appi": {"application insights", "appi", 1, 260, false, invappi, "^[a-zA-Z][0-9A-Za-z-]{0,49}$"},
-	"asr":  {"azure site recovery", "asr", 2, 50, false, alphanumh, "^[a-zA-Z][0-9A-Za-z-]{1,49}$"},
-	"evh":  {"event hub", "evh", 1, 50, false, alphanumh, "^[a-zA-Z][0-9A-Za-z-]{0,48}[0-9a-zA-Z]$"},
-	"gen":  {"generic", "gen", 1, 24, false, alphanum, "^[0-9a-zA-Z]{1,24}$"},
-	"kv":   {"keyvault", "kv", 3, 24, true, alphanumh, "^[a-zA-Z][0-9A-Za-z-]{0,22}[0-9a-zA-Z]$"},
-	"la":   {"loganalytics", "la", 4, 63, false, alphanumh, "^[0-9a-zA-Z][0-9A-Za-z-]{3,62}[0-9a-zA-Z]$"},
-	"nic":  {"network interface card", "nic", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,79}[0-9a-zA-Z_]$"},
-	"nsg":  {"network security group", "nsg", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,79}[0-9a-zA-Z_]$"},
-	"pip":  {"public ip address", "pip", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,79}[0-9a-zA-Z_]$"},
-	"rg":   {"resource group", "rg", 1, 80, false, unicode, `^[-\w\._\(\)]{1,80}$`},
-	"snet": {"virtual network subnet", "snet", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,79}[0-9a-zA-Z_]$"},
-	"st":   {"storage account", "st", 3, 24, true, alphanum, "^[0-9a-z]{3,24}$"},
-	"vml":  {"virtual machine (linux)", "vml", 1, 64, false, alphanumh, "^[0-9a-zA-Z][0-9A-Za-z_-]{0,63}[0-9a-zA-Z_]$"},
-	"vmw":  {"virtual machine (windows)", "vmw", 1, 15, false, alphanumh, "^[0-9a-zA-Z][0-9A-Za-z_-]{0,13}[0-9a-zA-Z_]$"},
-	"vnet": {"virtual network", "vnet", 2, 64, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,62}[0-9a-zA-Z_]$"},
+	"aaa":   {"azure automation account", "aaa", 6, 50, false, alphanumh, "^[a-zA-Z][0-9A-Za-z-]{5,49}$"},
+	"acr":   {"azure container registry", "acr", 5, 50, true, alphanum, "^[0-9A-Za-z]{5,49}$"},
+	"afw":   {"azure firewall", "afw", 1, 80, false, alphanumhup, "^[a-zA-Z][0-9A-Za-z_.-]{0,79}$"},
+	"agw":   {"application gateway", "agw", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,79}[0-9a-zA-Z_]$"},
+	"apim":  {"api management", "apim", 1, 50, false, alphanum, "^[a-zA-Z][0-9A-Za-z-]{0,49}$"},
+	"app":   {"web app", "app", 2, 60, false, alphanumh, "^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$"},
+	"appi":  {"application insights", "appi", 1, 260, false, invappi, "^[^%&\\?/. ][%&\\?/]{0,258}[^%&\\?/. ]$"},
+	"asr":   {"azure site recovery", "asr", 2, 50, false, alphanumh, "^[a-zA-Z][0-9A-Za-z-]{1,49}$"},
+	"evh":   {"event hub", "evh", 1, 50, false, alphanumh, "^[a-zA-Z][0-9A-Za-z-]{0,48}[0-9a-zA-Z]$"},
+	"gen":   {"generic", "gen", 1, 24, false, alphanum, "^[0-9a-zA-Z]{1,24}$"},
+	"kv":    {"keyvault", "kv", 3, 24, true, alphanumh, "^[a-zA-Z][0-9A-Za-z-]{0,22}[0-9a-zA-Z]$"},
+	"la":    {"loganalytics", "la", 4, 63, false, alphanumh, "^[0-9a-zA-Z][0-9A-Za-z-]{3,62}[0-9a-zA-Z]$"},
+	"nic":   {"network interface card", "nic", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,79}[0-9a-zA-Z_]$"},
+	"nsg":   {"network security group", "nsg", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,79}[0-9a-zA-Z_]$"},
+	"pip":   {"public ip address", "pip", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,79}[0-9a-zA-Z_]$"},
+	"plan":  {"app service plan", "plan", 1, 40, false, alphanumh, "^[0-9A-Za-z-]{0,39}$"},
+	"rg":    {"resource group", "rg", 1, 80, false, unicode, `^[-\w\._\(\)]{1,80}$`},
+	"snet":  {"virtual network subnet", "snet", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,79}[0-9a-zA-Z_]$"},
+	"sql":   {"azure sql db server", "sql", 1, 63, true, alphanumh, "^[0-9a-z][0-9a-z-]{0,61}[0-9a-z]$"},
+	"sqldb": {"azure sql db", "sqldb", 1, 128, false, invsqldb, "^[^<>*%&:\\/?. ][^<>*%&:\\/?]{0,126}[^<>*%&:\\/?. ]$"},
+	"st":    {"storage account", "st", 3, 24, true, alphanum, "^[0-9a-z]{3,24}$"},
+	"vml":   {"virtual machine (linux)", "vml", 1, 64, false, alphanumh, "^[0-9a-zA-Z][0-9A-Za-z_-]{0,63}[0-9a-zA-Z_]$"},
+	"vmw":   {"virtual machine (windows)", "vmw", 1, 15, false, alphanumh, "^[0-9a-zA-Z][0-9A-Za-z_-]{0,13}[0-9a-zA-Z_]$"},
+	"vnet":  {"virtual network", "vnet", 2, 64, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,62}[0-9a-zA-Z_]$"},
 }
 
 // ResourcesMapping enforcing new naming convention
@@ -77,6 +82,7 @@ var ResourcesMapping = map[string]ResourceStructure{
 	"azurerm_firewall":                        Resources["afw"],
 	"azurerm_application_gateway":             Resources["agw"],
 	"azurerm_api_management":                  Resources["apim"],
+	"azurerm_app_service":                     Resources["app"],
 	"azurerm_application_insights":            Resources["appi"],
 	"azurerm_recovery_services_vault":         Resources["asr"],
 	"azurerm_eventhub_namespace":              Resources["evh"],
@@ -86,8 +92,11 @@ var ResourcesMapping = map[string]ResourceStructure{
 	"azurerm_network_interface":               Resources["nic"],
 	"azurerm_network_security_group":          Resources["nsg"],
 	"azurerm_public_ip":                       Resources["pip"],
+	"azurerm_app_service_plan":                Resources["plan"],
 	"azurerm_resource_group":                  Resources["rg"],
 	"azurerm_subnet":                          Resources["snet"],
+	"azurerm_sql_server":                      Resources["sql"],
+	"azurerm_sql_database":                    Resources["sqldb"],
 	"azurerm_storage_account":                 Resources["st"],
 	"azurerm_windows_virtual_machine_linux":   Resources["vml"],
 	"azurerm_windows_virtual_machine_windows": Resources["vmw"],
