@@ -55,7 +55,7 @@ var Resources = map[string]ResourceStructure{
 	"agw":   {"application gateway", "agw", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,78}[0-9a-zA-Z_]$"},
 	"apim":  {"api management", "apim", 1, 50, false, alphanum, "^[a-zA-Z][0-9A-Za-z-]{0,49}$"},
 	"app":   {"web app", "app", 2, 60, false, alphanumh, "^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$"},
-	"appi":  {"application insights", "appi", 1, 260, false, invappi, "^[^%&\\?/. ][%&\\?/]{0,258}[^%&\\?/. ]$"},
+	"appi":  {"application insights", "appi", 1, 260, false, invappi, "^[^%&\\?/. ][^%&\\?/]{0,258}[^%&\\?/. ]$"},
 	"asr":   {"azure site recovery", "asr", 2, 50, false, alphanumh, "^[a-zA-Z][0-9A-Za-z-]{1,49}$"},
 	"evh":   {"event hub", "evh", 1, 50, false, alphanumh, "^[a-zA-Z][0-9A-Za-z-]{0,48}[0-9a-zA-Z]$"},
 	"gen":   {"generic", "gen", 1, 24, false, alphanum, "^[0-9a-zA-Z]{1,24}$"},
