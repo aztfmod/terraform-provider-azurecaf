@@ -106,6 +106,24 @@ output "appi_passthrough" {
   description = "Random result based on the resource type"
 }
 
+# App Service Environment
+resource "azurecaf_naming_convention" "passthrough_ase" {
+    convention      = "passthrough"
+    name            = "TEST-DEV-ASE-RG"
+    prefix          = "rdmi"
+    resource_type   = "azurerm_app_service_environment"
+}
+
+output "ase_passthrough_id" {
+  value       = azurecaf_naming_convention.passthrough_ase.id
+  description = "Id of the resource's name"
+}
+
+output "ase_passthrough" {
+  value       = azurecaf_naming_convention.passthrough_ase.result
+  description = "Random result based on the resource type"
+}
+
 # App Service Plan
 resource "azurecaf_naming_convention" "passthrough_plan" {
     convention      = "passthrough"
