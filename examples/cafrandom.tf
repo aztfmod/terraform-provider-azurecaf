@@ -171,6 +171,25 @@ output "kv_random" {
   description = "Random result based on the resource type"
 }
 
+# Emtpy resource
+resource "azurecaf_naming_convention" "empty" {
+    convention      = "random"
+    resource_type   = "la"
+    prefix          = ""
+    name            = ""
+}
+
+output "empty_id" {
+  value       = azurecaf_naming_convention.empty.id
+  description = "Id of the resource's name"
+}
+
+output "empty_random" {
+  value       = azurecaf_naming_convention.empty.result
+  description = "Random result based on the resource type"
+}
+
+
 # Log Analytics Workspace
 resource "azurecaf_naming_convention" "la" {
     convention      = "cafrandom"

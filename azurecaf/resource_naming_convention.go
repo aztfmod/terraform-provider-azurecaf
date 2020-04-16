@@ -29,10 +29,9 @@ func resourceNamingConvention() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"name": &schema.Schema{
-				Type:         schema.TypeString,
-				Required:     true,
-				ForceNew:     true,
-				ValidateFunc: validation.StringIsNotEmpty,
+				Type:     schema.TypeString,
+				Optional: true,
+				ForceNew: true,
 			},
 			"convention": &schema.Schema{
 				Type:     schema.TypeString,
@@ -47,10 +46,9 @@ func resourceNamingConvention() *schema.Resource {
 				}, false),
 			},
 			"prefix": &schema.Schema{
-				Type:         schema.TypeString,
-				Optional:     true,
-				ForceNew:     true,
-				ValidateFunc: validation.StringIsNotEmpty,
+				Type:     schema.TypeString,
+				Optional: true,
+				ForceNew: true,
 			},
 			"postfix": &schema.Schema{
 				Type:         schema.TypeString,
