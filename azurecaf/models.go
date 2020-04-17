@@ -53,7 +53,7 @@ var Resources = map[string]ResourceStructure{
 	"acr":   {"azure container registry", "acr", 5, 50, true, alphanum, "^[0-9A-Za-z]{5,50}$"},
 	"afw":   {"azure firewall", "afw", 1, 80, false, alphanumhup, "^[a-zA-Z][0-9A-Za-z_.-]{0,79}$"},
 	"agw":   {"application gateway", "agw", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,78}[0-9a-zA-Z_]$"},
-	"apim":  {"api management", "apim", 1, 50, false, alphanum, "^[a-zA-Z][0-9A-Za-z-]{0,49}$"},
+	"apim":  {"api management", "apim", 1, 50, false, alphanum, "^[a-zA-Z][0-9A-Za-z]{0,49}$"},
 	"app":   {"web app", "app", 2, 60, false, alphanumh, "^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$"},
 	"appi":  {"application insights", "appi", 1, 260, false, invappi, "^[^%&\\?/. ][^%&\\?/]{0,258}[^%&\\?/. ]$"},
 	"ase":   {"app service environment", "ase", 2, 37, false, alphanumh, "^[0-9A-Za-z-]{2,37}$"},
