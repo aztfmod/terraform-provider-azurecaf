@@ -71,6 +71,12 @@ func TestAccCafNamingConventionClassic(t *testing.T) {
 						"aks"),
 					regexMatch("azurecaf_naming_convention.classic_aks", regexp.MustCompile(Resources["aks"].ValidationRegExp), 1),
 					testAccCafNamingValidation(
+						"azurecaf_naming_convention.classic_aksdns",
+						"kubedemodns",
+						18,
+						"aksdns"),
+					regexMatch("azurecaf_naming_convention.classic_aksdns", regexp.MustCompile(Resources["aksdns"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
 						"azurecaf_naming_convention.classic_la",
 						"logs",
 						7,
@@ -190,6 +196,12 @@ resource "azurecaf_naming_convention" "classic_aks" {
     convention      = "cafclassic"
     name            = "kubedemo"
     resource_type   = "aks"
+}
+# Azure Kubernetes Service
+resource "azurecaf_naming_convention" "classic_aksdns" {
+    convention      = "cafclassic"
+    name            = "kubedemodns"
+    resource_type   = "aksdns"
 }
 
 # Log Analytics Workspace

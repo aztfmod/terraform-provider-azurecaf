@@ -53,6 +53,30 @@ func TestAccCafNamingConventionFullRandom(t *testing.T) {
 						"utest"),
 					regexMatch("azurecaf_naming_convention.random_aks", regexp.MustCompile(Resources["aks"].ValidationRegExp), 1),
 					testAccCafNamingValidation(
+						"azurecaf_naming_convention.random_aksdns",
+						"",
+						Resources["aksdns"].MaxLength,
+						"utest"),
+					regexMatch("azurecaf_naming_convention.random_aksdns", regexp.MustCompile(Resources["aksdns"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
+						"azurecaf_naming_convention.random_aksnpl",
+						"",
+						Resources["aksnpl"].MaxLength,
+						"pr"),
+					regexMatch("azurecaf_naming_convention.random_aksnpl", regexp.MustCompile(Resources["aksnpl"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
+						"azurecaf_naming_convention.random_aksnpw",
+						"",
+						Resources["aksnpw"].MaxLength,
+						"pr"),
+					regexMatch("azurecaf_naming_convention.random_aksnpl", regexp.MustCompile(Resources["aksnpl"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
+						"azurecaf_naming_convention.random_aksnpw",
+						"",
+						Resources["aksnpw"].MaxLength,
+						"pr"),
+					regexMatch("azurecaf_naming_convention.random_aksnpw", regexp.MustCompile(Resources["aksnpw"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
 						"azurecaf_naming_convention.random_ase",
 						"",
 						Resources["ase"].MaxLength,
@@ -133,6 +157,28 @@ resource "azurecaf_naming_convention" "random_aks" {
     name            = "TEST-DEV-AKS-RG"
     prefix          = "utest"
     resource_type   = "azurerm_kubernetes_cluster"
+}
+
+# AKS DNS prefix
+resource "azurecaf_naming_convention" "random_aksdns" {
+    convention      = "random"
+    name            = "myaksdnsdemo"
+    prefix          = "utest"
+    resource_type   = "aks_dns_prefix"
+}
+# AKS Node Pool Linux
+resource "azurecaf_naming_convention" "random_aksnpl" {
+    convention      = "random"
+    name            = "np1"
+    prefix          = "pr"
+    resource_type   = "aksnpl"
+}
+# AKS Node Pool Windows
+resource "azurecaf_naming_convention" "random_aksnpw" {
+    convention      = "random"
+    name            = "np2"
+    prefix          = "pr"
+    resource_type   = "aksnpw"
 }
 
 # App Service Environment

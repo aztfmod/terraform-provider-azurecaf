@@ -78,6 +78,10 @@ Current prototype supports:
 | App Service                         | app                         | azurerm_app_service                     |
 | Application Insights                | appi                        | azurerm_application_insights            |
 | App Service Environment             | ase                         | azurerm_app_service_environment         |
+| Azure Kubernetes Service            | aks                         | azurerm_kubernetes_cluster              |
+| Azure Kubernetes Service DNS prefix | aksdns                      | aks_dns_prefix                          |
+| AKS Node Pool Linux                 | aksnpl                      | aks_node_pool_linux                     |
+| AKS Node Pool Windows               | aksnpw                      | aks_node_pool_windows                   |
 | Azure Site Recovery                 | asr                         | azurerm_recovery_services_vault         |
 | Azure Event Hubs                    | evh                         | azurerm_eventhub_namespace              |
 | generic                             | gen                         | generic                                 |
