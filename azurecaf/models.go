@@ -53,6 +53,7 @@ var Resources = map[string]ResourceStructure{
 	"acr":   {"azure container registry", "acr", 5, 50, true, alphanum, "^[0-9A-Za-z]{5,50}$"},
 	"afw":   {"azure firewall", "afw", 1, 80, false, alphanumhup, "^[a-zA-Z][0-9A-Za-z_.-]{0,79}$"},
 	"agw":   {"application gateway", "agw", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,78}[0-9a-zA-Z_]$"},
+	"aks":   {"azure kubernetes service", "aks", 1, 63, false, alphanumu, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,61}[0-9a-zA-Z]$"},
 	"apim":  {"api management", "apim", 1, 50, false, alphanum, "^[a-zA-Z][0-9A-Za-z]{0,49}$"},
 	"app":   {"web app", "app", 2, 60, false, alphanumh, "^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$"},
 	"appi":  {"application insights", "appi", 1, 260, false, invappi, "^[^%&\\?/. ][^%&\\?/]{0,258}[^%&\\?/. ]$"},
@@ -78,6 +79,7 @@ var Resources = map[string]ResourceStructure{
 
 // ResourcesMapping enforcing new naming convention
 var ResourcesMapping = map[string]ResourceStructure{
+<<<<<<< HEAD
 	"azurerm_automation_account":      Resources["aaa"],
 	"azurerm_container_registry":      Resources["acr"],
 	"azurerm_firewall":                Resources["afw"],
@@ -103,4 +105,32 @@ var ResourcesMapping = map[string]ResourceStructure{
 	"azurerm_virtual_machine_linux":   Resources["vml"],
 	"azurerm_virtual_machine_windows": Resources["vmw"],
 	"azurerm_virtual_network":         Resources["vnet"],
+=======
+	"azurerm_automation_account":              Resources["aaa"],
+	"azurerm_container_registry":              Resources["acr"],
+	"azurerm_firewall":                        Resources["afw"],
+	"azurerm_application_gateway":             Resources["agw"],
+	"azurerm_api_management":                  Resources["apim"],
+	"azurerm_app_service":                     Resources["app"],
+	"azurerm_application_insights":            Resources["appi"],
+	"azurerm_app_service_environment":         Resources["ase"],
+	"azurerm_recovery_services_vault":         Resources["asr"],
+	"azurerm_eventhub_namespace":              Resources["evh"],
+	"generic":                                 Resources["gen"],
+	"azurerm_key_vault":                       Resources["kv"],
+	"azurerm_kubernetes_cluster":              Resources["aks"],
+	"azurerm_log_analytics_workspace":         Resources["la"],
+	"azurerm_network_interface":               Resources["nic"],
+	"azurerm_network_security_group":          Resources["nsg"],
+	"azurerm_public_ip":                       Resources["pip"],
+	"azurerm_app_service_plan":                Resources["plan"],
+	"azurerm_resource_group":                  Resources["rg"],
+	"azurerm_subnet":                          Resources["snet"],
+	"azurerm_sql_server":                      Resources["sql"],
+	"azurerm_sql_database":                    Resources["sqldb"],
+	"azurerm_storage_account":                 Resources["st"],
+	"azurerm_windows_virtual_machine_linux":   Resources["vml"],
+	"azurerm_windows_virtual_machine_windows": Resources["vmw"],
+	"azurerm_virtual_network":                 Resources["vnet"],
+>>>>>>> 34eb6efd4a7cde9ca9f4b1a2b6e16c2fb029937c
 }
