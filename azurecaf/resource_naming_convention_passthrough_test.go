@@ -53,6 +53,12 @@ func TestAccCafNamingConventionPassthrough(t *testing.T) {
 						"kube"),
 					regexMatch("azurecaf_naming_convention.passthrough_aks", regexp.MustCompile(Resources["aks"].ValidationRegExp), 1),
 					testAccCafNamingValidation(
+						"azurecaf_naming_convention.passthrough_aksdns",
+						"kubedemodns",
+						11,
+						"kube"),
+					regexMatch("azurecaf_naming_convention.passthrough_aksdns", regexp.MustCompile(Resources["aksdns"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
 						"azurecaf_naming_convention.passthrough_ase",
 						"TEST-DEV-ASE-RG",
 						15,
@@ -127,6 +133,13 @@ resource "azurecaf_naming_convention" "passthrough_aks" {
     convention      = "passthrough"
     name            = "kubedemo"
     resource_type   = "azurerm_kubernetes_cluster"
+}
+
+# Azure Kubernetes Services DNS Prefix
+resource "azurecaf_naming_convention" "passthrough_aksdns" {
+    convention      = "passthrough"
+    name            = "kubedemodns"
+    resource_type   = "aksdns"
 }
 
 # App Service Environment

@@ -53,6 +53,12 @@ func TestAccCafNamingConventionFullRandom(t *testing.T) {
 						"utest"),
 					regexMatch("azurecaf_naming_convention.random_aks", regexp.MustCompile(Resources["aks"].ValidationRegExp), 1),
 					testAccCafNamingValidation(
+						"azurecaf_naming_convention.random_aksdns",
+						"",
+						Resources["aksdns"].MaxLength,
+						"utest"),
+					regexMatch("azurecaf_naming_convention.random_aksdns", regexp.MustCompile(Resources["aksdns"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
 						"azurecaf_naming_convention.random_ase",
 						"",
 						Resources["ase"].MaxLength,
@@ -133,6 +139,14 @@ resource "azurecaf_naming_convention" "random_aks" {
     name            = "TEST-DEV-AKS-RG"
     prefix          = "utest"
     resource_type   = "azurerm_kubernetes_cluster"
+}
+
+# AKS DNS prefix
+resource "azurecaf_naming_convention" "random_aksdns" {
+    convention      = "random"
+    name            = "myaksdnsdemo"
+    prefix          = "utest"
+    resource_type   = "aks_dns_prefix"
 }
 
 # App Service Environment
