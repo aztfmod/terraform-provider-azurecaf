@@ -71,6 +71,12 @@ func TestAccCafNamingConventionCafRandom(t *testing.T) {
 						"rdmi"),
 					regexMatch("azurecaf_naming_convention.kv", regexp.MustCompile(Resources["kv"].ValidationRegExp), 1),
 					testAccCafNamingValidation(
+						"azurecaf_naming_convention.aks",
+						"kubedemo",
+						Resources["aks"].MaxLength,
+						"rdmi"),
+					regexMatch("azurecaf_naming_convention.aks", regexp.MustCompile(Resources["aks"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
 						"azurecaf_naming_convention.la",
 						"logs",
 						Resources["la"].MaxLength,
@@ -195,6 +201,14 @@ resource "azurecaf_naming_convention" "kv" {
     name            = "passepartout"
     prefix          = "rdmi"
     resource_type   = "kv"
+}
+
+# Azure Kubernetes Service
+resource "azurecaf_naming_convention" "aks" {
+    convention      = "cafrandom"
+    name            = "kubedemo"
+    prefix          = "rdmi"
+    resource_type   = "aks"
 }
 
 # Log Analytics Workspace
