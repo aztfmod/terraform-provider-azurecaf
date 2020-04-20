@@ -73,6 +73,11 @@ Current prototype supports:
 | Azure Automation                    | aaa                         | azurerm_automation_account              |
 | Azure Container Registry            | acr                         | azurerm_container_registry              |
 | Azure Firewall                      | afw                         | azurerm_firewall                        |
+| Application Gateway                 | agw                         | azurerm_application_gateway             |
+| API Management                      | apim                        | azurerm_api_management                  |
+| App Service                         | app                         | azurerm_app_service                     |
+| Application Insights                | appi                        | azurerm_application_insights            |
+| App Service Environment             | ase                         | azurerm_app_service_environment         |
 | Azure Site Recovery                 | asr                         | azurerm_recovery_services_vault         |
 | Azure Event Hubs                    | evh                         | azurerm_eventhub_namespace              |
 | generic                             | gen                         | generic                                 |
@@ -81,8 +86,11 @@ Current prototype supports:
 | Virtual Network Interface Card      | nic                         | azurerm_network_interface               |
 | Network Security Group              | nsg                         | azurerm_network_security_group          |
 | Public IP                           | pip                         | azurerm_public_ip                       |
+| App Service Plan                    | plan                        | azurerm_app_service_plan                |
 | Resource group                      | rg                          | azurerm_resource_group                  |
 | Subnet                              | snet                        | azurerm_subnet                          |
+| Azure SQL DB Server                 | sql                         | azurerm_sql_server                      |
+| Azure SQL DB                        | sqldb                       | azurerm_sql_database                    |
 | Azure Storage Account               | st                          | azurerm_storage_account                 |
 | Linux Virtual Machine               | vml                         | azurerm_windows_virtual_machine_linux   |
 | Windows Virtual Machine             | vmw                         | azurerm_windows_virtual_machine_windows |
