@@ -76,19 +76,19 @@ func resourceNamingConvention() *schema.Resource {
 	}
 }
 
-func resourceNamingConventionCreate(d *schema.ResourceData, m interface{}) error {
-	return resourceNamingConventionRead(d, m)
+func resourceNamingConventionCreate(d *schema.ResourceData, meta interface{}) error {
+	return resourceNamingConventionRead(d, meta)
 }
 
-func resourceNamingConventionRead(d *schema.ResourceData, m interface{}) error {
-	return getResult(d, m)
+func resourceNamingConventionRead(d *schema.ResourceData, meta interface{}) error {
+	return getResult(d, meta)
 }
 
-func resourceNamingConventionDelete(d *schema.ResourceData, m interface{}) error {
+func resourceNamingConventionDelete(d *schema.ResourceData, meta interface{}) error {
 	return nil
 }
 
-func getResult(d *schema.ResourceData, m interface{}) error {
+func getResult(d *schema.ResourceData, meta interface{}) error {
 	name := d.Get("name").(string)
 	prefix := d.Get("prefix").(string)
 	postfix := d.Get("postfix").(string)

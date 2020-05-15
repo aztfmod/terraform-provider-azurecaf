@@ -40,6 +40,11 @@ jobs:
     - name: test
       run: go test ./...
     
+    - name: lint
+      run: |
+        go get github.com/bflad/tfproviderlint/cmd/tfproviderlint 
+        tfproviderlint ./...
+    
     - name: Create Release
       if: github.event_name == 'pull_request' 
       id: create_release
