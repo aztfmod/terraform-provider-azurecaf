@@ -96,8 +96,8 @@ Current prototype supports:
 | Azure SQL DB Server                 | sql                         | azurerm_sql_server                      |
 | Azure SQL DB                        | sqldb                       | azurerm_sql_database                    |
 | Azure Storage Account               | st                          | azurerm_storage_account                 |
-| Linux Virtual Machine               | vml                         | azurerm_windows_virtual_machine_linux   |
-| Windows Virtual Machine             | vmw                         | azurerm_windows_virtual_machine_windows |
+| Linux Virtual Machine               | vml                         | azurerm_virtual_machine_linux           |
+| Windows Virtual Machine             | vmw                         | azurerm_virtual_machine_windows         |
 | Virtual Network                     | vnet                        | azurerm_virtual_network                 |
 
 ## Parameters
