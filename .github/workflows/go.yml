@@ -40,10 +40,9 @@ jobs:
     - name: test
       run: go test ./...
     
-    - name: lint
-      run: |
-        go get github.com/bflad/tfproviderlint/cmd/tfproviderlint 
-        tfproviderlint ./...
+    - uses: bflad/tfproviderlint-github-action@master
+      with:
+        args: ./...
     
     - name: Create Release
       if: github.event_name == 'pull_request' 
