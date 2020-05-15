@@ -7,10 +7,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
-func TestAccCafNamingConventionCafRandom(t *testing.T) {
+func TestAccCafNamingConventionCaf_Random(t *testing.T) {
 	resource.UnitTest(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceCafRandomConfig,

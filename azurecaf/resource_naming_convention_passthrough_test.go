@@ -7,10 +7,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
-func TestAccCafNamingConventionPassthrough(t *testing.T) {
+func TestAccCafNamingConvention_Passthrough(t *testing.T) {
 	resource.UnitTest(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourcePassthroughConfig,
@@ -101,10 +102,6 @@ func TestAccCafNamingConventionPassthrough(t *testing.T) {
 }
 
 const testAccResourcePassthroughConfig = `
-provider "azurecaf" {
-
-}
-
 #Storage account test
 resource "azurecaf_naming_convention" "logs_inv" {
     convention      = "passthrough"

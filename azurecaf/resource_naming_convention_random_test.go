@@ -7,10 +7,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
-func TestAccCafNamingConventionFullRandom(t *testing.T) {
+func TestAccCafNamingConventionFull_Random(t *testing.T) {
 	resource.UnitTest(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceRandomConfig,
@@ -107,9 +108,6 @@ func TestAccCafNamingConventionFullRandom(t *testing.T) {
 }
 
 const testAccResourceRandomConfig = `
-provider "azurecaf" {
-
-}
 
 #Storage account test
 resource "azurecaf_naming_convention" "random_st" {  

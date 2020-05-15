@@ -7,10 +7,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
-func TestAccCafNamingConventionClassic(t *testing.T) {
+func TestAccCafNamingConvention_Classic(t *testing.T) {
 	resource.UnitTest(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceCafClassicConfig,
@@ -131,9 +132,6 @@ func TestAccCafNamingConventionClassic(t *testing.T) {
 }
 
 const testAccResourceCafClassicConfig = `
-provider "azurecaf" {
-
-}
 
 #Storage account test
 resource "azurecaf_naming_convention" "classic_st" {
