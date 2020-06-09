@@ -38,17 +38,17 @@ dev-aztfmod-rg-001-wxyz
 The following arguments are supported:
 
 * name - (optional) the basename of the resource to create, the basename will be sanitized as per supported character set in Azure.
-* convention (optional): one of the four naming convention supported. Defaults to cafrandom. Allowed values are cafclassic, cafrandom, random, passthrough
-* prefix (optional): prefix to append as the first characters of the generated name
-* postfix (optional) :  additional postfix added after the basename, this is can be used to append resource index (eg. vm-001)
-* max_length (optional): configure the maximum length of the returned object name, is the specified length is longer than the supported length of the Azure resource the later applies
-* resource_type (optional): describes the type of azure resource you are requesting a name from (eg. azure container registrly: acr). See the Resource Type section
+* convention (optional) - one of the four naming convention supported. Defaults to cafrandom. Allowed values are cafclassic, cafrandom, random, passthrough
+* prefix (optional) - prefix to append as the first characters of the generated name
+* postfix (optional) -  additional postfix added after the basename, this is can be used to append resource index (eg. vm-001)
+* max_length (optional) - configure the maximum length of the returned object name, is the specified length is longer than the supported length of the Azure resource the later applies
+* resource_type (optional) -  describes the type of azure resource you are requesting a name from (eg. azure container registrly: acr). See the Resource Type section
 
 # Attributes Reference
 The following attributes are exported:
 
-* id: The id of the naming convention object
-* result: The generated named for an Azure Resource based on the input parameter and the selected naming convention
+* id - The id of the naming convention object
+* result - The generated named for an Azure Resource based on the input parameter and the selected naming convention
 
 
 # Methods for naming convention
