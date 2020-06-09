@@ -1,6 +1,43 @@
-# Naming convention
+# caf naming convention Provider
 
-This provider implements a set of methodologies for naming convention implementation including the default Microsoft Cloud Adoption Framework for Azure recommendations as per https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging.
+The caf naming convention provider implements a set of methodologies for to apply consistent resource naming using the default Microsoft Cloud Adoption Framework for Azure recommendations as per https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging.
+
+## Exemple usage
+This example outputs one name, the result of the naming convention query. The result attribute returns the name based on the convention and parameters input.
+
+The example generates a 23 characters name compatible with the specification for an Azure Resource Group
+dev-aztfmod-001
+
+```hcl
+resource "azurecaf_naming_convention" "cafrandom_rg" {  
+  name    = "aztfmod"
+  prefix  = "dev"
+  resource_type    = "rg"
+  postfix = "001"
+  max_length = 23
+  convention  = "cafrandom"
+}
+
+resource "azurerm_resource_group" "cafrandom" {
+  name     = azurecaf_naming_convention.cafrandom_rg.
+  location = "southeastasia"
+}
+```
+
+```
+
+The provider generates a name using the input parameters and automatically appends a prefix (if defined), a caf prefix (resource type) and postfix (if defined) in addition to a generated padding string based on the selected naming convention.
+
+
+## Argument Reference
+The following arguments are supported:
+
+* name - (optional) the basename of the resource to create, the basename will be sanitized as per supported character set in Azure.
+* convention (optional): one of the four naming convention supported. Defaults to cafrandom. Allowed values are cafclassic, cafrandom, random, passthrough
+* prefix (optional)
+* postfix (optional)
+* max_length (optional)
+* resource_type (optional)
 
 # Building the  Provider
 
