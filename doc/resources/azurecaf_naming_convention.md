@@ -19,7 +19,7 @@ resource "azurecaf_naming_convention" "cafrandom_rg" {
 }
 
 resource "azurerm_resource_group" "cafrandom" {
-  name     = azurecaf_naming_convention.cafrandom_rg.
+  name     = azurecaf_naming_convention.cafrandom_rg.result
   location = "southeastasia"
 }
 
