@@ -131,11 +131,11 @@ Example:
 convention = "cafclassic"
 ```
 
-### type of object
+### Resource type
 describes the type of object you are requesting a name from, for instance if you are requesting a name for event hub:
 
 ```hcl
-type = "evh"
+resource_type = "evh"
 ```
 
 ### Maximum length

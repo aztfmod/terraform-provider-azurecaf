@@ -1,10 +1,66 @@
-# Azurecaf provider
+# azurecaf_naming_convention
 
-The Azurecaf provider is a *logical provider* which means that it works entirely within Terraform's logic, and doesn't interact with any other services. The goal of this provider is to provider helper methods in implementing Azure landing zones using Terraform.
+The resource naming_convention implements a set of methodologies  to apply consistent resource naming using the default Microsoft Cloud Adoption Framework for Azure recommendations as per https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging.
 
-The Azurecaf provider currently contains a single resource based on the Terraform Random_string provider. The naming_convention resources enforce consistant naming covention for a set of supported Azure services.
+## Exemple usage
+This example outputs one name, the result of the naming convention query. The result attribute returns the name based on the convention and parameters input.
 
-You may select different type of naming convention (cafclassic,cafrandom,random,passthrough) based on the environment that you target or the naming style that you need to apply. Whichever convention you select, the naming convention ensures that the generated name is compliant with the Azure service that you target.
+The example generates a 23 characters name compatible with the specification for an Azure Resource Group
+dev-aztfmod-001
+
+```hcl
+resource "azurecaf_naming_convention" "cafrandom_rg" {  
+  name    = "aztfmod"
+  prefix  = "dev"
+  resource_type    = "rg"
+  postfix = "001"
+  max_length = 23
+  convention  = "cafrandom"
+}
+
+resource "azurerm_resource_group" "cafrandom" {
+  name     = azurecaf_naming_convention.cafrandom_rg.
+  location = "southeastasia"
+}
+
+
+The provider generates a name using the input parameters and automatically appends a prefix (if defined), a caf prefix (resource type) and postfix (if defined) in addition to a generated padding string based on the selected naming convention.
+
+```
+The example above would generate a name using the pattern [prefix]-[cafprefix]-[name]-[postfix]-[padding]:
+
+```
+dev-aztfmod-rg-001-wxyz
+```
+
+## Argument Reference
+
+The following arguments are supported:
+
+* name - (optional) the basename of the resource to create, the basename will be sanitized as per supported character set in Azure.
+* convention (optional): one of the four naming convention supported. Defaults to cafrandom. Allowed values are cafclassic, cafrandom, random, passthrough
+* prefix (optional): prefix to append as the first characters of the generated name
+* postfix (optional) :  additional postfix added after the basename, this is can be used to append resource index (eg. vm-001)
+* max_length (optional): configure the maximum length of the returned object name, is the specified length is longer than the supported length of the Azure resource the later applies
+* resource_type (optional): describes the type of azure resource you are requesting a name from (eg. azure container registrly: acr). See the Resource Type section
+
+# Attributes Reference
+The following attributes are exported:
+
+* id: The id of the naming convention object
+* result: The generated named for an Azure Resource based on the input parameter and the selected naming convention
+
+
+# Methods for naming convention
+
+The following methods are implemented for naming conventions:
+
+| method name | description of the naming convention used |
+| -- | -- |
+| cafclassic | follows Cloud Adoption Framework for Azure recommendations as per https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging |
+| cafrandom | follows Cloud Adoption Framework for Azure recommendations as per https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging and adds randomly generated characters up to maximum length of name |
+| random | name will be generated automatically in full lengths of azure object |
+| passthrough | naming convention is implemented manually, fields given as input will be same as the output (but lengths and forbidden chars will be filtered out) |
 
 ## Resource types
 
