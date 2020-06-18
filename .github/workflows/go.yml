@@ -3,11 +3,10 @@ name: Go
 on:
   push:
     branches: [ master ]
+    tags:
+    - 'v*'
   pull_request:
     branches: [ master ]
-  create:
-   tags:
-    - 'v*'
   repository_dispatch:
 
 jobs:
@@ -46,14 +45,19 @@ jobs:
         go get github.com/bflad/tfproviderlint/cmd/tfproviderlint 
         tfproviderlint ./...
     
-    - name: Create Release
-      if: github.event_name == 'pull_request' 
-      id: create_release
-      uses: actions/create-release@latest
+    - name: Import GPG key
+      id: import_gpg
+      uses: crazy-max/ghaction-import-gpg@v2
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+
+    - name: Run GoReleaser
+      uses: goreleaser/goreleaser-action@v2
+      if: startsWith(github.ref, 'refs/tags/')
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: true
-        prerelease: true
+        version: latest
+        args: release --rm-dist
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+
