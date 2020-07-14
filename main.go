@@ -6,6 +6,8 @@ import (
 	"github.com/hashicorp/terraform/azurecaf"
 )
 
+
+
 func main() {
 	plugin.Serve(&plugin.ServeOpts{
 		ProviderFunc: func() terraform.ResourceProvider {

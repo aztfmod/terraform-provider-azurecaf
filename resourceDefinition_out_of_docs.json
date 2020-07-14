@@ -1,6 +1,6 @@
 [
   {
-    "name": "private_endpoint",
+    "name": "azurerm_private_endpoint",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9\\\\-\\\\._]+[a-zA-Z0-9_]$",
@@ -11,7 +11,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "private_service_connection",
+    "name": "azurerm_private_service_connection",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9\\\\-\\\\._]+[a-zA-Z0-9_]$",
@@ -22,7 +22,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "firewall_ip_configuration",
+    "name": "azurerm_firewall_ip_configuration",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9\\\\-\\\\._]+[a-zA-Z0-9_]$",
@@ -33,7 +33,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "firewall_application_rule_collection",
+    "name": "azurerm_firewall_application_rule_collection",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9\\\\-\\\\._]+[a-zA-Z0-9_]$",
@@ -44,7 +44,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "firewall_nat_rule_collection",
+    "name": "azurerm_firewall_nat_rule_collection",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9\\\\-\\\\._]+[a-zA-Z0-9_]$",
@@ -55,7 +55,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "firewall_network_rule_collection",
+    "name": "azurerm_firewall_network_rule_collection",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9\\\\-\\\\._]+[a-zA-Z0-9_]$",
@@ -66,7 +66,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "dns_a_record",
+    "name": "azurerm_dns_a_record",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9-._]+[a-zA-Z0-9_]$",
@@ -77,7 +77,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "dns_aaaa_record",
+    "name": "azurerm_dns_aaaa_record",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9-._]+[a-zA-Z0-9_]$",
@@ -88,7 +88,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "dns_caa_record",
+    "name": "azurerm_dns_caa_record",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9-._]+[a-zA-Z0-9_]$",
@@ -99,7 +99,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "dns_cname_record",
+    "name": "azurerm_dns_cname_record",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9-._]+[a-zA-Z0-9_]$",
@@ -110,7 +110,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "dns_mx_record",
+    "name": "azurerm_dns_mx_record",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9-._]+[a-zA-Z0-9_]$",
@@ -121,7 +121,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "dns_ns_record",
+    "name": "azurerm_dns_ns_record",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9-._]+[a-zA-Z0-9_]$",
@@ -132,7 +132,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "dns_ptr_record",
+    "name": "azurerm_dns_ptr_record",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9-._]+[a-zA-Z0-9_]$",
@@ -143,7 +143,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "dns_txt_record",
+    "name": "azurerm_dns_txt_record",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9-._]+[a-zA-Z0-9_]$",
@@ -154,7 +154,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "private_dns_a_record",
+    "name": "azurerm_private_dns_a_record",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9-._]+[a-zA-Z0-9_]$",
@@ -165,7 +165,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "private_dns_aaaa_record",
+    "name": "azurerm_private_dns_aaaa_record",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9-._]+[a-zA-Z0-9_]$",
@@ -176,7 +176,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "private_dns_cname_record",
+    "name": "azurerm_private_dns_cname_record",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9-._]+[a-zA-Z0-9_]$",
@@ -187,7 +187,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "private_dns_mx_record",
+    "name": "azurerm_private_dns_mx_record",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9-._]+[a-zA-Z0-9_]$",
@@ -198,7 +198,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "private_dns_ptr_record",
+    "name": "azurerm_private_dns_ptr_record",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9-._]+[a-zA-Z0-9_]$",
@@ -209,7 +209,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "private_dns_srv_record",
+    "name": "azurerm_private_dns_srv_record",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9-._]+[a-zA-Z0-9_]$",
@@ -220,7 +220,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "private_dns_txt_record",
+    "name": "azurerm_private_dns_txt_record",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9-._]+[a-zA-Z0-9_]$",
@@ -231,7 +231,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "virtual_machine_extension",
+    "name": "azurerm_virtual_machine_extension",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9-._]+[a-zA-Z0-9_]$",
@@ -242,7 +242,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "virtual_machine_scale_set_extension",
+    "name": "azurerm_virtual_machine_scale_set_extension",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9-._]+[a-zA-Z0-9_]$",
@@ -253,7 +253,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "network_ddos_protection_plan",
+    "name": "azurerm_network_ddos_protection_plan",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9-._]+[a-zA-Z0-9_]$",
@@ -264,7 +264,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "private_dns_zone_group",
+    "name": "azurerm_private_dns_zone_group",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9\\\\-\\\\._]+[a-zA-Z0-9_]$",
@@ -275,7 +275,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "proximity_placement_group",
+    "name": "azurerm_proximity_placement_group",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9-._]+[a-zA-Z0-9_]$",
@@ -286,7 +286,7 @@
     "regex": "[^0-9A-Za-z_.-]"
   },
   {
-    "name": "private_link_service",
+    "name": "azurerm_private_link_service",
     "min_length": 1,
     "max_length": 80,
     "validatation_regex": "^(?=.{1,80}$)[a-zA-Z0-9][a-zA-Z0-9-._]+[a-zA-Z0-9_]$",

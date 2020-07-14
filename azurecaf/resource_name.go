@@ -29,19 +29,6 @@ func resourceName() *schema.Resource {
 				Optional: true,
 				ForceNew: true,
 			},
-			"convention": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  ConventionCafRandom,
-				ForceNew: true,
-				ValidateFunc: validation.StringInSlice([]string{
-					ConventionCafClassic,
-					ConventionCafRandom,
-					ConventionRandom,
-					ConventionPassThrough,
-				}, false),
-			},
-
 			"prefixes": {
 				Type: schema.TypeList,
 				Elem: &schema.Schema{
@@ -49,7 +36,7 @@ func resourceName() *schema.Resource {
 				},
 				Optional:     true,
 				ForceNew:     true,
-				ValidateFunc: SliceContainsEmptyString(),
+				ValidateFunc: sliceContainsEmptyString(),
 			},
 			"suffixes": {
 				Type: schema.TypeList,
@@ -58,7 +45,7 @@ func resourceName() *schema.Resource {
 				},
 				Optional:     true,
 				ForceNew:     true,
-				ValidateFunc: SliceContainsEmptyString(),
+				ValidateFunc: sliceContainsEmptyString(),
 			},
 			"max_length": {
 				Type:         schema.TypeInt,
@@ -92,7 +79,8 @@ func resourceName() *schema.Resource {
 	}
 }
 
-func SliceContainsEmptyString() schema.SchemaValidateFunc {
+// sliceContainsEmptyString check if the slice contains an empty string
+func sliceContainsEmptyString() schema.SchemaValidateFunc {
 	return func(i interface{}, k string) (s []string, es []error) {
 		v, ok := i.(string)
 		if !ok {
@@ -100,7 +88,7 @@ func SliceContainsEmptyString() schema.SchemaValidateFunc {
 			return
 		}
 		if len(v) == 0 {
-			es = append(es, fmt.Errorf("emtpy value is not allowed in %s", k))
+			es = append(es, fmt.Errorf("emtpy values are not allowed in %s", k))
 			return
 		}
 		return

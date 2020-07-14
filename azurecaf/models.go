@@ -47,9 +47,11 @@ type ResourceStructure struct {
 	ValidationRegExp string `json:"validatation_regex,omitempty"`
 	// can the resource include dashes
 	Dashes bool `json:"dashes"`
-
+	// The scope of this name where it needs to be unique
 	Scope string `json:"scope,omitempty"`
 }
+
+//go:generate go run ../gen.go
 
 // Resources currently supported
 var Resources = map[string]ResourceStructure{
