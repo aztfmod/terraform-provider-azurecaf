@@ -6,23 +6,19 @@ import (
 	"math/rand"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 )
 
-func resourceNamingConvention() *schema.Resource {
-	resourceMapsKeys := make([]string, 0, len(Resources))
-	for k := range Resources {
-		resourceMapsKeys = append(resourceMapsKeys, k)
-	}
-	for k := range ResourcesMapping {
-		resourceMapsKeys = append(resourceMapsKeys, k)
-	}
+func resourceName() *schema.Resource {
+	//resourceMapsKeys := make([]string, 0, len(Resources_generated))
+	// for k := range Resources {
+	// 	resourceMapsKeys = append(resourceMapsKeys, k)
+	// }
 
 	return &schema.Resource{
-		Create:        resourceNamingConventionCreate,
+		Create:        resourceNameCreate,
 		Read:          schema.Noop,
 		Delete:        schema.RemoveFromState,
 		SchemaVersion: 2,
@@ -45,32 +41,24 @@ func resourceNamingConvention() *schema.Resource {
 					ConventionPassThrough,
 				}, false),
 			},
-			"prefix": {
-				Type:     schema.TypeString,
-				Optional: true,
-				ForceNew: true,
-			},
+
 			"prefixes": {
 				Type: schema.TypeList,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
-				Optional: true,
-				ForceNew: true,
+				Optional:     true,
+				ForceNew:     true,
+				ValidateFunc: SliceContainsEmptyString(),
 			},
 			"suffixes": {
 				Type: schema.TypeList,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
-				Optional: true,
-				ForceNew: true,
-			},
-			"postfix": {
-				Type:         schema.TypeString,
 				Optional:     true,
 				ForceNew:     true,
-				ValidateFunc: validation.StringIsNotEmpty,
+				ValidateFunc: SliceContainsEmptyString(),
 			},
 			"max_length": {
 				Type:         schema.TypeInt,
@@ -82,32 +70,60 @@ func resourceNamingConvention() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
+			"separator": {
+				Type:     schema.TypeString,
+				Optional: true,
+				ForceNew: true,
+				Default:  "-",
+			},
+			"clean_input": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				ForceNew: true,
+				Default:  true,
+			},
 			"resource_type": {
-				Type:         schema.TypeString,
-				Optional:     true,
-				ValidateFunc: validation.StringInSlice(resourceMapsKeys, false),
-				ForceNew:     true,
+				Type:     schema.TypeString,
+				Optional: true,
+				//ValidateFunc: validation.StringInSlice(resourceMapsKeys, false),
+				ForceNew: true,
 			},
 		},
 	}
 }
 
-func resourceNamingConventionCreate(d *schema.ResourceData, meta interface{}) error {
-	return resourceNamingConventionRead(d, meta)
+func SliceContainsEmptyString() schema.SchemaValidateFunc {
+	return func(i interface{}, k string) (s []string, es []error) {
+		v, ok := i.(string)
+		if !ok {
+			es = append(es, fmt.Errorf("expected type of %s to be string", k))
+			return
+		}
+		if len(v) == 0 {
+			es = append(es, fmt.Errorf("emtpy value is not allowed in %s", k))
+			return
+		}
+		return
+	}
 }
 
-func resourceNamingConventionRead(d *schema.ResourceData, meta interface{}) error {
-	return getResult(d, meta)
+func resourceNameCreate(d *schema.ResourceData, meta interface{}) error {
+	return resourceNameRead(d, meta)
 }
 
-func resourceNamingConventionDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceNameRead(d *schema.ResourceData, meta interface{}) error {
+	return getNameResult(d, meta)
+}
+
+func resourceNameDelete(d *schema.ResourceData, meta interface{}) error {
 	return nil
 }
 
-func getResult(d *schema.ResourceData, meta interface{}) error {
+func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	name := d.Get("name").(string)
-	prefix := d.Get("prefix").(string)
-	postfix := d.Get("postfix").(string)
+	prefixes := d.Get("prefixes").([]string)
+	suffixes := d.Get("suffixes").([]string)
+	separator := d.Get("separator").(string)
 	resourceType := d.Get("resource_type").(string)
 	convention := d.Get("convention").(string)
 	desiredMaxLength := d.Get("max_length").(int)
@@ -137,20 +153,18 @@ func getResult(d *schema.ResourceData, meta interface{}) error {
 	case ConventionRandom:
 		//clear all the field to generate a random
 		name = ""
-		postfix = ""
+		suffixes = []string{}
 	}
 
 	// joning the elements performing first filter to remove non compatible characters based on the resource type
 	myRegex, _ := regexp.Compile(regExFilter)
 	validationRegEx, _ := regexp.Compile(validationRegExPattern)
 	// clear the name first based on the regexp filter of the resource type
-	nameList := []string{}
-	for _, s := range []string{prefix, cafPrefix, name, postfix} {
-		if strings.TrimSpace(s) != "" {
-			nameList = append(nameList, s)
-		}
-	}
-	userInputName := strings.Join(nameList, suffixSeparator)
+	nameList := prefixes
+	nameList = append(nameList, []string{cafPrefix, name}...)
+	nameList = append(nameList, suffixes...)
+
+	userInputName := strings.Join(nameList, separator)
 	userInputName = myRegex.ReplaceAllString(userInputName, "")
 	randomSuffix = myRegex.ReplaceAllString(randomSuffix, "")
 	// Generate the temporary name based on the concatenation of the values - default case is caf classic
@@ -214,26 +228,4 @@ func getResult(d *schema.ResourceData, meta interface{}) error {
 	//d.SetId("none")
 	d.SetId(randSeq(16))
 	return nil
-}
-
-var (
-	alphanumgenerator = []rune("01234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
-	alphagenerator    = []rune("abcdefghijklmnopqrstuvwxyz")
-)
-
-// Generate a random value to add to the resource names
-func randSeq(n int) string {
-	// initialize random seed
-	rand.Seed(time.Now().UnixNano())
-	// generate at least one random character
-	b := make([]rune, n)
-	for i := range b {
-		// We need the random generated string to start with a letter
-		if i == 0 {
-			b[i] = alphagenerator[rand.Intn(len(alphagenerator)-1)]
-		} else {
-			b[i] = alphanumgenerator[rand.Intn(len(alphanumgenerator)-1)]
-		}
-	}
-	return string(b)
 }

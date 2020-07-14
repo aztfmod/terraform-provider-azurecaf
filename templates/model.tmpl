@@ -1,0 +1,9 @@
+package azurecaf
+// This are all the generated resource types that are supported - Do not change this file
+// All the changes are based on the resourceDefinition.json and resourceDefinition_out_of_docs.json
+var Resources_generated = map[string]ResourceStructure{
+    {{- range .}}
+    "{{.ResourceTypeName}}": {"{{.ResourceTypeName}}", "{{.CafPrefix}}", {{.MinLength}}, {{.MaxLength}},  {{.LowerCase}}, "{{.RegEx}}", "{{.ValidationRegExp}}", {{.Dashes}}, "{{.Scope}}" },
+    {{- end}}
+}
+
