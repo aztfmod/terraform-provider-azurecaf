@@ -51,8 +51,6 @@ type ResourceStructure struct {
 	Scope string `json:"scope,omitempty"`
 }
 
-//go:generate go run ../gen.go
-
 // Resources currently supported
 var Resources = map[string]ResourceStructure{
 	"aaa":    {"azure automation account", "aaa", 6, 50, false, alphanumh, "^[a-zA-Z][0-9A-Za-z-]{5,49}$", true, "resourceGroup"},

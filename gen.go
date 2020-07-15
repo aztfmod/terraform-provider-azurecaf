@@ -17,9 +17,11 @@ import (
 	"regexp"
 	"sort"
 	"text/template"
+	"time"
 )
 
-type resourceStructure struct {
+// ResourceStructure resource definition structure
+type ResourceStructure struct {
 	// Resource type name
 	ResourceTypeName string `json:"name"`
 	// Resource prefix as defined in the Azure Cloud Adoption Framework
@@ -40,19 +42,25 @@ type resourceStructure struct {
 	Scope string `json:"scope,omitempty"`
 }
 
+type templateData struct {
+	ResourceStructures []ResourceStructure
+	GeneratedTime      time.Time
+	SlugMap            map[string]string
+}
+
 func main() {
 	wd, err := os.Getwd()
 	if err != nil {
 		log.Panicln("No directory found")
 	}
 	fmt.Println()
-	files, err := ioutil.ReadDir(path.Join(wd, "../templates"))
+	files, err := ioutil.ReadDir(path.Join(wd, "templates"))
 	if err != nil {
 		log.Fatal(err)
 	}
 	var fileNames = make([]string, len(files))
 	for i, file := range files {
-		fileNames[i] = path.Join(wd, "../templates", file.Name())
+		fileNames[i] = path.Join(wd, "templates", file.Name())
 	}
 	parsedTemplate, err := template.New("templates").Funcs(template.FuncMap{
 		// Terraform not yet support lookahead in their regex function
@@ -65,22 +73,23 @@ func main() {
 		log.Fatal(err)
 	}
 
-	sourceDefinitions, err := ioutil.ReadFile(path.Join(wd, "../resourceDefinition.json"))
+	sourceDefinitions, err := ioutil.ReadFile(path.Join(wd, "resourceDefinition.json"))
 	if err != nil {
 		log.Fatal(err)
 	}
-	var data []resourceStructure
+
+	var data []ResourceStructure
 	err = json.Unmarshal(sourceDefinitions, &data)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Undocumented resource definitions
-	sourceDefinitionsUndocumented, err := ioutil.ReadFile(path.Join(wd, "../resourceDefinition_out_of_docs.json"))
+	sourceDefinitionsUndocumented, err := ioutil.ReadFile(path.Join(wd, "resourceDefinition_out_of_docs.json"))
 	if err != nil {
 		log.Fatal(err)
 	}
-	var dataUndocumented []resourceStructure
+	var dataUndocumented []ResourceStructure
 	err = json.Unmarshal(sourceDefinitionsUndocumented, &dataUndocumented)
 	if err != nil {
 		log.Fatal(err)
@@ -91,13 +100,25 @@ func main() {
 		return data[i].ResourceTypeName < data[j].ResourceTypeName
 	})
 
-	modelsFile, err := os.OpenFile(path.Join(wd, "models_generated.go"), os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
+	slugMap := make(map[string]string)
+	for _, res := range data {
+		if _, exists := slugMap[res.CafPrefix]; !exists {
+			slugMap[res.CafPrefix] = res.ResourceTypeName
+		}
+	}
+
+	modelsFile, err := os.OpenFile(path.Join(wd, "azurecaf/models_generated.go"), os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = parsedTemplate.ExecuteTemplate(modelsFile, "model.tmpl", data)
+	err = parsedTemplate.ExecuteTemplate(modelsFile, "model.tmpl", templateData{
+		GeneratedTime:      time.Now(),
+		ResourceStructures: data,
+		SlugMap:            slugMap,
+	})
 
 	if err != nil {
 		log.Fatalf("execution failed: %s", err)
 	}
+	log.Println("File generated")
 }

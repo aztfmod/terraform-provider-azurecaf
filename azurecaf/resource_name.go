@@ -2,7 +2,6 @@ package azurecaf
 
 import (
 	"fmt"
-	"log"
 	"math/rand"
 	"regexp"
 	"strings"
@@ -28,6 +27,7 @@ func resourceName() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 				ForceNew: true,
+				Default:  "",
 			},
 			"prefixes": {
 				Type: schema.TypeList,
@@ -37,6 +37,7 @@ func resourceName() *schema.Resource {
 				Optional:     true,
 				ForceNew:     true,
 				ValidateFunc: sliceContainsEmptyString(),
+				Default:      []string{},
 			},
 			"suffixes": {
 				Type: schema.TypeList,
@@ -46,12 +47,14 @@ func resourceName() *schema.Resource {
 				Optional:     true,
 				ForceNew:     true,
 				ValidateFunc: sliceContainsEmptyString(),
+				Default:      []string{},
 			},
-			"max_length": {
+			"random_length": {
 				Type:         schema.TypeInt,
 				Optional:     true,
 				ForceNew:     true,
 				ValidateFunc: validation.IntAtLeast(1),
+				Default:      4,
 			},
 			"result": {
 				Type:     schema.TypeString,
@@ -71,6 +74,12 @@ func resourceName() *schema.Resource {
 			},
 			"resource_type": {
 				Type:     schema.TypeString,
+				Optional: true,
+				//ValidateFunc: validation.StringInSlice(resourceMapsKeys, false),
+				ForceNew: true,
+			},
+			"random_seed": {
+				Type:     schema.TypeInt,
 				Optional: true,
 				//ValidateFunc: validation.StringInSlice(resourceMapsKeys, false),
 				ForceNew: true,
@@ -107,29 +116,55 @@ func resourceNameDelete(d *schema.ResourceData, meta interface{}) error {
 	return nil
 }
 
+func cleanSlice(names []string, resourceDefinition *ResourceStructure) []string {
+	for i, name := range names {
+		names[i] = cleanString(name, resourceDefinition)
+	}
+	return names
+}
+
+func cleanString(name string, resourceDefinition *ResourceStructure) string {
+	return name
+}
+
+func getResource(resourceType string) (*ResourceStructure, error) {
+	if resourceKey, existing := ResourceMaps[resourceType]; existing {
+		resourceType = resourceKey
+	}
+	if resource, resourceFound := ResourceDefinitions[resourceType]; resourceFound {
+		return &resource, nil
+	}
+	return nil, fmt.Errorf("Invalid resource type %s", resourceType)
+}
+
 func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	name := d.Get("name").(string)
 	prefixes := d.Get("prefixes").([]string)
 	suffixes := d.Get("suffixes").([]string)
 	separator := d.Get("separator").(string)
 	resourceType := d.Get("resource_type").(string)
-	convention := d.Get("convention").(string)
+	cleanInput := d.Get("clean_input").(bool)
 	desiredMaxLength := d.Get("max_length").(int)
+
+	resource, err := getResource(resourceType)
+	if err != nil {
+		return err
+	}
+
+	if cleanInput {
+		prefixes = cleanSlice(prefixes, resource)
+		suffixes = cleanSlice(prefixes, resource)
+		name = cleanString(name, resource)
+		separator = cleanString(separator, resource)
+	}
+
+	convention := ConventionCafClassic
 
 	// Load the regular expression based on the resource type
 	var regExFilter string
-	var resource ResourceStructure
-	var resourceFound bool = false
-	if resource, resourceFound = Resources[resourceType]; !resourceFound {
-		resource, resourceFound = ResourcesMapping[resourceType]
-	}
-	if !resourceFound {
-		return fmt.Errorf("Invalid resource type %s", resourceType)
-	}
 
 	regExFilter = string(resource.RegEx)
 	validationRegExPattern := string(resource.ValidationRegExp)
-	log.Printf(regExFilter)
 
 	var cafPrefix string
 	var randomSuffix string = randSeq(int(resource.MaxLength))
@@ -211,7 +246,7 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 		return fmt.Errorf("Invalid name for Random CAF naming %s %s Id:%s , the pattern %s doesn't match %s", resource.ResourceTypeName, name, d.Id(), validationRegExPattern, result)
 	}
 
-	d.Set("result", result)
+	d.Set("value", result)
 	// Set the attribute Id with the value
 	//d.SetId("none")
 	d.SetId(randSeq(16))

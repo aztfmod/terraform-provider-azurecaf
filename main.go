@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform/azurecaf"
 )
 
-
+//go:generate go run gen.go
 
 func main() {
 	plugin.Serve(&plugin.ServeOpts{

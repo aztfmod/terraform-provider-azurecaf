@@ -93,7 +93,7 @@
         "max_length": 63,
         "validatation_regex": "^(?=.{1,63}$)[a-zA-Z][a-zA-Z0-9-]+$",
         "scope": "parent",
-        "slug": "aacred",
+        "slug": "aarun",
         "dashes": true,
         "lowercase": false,
         "regex": "[^0-9A-Za-z_.-]"
