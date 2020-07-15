@@ -149,15 +149,23 @@ func trimResourceName(resourceName string, maxLength int) string {
 	return string(resourceName[0:length])
 }
 
+func convertInterfaceToString(source []interface{}) []string {
+	s := make([]string, len(source))
+	for i, v := range source {
+		s[i] = fmt.Sprint(v)
+	}
+	return s
+}
+
 func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	name := d.Get("name").(string)
-	prefixes := d.Get("prefixes").([]string)
-	suffixes := d.Get("suffixes").([]string)
+	prefixes := convertInterfaceToString(d.Get("prefixes").([]interface{}))
+	suffixes := convertInterfaceToString(d.Get("suffixes").([]interface{}))
 	separator := d.Get("separator").(string)
 	resourceType := d.Get("resource_type").(string)
 	cleanInput := d.Get("clean_input").(bool)
 	randomLength := d.Get("random_length").(int)
-	randomSeed := d.Get("random_seed").(*int64)
+	randomSeed := int64(d.Get("random_seed").(int))
 
 	convention := ConventionCafClassic
 
@@ -165,9 +173,12 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	if err != nil {
 		return err
 	}
-	validationRegEx, _ := regexp.Compile(resource.ValidationRegExp)
+	validationRegEx, err := regexp.Compile(resource.ValidationRegExp)
+	if err != nil {
+		return err
+	}
 
-	randomSuffix := randSeq(int(randomLength), randomSeed)
+	randomSuffix := randSeq(int(randomLength), &randomSeed)
 	slug := getSlug(resourceType, convention)
 	if cleanInput {
 		prefixes = cleanSlice(prefixes, resource)
@@ -188,7 +199,7 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 		return fmt.Errorf("Invalid name for Random CAF naming %s %s Id:%s , the pattern %s doesn't match %s", resource.ResourceTypeName, name, d.Id(), resource.ValidationRegExp, resourceName)
 	}
 
-	d.Set("value", resourceName)
+	d.Set("result", resourceName)
 
 	d.SetId(randSeq(16, nil))
 	return nil

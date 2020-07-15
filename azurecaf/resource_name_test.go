@@ -1,8 +1,10 @@
 package azurecaf
 
 import (
+	"regexp"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
@@ -86,3 +88,38 @@ func TestGetSlug_unknown(t *testing.T) {
 		t.Errorf("Expected %s but received %s", expected, result)
 	}
 }
+func TestAccResourceName_CafClassic(t *testing.T) {
+	resource.UnitTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccResourceName_CafClassicConfig,
+				Check: resource.ComposeTestCheckFunc(
+
+					testAccCafNamingValidation(
+						"azurecaf_name.classic_rg",
+						"myrg-rg",
+						29,
+						"pr1-pr2"),
+					regexMatch("azurecaf_name.classic_rg", regexp.MustCompile(ResourceDefinitions["azurerm_resource_group"].ValidationRegExp), 1),
+				),
+			},
+		},
+	})
+}
+
+const testAccResourceName_CafClassicConfig = `
+
+
+# Resource Group
+resource "azurecaf_name" "classic_rg" {
+    name            = "myrg"
+	resource_type   = "azurerm_resource_group"
+	prefixes        = ["pr1", "pr2"]
+	suffixes        = ["su1", "su2"]
+	random_length   = 5
+	clean_input     = true
+}
+`
