@@ -2,7 +2,6 @@ package azurecaf
 
 import (
 	"fmt"
-	"math/rand"
 	"regexp"
 	"strings"
 
@@ -34,20 +33,16 @@ func resourceName() *schema.Resource {
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
-				Optional:     true,
-				ForceNew:     true,
-				ValidateFunc: sliceContainsEmptyString(),
-				Default:      []string{},
+				Optional: true,
+				ForceNew: true,
 			},
 			"suffixes": {
 				Type: schema.TypeList,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
-				Optional:     true,
-				ForceNew:     true,
-				ValidateFunc: sliceContainsEmptyString(),
-				Default:      []string{},
+				Optional: true,
+				ForceNew: true,
 			},
 			"random_length": {
 				Type:         schema.TypeInt,
@@ -88,22 +83,6 @@ func resourceName() *schema.Resource {
 	}
 }
 
-// sliceContainsEmptyString check if the slice contains an empty string
-func sliceContainsEmptyString() schema.SchemaValidateFunc {
-	return func(i interface{}, k string) (s []string, es []error) {
-		v, ok := i.(string)
-		if !ok {
-			es = append(es, fmt.Errorf("expected type of %s to be string", k))
-			return
-		}
-		if len(v) == 0 {
-			es = append(es, fmt.Errorf("emtpy values are not allowed in %s", k))
-			return
-		}
-		return
-	}
-}
-
 func resourceNameCreate(d *schema.ResourceData, meta interface{}) error {
 	return resourceNameRead(d, meta)
 }
@@ -124,7 +103,20 @@ func cleanSlice(names []string, resourceDefinition *ResourceStructure) []string 
 }
 
 func cleanString(name string, resourceDefinition *ResourceStructure) string {
-	return name
+	myRegex, _ := regexp.Compile(resourceDefinition.RegEx)
+	return myRegex.ReplaceAllString(name, "")
+}
+
+func concatenateParameters(separator string, parameters ...[]string) string {
+	elems := []string{}
+	for _, items := range parameters {
+		for _, item := range items {
+			if len(item) > 0 {
+				elems = append(elems, []string{item}...)
+			}
+		}
+	}
+	return strings.Join(elems, separator)
 }
 
 func getResource(resourceType string) (*ResourceStructure, error) {
@@ -137,6 +129,26 @@ func getResource(resourceType string) (*ResourceStructure, error) {
 	return nil, fmt.Errorf("Invalid resource type %s", resourceType)
 }
 
+// Retrieve the resource slug / shortname based on the resourceType and the selected convention
+func getSlug(resourceType string, convention string) string {
+	if convention == ConventionCafClassic || convention == ConventionCafRandom {
+		if val, ok := ResourceDefinitions[resourceType]; ok {
+			return val.CafPrefix
+		}
+	}
+	return ""
+}
+
+func trimResourceName(resourceName string, maxLength int) string {
+	var length int = len(resourceName)
+
+	if length > maxLength {
+		length = maxLength
+	}
+
+	return string(resourceName[0:length])
+}
+
 func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	name := d.Get("name").(string)
 	prefixes := d.Get("prefixes").([]string)
@@ -144,111 +156,39 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	separator := d.Get("separator").(string)
 	resourceType := d.Get("resource_type").(string)
 	cleanInput := d.Get("clean_input").(bool)
-	desiredMaxLength := d.Get("max_length").(int)
+	randomLength := d.Get("random_length").(int)
+
+	convention := ConventionCafClassic
 
 	resource, err := getResource(resourceType)
 	if err != nil {
 		return err
 	}
+	validationRegEx, _ := regexp.Compile(resource.ValidationRegExp)
 
+	randomSuffix := randSeq(int(randomLength))
+	slug := getSlug(resourceType, convention)
 	if cleanInput {
 		prefixes = cleanSlice(prefixes, resource)
-		suffixes = cleanSlice(prefixes, resource)
+		suffixes = cleanSlice(suffixes, resource)
 		name = cleanString(name, resource)
 		separator = cleanString(separator, resource)
+		randomSuffix = cleanString(randomSuffix, resource)
 	}
 
-	convention := ConventionCafClassic
-
-	// Load the regular expression based on the resource type
-	var regExFilter string
-
-	regExFilter = string(resource.RegEx)
-	validationRegExPattern := string(resource.ValidationRegExp)
-
-	var cafPrefix string
-	var randomSuffix string = randSeq(int(resource.MaxLength))
-
-	// configuring the prefix, cafprefix, name, postfix depending on the naming convention
-	switch convention {
-	case ConventionCafRandom, ConventionCafClassic:
-		cafPrefix = resource.CafPrefix
-	case ConventionRandom:
-		//clear all the field to generate a random
-		name = ""
-		suffixes = []string{}
-	}
-
-	// joning the elements performing first filter to remove non compatible characters based on the resource type
-	myRegex, _ := regexp.Compile(regExFilter)
-	validationRegEx, _ := regexp.Compile(validationRegExPattern)
-	// clear the name first based on the regexp filter of the resource type
-	nameList := prefixes
-	nameList = append(nameList, []string{cafPrefix, name}...)
-	nameList = append(nameList, suffixes...)
-
-	userInputName := strings.Join(nameList, separator)
-	userInputName = myRegex.ReplaceAllString(userInputName, "")
-	randomSuffix = myRegex.ReplaceAllString(randomSuffix, "")
-	// Generate the temporary name based on the concatenation of the values - default case is caf classic
-	generatedName := userInputName
-
-	//calculate the max length
-	var maxLength int = int(resource.MaxLength)
-	if desiredMaxLength > 0 && desiredMaxLength < maxLength {
-		maxLength = desiredMaxLength
-	}
-
-	//does the generated string contains random chars?
-	var containsRandomChar = false
-	switch convention {
-	case ConventionPassThrough:
-		// the naming is already configured
-	case ConventionCafClassic:
-		// the naming is already configured
-	default:
-		if len(userInputName) != 0 {
-			if len(userInputName) < (maxLength - 1) { // prevent adding a suffix separator as the last character
-				containsRandomChar = true
-				generatedName = strings.Join([]string{userInputName, randomSuffix}, suffixSeparator)
-			} else {
-				generatedName = userInputName
-			}
-		} else {
-			containsRandomChar = true
-			generatedName = randomSuffix
-		}
-	}
-
-	// Remove the characters that are not supported in the name based on the regular expression
-	filteredGeneratedName := myRegex.ReplaceAllString(generatedName, "")
-
-	var length int = len(filteredGeneratedName)
-
-	if length > maxLength {
-		length = maxLength
-	}
-
-	result := string(filteredGeneratedName[0:length])
-	// making sure the last char is alpha char if we included random string
-	if containsRandomChar && len(result) > len(userInputName) {
-		randomLastChar := alphagenerator[rand.Intn(len(alphagenerator)-1)]
-		resultRune := []rune(result)
-		resultRune[len(resultRune)-1] = randomLastChar
-		result = string(resultRune)
-	}
+	resourceName := concatenateParameters(separator, prefixes, []string{name, slug}, suffixes, []string{randomSuffix})
+	resourceName = trimResourceName(resourceName, resource.MaxLength)
 
 	if resource.LowerCase {
-		result = strings.ToLower(result)
+		resourceName = strings.ToLower(resourceName)
 	}
 
-	if !validationRegEx.MatchString(result) {
+	if !validationRegEx.MatchString(resourceName) {
 		return fmt.Errorf("Invalid name for Random CAF naming %s %s Id:%s , the pattern %s doesn't match %s", resource.ResourceTypeName, name, d.Id(), validationRegExPattern, result)
 	}
 
-	d.Set("value", result)
-	// Set the attribute Id with the value
-	//d.SetId("none")
+	d.Set("value", resourceName)
+
 	d.SetId(randSeq(16))
 	return nil
 }

@@ -1,5 +1,10 @@
 package azurecaf
 
+import (
+	"math/rand"
+	"time"
+)
+
 const (
 	// ConventionCafClassic applies the CAF recommended naming convention
 	ConventionCafClassic string = "cafclassic"
@@ -49,6 +54,27 @@ type ResourceStructure struct {
 	Dashes bool `json:"dashes"`
 	// The scope of this name where it needs to be unique
 	Scope string `json:"scope,omitempty"`
+}
+
+var (
+	alphagenerator = []rune("abcdefghijklmnopqrstuvwxyz")
+)
+
+// Generate a random value to add to the resource names
+func randSeq(length int, seed *int64) string {
+	// initialize random seed
+	if seed != nil {
+		value := time.Now().UnixNano()
+		seed = &value
+	}
+	rand.Seed(*seed)
+	// generate at least one random character
+	b := make([]rune, length)
+	for i := range b {
+		// We need the random generated string to start with a letter
+		b[i] = alphagenerator[rand.Intn(len(alphagenerator)-1)]
+	}
+	return string(b)
 }
 
 // Resources currently supported

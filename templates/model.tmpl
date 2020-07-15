@@ -9,7 +9,7 @@ package azurecaf
 // ResourceDefinitions are a map of difinitions for the resources supported
 var ResourceDefinitions = map[string]ResourceStructure{
     {{- range .ResourceStructures }}
-    "{{.ResourceTypeName}}": {"{{.ResourceTypeName}}", "{{.CafPrefix}}", {{.MinLength}}, {{.MaxLength}},  {{.LowerCase}}, "{{.RegEx}}", "{{.ValidationRegExp}}", {{.Dashes}}, "{{.Scope}}" },
+    "{{.ResourceTypeName}}": {"{{.ResourceTypeName}}", "{{.CafPrefix}}", {{.MinLength}}, {{.MaxLength}},  {{.LowerCase}}, {{.RegEx}}, {{.ValidationRegExp}}, {{.Dashes}}, "{{.Scope}}" },
     {{- end}}
 }
 
