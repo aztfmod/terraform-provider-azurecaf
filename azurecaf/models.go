@@ -63,7 +63,7 @@ var (
 // Generate a random value to add to the resource names
 func randSeq(length int, seed *int64) string {
 	// initialize random seed
-	if seed != nil {
+	if seed == nil {
 		value := time.Now().UnixNano()
 		seed = &value
 	}

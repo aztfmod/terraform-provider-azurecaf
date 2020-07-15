@@ -127,7 +127,7 @@ func getResult(d *schema.ResourceData, meta interface{}) error {
 	log.Printf(regExFilter)
 
 	var cafPrefix string
-	var randomSuffix string = randSeq(int(resource.MaxLength))
+	var randomSuffix string = randSeq(int(resource.MaxLength), nil)
 
 	// configuring the prefix, cafprefix, name, postfix depending on the naming convention
 	switch convention {
@@ -211,6 +211,6 @@ func getResult(d *schema.ResourceData, meta interface{}) error {
 	d.Set("result", result)
 	// Set the attribute Id with the value
 	//d.SetId("none")
-	d.SetId(randSeq(16))
+	d.SetId(randSeq(16, nil))
 	return nil
 }

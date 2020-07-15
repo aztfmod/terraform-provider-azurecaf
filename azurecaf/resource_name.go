@@ -157,6 +157,7 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	resourceType := d.Get("resource_type").(string)
 	cleanInput := d.Get("clean_input").(bool)
 	randomLength := d.Get("random_length").(int)
+	randomSeed := d.Get("random_seed").(*int64)
 
 	convention := ConventionCafClassic
 
@@ -166,7 +167,7 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	}
 	validationRegEx, _ := regexp.Compile(resource.ValidationRegExp)
 
-	randomSuffix := randSeq(int(randomLength))
+	randomSuffix := randSeq(int(randomLength), randomSeed)
 	slug := getSlug(resourceType, convention)
 	if cleanInput {
 		prefixes = cleanSlice(prefixes, resource)
@@ -184,11 +185,11 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	if !validationRegEx.MatchString(resourceName) {
-		return fmt.Errorf("Invalid name for Random CAF naming %s %s Id:%s , the pattern %s doesn't match %s", resource.ResourceTypeName, name, d.Id(), validationRegExPattern, result)
+		return fmt.Errorf("Invalid name for Random CAF naming %s %s Id:%s , the pattern %s doesn't match %s", resource.ResourceTypeName, name, d.Id(), resource.ValidationRegExp, resourceName)
 	}
 
 	d.Set("value", resourceName)
 
-	d.SetId(randSeq(16))
+	d.SetId(randSeq(16, nil))
 	return nil
 }
