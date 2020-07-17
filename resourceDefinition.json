@@ -659,7 +659,7 @@
         "slug": "kdb",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z.- ]\""
+        "regex": "\"[^0-9A-Za-z- .]\""
     },
     {
         "name": "azurerm_kusto_eventhub_data_connection",
@@ -670,7 +670,7 @@
         "slug": "kehc",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z.- ]\""
+        "regex": "\"[^0-9A-Za-z- .]\""
     },
     {
         "name": "azurerm_data_factory",
@@ -857,7 +857,7 @@
         "slug": "lab",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z_-]\""
     },
     {
         "name": "azurerm_dev_test_linux_virtual_machine",
@@ -868,7 +868,7 @@
         "slug": "labvm",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_dev_test_windows_virtual_machine",
@@ -879,7 +879,7 @@
         "slug": "labvm",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_frontdoor",
@@ -890,7 +890,7 @@
         "slug": "fd",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_frontdoor_firewall_policy",
@@ -912,7 +912,7 @@
         "slug": "hadoop",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_hdinsight_hbase_cluster",
@@ -923,7 +923,7 @@
         "slug": "hbase",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_hdinsight_kafka_cluster",
@@ -934,7 +934,7 @@
         "slug": "kafka",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_hdinsight_interactive_query_cluster",
@@ -945,7 +945,7 @@
         "slug": "iqr",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_hdinsight_ml_services_cluster",
@@ -956,7 +956,7 @@
         "slug": "mls",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_hdinsight_rserver_cluster",
@@ -967,7 +967,7 @@
         "slug": "rsv",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_hdinsight_spark_cluster",
@@ -978,7 +978,7 @@
         "slug": "spark",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_hdinsight_storm_cluster",
@@ -989,7 +989,7 @@
         "slug": "storm",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_iotcentral_application",
@@ -999,8 +999,8 @@
         "scope": "global",
         "slug": "iotapp",
         "dashes": true,
-        "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "lowercase": true,
+        "regex": "\"[^0-9a-z-]\""
     },
     {
         "name": "azurerm_iothub",
@@ -1011,7 +1011,7 @@
         "slug": "iot",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_iothub_consumer_group",
@@ -1033,7 +1033,7 @@
         "slug": "dps",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_iothub_dps_certificate",
@@ -1056,7 +1056,7 @@
         "slug": "kv",
         "dashes": true,
         "lowercase": true,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_key_vault_key",
@@ -1067,7 +1067,7 @@
         "slug": "kvk",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_key_vault_secret",
@@ -1089,7 +1089,7 @@
         "slug": "kvc",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_lb",
@@ -1100,7 +1100,7 @@
         "slug": "lb",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_lb_nat_rule",
@@ -1265,7 +1265,7 @@
         "slug": "ehn",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_eventhub_authorization_rule",
@@ -1320,7 +1320,7 @@
         "slug": "asa",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z_-]\""
     },
     {
         "name": "azurerm_stream_analytics_function_javascript_udf",
@@ -1331,7 +1331,7 @@
         "slug": "asafunc",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z_-]\""
     },
     {
         "name": "azurerm_stream_analytics_output_blob",
@@ -1342,7 +1342,7 @@
         "slug": "asaoblob",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z_-]\""
     },
     {
         "name": "azurerm_stream_analytics_output_mssql",
@@ -1353,7 +1353,7 @@
         "slug": "asaomssql",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z_-]\""
     },
     {
         "name": "azurerm_stream_analytics_output_eventhub",
@@ -1364,7 +1364,7 @@
         "slug": "asaoeh",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z_-]\""
     },
     {
         "name": "azurerm_stream_analytics_output_servicebus_queue",
@@ -1375,7 +1375,7 @@
         "slug": "asaosbq",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z_-]\""
     },
     {
         "name": "azurerm_stream_analytics_output_servicebus_topic",
@@ -1386,7 +1386,7 @@
         "slug": "asaosbt",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z_-]\""
     },
     {
         "name": "azurerm_stream_analytics_reference_input_blob",
@@ -1397,7 +1397,7 @@
         "slug": "asarblob",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z_-]\""
     },
     {
         "name": "azurerm_stream_analytics_stream_input_blob",
@@ -1408,7 +1408,7 @@
         "slug": "asaiblob",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z_-]\""
     },
     {
         "name": "azurerm_stream_analytics_stream_input_eventhub",
@@ -1419,7 +1419,7 @@
         "slug": "asaieh",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z_-]\""
     },
     {
         "name": "azurerm_stream_analytics_stream_input_iothub",
@@ -1430,7 +1430,7 @@
         "slug": "asaiiot",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z_-]\""
     },
     {
         "name": "azurerm_shared_image_gallery",
@@ -1441,7 +1441,7 @@
         "slug": "sig",
         "dashes": false,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z_-]\""
     },
     {
         "name": "azurerm_shared_image",
@@ -1474,7 +1474,7 @@
         "slug": "st",
         "dashes": false,
         "lowercase": true,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9a-z]\""
     },
     {
         "name": "azurerm_storage_container",
@@ -1486,7 +1486,7 @@
         "slug": "stct",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9a-z-]\""
     },
     {
         "name": "azurerm_storage_data_lake_gen2_filesystem",
@@ -1498,7 +1498,7 @@
         "slug": "stdl",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9a-z-]\""
     },
     {
         "name": "azurerm_storage_queue",
@@ -1510,7 +1510,7 @@
         "slug": "stq",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9a-z-]\""
     },
     {
         "name": "azurerm_storage_table",
@@ -1522,7 +1522,7 @@
         "slug": "stt",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9a-z-]\""
     },
     {
         "name": "azurerm_storage_share",
@@ -1534,7 +1534,7 @@
         "slug": "sts",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9a-z-]\""
     },
     {
         "name": "azurerm_storage_share_directory",
@@ -1546,7 +1546,7 @@
         "slug": "sts",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9a-z-]\""
     },
     {
         "name": "azurerm_machine_learning_workspace",
@@ -1557,7 +1557,7 @@
         "slug": "mlw",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[<>*%:.?\\\\+\\\\/]\""
     },
     {
         "name": "azurerm_storage_blob",
@@ -1568,7 +1568,7 @@
         "slug": "blob",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[\\\\s\\\\/$#&]\""
     },
     {
         "name": "azurerm_bastion_host",
@@ -1645,7 +1645,7 @@
         "slug": "deploy",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-._\\\\(\\\\)]\""
     },
     {
         "name": "azurerm_sql_server",
@@ -1656,7 +1656,7 @@
         "slug": "sql",
         "dashes": true,
         "lowercase": true,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9a-z-]\""
     },
     {
         "name": "azurerm_mssql_server",
@@ -1666,8 +1666,8 @@
         "scope": "global",
         "slug": "sql",
         "dashes": true,
-        "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "lowercase": true,
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_mssql_database",
@@ -1689,7 +1689,7 @@
         "slug": "sqlep",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[<>*%:.?\\\\+\\\\/]\""
     },
     {
         "name": "azurerm_mssql_elasticpool",
@@ -1700,7 +1700,7 @@
         "slug": "sqlep",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[<>*%:.?\\\\+\\\\/]\""
     },
     {
         "name": "azurerm_sql_failover_group",
@@ -1710,8 +1710,8 @@
         "scope": "global",
         "slug": "sqlfg",
         "dashes": true,
-        "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "lowercase": true,
+        "regex": "\"[^0-9a-z-]\""
     },
     {
         "name": "azurerm_sql_firewall_rule",
@@ -1722,7 +1722,7 @@
         "slug": "sqlfw",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^<>*%:?\\\\+\\\\/]\""
     },
     {
         "name": "azurerm_log_analytics_workspace",
@@ -1733,7 +1733,7 @@
         "slug": "log",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_service_fabric_cluster",
@@ -1743,8 +1743,8 @@
         "scope": "region",
         "slug": "sf",
         "dashes": true,
-        "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "lowercase": true,
+        "regex": "\"[^0-9a-z-]\""
     },
     {
         "name": "azurerm_maps_account",
@@ -1865,7 +1865,7 @@
         "slug": "dnsrec",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_notification_hub_authorization_rule",
@@ -1887,7 +1887,7 @@
         "slug": "sb",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_servicebus_namespace_authorization_rule",
@@ -1987,7 +1987,7 @@
         "slug": "dsb",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_signalr_service",
@@ -1998,7 +1998,7 @@
         "slug": "sgnlr",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_eventgrid_domain",
@@ -2009,7 +2009,7 @@
         "slug": "egd",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_eventgrid_domain_topic",
@@ -2020,7 +2020,7 @@
         "slug": "egdt",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_eventgrid_event_subscription",
@@ -2031,7 +2031,7 @@
         "slug": "egs",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_eventgrid_topic",
@@ -2042,7 +2042,7 @@
         "slug": "egt",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-]\""
     },
     {
         "name": "azurerm_relay_namespace",
@@ -2053,7 +2053,7 @@
         "slug": "rln",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_relay_hybrid_connection",
