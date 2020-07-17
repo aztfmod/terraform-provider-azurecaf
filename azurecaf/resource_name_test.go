@@ -100,7 +100,7 @@ func TestAccResourceName_CafClassic(t *testing.T) {
 
 					testAccCafNamingValidation(
 						"azurecaf_name.classic_rg",
-						"pr1-pr2-rg-name-yodgp-su1-su2",
+						"pr1-pr2-rg-myrg-yodgp-su1-su2",
 						29,
 						"pr1-pr2"),
 					regexMatch("azurecaf_name.classic_rg", regexp.MustCompile(ResourceDefinitions["azurerm_resource_group"].ValidationRegExp), 1),
@@ -114,7 +114,7 @@ func TestComposeName(t *testing.T) {
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 	prefixes := []string{"a", "b"}
 	suffixes := []string{"c", "d"}
-	name := composeName("-", prefixes, "name", "slug", suffixes, "rd", 20, namePrecedence)
+	name := composeName("-", prefixes, "name", "slug", suffixes, "rd", 21, namePrecedence)
 	expected := "a-b-slug-name-rd-c-d"
 	if name != expected {
 		t.Logf("Fail to generate name expected %s received %s", expected, name)
@@ -126,7 +126,7 @@ func TestComposeNameCutCorrect(t *testing.T) {
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 	prefixes := []string{"a", "b"}
 	suffixes := []string{"c", "d"}
-	name := composeName("-", prefixes, "name", "slug", suffixes, "rd", 19, namePrecedence)
+	name := composeName("-", prefixes, "name", "slug", suffixes, "rd", 20, namePrecedence)
 	expected := "b-slug-name-rd-c-d"
 	if name != expected {
 		t.Logf("Fail to generate name expected %s received %s", expected, name)
