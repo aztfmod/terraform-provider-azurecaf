@@ -88,6 +88,7 @@ func TestGetSlug_unknown(t *testing.T) {
 		t.Errorf("Expected %s but received %s", expected, result)
 	}
 }
+
 func TestAccResourceName_CafClassic(t *testing.T) {
 	resource.UnitTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
@@ -104,6 +105,18 @@ func TestAccResourceName_CafClassic(t *testing.T) {
 						29,
 						"pr1-pr2"),
 					regexMatch("azurecaf_name.classic_rg", regexp.MustCompile(ResourceDefinitions["azurerm_resource_group"].ValidationRegExp), 1),
+				),
+			},
+			{
+				Config: testAccResourceName_CafClassicConfig,
+				Check: resource.ComposeTestCheckFunc(
+
+					testAccCafNamingValidation(
+						"azurecaf_name.classic_acr_invalid",
+						"pr1pr2crmyinvalidacrnameyodgpsu1su2",
+						35,
+						"pr1pr2"),
+					regexMatch("azurecaf_name.classic_acr_invalid", regexp.MustCompile(ResourceDefinitions["azurerm_container_registry"].ValidationRegExp), 1),
 				),
 			},
 		},
@@ -165,6 +178,15 @@ const testAccResourceName_CafClassicConfig = `
 resource "azurecaf_name" "classic_rg" {
     name            = "myrg"
 	resource_type   = "azurerm_resource_group"
+	prefixes        = ["pr1", "pr2"]
+	suffixes        = ["su1", "su2"]
+	random_length   = 5
+	clean_input     = true
+}
+
+resource "azurecaf_name" "classic_acr_invalid" {
+    name            = "my_invalid_acr_name"
+	resource_type   = "azurerm_container_registry"
 	prefixes        = ["pr1", "pr2"]
 	suffixes        = ["su1", "su2"]
 	random_length   = 5

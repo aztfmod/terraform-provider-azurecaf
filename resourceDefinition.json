@@ -1055,7 +1055,7 @@
         "scope": "global",
         "slug": "kv",
         "dashes": true,
-        "lowercase": true,
+        "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\""
     },
     {

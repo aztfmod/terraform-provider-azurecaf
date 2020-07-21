@@ -49,7 +49,7 @@ func resourceName() *schema.Resource {
 				Optional:     true,
 				ForceNew:     true,
 				ValidateFunc: validation.IntAtLeast(1),
-				Default:      4,
+				Default:      0,
 			},
 			"result": {
 				Type:     schema.TypeString,

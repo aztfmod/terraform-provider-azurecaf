@@ -1,9 +1,13 @@
 default: build
 
 dev_container:
+	go generate
+	go fmt
 	go build -o ~/.terraform.d/plugins/linux_amd64/terraform-provider-azurecaf
 
 build:
+	go generate
+	go fmt ./...
 	go build -o ./terraform-provider-azurecaf
 
 unittest:
