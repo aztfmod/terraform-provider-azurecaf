@@ -1678,7 +1678,7 @@
         "slug": "sqldb",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[<>*%:.?\\\\+\\\\/ ]\""
     },
     {
         "name": "azurerm_sql_elasticpool",
@@ -1777,7 +1777,7 @@
         "slug": "rg",
         "dashes": true,
         "lowercase": false,
-        "regex": "`[^-\\w\\._\\(\\)]`"
+        "regex": "`[^a-zA-Z0-9-._\\\\(\\\\)]`"
     },
     {
         "name": "azurerm_network_security_group",
