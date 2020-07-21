@@ -157,6 +157,78 @@ func convertInterfaceToString(source []interface{}) []string {
 	return s
 }
 
+func composeName(separator string,
+	prefixes []string,
+	name string,
+	slug string,
+	suffixes []string,
+	randomSuffix string,
+	maxlength int,
+	namePrecedence []string) string {
+	contents := []string{}
+	currentlength := 0
+
+	for i := 0; i < len(namePrecedence); i++ {
+		initialized := 0
+		if len(contents) > 0 {
+			initialized = len(separator)
+		}
+		switch c := namePrecedence[i]; c {
+		case "name":
+			if len(name) > 0 {
+				if currentlength+len(name)+initialized < maxlength {
+					contents = append(contents, name)
+					currentlength = currentlength + len(name) + initialized
+				}
+			}
+		case "slug":
+			if len(slug) > 0 {
+				if currentlength+len(slug)+initialized < maxlength {
+					contents = append([]string{slug}, contents...)
+					currentlength = currentlength + len(slug) + initialized
+				}
+			}
+		case "random":
+			if len(randomSuffix) > 0 {
+				if currentlength+len(randomSuffix)+initialized < maxlength {
+					contents = append(contents, randomSuffix)
+					currentlength = currentlength + len(randomSuffix) + initialized
+				}
+			}
+		case "suffixes":
+			if len(suffixes) > 0 {
+				if len(suffixes[0]) > 0 {
+					if currentlength+len(suffixes[0])+initialized < maxlength {
+						contents = append(contents, suffixes[0])
+						currentlength = currentlength + len(suffixes[0]) + initialized
+					}
+				}
+				suffixes = suffixes[1:]
+				if len(suffixes) > 0 {
+					i--
+				}
+			}
+		case "prefixes":
+			if len(prefixes) > 0 {
+				if len(prefixes[len(prefixes)-1]) > 0 {
+					if currentlength+len(prefixes[len(prefixes)-1])+initialized < maxlength {
+						contents = append([]string{prefixes[len(prefixes)-1]}, contents...)
+						currentlength = currentlength + len(prefixes[len(prefixes)-1]) + initialized
+					}
+				}
+				prefixes = prefixes[:len(prefixes)-1]
+				if len(prefixes) > 0 {
+					i--
+				}
+			}
+
+		}
+
+	}
+	content := strings.Join(contents, separator)
+	return content
+}
+
 func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	name := d.Get("name").(string)
 	prefixes := convertInterfaceToString(d.Get("prefixes").([]interface{}))
@@ -187,8 +259,8 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 		separator = cleanString(separator, resource)
 		randomSuffix = cleanString(randomSuffix, resource)
 	}
-
-	resourceName := concatenateParameters(separator, prefixes, []string{name, slug}, suffixes, []string{randomSuffix})
+	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+	resourceName := composeName(separator, prefixes, name, slug, suffixes, randomSuffix, resource.MaxLength, namePrecedence)
 	resourceName = trimResourceName(resourceName, resource.MaxLength)
 
 	if resource.LowerCase {

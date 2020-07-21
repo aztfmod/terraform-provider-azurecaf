@@ -100,7 +100,7 @@ func TestAccResourceName_CafClassic(t *testing.T) {
 
 					testAccCafNamingValidation(
 						"azurecaf_name.classic_rg",
-						"myrg-rg",
+						"pr1-pr2-rg-myrg-yodgp-su1-su2",
 						29,
 						"pr1-pr2"),
 					regexMatch("azurecaf_name.classic_rg", regexp.MustCompile(ResourceDefinitions["azurerm_resource_group"].ValidationRegExp), 1),
@@ -108,6 +108,54 @@ func TestAccResourceName_CafClassic(t *testing.T) {
 			},
 		},
 	})
+}
+
+func TestComposeName(t *testing.T) {
+	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+	prefixes := []string{"a", "b"}
+	suffixes := []string{"c", "d"}
+	name := composeName("-", prefixes, "name", "slug", suffixes, "rd", 21, namePrecedence)
+	expected := "a-b-slug-name-rd-c-d"
+	if name != expected {
+		t.Logf("Fail to generate name expected %s received %s", expected, name)
+		t.Fail()
+	}
+}
+
+func TestComposeNameCutCorrect(t *testing.T) {
+	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+	prefixes := []string{"a", "b"}
+	suffixes := []string{"c", "d"}
+	name := composeName("-", prefixes, "name", "slug", suffixes, "rd", 20, namePrecedence)
+	expected := "b-slug-name-rd-c-d"
+	if name != expected {
+		t.Logf("Fail to generate name expected %s received %s", expected, name)
+		t.Fail()
+	}
+}
+
+func TestComposeNameCutCorrectSuffixes(t *testing.T) {
+	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+	prefixes := []string{"a", "b"}
+	suffixes := []string{"c", "d"}
+	name := composeName("-", prefixes, "name", "slug", suffixes, "rd", 15, namePrecedence)
+	expected := "slug-name-rd-c"
+	if name != expected {
+		t.Logf("Fail to generate name expected %s received %s", expected, name)
+		t.Fail()
+	}
+}
+
+func TestComposeEmptyStringArray(t *testing.T) {
+	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+	prefixes := []string{"", "b"}
+	suffixes := []string{"", "d"}
+	name := composeName("-", prefixes, "", "", suffixes, "", 15, namePrecedence)
+	expected := "b-d"
+	if name != expected {
+		t.Logf("Fail to generate name expected %s received %s", expected, name)
+		t.Fail()
+	}
 }
 
 const testAccResourceName_CafClassicConfig = `
