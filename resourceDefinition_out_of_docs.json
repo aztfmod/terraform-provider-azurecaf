@@ -8,7 +8,7 @@
     "slug": "pe",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_private_service_connection",
@@ -19,7 +19,7 @@
     "slug": "psc",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_firewall_ip_configuration",
@@ -30,7 +30,7 @@
     "slug": "fwipconf",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_firewall_application_rule_collection",
@@ -41,7 +41,7 @@
     "slug": "fwapp",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_firewall_nat_rule_collection",
@@ -52,7 +52,7 @@
     "slug": "fwnatrc",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_firewall_network_rule_collection",
@@ -63,7 +63,7 @@
     "slug": "fwnetrc",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_dns_a_record",
@@ -74,7 +74,7 @@
     "slug": "dnsrec",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_dns_aaaa_record",
@@ -85,7 +85,7 @@
     "slug": "dnsrec",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_dns_caa_record",
@@ -96,7 +96,7 @@
     "slug": "dnsrec",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_dns_cname_record",
@@ -107,7 +107,7 @@
     "slug": "dnsrec",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_dns_mx_record",
@@ -118,7 +118,7 @@
     "slug": "dnsrec",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_dns_ns_record",
@@ -129,7 +129,7 @@
     "slug": "dnsrec",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_dns_ptr_record",
@@ -140,7 +140,7 @@
     "slug": "dnsrec",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_dns_txt_record",
@@ -151,7 +151,7 @@
     "slug": "dnsrec",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_private_dns_a_record",
@@ -162,7 +162,7 @@
     "slug": "pdnsrec",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_private_dns_aaaa_record",
@@ -173,7 +173,7 @@
     "slug": "pdnsrec",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_private_dns_cname_record",
@@ -184,7 +184,7 @@
     "slug": "pdnsrec",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_private_dns_mx_record",
@@ -195,7 +195,7 @@
     "slug": "pdnsrec",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_private_dns_ptr_record",
@@ -206,7 +206,7 @@
     "slug": "pdnsrec",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_private_dns_srv_record",
@@ -217,7 +217,7 @@
     "slug": "pdnsrec",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_private_dns_txt_record",
@@ -228,7 +228,7 @@
     "slug": "pdnsrec",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_virtual_machine_extension",
@@ -239,7 +239,7 @@
     "slug": "vmx",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_virtual_machine_scale_set_extension",
@@ -250,7 +250,7 @@
     "slug": "vmssx",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_network_ddos_protection_plan",
@@ -261,7 +261,7 @@
     "slug": "ddospp",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_private_dns_zone_group",
@@ -272,7 +272,7 @@
     "slug": "pdnszg",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_proximity_placement_group",
@@ -283,7 +283,7 @@
     "slug": "ppg",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "azurerm_private_link_service",
@@ -294,7 +294,7 @@
     "slug": "pls",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
   },
   {
     "name": "databricks_cluster",
@@ -305,7 +305,7 @@
     "slug": "dbc",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9-_]\""
   },
   {
     "name": "databricks_standard_cluster",
@@ -316,7 +316,7 @@
     "slug": "dbsc",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^a-zA-Z0-9-_]\""
   },
   {
     "name": "databricks_high_concurrency_cluster",
@@ -327,6 +327,6 @@
     "slug": "dbhcc",
     "dashes": true,
     "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_.-]\""
+    "regex": "\"[^0-9A-Za-z_-]\""
   }
 ]
