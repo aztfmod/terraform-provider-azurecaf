@@ -1,32 +1,47 @@
 
 #Storage account test
 resource "azurecaf_name" "classic_st" {
-    convention      = "cafclassic"
-    name            = "log"
+    name            = "log2"
     resource_type   = "azurerm_storage_account"
 }
 
-output "st_classic_id" {
-  value       = azurecaf_name.classic_st.id
-  description = "Id of the resource's name"
-}
-
-output "st_classic" {
+output "caf_name_classic_st" {
   value       = azurecaf_name.classic_st.result
   description = "Random result based on the resource type"
 }
 
-# Azure Automation Account
 resource "azurecaf_name" "azurerm_cognitive_account" {
-    name            = "automation"
+    name            = "cogsdemo"
     resource_type   = "azurerm_cognitive_account"
-    prefixes        = ["pre"]
-    random          = 4
+    prefixes        = ["a", "z"]
     suffixes        = ["prod"]
+    random_length   = 5
+    random_seed     = 12343
+    clean_input     = true
+    separator       = "-"
 }
-
 
 output "azurerm_cognitive_account" {
   value       = azurecaf_name.azurerm_cognitive_account.result
   description = "Random result based on the resource type"
+}
+
+resource "azurecaf_name" "multiple_resources" {
+    name            = "cogsdemo2"
+    resource_type   = "azurerm_cognitive_account"
+    resource_types   = ["azurerm_storage_account", "azurerm_resource_group"]
+    prefixes        = ["a", "b"]
+    suffixes        = ["prod"]
+    random_length   = 4
+    random_seed     = 12343
+    clean_input     = true
+    separator       = "-"
+}
+
+output "multiple_resources" {
+  value       = azurecaf_name.multiple_resources.results
+}
+
+output "multiple_resources_main" {
+  value       = azurecaf_name.multiple_resources.result
 }

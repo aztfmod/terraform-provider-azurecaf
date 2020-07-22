@@ -10,10 +10,10 @@ import (
 )
 
 func resourceName() *schema.Resource {
-	//resourceMapsKeys := make([]string, 0, len(Resources_generated))
-	// for k := range Resources {
-	// 	resourceMapsKeys = append(resourceMapsKeys, k)
-	// }
+	resourceMapsKeys := make([]string, 0, len(ResourceDefinitions))
+	for k := range ResourceDefinitions {
+		resourceMapsKeys = append(resourceMapsKeys, k)
+	}
 
 	return &schema.Resource{
 		Create:        resourceNameCreate,
@@ -31,7 +31,8 @@ func resourceName() *schema.Resource {
 			"prefixes": {
 				Type: schema.TypeList,
 				Elem: &schema.Schema{
-					Type: schema.TypeString,
+					Type:         schema.TypeString,
+					ValidateFunc: validation.NoZeroValues,
 				},
 				Optional: true,
 				ForceNew: true,
@@ -39,7 +40,8 @@ func resourceName() *schema.Resource {
 			"suffixes": {
 				Type: schema.TypeList,
 				Elem: &schema.Schema{
-					Type: schema.TypeString,
+					Type:         schema.TypeString,
+					ValidateFunc: validation.NoZeroValues,
 				},
 				Optional: true,
 				ForceNew: true,
@@ -55,6 +57,13 @@ func resourceName() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
+			"results": {
+				Type: schema.TypeMap,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+				Computed: true,
+			},
 			"separator": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -68,15 +77,23 @@ func resourceName() *schema.Resource {
 				Default:  true,
 			},
 			"resource_type": {
-				Type:     schema.TypeString,
+				Type:         schema.TypeString,
+				Optional:     true,
+				ValidateFunc: validation.StringInSlice(resourceMapsKeys, false),
+				ForceNew:     true,
+			},
+			"resource_types": {
+				Type: schema.TypeList,
+				Elem: &schema.Schema{
+					Type:         schema.TypeString,
+					ValidateFunc: validation.StringInSlice(resourceMapsKeys, false),
+				},
 				Optional: true,
-				//ValidateFunc: validation.StringInSlice(resourceMapsKeys, false),
 				ForceNew: true,
 			},
 			"random_seed": {
 				Type:     schema.TypeInt,
 				Optional: true,
-				//ValidateFunc: validation.StringInSlice(resourceMapsKeys, false),
 				ForceNew: true,
 			},
 		},
@@ -229,29 +246,48 @@ func composeName(separator string,
 	return content
 }
 
-func getNameResult(d *schema.ResourceData, meta interface{}) error {
-	name := d.Get("name").(string)
-	prefixes := convertInterfaceToString(d.Get("prefixes").([]interface{}))
-	suffixes := convertInterfaceToString(d.Get("suffixes").([]interface{}))
-	separator := d.Get("separator").(string)
-	resourceType := d.Get("resource_type").(string)
-	cleanInput := d.Get("clean_input").(bool)
-	randomLength := d.Get("random_length").(int)
-	randomSeed := int64(d.Get("random_seed").(int))
+func validateResourceType(resourceType string, resourceTypes []string) (bool, error) {
+	isEmpty := len(resourceType) == 0 && len(resourceTypes) == 0
+	if isEmpty {
+		return false, fmt.Errorf("resource_type and resource_types parameters are empty, you must specify at least one resource type")
+	}
+	errorStrings := []string{}
+	resourceList := resourceTypes
+	if len(resourceType) > 0 {
+		resourceList = append(resourceList, resourceType)
+	}
 
-	convention := ConventionCafClassic
+	for _, resource := range resourceList {
+		_, err := getResource(resource)
+		if err != nil {
+			errorStrings = append(errorStrings, err.Error())
+		}
+	}
+	if len(errorStrings) > 0 {
+		return false, fmt.Errorf(strings.Join(errorStrings, "\n"))
+	}
+	return true, nil
+}
 
-	resource, err := getResource(resourceType)
+func getResourceName(resourceTypeName string, separator string,
+	prefixes []string,
+	name string,
+	suffixes []string,
+	randomSuffix string,
+	convention string,
+	cleanInput bool,
+	namePrecedence []string) (string, error) {
+
+	resource, err := getResource(resourceTypeName)
 	if err != nil {
-		return err
+		return "", err
 	}
 	validationRegEx, err := regexp.Compile(resource.ValidationRegExp)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	randomSuffix := randSeq(int(randomLength), &randomSeed)
-	slug := getSlug(resourceType, convention)
+	slug := getSlug(resourceTypeName, convention)
 	if cleanInput {
 		prefixes = cleanSlice(prefixes, resource)
 		suffixes = cleanSlice(suffixes, resource)
@@ -259,7 +295,6 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 		separator = cleanString(separator, resource)
 		randomSuffix = cleanString(randomSuffix, resource)
 	}
-	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 	resourceName := composeName(separator, prefixes, name, slug, suffixes, randomSuffix, resource.MaxLength, namePrecedence)
 	resourceName = trimResourceName(resourceName, resource.MaxLength)
 
@@ -268,11 +303,49 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	if !validationRegEx.MatchString(resourceName) {
-		return fmt.Errorf("Invalid name for Random CAF naming %s %s Id:%s , the pattern %s doesn't match %s", resource.ResourceTypeName, name, d.Id(), resource.ValidationRegExp, resourceName)
+		return "", fmt.Errorf("Invalid name for Random CAF naming %s %s, the pattern %s doesn't match %s", resource.ResourceTypeName, name, resource.ValidationRegExp, resourceName)
 	}
 
-	d.Set("result", resourceName)
+	return resourceName, nil
+}
 
+func getNameResult(d *schema.ResourceData, meta interface{}) error {
+	name := d.Get("name").(string)
+	prefixes := convertInterfaceToString(d.Get("prefixes").([]interface{}))
+	suffixes := convertInterfaceToString(d.Get("suffixes").([]interface{}))
+	separator := d.Get("separator").(string)
+	resourceType := d.Get("resource_type").(string)
+	resourceTypes := convertInterfaceToString(d.Get("resource_types").([]interface{}))
+	cleanInput := d.Get("clean_input").(bool)
+	randomLength := d.Get("random_length").(int)
+	randomSeed := int64(d.Get("random_seed").(int))
+
+	convention := ConventionCafClassic
+
+	randomSuffix := randSeq(int(randomLength), &randomSeed)
+	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+
+	isValid, err := validateResourceType(resourceType, resourceTypes)
+	if !isValid {
+		return err
+	}
+
+	if len(resourceType) > 0 {
+		resourceName, err := getResourceName(resourceType, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, namePrecedence)
+		if err != nil {
+			return err
+		}
+		d.Set("result", resourceName)
+	}
+	resourceNames := make(map[string]string, len(resourceTypes))
+	for _, resourceTypeName := range resourceTypes {
+		var err error
+		resourceNames[resourceTypeName], err = getResourceName(resourceTypeName, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, namePrecedence)
+		if err != nil {
+			return err
+		}
+	}
+	d.Set("results", resourceNames)
 	d.SetId(randSeq(16, nil))
 	return nil
 }

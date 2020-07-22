@@ -96,7 +96,7 @@ func TestAccResourceName_CafClassic(t *testing.T) {
 		CheckDestroy: testAccCheckResourceDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccResourceName_CafClassicConfig,
+				Config: testAccResourceNameCafClassicConfig,
 				Check: resource.ComposeTestCheckFunc(
 
 					testAccCafNamingValidation(
@@ -108,7 +108,7 @@ func TestAccResourceName_CafClassic(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccResourceName_CafClassicConfig,
+				Config: testAccResourceNameCafClassicConfig,
 				Check: resource.ComposeTestCheckFunc(
 
 					testAccCafNamingValidation(
@@ -171,7 +171,63 @@ func TestComposeEmptyStringArray(t *testing.T) {
 	}
 }
 
-const testAccResourceName_CafClassicConfig = `
+func TestValidResourceType_validParameters(t *testing.T) {
+	resourceType := "azurerm_resource_group"
+	resourceTypes := []string{"azurerm_container_registry", "azurerm_storage_account"}
+	isValid, err := validateResourceType(resourceType, resourceTypes)
+	if !isValid {
+		t.Logf("resource types considered invalid while input parameters are valid")
+		t.Fail()
+	}
+	if err != nil {
+		t.Logf("resource validation generated an unexecpted error %s", err.Error())
+		t.Fail()
+	}
+}
+func TestValidResourceType_invalidParameters(t *testing.T) {
+	resourceType := "azurerm_resource_group"
+	resourceTypes := []string{"azurerm_not_supported", "azurerm_storage_account"}
+	isValid, err := validateResourceType(resourceType, resourceTypes)
+	if isValid {
+		t.Logf("resource types considered valid while input parameters are invalid")
+		t.Fail()
+	}
+	if err == nil {
+		t.Logf("resource validation did generate an error while the input is invalid")
+		t.Fail()
+	}
+}
+
+func TestGetResourceNameValid(t *testing.T) {
+	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+	resourceName, err := getResourceName("azurerm_resource_group", "-", []string{"a", "b"}, "myrg", nil, "1234", "cafclassic", true, namePrecedence)
+	expected := "a-b-rg-myrg-1234"
+
+	if err != nil {
+		t.Logf("getResource Name generated an error %s", err.Error())
+		t.Fail()
+	}
+	if expected != resourceName {
+		t.Logf("invalid name, expected %s got %s", expected, resourceName)
+		t.Fail()
+	}
+}
+func TestGetResourceNameInvalidResourceType(t *testing.T) {
+	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+	resourceName, err := getResourceName("azurerm_invalid", "-", []string{"a", "b"}, "myrg", nil, "1234", "cafclassic", true, namePrecedence)
+	expected := "a-b-rg-myrg-1234"
+
+	if err == nil {
+		t.Logf("Expected a validation error, got nil")
+		t.Fail()
+	}
+	if expected == resourceName {
+		t.Logf("valid name received while an error is expected")
+		t.Fail()
+	}
+}
+
+const testAccResourceNameCafClassicConfig = `
 
 
 # Resource Group
