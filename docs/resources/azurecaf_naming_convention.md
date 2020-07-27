@@ -9,7 +9,7 @@ The example generates a 23 characters name compatible with the specification for
 dev-aztfmod-001
 
 ```hcl
-resource "azurecaf_naming_convention" "cafrandom_rg" {  
+resource "azurecaf_naming_convention" "cafrandom_rg" {
   name    = "aztfmod"
   prefix  = "dev"
   resource_type    = "rg"
@@ -64,7 +64,7 @@ The following methods are implemented for naming conventions:
 
 ## Resource types
 
-We define resource types as per: https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging 
+We define resource types as per: https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging
 
 Current prototype supports:
 
@@ -91,6 +91,7 @@ Current prototype supports:
 | Network Security Group              | nsg                         | azurerm_network_security_group          |
 | Public IP                           | pip                         | azurerm_public_ip                       |
 | App Service Plan                    | plan                        | azurerm_app_service_plan                |
+| Azure PostgreSQL DB Server          | psql                        | azurerm_psql_server                     |
 | Resource group                      | rg                          | azurerm_resource_group                  |
 | Subnet                              | snet                        | azurerm_subnet                          |
 | Azure SQL DB Server                 | sql                         | azurerm_sql_server                      |

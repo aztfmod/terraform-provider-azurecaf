@@ -101,6 +101,12 @@ func TestAccCafNamingConventionFull_Random(t *testing.T) {
 						Resources["sqldb"].MaxLength,
 						"utest"),
 					regexMatch("azurecaf_naming_convention.random_sqldb", regexp.MustCompile(Resources["sqldb"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
+						"azurecaf_naming_convention.random_psql",
+						"",
+						Resources["psql"].MaxLength,
+						"utest"),
+					regexMatch("azurecaf_naming_convention.random_psql", regexp.MustCompile(Resources["psql"].ValidationRegExp), 1),
 				),
 			},
 		},
@@ -110,7 +116,7 @@ func TestAccCafNamingConventionFull_Random(t *testing.T) {
 const testAccResourceRandomConfig = `
 
 #Storage account test
-resource "azurecaf_naming_convention" "random_st" {  
+resource "azurecaf_naming_convention" "random_st" {
 	name    		= "catest"
 	prefix  		= "utest"
 	resource_type   = "st"
@@ -177,6 +183,14 @@ resource "azurecaf_naming_convention" "random_aksnpw" {
     name            = "np2"
     prefix          = "pr"
     resource_type   = "aksnpw"
+}
+
+# Azure PostgreSQL DB Server
+resource "azurecaf_naming_convention" "random_psql" {
+    convention      = "random"
+    name            = "TEST-DEV-PSQL-RG"
+    prefix          = "utest"
+    resource_type   = "azurerm_psql_server"
 }
 
 # App Service Environment

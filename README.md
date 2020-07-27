@@ -40,7 +40,7 @@ $ $GOPATH/bin/terraform-provider-azurecaf
 ```
 # Testing
 
-Running the acceptance test suite requires does not require an Azure subscription. 
+Running the acceptance test suite requires does not require an Azure subscription.
 
 to run the unit test:
 ```
@@ -66,7 +66,7 @@ The following methods are implemented for naming conventions:
 
 ## Resource types
 
-We define resource types as per: https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging 
+We define resource types as per: https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging
 
 Current prototype supports:
 
@@ -93,6 +93,7 @@ Current prototype supports:
 | Network Security Group              | nsg                         | azurerm_network_security_group          |
 | Public IP                           | pip                         | azurerm_public_ip                       |
 | App Service Plan                    | plan                        | azurerm_app_service_plan                |
+| Azure PostgreSQL DB Server          | psql                        | azurerm_psql_server                     |
 | Resource group                      | rg                          | azurerm_resource_group                  |
 | Subnet                              | snet                        | azurerm_subnet                          |
 | Azure SQL DB Server                 | sql                         | azurerm_sql_server                      |
@@ -167,7 +168,7 @@ This output will be consumed directly by a resource to name the component before
 
 Example:
 ```hcl
-resource "azurecaf_naming_convention" "cafrandom_rg" {  
+resource "azurecaf_naming_convention" "cafrandom_rg" {
   name    = "aztfmod"
   prefix  = "dev"
   resource_type    = "rg"

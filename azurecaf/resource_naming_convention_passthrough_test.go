@@ -95,6 +95,12 @@ func TestAccCafNamingConvention_Passthrough(t *testing.T) {
 						17,
 						"TEST"),
 					regexMatch("azurecaf_naming_convention.passthrough_sqldb", regexp.MustCompile(Resources["sqldb"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
+						"azurecaf_naming_convention.passthrough_psql",
+						"test-dev-psql-rg",
+						16,
+						"test"),
+					regexMatch("azurecaf_naming_convention.passthrough_psql", regexp.MustCompile(Resources["psql"].ValidationRegExp), 1),
 				),
 			},
 		},
@@ -151,7 +157,7 @@ resource "azurecaf_naming_convention" "passthrough_aksdns" {
     resource_type   = "aksdns"
 }
 
-# Azure Kubernetes Services Node pool Linux 
+# Azure Kubernetes Services Node pool Linux
 resource "azurecaf_naming_convention" "passthrough_aksnpl" {
     convention      = "passthrough"
     name            = "knplinux"
@@ -163,6 +169,13 @@ resource "azurecaf_naming_convention" "passthrough_aksnpw" {
     convention      = "passthrough"
     name            = "knpwindows" #expecting 6 chars
     resource_type   = "aksnpw"
+}
+
+# Azure PostgreSQL DB Server
+resource "azurecaf_naming_convention" "passthrough_psql" {
+    convention      = "passthrough"
+    name            = "TEST-DEV-PSQL-RG"
+    resource_type   = "azurerm_psql_server"
 }
 
 # App Service Environment

@@ -12,10 +12,10 @@ resource "azurecaf_naming_convention" "rg_aks" {
 
 #Storage account test
 resource "azurecaf_naming_convention" "st" {
-    convention      = "cafrandom"
-    name            = "log"
-    prefix          = "rdmi"
-    resource_type   = "st"
+  convention    = "cafrandom"
+  name          = "log"
+  prefix        = "rdmi"
+  resource_type = "st"
 }
 
 output "st_id" {
@@ -30,10 +30,10 @@ output "st_random" {
 
 # Azure Automation Account
 resource "azurecaf_naming_convention" "aaa" {
-    convention      = "cafrandom"
-    name            = "automation"
-    prefix          = "rdmi"
-    resource_type   = "aaa"
+  convention    = "cafrandom"
+  name          = "automation"
+  prefix        = "rdmi"
+  resource_type = "aaa"
 }
 
 output "aaa_id" {
@@ -49,19 +49,19 @@ output "aaa_random" {
 
 # Azure Container registry
 resource "azurecaf_naming_convention" "acr" {
-    convention      = "cafrandom"
-    name            = "registry"
-    prefix          = "rdmi"
-    resource_type   = "acr"
+  convention    = "cafrandom"
+  name          = "registry"
+  prefix        = "rdmi"
+  resource_type = "acr"
 }
 
 # Azure Container registry
 resource "azurecaf_naming_convention" "acr_max" {
-    convention      = "cafrandom"
-    name            = "registry"
-    prefix          = "rdmi"
-    max_length      = 45
-    resource_type   = "acr"
+  convention    = "cafrandom"
+  name          = "registry"
+  prefix        = "rdmi"
+  max_length    = 45
+  resource_type = "acr"
 }
 
 
@@ -82,10 +82,10 @@ output "acr_max_random" {
 
 # Resource Group
 resource "azurecaf_naming_convention" "rg" {
-    convention      = "cafrandom"
-    name            = "myrg"
-    prefix          = "(_124)-"
-    resource_type   = "rg"
+  convention    = "cafrandom"
+  name          = "myrg"
+  prefix        = "(_124)-"
+  resource_type = "rg"
 }
 
 output "rg_id" {
@@ -100,10 +100,10 @@ output "rg_random" {
 
 # Azure Firewall
 resource "azurecaf_naming_convention" "afw" {
-    convention      = "cafrandom"
-    name            = "fire"
-    prefix          = "rdmi"
-    resource_type   = "afw"
+  convention    = "cafrandom"
+  name          = "fire"
+  prefix        = "rdmi"
+  resource_type = "afw"
 }
 
 output "afw_id" {
@@ -118,10 +118,10 @@ output "afw_random" {
 
 # Azure Recovery Vault
 resource "azurecaf_naming_convention" "asr" {
-    convention      = "cafrandom"
-    name            = "recov"
-    prefix          = "rdmi"
-    resource_type   = "asr"
+  convention    = "cafrandom"
+  name          = "recov"
+  prefix        = "rdmi"
+  resource_type = "asr"
 }
 
 output "asr_id" {
@@ -137,10 +137,10 @@ output "asr_random" {
 
 # Event Hub
 resource "azurecaf_naming_convention" "evh" {
-    convention      = "cafrandom"
-    name            = "hub"
-    prefix          = "rdmi"
-    resource_type   = "evh"
+  convention    = "cafrandom"
+  name          = "hub"
+  prefix        = "rdmi"
+  resource_type = "evh"
 }
 
 output "evh_id" {
@@ -155,10 +155,10 @@ output "evh_random" {
 
 # Azure Kubernetes Services
 resource "azurecaf_naming_convention" "aks" {
-    convention      = "cafrandom"
-    name            = "mykubecluster"
-    prefix          = "rdmi"
-    resource_type   = "aks"
+  convention    = "cafrandom"
+  name          = "mykubecluster"
+  prefix        = "rdmi"
+  resource_type = "aks"
 }
 
 output "aks_id" {
@@ -173,10 +173,10 @@ output "aks_random" {
 
 # Azure Kubernetes Services DNS Prefix
 resource "azurecaf_naming_convention" "aksdns" {
-    convention      = "cafrandom"
-    name            = "mykubedns"
-    prefix          = "rdmi"
-    resource_type   = "aksdns"
+  convention    = "cafrandom"
+  name          = "mykubedns"
+  prefix        = "rdmi"
+  resource_type = "aksdns"
 }
 
 output "aksdns_id" {
@@ -191,10 +191,10 @@ output "aksdns_random" {
 
 # Key Vault
 resource "azurecaf_naming_convention" "kv" {
-    convention      = "cafrandom"
-    name            = "passepartout"
-    prefix          = "rdmi"
-    resource_type   = "kv"
+  convention    = "cafrandom"
+  name          = "passepartout"
+  prefix        = "rdmi"
+  resource_type = "kv"
 }
 
 output "kv_id" {
@@ -209,10 +209,10 @@ output "kv_random" {
 
 # Emtpy resource
 resource "azurecaf_naming_convention" "empty" {
-    convention      = "random"
-    resource_type   = "la"
-    prefix          = ""
-    name            = ""
+  convention    = "random"
+  resource_type = "la"
+  prefix        = ""
+  name          = ""
 }
 
 output "empty_id" {
@@ -228,10 +228,10 @@ output "empty_random" {
 
 # Log Analytics Workspace
 resource "azurecaf_naming_convention" "la" {
-    convention      = "cafrandom"
-    name            = "logs"
-    prefix          = "rdmi"
-    resource_type   = "la"
+  convention    = "cafrandom"
+  name          = "logs"
+  prefix        = "rdmi"
+  resource_type = "la"
 }
 
 output "la_id" {
@@ -246,10 +246,10 @@ output "la_random" {
 
 # Network Interface
 resource "azurecaf_naming_convention" "nic" {
-    convention      = "cafrandom"
-    name            = "mynetcard"
-    prefix          = "rdmi"
-    resource_type   = "nic"
+  convention    = "cafrandom"
+  name          = "mynetcard"
+  prefix        = "rdmi"
+  resource_type = "nic"
 }
 
 output "nic_id" {
@@ -264,10 +264,10 @@ output "nic_random" {
 
 # Network Security Group
 resource "azurecaf_naming_convention" "nsg" {
-    convention      = "cafrandom"
-    name            = "sec"
-    prefix          = "rdmi"
-    resource_type   = "nsg"
+  convention    = "cafrandom"
+  name          = "sec"
+  prefix        = "rdmi"
+  resource_type = "nsg"
 }
 
 output "nsg_id" {
@@ -282,10 +282,10 @@ output "nsg_random" {
 
 # Public Ip
 resource "azurecaf_naming_convention" "pip" {
-    convention      = "cafrandom"
-    name            = "mypip"
-    prefix          = "rdmi"
-    resource_type   = "pip"
+  convention    = "cafrandom"
+  name          = "mypip"
+  prefix        = "rdmi"
+  resource_type = "pip"
 }
 
 output "pip_id" {
@@ -300,10 +300,10 @@ output "pip_random" {
 
 # subnet
 resource "azurecaf_naming_convention" "snet" {
-    convention      = "cafrandom"
-    name            = "snet"
-    prefix          = "rdmi"
-    resource_type   = "snet"
+  convention    = "cafrandom"
+  name          = "snet"
+  prefix        = "rdmi"
+  resource_type = "snet"
 }
 
 output "snet_id" {
@@ -318,10 +318,10 @@ output "snet_random" {
 
 # Virtual Network
 resource "azurecaf_naming_convention" "vnet" {
-    convention      = "cafrandom"
-    name            = "vnet"
-    prefix          = "rdmi"
-    resource_type   = "vnet"
+  convention    = "cafrandom"
+  name          = "vnet"
+  prefix        = "rdmi"
+  resource_type = "vnet"
 }
 
 output "vnet_id" {
@@ -336,10 +336,10 @@ output "vnet_random" {
 
 # VM Windows
 resource "azurecaf_naming_convention" "vmw" {
-    convention      = "cafrandom"
-    name            = "winVMToolongShouldbetrimmed"
-    prefix          = "rdmi"
-    resource_type   = "vmw"
+  convention    = "cafrandom"
+  name          = "winVMToolongShouldbetrimmed"
+  prefix        = "rdmi"
+  resource_type = "vmw"
 }
 
 output "vmw_id" {
@@ -354,10 +354,10 @@ output "vmw_random" {
 
 # VM Linux
 resource "azurecaf_naming_convention" "vml" {
-    convention      = "cafrandom"
-    name            = "linuxVM"
-    prefix          = "rdmi"
-    resource_type   = "vml"
+  convention    = "cafrandom"
+  name          = "linuxVM"
+  prefix        = "rdmi"
+  resource_type = "vml"
 }
 
 output "vml_id" {
