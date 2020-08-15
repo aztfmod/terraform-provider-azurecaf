@@ -112,6 +112,8 @@ Current prototype supports:
 | Azure Traffic Manager Profile       | traf                        | azurerm_traffic_manager_profile         |
 | Virtual Network Gateway             | vgw                         | azurerm_virtual_network_gateway         |
 | Linux Virtual Machine               | vml                         | azurerm_virtual_machine_linux           |
+| Virtual Machine Scale Set Linux     | vmssl                       | azurerm_vm_scale_set_linux              |
+| Virtual Machine Scale Set Windows   | vmssw                       | azurerm_vm_scale_set_windows            |
 | Windows Virtual Machine             | vmw                         | azurerm_virtual_machine_windows         |
 | Virtual Network                     | vnet                        | azurerm_virtual_network                 |
 
