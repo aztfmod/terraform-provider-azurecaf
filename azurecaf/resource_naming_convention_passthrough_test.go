@@ -95,6 +95,12 @@ func TestAccCafNamingConvention_Passthrough(t *testing.T) {
 						17,
 						"TEST"),
 					regexMatch("azurecaf_naming_convention.passthrough_sqldb", regexp.MustCompile(Resources["sqldb"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
+						"azurecaf_naming_convention.passthrough_asg",
+						"TEST-DEV-APPSECGROUP-ASG",
+						24,
+						"TEST"),
+					regexMatch("azurecaf_naming_convention.passthrough_asg", regexp.MustCompile(Resources["asg"].ValidationRegExp), 1),
 				),
 			},
 		},
@@ -191,5 +197,12 @@ resource "azurecaf_naming_convention" "passthrough_sqldb" {
     convention      = "passthrough"
     name            = "TEST-DEV-SQLDB-RG"
     resource_type   = "azurerm_sql_database"
+}
+
+# Application Security Group
+resource "azurecaf_naming_convention" "passthrough_asg" {
+    convention      = "passthrough"
+    name            = "TEST-DEV-APPSECGROUP-ASG"
+    resource_type   = "azurerm_app_security_group"
 }
 `

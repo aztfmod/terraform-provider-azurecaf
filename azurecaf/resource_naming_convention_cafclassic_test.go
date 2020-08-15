@@ -125,6 +125,18 @@ func TestAccCafNamingConvention_Classic(t *testing.T) {
 						11,
 						"vml"),
 					regexMatch("azurecaf_naming_convention.classic_vml", regexp.MustCompile(Resources["vml"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
+						"azurecaf_naming_convention.classic_asg",
+						"AppSecGroup",
+						15,
+						"asg"),
+					regexMatch("azurecaf_naming_convention.classic_asg", regexp.MustCompile(Resources["asg"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
+						"azurecaf_naming_convention.classic_cn",
+						"My_VPN_Connection_",
+						21,
+						"cn"),
+					regexMatch("azurecaf_naming_convention.classic_cn", regexp.MustCompile(Resources["cn"].ValidationRegExp), 1),
 				),
 			},
 		},
@@ -257,4 +269,19 @@ resource "azurecaf_naming_convention" "classic_vml" {
     name            = "linuxVM"
     resource_type   = "vml"
 }
+
+#Application Security Group test
+resource "azurecaf_naming_convention" "classic_asg" {
+    convention      = "cafclassic"
+    name            = "AppSecGroup"
+    resource_type   = "asg"
+}
+
+#Azure VPN Connection test
+resource "azurecaf_naming_convention" "classic_cn" {
+    convention      = "cafclassic"
+    name            = "My_VPN_Connection_"
+    resource_type   = "cn"
+}
+
 `

@@ -273,3 +273,257 @@ output "vml_classic" {
   description = "Random result based on the resource type"
 }
 
+#Application Security Group test
+resource "azurecaf_naming_convention" "classic_asg" {
+    convention      = "cafclassic"
+    name            = "AppSecGroup"
+    resource_type   = "asg"
+}
+
+output "asg_classic_id" {
+  value       = azurecaf_naming_convention.classic_asg.id
+  description = "Id of the resource's name"
+}
+
+output "asg_classic" {
+  value       = azurecaf_naming_convention.classic_asg.result
+  description = "Random result based on the resource type"
+}
+
+#Azure VPN Connection
+resource "azurecaf_naming_convention" "classic_cn" {
+    convention      = "cafclassic"
+    name            = "My_VPN_Connection_"
+    resource_type   = "cn"
+}
+
+output "cn_classic_id" {
+  value       = azurecaf_naming_convention.classic_cn.id
+  description = "Id of the resource's name"
+}
+
+output "cn_classic" {
+  value       = azurecaf_naming_convention.classic_cn.result
+  description = "Random result based on the resource type"
+}
+
+#Azure Load Balancer (external)
+resource "azurecaf_naming_convention" "classic_lbe" {
+    convention      = "cafclassic"
+    name            = "My_External.Load.Balancer_"
+    resource_type   = "lbe"
+}
+
+output "lbe_classic_id" {
+  value       = azurecaf_naming_convention.classic_lbe.id
+  description = "Id of the resource's name"
+}
+
+output "lbe_classic" {
+  value       = azurecaf_naming_convention.classic_lbe.result
+  description = "Random result based on the resource type"
+}
+
+#Azure Load Balancer (internal)
+resource "azurecaf_naming_convention" "classic_lbi" {
+    convention      = "cafclassic"
+    name            = "My_Internal.Load.Balancer_"
+    resource_type   = "lbi"
+}
+
+output "lbi_classic_id" {
+  value       = azurecaf_naming_convention.classic_lbi.id
+  description = "Id of the resource's name"
+}
+
+output "lbi_classic" {
+  value       = azurecaf_naming_convention.classic_lbi.result
+  description = "Random result based on the resource type"
+}
+
+#Azure Local Network Gateway
+resource "azurecaf_naming_convention" "classic_lgw" {
+    convention      = "cafclassic"
+    name            = "My_Local.Network.Gateway_"
+    resource_type   = "lgw"
+}
+
+output "lgw_classic_id" {
+  value       = azurecaf_naming_convention.classic_lgw.id
+  description = "Id of the resource's name"
+}
+
+output "lgw_classic" {
+  value       = azurecaf_naming_convention.classic_lgw.result
+  description = "Random result based on the resource type"
+}
+
+#Azure Mysql Database
+resource "azurecaf_naming_convention" "classic_mysql" {
+    convention      = "cafclassic"
+    name            = "My-MySQL-Database-001"
+    resource_type   = "mysql"
+}
+
+output "mysql_classic_id" {
+  value       = azurecaf_naming_convention.classic_mysql.id
+  description = "Id of the resource's name"
+}
+
+output "mysql_classic" {
+  value       = azurecaf_naming_convention.classic_mysql.result
+  description = "Random result based on the resource type"
+}
+
+#Azure Route Table
+resource "azurecaf_naming_convention" "classic_route" {
+    convention      = "cafclassic"
+    name            = "My-Route.Table-001_"
+    resource_type   = "route"
+}
+
+output "route_classic_id" {
+  value       = azurecaf_naming_convention.classic_route.id
+  description = "Id of the resource's name"
+}
+
+output "route_classic" {
+  value       = azurecaf_naming_convention.classic_route.result
+  description = "Random result based on the resource type"
+}
+
+#Azure Service Bus
+resource "azurecaf_naming_convention" "classic_sb" {
+    convention      = "cafclassic"
+    name            = "My-Service.Bus-001_"
+    resource_type   = "sb"
+}
+
+output "sb_classic_id" {
+  value       = azurecaf_naming_convention.classic_sb.id
+  description = "Id of the resource's name"
+}
+
+output "sb_classic" {
+  value       = azurecaf_naming_convention.classic_sb.result
+  description = "Random result based on the resource type"
+}
+
+#Azure Service queue
+resource "azurecaf_naming_convention" "classic_sbq" {
+    convention      = "cafclassic"
+    name            = "My-Service.Bus/001/queue/001"
+    resource_type   = "sbq"
+}
+
+output "sbq_classic_id" {
+  value       = azurecaf_naming_convention.classic_sbq.id
+  description = "Id of the resource's name"
+}
+
+output "sbq_classic" {
+  value       = azurecaf_naming_convention.classic_sbq.result
+  description = "Random result based on the resource type"
+}
+
+#Azure Service Topic
+resource "azurecaf_naming_convention" "classic_sbt" {
+    convention      = "cafclassic"
+    name            = "My-Service.Bus/001/queue/001/topic/001"
+    resource_type   = "sbt"
+}
+
+output "sbt_classic_id" {
+  value       = azurecaf_naming_convention.classic_sbt.id
+  description = "Id of the resource's name"
+}
+
+output "sbt_classic" {
+  value       = azurecaf_naming_convention.classic_sbt.result
+  description = "Random result based on the resource type"
+}
+
+#Azure Virtual Network Gateway
+resource "azurecaf_naming_convention" "classic_vgw" {
+    convention      = "cafclassic"
+    name            = "My-Virtual.Network.Gateway-001_"
+    resource_type   = "vgw"
+}
+
+output "vgw_classic_id" {
+  value       = azurecaf_naming_convention.classic_vgw.id
+  description = "Id of the resource's name"
+}
+
+output "vgw_classic" {
+  value       = azurecaf_naming_convention.classic_vgw.result
+  description = "Random result based on the resource type"
+}
+
+#Azure Availability Set
+resource "azurecaf_naming_convention" "classic_avail" {
+    convention      = "cafclassic"
+    name            = "My-AvailabilitySet-001_"
+    resource_type   = "avail"
+}
+
+output "avail_classic_id" {
+  value       = azurecaf_naming_convention.classic_avail.id
+  description = "Id of the resource's name"
+}
+
+output "avail_classic" {
+  value       = azurecaf_naming_convention.classic_avail.result
+  description = "Random result based on the resource type"
+}
+
+#Azure Traffic Manager Profile
+resource "azurecaf_naming_convention" "classic_traf" {
+    convention      = "cafclassic"
+    name            = "My-Traffic.Manager-001_"
+    resource_type   = "traf"
+}
+
+output "traf_classic_id" {
+  value       = azurecaf_naming_convention.classic_traf.id
+  description = "Id of the resource's name"
+}
+
+output "traf_classic" {
+  value       = azurecaf_naming_convention.classic_traf.result
+  description = "Random result based on the resource type"
+}
+
+#Azure VM Scale Set Linux
+resource "azurecaf_naming_convention" "classic_vmssl" {
+    convention      = "cafclassic"
+    name            = "My-VM-ScaleSet-001_"
+    resource_type   = "vmssl"
+}
+
+output "vmssl_classic_id" {
+  value       = azurecaf_naming_convention.classic_vmssl.id
+  description = "Id of the resource's name"
+}
+
+output "vmssl_classic" {
+  value       = azurecaf_naming_convention.classic_vmssl.result
+  description = "Random result based on the resource type"
+}
+
+#Azure VM Scale Set Windows
+resource "azurecaf_naming_convention" "classic_vmssw" {
+    convention      = "cafclassic"
+    name            = "VMScaleSet001"
+    resource_type   = "vmssw"
+}
+
+output "vmssw_classic_id" {
+  value       = azurecaf_naming_convention.classic_vmssw.id
+  description = "Id of the resource's name"
+}
+
+output "vmssw_classic" {
+  value       = azurecaf_naming_convention.classic_vmssw.result
+  description = "Random result based on the resource type"
+}
