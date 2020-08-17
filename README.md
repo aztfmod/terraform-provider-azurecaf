@@ -202,3 +202,4 @@ resource "azurerm_storage_account" "log" {
   enable_https_traffic_only = true
 }
 ```
+
