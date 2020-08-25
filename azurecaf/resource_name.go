@@ -76,6 +76,12 @@ func resourceName() *schema.Resource {
 				ForceNew: true,
 				Default:  true,
 			},
+			"passthrough": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				ForceNew: true,
+				Default:  false,
+			},
 			"resource_type": {
 				Type:         schema.TypeString,
 				Optional:     true,
@@ -276,6 +282,7 @@ func getResourceName(resourceTypeName string, separator string,
 	randomSuffix string,
 	convention string,
 	cleanInput bool,
+	passthrough bool,
 	namePrecedence []string) (string, error) {
 
 	resource, err := getResource(resourceTypeName)
@@ -295,7 +302,13 @@ func getResourceName(resourceTypeName string, separator string,
 		separator = cleanString(separator, resource)
 		randomSuffix = cleanString(randomSuffix, resource)
 	}
-	resourceName := composeName(separator, prefixes, name, slug, suffixes, randomSuffix, resource.MaxLength, namePrecedence)
+	var resourceName string
+
+	if passthrough {
+		resourceName = name
+	} else {
+		resourceName = composeName(separator, prefixes, name, slug, suffixes, randomSuffix, resource.MaxLength, namePrecedence)
+	}
 	resourceName = trimResourceName(resourceName, resource.MaxLength)
 
 	if resource.LowerCase {
@@ -317,6 +330,7 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	resourceType := d.Get("resource_type").(string)
 	resourceTypes := convertInterfaceToString(d.Get("resource_types").([]interface{}))
 	cleanInput := d.Get("clean_input").(bool)
+	passthrough := d.Get("passthrough").(bool)
 	randomLength := d.Get("random_length").(int)
 	randomSeed := int64(d.Get("random_seed").(int))
 
@@ -331,7 +345,7 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	if len(resourceType) > 0 {
-		resourceName, err := getResourceName(resourceType, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, namePrecedence)
+		resourceName, err := getResourceName(resourceType, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, namePrecedence)
 		if err != nil {
 			return err
 		}
@@ -340,7 +354,7 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	resourceNames := make(map[string]string, len(resourceTypes))
 	for _, resourceTypeName := range resourceTypes {
 		var err error
-		resourceNames[resourceTypeName], err = getResourceName(resourceTypeName, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, namePrecedence)
+		resourceNames[resourceTypeName], err = getResourceName(resourceTypeName, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, namePrecedence)
 		if err != nil {
 			return err
 		}

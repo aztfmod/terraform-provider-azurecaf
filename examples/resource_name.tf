@@ -29,7 +29,7 @@ output "azurerm_cognitive_account" {
 resource "azurecaf_name" "multiple_resources" {
     name            = "cogsdemo2"
     resource_type   = "azurerm_cognitive_account"
-    resource_types   = ["azurerm_storage_account", "azurerm_resource_group"]
+    resource_types   = ["azurerm_storage_account"]
     prefixes        = ["a", "b"]
     suffixes        = ["prod"]
     random_length   = 4

@@ -11,7 +11,7 @@
         "regex": "\"[^0-9a-z]\""
     },
     {
-        "name": "azurerm_api_managment_service",
+        "name": "azurerm_api_management_service",
         "min_length": 1,
         "max_length": 50,
         "validatation_regex": "\"^[a-z][a-zA-Z0-9-][a-zA-Z0-9]{0,48}$\"",

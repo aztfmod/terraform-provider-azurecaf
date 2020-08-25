@@ -101,7 +101,7 @@ func TestAccResourceName_CafClassic(t *testing.T) {
 
 					testAccCafNamingValidation(
 						"azurecaf_name.classic_rg",
-						"pr1-pr2-rg-myrg-yodgp-su1-su2",
+						"pr1-pr2-rg-myrg-",
 						29,
 						"pr1-pr2"),
 					regexMatch("azurecaf_name.classic_rg", regexp.MustCompile(ResourceDefinitions["azurerm_resource_group"].ValidationRegExp), 1),
@@ -113,10 +113,22 @@ func TestAccResourceName_CafClassic(t *testing.T) {
 
 					testAccCafNamingValidation(
 						"azurecaf_name.classic_acr_invalid",
-						"pr1pr2crmyinvalidacrnameyodgpsu1su2",
+						"pr1pr2crmyinvalidacrname",
 						35,
 						"pr1pr2"),
 					regexMatch("azurecaf_name.classic_acr_invalid", regexp.MustCompile(ResourceDefinitions["azurerm_container_registry"].ValidationRegExp), 1),
+				),
+			},
+			{
+				Config: testAccResourceNameCafClassicConfig,
+				Check: resource.ComposeTestCheckFunc(
+
+					testAccCafNamingValidation(
+						"azurecaf_name.passthrough",
+						"passthrough",
+						11,
+						""),
+					regexMatch("azurecaf_name.passthrough", regexp.MustCompile(ResourceDefinitions["azurerm_container_registry"].ValidationRegExp), 1),
 				),
 			},
 		},
@@ -180,7 +192,7 @@ func TestValidResourceType_validParameters(t *testing.T) {
 		t.Fail()
 	}
 	if err != nil {
-		t.Logf("resource validation generated an unexecpted error %s", err.Error())
+		t.Logf("resource validation generated an unexpected error %s", err.Error())
 		t.Fail()
 	}
 }
@@ -200,7 +212,7 @@ func TestValidResourceType_invalidParameters(t *testing.T) {
 
 func TestGetResourceNameValid(t *testing.T) {
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
-	resourceName, err := getResourceName("azurerm_resource_group", "-", []string{"a", "b"}, "myrg", nil, "1234", "cafclassic", true, namePrecedence)
+	resourceName, err := getResourceName("azurerm_resource_group", "-", []string{"a", "b"}, "myrg", nil, "1234", "cafclassic", true, false, namePrecedence)
 	expected := "a-b-rg-myrg-1234"
 
 	if err != nil {
@@ -214,7 +226,7 @@ func TestGetResourceNameValid(t *testing.T) {
 }
 func TestGetResourceNameInvalidResourceType(t *testing.T) {
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
-	resourceName, err := getResourceName("azurerm_invalid", "-", []string{"a", "b"}, "myrg", nil, "1234", "cafclassic", true, namePrecedence)
+	resourceName, err := getResourceName("azurerm_invalid", "-", []string{"a", "b"}, "myrg", nil, "1234", "cafclassic", true, false, namePrecedence)
 	expected := "a-b-rg-myrg-1234"
 
 	if err == nil {
@@ -222,6 +234,17 @@ func TestGetResourceNameInvalidResourceType(t *testing.T) {
 		t.Fail()
 	}
 	if expected == resourceName {
+		t.Logf("valid name received while an error is expected")
+		t.Fail()
+	}
+}
+
+func TestGetResourceNamePassthrough(t *testing.T) {
+	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+	resourceName, _ := getResourceName("azurerm_resource_group", "-", []string{"a", "b"}, "myrg", nil, "1234", "cafclassic", true, true, namePrecedence)
+	expected := "myrg"
+
+	if expected != resourceName {
 		t.Logf("valid name received while an error is expected")
 		t.Fail()
 	}
@@ -247,5 +270,15 @@ resource "azurecaf_name" "classic_acr_invalid" {
 	suffixes        = ["su1", "su2"]
 	random_length   = 5
 	clean_input     = true
+}
+
+resource "azurecaf_name" "passthrough" {
+    name            = "passthRough"
+	resource_type   = "azurerm_container_registry"
+	prefixes        = ["pr1", "pr2"]
+	suffixes        = ["su1", "su2"]
+	random_length   = 5
+	clean_input     = true
+	passthrough     = true
 }
 `
