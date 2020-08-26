@@ -16,3 +16,8 @@ unittest:
 	
 test:
 	cd ./examples && terraform init && terraform plan && terraform apply -auto-approve
+
+generate_resource_table:
+	cat resourceDefinition.json | jq -r '.[] | "| \(.name)| \(.slug)| \(.min_length)| \(.max_length)| \(.lowercase)| \(.validation_regex)|"'
+	cat resourceDefinition_out_of_docs.json | jq -r '.[] | "| \(.name)| \(.slug)| \(.min_length)| \(.max_length)| \(.lowercase)| \(.validation_regex)|"'
+

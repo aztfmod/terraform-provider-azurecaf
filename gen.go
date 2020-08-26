@@ -35,7 +35,7 @@ type ResourceStructure struct {
 	// Regular expression to apply to the resource type
 	RegEx string `json:"regex,omitempty"`
 	// the Regular expression to validate the generated string
-	ValidationRegExp string `json:"validatation_regex,omitempty"`
+	ValidationRegExp string `json:"validation_regex,omitempty"`
 	// can the resource include dashes
 	Dashes bool `json:"dashes"`
 	// The scope of this name where it needs to be unique
