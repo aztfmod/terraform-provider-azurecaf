@@ -6,7 +6,6 @@ import (
 	"math/rand"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
@@ -28,12 +27,12 @@ func resourceNamingConvention() *schema.Resource {
 		SchemaVersion: 2,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Optional: true,
 				ForceNew: true,
 			},
-			"convention": &schema.Schema{
+			"convention": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  ConventionCafRandom,
@@ -45,28 +44,44 @@ func resourceNamingConvention() *schema.Resource {
 					ConventionPassThrough,
 				}, false),
 			},
-			"prefix": &schema.Schema{
+			"prefix": {
 				Type:     schema.TypeString,
 				Optional: true,
 				ForceNew: true,
 			},
-			"postfix": &schema.Schema{
+			"prefixes": {
+				Type: schema.TypeList,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+				Optional: true,
+				ForceNew: true,
+			},
+			"suffixes": {
+				Type: schema.TypeList,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+				Optional: true,
+				ForceNew: true,
+			},
+			"postfix": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ForceNew:     true,
 				ValidateFunc: validation.StringIsNotEmpty,
 			},
-			"max_length": &schema.Schema{
+			"max_length": {
 				Type:         schema.TypeInt,
 				Optional:     true,
 				ForceNew:     true,
 				ValidateFunc: validation.IntAtLeast(1),
 			},
-			"result": &schema.Schema{
+			"result": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"resource_type": &schema.Schema{
+			"resource_type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validation.StringInSlice(resourceMapsKeys, false),
@@ -112,7 +127,7 @@ func getResult(d *schema.ResourceData, meta interface{}) error {
 	log.Printf(regExFilter)
 
 	var cafPrefix string
-	var randomSuffix string = randSeq(int(resource.MaxLength))
+	var randomSuffix string = randSeq(int(resource.MaxLength), nil)
 
 	// configuring the prefix, cafprefix, name, postfix depending on the naming convention
 	switch convention {
@@ -196,28 +211,6 @@ func getResult(d *schema.ResourceData, meta interface{}) error {
 	d.Set("result", result)
 	// Set the attribute Id with the value
 	//d.SetId("none")
-	d.SetId(randSeq(16))
+	d.SetId(randSeq(16, nil))
 	return nil
-}
-
-var (
-	alphanumgenerator = []rune("01234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
-	alphagenerator    = []rune("abcdefghijklmnopqrstuvwxyz")
-)
-
-// Generate a random value to add to the resource names
-func randSeq(n int) string {
-	// initialize random seed
-	rand.Seed(time.Now().UnixNano())
-	// generate at least one random character
-	b := make([]rune, n)
-	for i := range b {
-		// We need the random generated string to start with a letter
-		if i == 0 {
-			b[i] = alphagenerator[rand.Intn(len(alphagenerator)-1)]
-		} else {
-			b[i] = alphanumgenerator[rand.Intn(len(alphanumgenerator)-1)]
-		}
-	}
-	return string(b)
 }

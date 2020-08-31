@@ -1,6 +1,8 @@
 # azurecaf_naming_convention
 
-The resource naming_convention implements a set of methodologies  to apply consistent resource naming using the default Microsoft Cloud Adoption Framework for Azure recommendations as per https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging.
+The resource naming_convention implements a set of methodologies to apply consistent resource naming using the default Microsoft Cloud Adoption Framework for Azure recommendations as per https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging.
+
+The naming_convention is the initial resource released as part of the azurecaf provider, the naming_convention supports a fixed set of resources as described in the documention. In order to provider more flexibility and support the large breadth of Azure resources available you can use the azurecaf_name resource.
 
 ## Exemple usage
 This example outputs one name, the result of the naming convention query. The result attribute returns the name based on the convention and parameters input.

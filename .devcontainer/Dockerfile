@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See https://go.microsoft.com/fwlink/?linkid=2090316 for license information.
 #-------------------------------------------------------------------------------------------------------------
 
-FROM golang:1.14.0 as base
+FROM golang:1.14.4 as base
 
 # Avoid warnings by switching to noninteractive
 ENV DEBIAN_FRONTEND=noninteractive
@@ -92,7 +92,7 @@ ENV DEBIAN_FRONTEND=dialog
 # Add terraform
 FROM base
 
-ENV versionTerraform=0.12.20
+ENV versionTerraform=0.12.28
 
 RUN apt-get update \
     && apt-get -y install \

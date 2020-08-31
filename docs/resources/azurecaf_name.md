@@ -1,10 +1,63 @@
-# Azurecaf provider
+# azurecaf_name
 
-The Azurecaf provider is a *logical provider* which means that it works entirely within Terraform's logic, and doesn't interact with any other services. The goal of this provider is to provider helper methods in implementing Azure landing zones using Terraform.
+The resource azurecaf_name implements a set of methodologies to apply consistent resource naming using the default Microsoft Cloud Adoption Framework for Azure recommendations as per https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging.
 
-The Azurecaf provider currently contains a two resources based on the Terraform Random_string provider. The naming_convention resources enforce is the first iteration of our naming convention implementation enforcing Azure Cloud Adoption Framework naming convention.
+the azurecaf_name supersedes the previous azurecaf_naming_convention. This new resource provides more flexibility and will be updated on a regular basis as new Azure services are released.
 
-As per the growing number of azure resources a new implementation is now available using the azurecaf_name resource to avoid breaking changes. The new implementation supports an extensive list of resource types and will be updated on a regular basis as new services are released
+The azurecaf_name resource allows you to:
+
+* Clean inputs to make sure they remain compliant with the allowed patterns for each Azure resource
+* Generate random characters to append at the end of the resource name
+* Handle prefix, suffixes (either manual or as per the Azure cloud adoption framework resource conventions)
+* Allow passthrough mode (simply validate the output)
+
+## Example usage
+This example outputs one name, the result of the naming convention query. The result attribute returns the name based on the convention and parameters input.
+
+The example generates a 23 characters name compatible with the specification for an Azure Resource Group
+dev-aztfmod-001
+
+```hcl
+resource "azurecaf_name" "rg_example" {
+  name            = "demogroup"
+	resource_type   = "azurerm_resource_group"
+	prefixes        = ["a", "b"]
+	suffixes        = ["y", "z"]
+	random_length   = 5
+	clean_input     = true
+}
+
+resource "azurerm_resource_group" "demo" {
+  name     = azurecaf_name.rg_example.result
+  location = "southeastasia"
+}
+```
+
+The provider generates a name using the input parameters and automatically appends a prefix (if defined), a caf prefix (resource type) and postfix (if defined) in addition to a generated padding string based on the selected naming convention.
+
+The example above would generate a name using the pattern [prefix]-[cafprefix]-[name]-[postfix]-[5_random_chars]:
+
+
+## Argument Reference
+
+The following arguments are supported:
+
+* **name** - (optional) the basename of the resource to create, the basename will be sanitized as per supported characters set for each Azure resources.
+* **prefixes** (optional) - a list of prefix to append as the first characters of the generated name - prefixes will be separated by the separator character
+* **suffixes** (optional) -  a list of additional suffix added after the basename, this is can be used to append resource index (eg. vm-001). Suffixes are separated by the separator character
+* **random_length** (optional) - default to ``0`` : configure additional characters to append to the generated resource name. Random characters will remain compliant with the set of allowed characters per resources and will be appended after the suffixes
+* **resource_type** (optional) -  describes the type of azure resource you are requesting a name from (eg. azure container registry: azurerm_container_registry). See the Resource Type section
+* **resource_types** (optional) -  a list of additional resource type should you want to use the same settings for a set of resources 
+* **separator** (optional) - defaults to ``-``. The separator character to use between prefixes, resource type, name, suffixes, random character
+* **clean_input** (optional) - defaults to ``true``. The separator character to use between prefixes, resource type, name, suffixes, random character
+* **passthrough** (optional) - defaults to ``false``. Enables the passthrough mode - in that case only the clean input option is considered and the prefixes, suffixes, random, and are ignored. The resource prefixe is not added either to the resulting string
+
+# Attributes Reference
+The following attributes are exported:
+
+* **id** - The id of the naming convention object
+* **result** - The generated named for an Azure Resource based on the input parameter and the selected naming convention
+* **results** - The generated name for the Azure resources based in the resource_types list
 
 ## Resource types
 
