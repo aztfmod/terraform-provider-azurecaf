@@ -42,7 +42,7 @@ jobs:
     - name: lint
       run: |
         export PATH=$PATH:$(go env GOPATH)/bin
-        go get github.com/bflad/tfproviderlint/cmd/tfproviderlint 
+        GO111MODULE=off go get github.com/bflad/tfproviderlint/cmd/tfproviderlint
         tfproviderlint ./...
     
     - name: Import GPG key
