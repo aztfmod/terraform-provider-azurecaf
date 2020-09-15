@@ -328,5 +328,28 @@
     "dashes": true,
     "lowercase": false,
     "regex": "\"[^0-9A-Za-z_-]\""
+  },
+  {
+    "name": "general",
+    "min_length": 1,
+    "max_length": 250,
+    "validation_regex": "\"^[a-zA-Z0-9-_]{1,250}$\"",
+    "scope": "global",
+    "slug": "",
+    "dashes": true,
+    "lowercase": false,
+    "regex": "\"[^0-9A-Za-z_-]\""
+  },
+  {
+    "name": "general_safe",
+    "min_length": 1,
+    "max_length": 250,
+    "validation_regex": "\"^[a-z]{1,250}$\"",
+    "scope": "global",
+    "slug": "",
+    "dashes": false,
+    "lowercase": true,
+    "regex": "\"[^a-z]\""
   }
+
 ]

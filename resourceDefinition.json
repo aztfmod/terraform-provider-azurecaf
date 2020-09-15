@@ -761,6 +761,28 @@
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
     },
     {
+        "name": "azurerm_recovery_services_vault",
+        "min_length": 2,
+        "max_length": 50,
+        "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9\\\\-]{1,49}$\"",
+        "scope": "resourceGroup",
+        "slug": "rsv",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[a-zA-Z0-9\\\\-]\""
+    },
+    {
+        "name": "azurerm_recovery_services_vault_backup_police",
+        "min_length": 3,
+        "max_length": 150,
+        "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9\\\\-]{1,148}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "rsvbp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[a-zA-Z0-9\\\\-]\""
+    },
+    {
         "name": "azurerm_data_factory_linked_service_mysql",
         "min_length": 1,
         "max_length": 260,
