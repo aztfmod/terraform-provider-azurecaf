@@ -445,12 +445,12 @@
         "name": "azurerm_kubernetes_cluster",
         "min_length": 1,
         "max_length": 63,
-        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,61}[a-zA-Z0-9]$\"",
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_]{0,61}[a-zA-Z0-9]$\"",
         "scope": "resourceGroup",
         "slug": "aks",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z_-]\""
     },
     {
         "name": "azurerm_cosmosdb_account",
@@ -759,6 +759,28 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
+    },
+    {
+        "name": "azurerm_recovery_services_vault",
+        "min_length": 2,
+        "max_length": 50,
+        "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9\\\\-]{1,49}$\"",
+        "scope": "resourceGroup",
+        "slug": "rsv",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[a-zA-Z0-9\\\\-]\""
+    },
+    {
+        "name": "azurerm_recovery_services_vault_backup_police",
+        "min_length": 3,
+        "max_length": 150,
+        "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9\\\\-]{1,148}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "rsvbp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[a-zA-Z0-9\\\\-]\""
     },
     {
         "name": "azurerm_data_factory_linked_service_mysql",
@@ -1570,13 +1592,13 @@
         "lowercase": false,
         "regex": "\"[\\\\s\\\\/$#&]\""
     },
-    {
+    {    
         "name": "azurerm_bastion_host",
         "min_length": 1,
         "max_length": 80,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$\"",
         "scope": "parent",
-        "slug": "snap",
+        "slug": "bast",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
@@ -2065,5 +2087,71 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
+    },
+    {
+        "name": "azurerm_app_service",
+        "min_length": 2,
+        "max_length": 60,
+        "validation_regex": "\"^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$\"",
+        "scope": "global",
+        "slug": "app",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_app_service_plan",
+        "min_length": 1,
+        "max_length": 40,
+        "validation_regex": "\"^[0-9A-Za-z-]{1,40}$\"",
+        "scope": "resourceGroup",
+        "slug": "plan",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_app_service_environment",
+        "min_length": 2,
+        "max_length": 37,
+        "validation_regex": "\"^[0-9A-Za-z-]{2,37}$\"",
+        "scope": "resourceGroup",
+        "slug": "plan",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_application_insights",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[^%&\\\\?/. ][^%&\\\\?/]{0,258}[^%&\\\\?/. ]$\"",
+        "scope": "resourceGroup",
+        "slug": "appi",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\""
+    },
+    {
+        "name": "aks_node_pool_linux",
+        "min_length": 1,
+        "max_length": 12,
+        "validation_regex": "\"^[a-z][0-9a-z]{0,11}$\"",
+        "scope": "parent",
+        "slug": "npl",
+        "dashes": false,
+        "lowercase": false,
+        "regex": "\"[^0-9a-z]\""
+    },
+    {
+        "name": "aks_node_pool_windows",
+        "min_length": 1,
+        "max_length": 6,
+        "validation_regex": "\"^[a-z][0-9a-z]{0,5}$\"",
+        "scope": "parent",
+        "slug": "npw",
+        "dashes": false,
+        "lowercase": false,
+        "regex": "\"[^0-9a-z]\""
     }
 ]
