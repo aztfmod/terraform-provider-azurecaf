@@ -86,7 +86,7 @@ var Resources = map[string]ResourceStructure{
 	"acr":    {"azure container registry", "acr", 5, 50, true, alphanum, "^[0-9A-Za-z]{5,50}$", true, "resourceGroup"},
 	"afw":    {"azure firewall", "afw", 1, 80, false, alphanumhup, "^[a-zA-Z][0-9A-Za-z_.-]{0,79}$", true, "resourceGroup"},
 	"agw":    {"application gateway", "agw", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,78}[0-9a-zA-Z_]$", true, "resourceGroup"},
-	"aks":    {"azure kubernetes service", "aks", 1, 63, false, alphanumu, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,61}[0-9a-zA-Z]$", true, "resourceGroup"},
+	"aks":    {"azure kubernetes service", "aks", 1, 63, false, alphanumhu, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,61}[0-9a-zA-Z]$", true, "resourceGroup"},
 	"aksdns": {"aksdns prefix", "aksdns", 3, 45, false, alphanumh, "^[a-zA-Z][0-9A-Za-z-]{0,43}[0-9a-zA-Z]$", true, "resourceGroup"},
 	"aksnpl": {"aks node pool for Linux", "aksnpl", 2, 12, true, alphanum, "^[a-zA-Z][0-9a-z]{0,11}$", true, "resourceGroup"},
 	"aksnpw": {"aks node pool for Windows", "aksnpw", 2, 6, true, alphanum, "^[a-zA-Z][0-9a-z]{0,5}$", true, "resourceGroup"},

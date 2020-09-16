@@ -1,6 +1,6 @@
 # azurecaf_name
 
-The resource azurecaf_name implements a set of methodologies to apply consistent resource naming using the default Microsoft Cloud Adoption Framework for Azure recommendations as per https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging.
+The resource azurecaf_name implements a set of methodologies to apply consistent resource naming using the default Microsoft Cloud Adoption Framework for Azure recommendations as per [naming-and-tagging](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging).
 
 the azurecaf_name supersedes the previous azurecaf_naming_convention. This new resource provides more flexibility and will be updated on a regular basis as new Azure services are released.
 
@@ -12,6 +12,7 @@ The azurecaf_name resource allows you to:
 * Allow passthrough mode (simply validate the output)
 
 ## Example usage
+
 This example outputs one name, the result of the naming convention query. The result attribute returns the name based on the convention and parameters input.
 
 The example generates a 23 characters name compatible with the specification for an Azure Resource Group
@@ -20,11 +21,11 @@ dev-aztfmod-001
 ```hcl
 resource "azurecaf_name" "rg_example" {
   name            = "demogroup"
-	resource_type   = "azurerm_resource_group"
-	prefixes        = ["a", "b"]
-	suffixes        = ["y", "z"]
-	random_length   = 5
-	clean_input     = true
+    resource_type   = "azurerm_resource_group"
+    prefixes        = ["a", "b"]
+    suffixes        = ["y", "z"]
+    random_length   = 5
+    clean_input     = true
 }
 
 resource "azurerm_resource_group" "demo" {
@@ -37,7 +38,6 @@ The provider generates a name using the input parameters and automatically appen
 
 The example above would generate a name using the pattern [prefix]-[cafprefix]-[name]-[postfix]-[5_random_chars]:
 
-
 ## Argument Reference
 
 The following arguments are supported:
@@ -47,12 +47,13 @@ The following arguments are supported:
 * **suffixes** (optional) -  a list of additional suffix added after the basename, this is can be used to append resource index (eg. vm-001). Suffixes are separated by the separator character
 * **random_length** (optional) - default to ``0`` : configure additional characters to append to the generated resource name. Random characters will remain compliant with the set of allowed characters per resources and will be appended after the suffixes
 * **resource_type** (optional) -  describes the type of azure resource you are requesting a name from (eg. azure container registry: azurerm_container_registry). See the Resource Type section
-* **resource_types** (optional) -  a list of additional resource type should you want to use the same settings for a set of resources 
+* **resource_types** (optional) -  a list of additional resource type should you want to use the same settings for a set of resources
 * **separator** (optional) - defaults to ``-``. The separator character to use between prefixes, resource type, name, suffixes, random character
 * **clean_input** (optional) - defaults to ``true``. The separator character to use between prefixes, resource type, name, suffixes, random character
 * **passthrough** (optional) - defaults to ``false``. Enables the passthrough mode - in that case only the clean input option is considered and the prefixes, suffixes, random, and are ignored. The resource prefixe is not added either to the resulting string
 
-# Attributes Reference
+## Attributes Reference
+
 The following attributes are exported:
 
 * **id** - The id of the naming convention object
@@ -61,13 +62,13 @@ The following attributes are exported:
 
 ## Resource types
 
-We define resource types as per: https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging 
+We define resource types as per [naming-and-tagging](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging)
 
 Current supported resource types:
 
 | Resource type           | Resource type code (short)  | minimum length  |  maximum length | lowercase only | validation regex                          |
 | ------------------------| ----------------------------|-----------------|-----------------|----------------|-------------------------------------------|
-| azurerm_analysis_services_server| as| 3| 63| true| "^[a-z][a-z0-9]{2,62}$" |
+| azurerm_analysis_services_server| as| 3| 63| true| "^[a-z][a-z0-9]{2,62}$"|
 | azurerm_api_management_service| apim| 1| 50| false| "^[a-z][a-zA-Z0-9-][a-zA-Z0-9]{0,48}$"|
 | azurerm_app_configuration| appcg| 5| 50| false| "^[a-zA-Z0-9_-]{5,50}$"|
 | azurerm_role_assignment| ra| 1| 64| false| "^[^%]{0,63}[^ %.]$"|
@@ -107,7 +108,7 @@ Current supported resource types:
 | azurerm_containerGroups| cg| 1| 63| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]$"|
 | azurerm_container_registry| cr| 1| 63| true| "^[a-zA-Z0-9]{1,63}$"|
 | azurerm_container_registry_webhook| crwh| 1| 50| false| "^[a-zA-Z0-9]{1,50}$"|
-| azurerm_kubernetes_cluster| aks| 1| 63| false| "^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,61}[a-zA-Z0-9]$"|
+| azurerm_kubernetes_cluster| aks| 1| 63| false| "^[a-zA-Z0-9][a-zA-Z0-9-_]{0,61}[a-zA-Z0-9]$"|
 | azurerm_cosmosdb_account| cosmos| 1| 63| false| "^[a-z0-9][a-zA-Z0-9-_.]{0,61}[a-zA-Z0-9]$"|
 | azurerm_custom_provider| prov| 3| 64| false| "^[^&%?\\/]{2,63}[^&%.?\\/ ]$"|
 | azurerm_mariadb_server| maria| 3| 63| false| "^[a-z0-9][a-zA-Z0-9-]{1,61}[a-z0-9]$"|
@@ -136,6 +137,8 @@ Current supported resource types:
 | azurerm_data_factory_pipeline| adfpl| 1| 260| false| "^[a-zA-Z0-9][^<>*%:.?\\+\\/]{0,258}[a-zA-Z0-9]$"|
 | azurerm_data_factory_linked_service_data_lake_storage_gen2| adfsvst| 1| 260| false| "^[a-zA-Z0-9][^<>*%:.?\\+\\/]{0,259}$"|
 | azurerm_data_factory_linked_service_key_vault| adfsvkv| 1| 260| false| "^[a-zA-Z0-9][^<>*%:.?\\+\\/]{0,259}$"|
+| azurerm_recovery_services_vault| rsv| 2| 50| false| "^[a-zA-Z][a-zA-Z0-9\\-]{1,49}$"|
+| azurerm_recovery_services_vault_backup_police| rsvbp| 3| 150| false| "^[a-zA-Z][a-zA-Z0-9\\-]{1,148}[a-zA-Z0-9]$"|
 | azurerm_data_factory_linked_service_mysql| adfsvmysql| 1| 260| false| "^[a-zA-Z0-9][^<>*%:.?\\+\\/]{0,259}$"|
 | azurerm_data_factory_linked_service_postgresql| adfsvpsql| 1| 260| false| "^[a-zA-Z0-9][^<>*%:.?\\+\\/]{0,259}$"|
 | azurerm_data_factory_linked_service_sql_server| adfsvmssql| 1| 260| false| "^[a-zA-Z0-9][^<>*%:.?\\+\\/]{0,259}$"|
@@ -209,7 +212,7 @@ Current supported resource types:
 | azurerm_storage_share_directory| sts| 3| 63| false| "^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$"|
 | azurerm_machine_learning_workspace| mlw| 1| 260| false| "^[^<>*%:.?\\+\\/]{0,259}[^<>*%:.?\\+\\/ ]$"|
 | azurerm_storage_blob| blob| 1| 1024| false| "^[^\\s\\/$#&]{1,1000}[^\\s\\/$#&]{0,24}$"|
-| azurerm_bastion_host| snap| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
+| azurerm_bastion_host| bast| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
 | azurerm_local_network_gateway| lgw| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
 | azurerm_application_gateway| agw| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
 | azurerm_express_route_gateway| ergw| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
@@ -254,6 +257,12 @@ Current supported resource types:
 | azurerm_eventgrid_topic| egt| 3| 50| false| "^[a-zA-Z0-9-]{3,50}$"|
 | azurerm_relay_namespace| rln| 6| 50| false| "^[a-zA-Z][a-zA-Z0-9-]{4,48}[a-zA-Z0-9]$"|
 | azurerm_relay_hybrid_connection| rlhc| 1| 260| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,258}[a-zA-Z0-9]$"|
+| azurerm_app_service| app| 2| 60| false| "^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$"|
+| azurerm_app_service_plan| plan| 1| 40| false| "^[0-9A-Za-z-]{1,40}$"|
+| azurerm_app_service_environment| plan| 2| 37| false| "^[0-9A-Za-z-]{2,37}$"|
+| azurerm_application_insights| appi| 1| 260| false| "^[^%&\\?/. ][^%&\\?/]{0,258}[^%&\\?/. ]$"|
+| aks_node_pool_linux| npl| 1| 12| false| "^[a-z][0-9a-z]{0,11}$"|
+| aks_node_pool_windows| npw| 1| 6| false| "^[a-z][0-9a-z]{0,5}$"|
 cat resourceDefinition_out_of_docs.json | jq -r '.[] | "| \(.name)| \(.slug)| \(.min_length)| \(.max_length)| \(.lowercase)| \(.validation_regex)|"'
 | azurerm_private_endpoint| pe| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
 | azurerm_private_service_connection| psc| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
@@ -285,3 +294,5 @@ cat resourceDefinition_out_of_docs.json | jq -r '.[] | "| \(.name)| \(.slug)| \(
 | databricks_cluster| dbc| 3| 30| false| "^[a-zA-Z0-9-_]{3,30}$"|
 | databricks_standard_cluster| dbsc| 3| 30| false| "^[a-zA-Z0-9-_]{3,30}$"|
 | databricks_high_concurrency_cluster| dbhcc| 3| 30| false| "^[a-zA-Z0-9-_]{3,30}$"|
+| general| | 1| 250| false| "^[a-zA-Z0-9-_]{1,250}$"|
+| general_safe| | 1| 250| true| "^[a-z]{1,250}$"|

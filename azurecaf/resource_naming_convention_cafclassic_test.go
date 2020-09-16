@@ -68,7 +68,7 @@ func TestAccCafNamingConvention_Classic(t *testing.T) {
 					testAccCafNamingValidation(
 						"azurecaf_naming_convention.classic_aks",
 						"kubedemo",
-						11,
+						12,
 						"aks"),
 					regexMatch("azurecaf_naming_convention.classic_aks", regexp.MustCompile(Resources["aks"].ValidationRegExp), 1),
 					testAccCafNamingValidation(
