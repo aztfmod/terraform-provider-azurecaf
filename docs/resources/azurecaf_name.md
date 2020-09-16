@@ -51,6 +51,7 @@ The following arguments are supported:
 * **separator** (optional) - defaults to ``-``. The separator character to use between prefixes, resource type, name, suffixes, random character
 * **clean_input** (optional) - defaults to ``true``. The separator character to use between prefixes, resource type, name, suffixes, random character
 * **passthrough** (optional) - defaults to ``false``. Enables the passthrough mode - in that case only the clean input option is considered and the prefixes, suffixes, random, and are ignored. The resource prefixe is not added either to the resulting string
+* **use_slug** (optional) - defaults to ``true``. If a slug should be added to the name - If you put false no slug (the few letters that identify the resource type) will be added to the name
 
 ## Attributes Reference
 
