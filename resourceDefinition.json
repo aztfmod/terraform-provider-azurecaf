@@ -986,7 +986,7 @@
         "max_length": 59,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,57}[a-zA-Z0-9]$\"",
         "scope": "global",
-        "slug": "rsv",
+        "slug": "rser",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\""
