@@ -417,6 +417,7 @@ func getResourceName(resourceTypeName string, separator string,
 		separator = cleanString(separator, resource)
 		randomSuffix = cleanString(randomSuffix, resource)
 	}
+
 	var resourceName string
 
 	if passthrough {
@@ -431,7 +432,7 @@ func getResourceName(resourceTypeName string, separator string,
 	}
 
 	if !validationRegEx.MatchString(resourceName) {
-		return "", fmt.Errorf("Invalid name for Random CAF naming %s %s, the pattern %s doesn't match %s", resource.ResourceTypeName, name, resource.ValidationRegExp, resourceName)
+		return "", fmt.Errorf("Invalid name for CAF naming %s %s, the pattern %s doesn't match %s", resource.ResourceTypeName, name, resource.ValidationRegExp, resourceName)
 	}
 
 	return resourceName, nil

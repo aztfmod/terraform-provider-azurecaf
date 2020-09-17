@@ -764,12 +764,12 @@
         "name": "azurerm_recovery_services_vault",
         "min_length": 2,
         "max_length": 50,
-        "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9\\\\-]{1,49}$\"",
+        "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9-]{1,49}$\"",
         "scope": "resourceGroup",
         "slug": "rsv",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[a-zA-Z0-9\\\\-]\""
+        "regex": "`[^a-zA-Z0-9-]`"
     },
     {
         "name": "azurerm_recovery_services_vault_backup_police",
@@ -780,7 +780,7 @@
         "slug": "rsvbp",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[a-zA-Z0-9\\\\-]\""
+        "regex": "`[^a-zA-Z0-9-]`"
     },
     {
         "name": "azurerm_data_factory_linked_service_mysql",
@@ -1744,7 +1744,7 @@
         "slug": "sqlfw",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^<>*%:?\\\\+\\\\/]\""
+        "regex": "`[<>*%:?\\\\+\\\\/]`"
     },
     {
         "name": "azurerm_log_analytics_workspace",
@@ -2064,7 +2064,7 @@
         "slug": "egt",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-]\""
+        "regex": "`[^0-9A-Za-z-]`"
     },
     {
         "name": "azurerm_relay_namespace",
@@ -2185,6 +2185,6 @@
         "slug": "syfw",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^<>*%:?\\\\+\\\\/]\""
+        "regex": "`[<>*%:?\\\\+\\\\/]`"
     }
 ]
