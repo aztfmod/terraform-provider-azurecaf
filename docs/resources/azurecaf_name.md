@@ -46,12 +46,13 @@ The following arguments are supported:
 * **prefixes** (optional) - a list of prefix to append as the first characters of the generated name - prefixes will be separated by the separator character
 * **suffixes** (optional) -  a list of additional suffix added after the basename, this is can be used to append resource index (eg. vm-001). Suffixes are separated by the separator character
 * **random_length** (optional) - default to ``0`` : configure additional characters to append to the generated resource name. Random characters will remain compliant with the set of allowed characters per resources and will be appended after the suffixes
+* **random_seed** (optional) - default to ``0`` : Define the seed to be used for random generator. 0 will not be respected and will generate a seed based in the unix time of the generation.
 * **resource_type** (optional) -  describes the type of azure resource you are requesting a name from (eg. azure container registry: azurerm_container_registry). See the Resource Type section
 * **resource_types** (optional) -  a list of additional resource type should you want to use the same settings for a set of resources
 * **separator** (optional) - defaults to ``-``. The separator character to use between prefixes, resource type, name, suffixes, random character
-* **clean_input** (optional) - defaults to ``true``. The separator character to use between prefixes, resource type, name, suffixes, random character
+* **clean_input** (optional) - defaults to ``true``. remove any noncompliant character from the name, suffix or prefix.
 * **passthrough** (optional) - defaults to ``false``. Enables the passthrough mode - in that case only the clean input option is considered and the prefixes, suffixes, random, and are ignored. The resource prefixe is not added either to the resulting string
-* **use_slug** (optional) - defaults to ``true``. If a slug should be added to the name - If you put false no slug (the few letters that identify the resource type) will be added to the name
+* **use_slug** (optional) - defaults to ``true``. If a slug should be added to the name - If you put false no slug (the few letters that identify the resource type) will be added to the name.
 
 ## Attributes Reference
 
@@ -264,6 +265,9 @@ Current supported resource types:
 | azurerm_application_insights| appi| 1| 260| false| "^[^%&\\?/. ][^%&\\?/]{0,258}[^%&\\?/. ]$"|
 | aks_node_pool_linux| npl| 1| 12| false| "^[a-z][0-9a-z]{0,11}$"|
 | aks_node_pool_windows| npw| 1| 6| false| "^[a-z][0-9a-z]{0,5}$"|
+| azurerm_synapse_workspace| syws| 1| 45| true| "^[0-9a-z]{1,45}$"|
+| azurerm_synapse_spark_pool| sysp| 1| 15| true| "^[0-9a-zA-Z]{1,15}$"|
+| azurerm_synapse_firewall_rule| syfw| 1| 128| false| "^[^<>*%:?\\+\\/]{1,127}[^<>*%:.?\\+\\/]$"|
 cat resourceDefinition_out_of_docs.json | jq -r '.[] | "| \(.name)| \(.slug)| \(.min_length)| \(.max_length)| \(.lowercase)| \(.validation_regex)|"'
 | azurerm_private_endpoint| pe| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
 | azurerm_private_service_connection| psc| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|

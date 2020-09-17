@@ -2153,5 +2153,38 @@
         "dashes": false,
         "lowercase": false,
         "regex": "\"[^0-9a-z]\""
+    },
+    {
+        "name": "azurerm_synapse_workspace",
+        "min_length": 1,
+        "max_length": 45,
+        "validation_regex": "\"^[0-9a-z]{1,45}$\"",
+        "scope": "resourceGroup",
+        "slug": "syws",
+        "dashes": false,
+        "lowercase": true,
+        "regex": "\"[^0-9a-z]\""
+    },
+    {
+        "name": "azurerm_synapse_spark_pool",
+        "min_length": 1,
+        "max_length": 15,
+        "validation_regex": "\"^[0-9a-zA-Z]{1,15}$\"",
+        "scope": "parent",
+        "slug": "sysp",
+        "dashes": false,
+        "lowercase": true,
+        "regex": "\"[^0-9a-zA-Z]\""
+    },
+    {
+        "name": "azurerm_synapse_firewall_rule",
+        "min_length": 1,
+        "max_length": 128,
+        "validation_regex": "\"^[^<>*%:?\\\\+\\\\/]{1,127}[^<>*%:.?\\\\+\\\\/]$\"",
+        "scope": "parent",
+        "slug": "syfw",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^<>*%:?\\\\+\\\\/]\""
     }
 ]

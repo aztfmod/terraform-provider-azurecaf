@@ -66,7 +66,7 @@ func randSeq(length int, seed *int64) string {
 		return ""
 	}
 	// initialize random seed
-	if seed == nil {
+	if seed == nil || *seed == 0 {
 		value := time.Now().UnixNano()
 		seed = &value
 	}
