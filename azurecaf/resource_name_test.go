@@ -1,6 +1,7 @@
 package azurecaf
 
 import (
+	"reflect"
 	"regexp"
 	"testing"
 
@@ -263,6 +264,28 @@ func TestGetResourceNamePassthrough(t *testing.T) {
 	if expected != resourceName {
 		t.Logf("valid name received while an error is expected")
 		t.Fail()
+	}
+}
+
+func testResourceNameStateDataV2() map[string]interface{} {
+	return map[string]interface{}{}
+}
+
+func testResourceNameStateDataV3() map[string]interface{} {
+	return map[string]interface{}{
+		"use_slug": true,
+	}
+}
+
+func TestResourceExampleInstanceStateUpgradeV2(t *testing.T) {
+	expected := testResourceNameStateDataV3()
+	actual, err := resourceNameStateUpgradeV2(testResourceNameStateDataV2(), nil)
+	if err != nil {
+		t.Fatalf("error migrating state: %s", err)
+	}
+
+	if !reflect.DeepEqual(expected, actual) {
+		t.Fatalf("\n\nexpected:\n\n%#v\n\ngot:\n\n%#v\n\n", expected, actual)
 	}
 }
 
