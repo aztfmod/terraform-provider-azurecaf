@@ -158,7 +158,7 @@ Current supported resource types:
 | azurerm_hdinsight_kafka_cluster| kafka| 3| 59| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{1,57}[a-zA-Z0-9]$"|
 | azurerm_hdinsight_interactive_query_cluster| iqr| 3| 59| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{1,57}[a-zA-Z0-9]$"|
 | azurerm_hdinsight_ml_services_cluster| mls| 3| 59| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{1,57}[a-zA-Z0-9]$"|
-| azurerm_hdinsight_rserver_cluster| rsv| 3| 59| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{1,57}[a-zA-Z0-9]$"|
+| azurerm_hdinsight_rserver_cluster| rser| 3| 59| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{1,57}[a-zA-Z0-9]$"|
 | azurerm_hdinsight_spark_cluster| spark| 3| 59| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{1,57}[a-zA-Z0-9]$"|
 | azurerm_hdinsight_storm_cluster| storm| 3| 59| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{1,57}[a-zA-Z0-9]$"|
 | azurerm_iotcentral_application| iotapp| 2| 63| true| "^[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$"|
