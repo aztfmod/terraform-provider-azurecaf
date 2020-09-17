@@ -136,6 +136,27 @@ func TestAccResourceName_CafClassic(t *testing.T) {
 	})
 }
 
+func TestAccResourceNameRsv_CafClassic(t *testing.T) {
+	resource.UnitTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccResourceNameCafClassicConfigRsv,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCafNamingValidation(
+						"azurecaf_name.rsv",
+						"pr1-rsv-test-gm-su1",
+						19,
+						""),
+					regexMatch("azurecaf_name.rsv", regexp.MustCompile(ResourceDefinitions["azurerm_recovery_services_vault"].ValidationRegExp), 1),
+				),
+			},
+		},
+	})
+}
+
 func TestComposeName(t *testing.T) {
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 	prefixes := []string{"a", "b"}
@@ -226,6 +247,21 @@ func TestGetResourceNameValid(t *testing.T) {
 	}
 }
 
+func TestGetResourceNameValidRsv(t *testing.T) {
+	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+	resourceName, err := getResourceName("azurerm_recovery_services_vault", "-", []string{"a", "b"}, "test", nil, "1234", "cafclassic", true, false, true, namePrecedence)
+	expected := "a-b-rsv-test-1234"
+
+	if err != nil {
+		t.Logf("getResource Name generated an error %s", err.Error())
+		t.Fail()
+	}
+	if expected != resourceName {
+		t.Logf("invalid name, expected %s got %s", expected, resourceName)
+		t.Fail()
+	}
+}
+
 func TestGetResourceNameValidNoSlug(t *testing.T) {
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 	resourceName, err := getResourceName("azurerm_resource_group", "-", []string{"a", "b"}, "myrg", nil, "1234", "cafclassic", true, false, false, namePrecedence)
@@ -298,6 +334,7 @@ resource "azurecaf_name" "classic_rg" {
 	resource_type   = "azurerm_resource_group"
 	prefixes        = ["pr1", "pr2"]
 	suffixes        = ["su1", "su2"]
+	random_seed     = 1
 	random_length   = 5
 	clean_input     = true
 }
@@ -307,6 +344,7 @@ resource "azurecaf_name" "classic_acr_invalid" {
 	resource_type   = "azurerm_container_registry"
 	prefixes        = ["pr1", "pr2"]
 	suffixes        = ["su1", "su2"]
+	random_seed     = 1
 	random_length   = 5
 	clean_input     = true
 }
@@ -316,8 +354,26 @@ resource "azurecaf_name" "passthrough" {
 	resource_type   = "azurerm_container_registry"
 	prefixes        = ["pr1", "pr2"]
 	suffixes        = ["su1", "su2"]
+	random_seed     = 1
 	random_length   = 5
 	clean_input     = true
 	passthrough     = true
+}
+`
+
+const testAccResourceNameCafClassicConfigRsv = `
+
+
+# Resource Group
+
+resource "azurecaf_name" "rsv" {
+    name            = "test"
+	resource_type   = "azurerm_recovery_services_vault"
+	prefixes        = ["pr1"]
+	suffixes        = ["su1"]
+	random_length   = 2
+	random_seed     = 1
+	clean_input     = true
+	passthrough     = false
 }
 `

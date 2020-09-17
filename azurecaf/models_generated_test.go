@@ -21,6 +21,22 @@ func TestCompileRegexValidation(t *testing.T) {
 	}
 }
 
+func TestStrimingNameRegexValidation(t *testing.T) {
+	for _, resource := range ResourceDefinitions {
+		reg, err := regexp.Compile(resource.RegEx)
+		if err != nil {
+			t.Logf("Error on the regex %s for the resource %s error %v", resource.RegEx, resource.ResourceTypeName, err.Error())
+			t.Fail()
+		}
+		content := "abcde"
+		result := reg.ReplaceAllString(content, "")
+		if len(result) != 5 {
+			t.Logf("%s : expected not be clear anything startd with %s end with %s", resource.ResourceTypeName, content, result)
+			t.Fail()
+		}
+	}
+}
+
 func TestRegexValidationMinLength(t *testing.T) {
 	content := "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 	contentBase := []rune(content)

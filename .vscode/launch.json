@@ -8,6 +8,10 @@
 		"request": "launch",
 		"mode": "test",
 		//"program": "${workspaceFolder}/main.go"
+		"args": [
+			"check-go-version",
+			"false"
+		],
 		"program": "${file}"
 	},
  		{
