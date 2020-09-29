@@ -2177,6 +2177,17 @@
         "regex": "\"[^0-9a-zA-Z]\""
     },
     {
+        "name": "azurerm_synapse_sql_pool ",
+        "min_length": 1,
+        "max_length": 15,
+        "validation_regex": "\"^[0-9a-zA-Z]{1,15}$\"",
+        "scope": "parent",
+        "slug": "sysql",
+        "dashes": false,
+        "lowercase": true,
+        "regex": "\"[^0-9a-zA-Z]\""
+    },
+    {
         "name": "azurerm_synapse_firewall_rule",
         "min_length": 1,
         "max_length": 128,
