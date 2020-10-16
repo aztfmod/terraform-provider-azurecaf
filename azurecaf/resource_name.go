@@ -40,6 +40,19 @@ func resourceNameV2() *schema.Resource {
 				Optional: true,
 				ForceNew: true,
 			},
+			"name_precedence": {
+				Type:     schema.TypeList,
+				MinItems: 3,
+				MaxItems: 3,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+					ValidateFunc: validation.All(validation.StringInSlice([]string{
+						"name", "slug", "random",
+					}, true), validation.ListOfUniqueStrings),
+				},
+				Optional: true,
+				ForceNew: true,
+			},
 			"random_length": {
 				Type:         schema.TypeInt,
 				Optional:     true,
@@ -317,7 +330,7 @@ func composeName(separator string,
 		case "slug":
 			if len(slug) > 0 {
 				if currentlength+len(slug)+initialized < maxlength {
-					contents = append([]string{slug}, contents...)
+					contents = append(contents, slug)
 					currentlength = currentlength + len(slug) + initialized
 				}
 			}
@@ -454,8 +467,11 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	convention := ConventionCafClassic
 
 	randomSuffix := randSeq(int(randomLength), &randomSeed)
-	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
-
+	namePrecedence := []string{"slug", "name", "random"}
+	if np := d.Get("name_precedence"); np != nil {
+		namePrecedence = convertInterfaceToString(np.([]interface{}))
+	}
+	namePrecedence = append(namePrecedence, "suffixes", "prefixes")
 	isValid, err := validateResourceType(resourceType, resourceTypes)
 	if !isValid {
 		return err

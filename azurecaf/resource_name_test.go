@@ -9,6 +9,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
+var DefaultNamePrecedence = []string{"slug", "name", "random", "suffixes", "prefixes"}
+
 func setData(prefixes []string, name string, suffixes []string, cleanInput bool) *schema.ResourceData {
 	data := &schema.ResourceData{}
 	data.Set("name", name)
@@ -158,7 +160,7 @@ func TestAccResourceNameRsv_CafClassic(t *testing.T) {
 }
 
 func TestComposeName(t *testing.T) {
-	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+	namePrecedence := DefaultNamePrecedence
 	prefixes := []string{"a", "b"}
 	suffixes := []string{"c", "d"}
 	name := composeName("-", prefixes, "name", "slug", suffixes, "rd", 21, namePrecedence)
@@ -169,8 +171,20 @@ func TestComposeName(t *testing.T) {
 	}
 }
 
+func TestComposeNameWithPrecedence(t *testing.T) {
+	namePrecedence := []string{"random", "name", "slug", "suffixes", "prefixes"}
+	prefixes := []string{"a", "b"}
+	suffixes := []string{"c", "d"}
+	name := composeName("-", prefixes, "name", "slug", suffixes, "rd", 21, namePrecedence)
+	expected := "a-b-rd-name-slug-c-d"
+	if name != expected {
+		t.Logf("Fail to generate name expected %s received %s", expected, name)
+		t.Fail()
+	}
+}
+
 func TestComposeNameCutCorrect(t *testing.T) {
-	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+	namePrecedence := DefaultNamePrecedence
 	prefixes := []string{"a", "b"}
 	suffixes := []string{"c", "d"}
 	name := composeName("-", prefixes, "name", "slug", suffixes, "rd", 20, namePrecedence)
@@ -182,7 +196,7 @@ func TestComposeNameCutCorrect(t *testing.T) {
 }
 
 func TestComposeNameCutCorrectSuffixes(t *testing.T) {
-	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+	namePrecedence := DefaultNamePrecedence
 	prefixes := []string{"a", "b"}
 	suffixes := []string{"c", "d"}
 	name := composeName("-", prefixes, "name", "slug", suffixes, "rd", 15, namePrecedence)
@@ -194,7 +208,7 @@ func TestComposeNameCutCorrectSuffixes(t *testing.T) {
 }
 
 func TestComposeEmptyStringArray(t *testing.T) {
-	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+	namePrecedence := DefaultNamePrecedence
 	prefixes := []string{"", "b"}
 	suffixes := []string{"", "d"}
 	name := composeName("-", prefixes, "", "", suffixes, "", 15, namePrecedence)
@@ -233,7 +247,7 @@ func TestValidResourceType_invalidParameters(t *testing.T) {
 }
 
 func TestGetResourceNameValid(t *testing.T) {
-	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+	namePrecedence := DefaultNamePrecedence
 	resourceName, err := getResourceName("azurerm_resource_group", "-", []string{"a", "b"}, "myrg", nil, "1234", "cafclassic", true, false, true, namePrecedence)
 	expected := "a-b-rg-myrg-1234"
 
@@ -248,7 +262,7 @@ func TestGetResourceNameValid(t *testing.T) {
 }
 
 func TestGetResourceNameValidRsv(t *testing.T) {
-	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+	namePrecedence := DefaultNamePrecedence
 	resourceName, err := getResourceName("azurerm_recovery_services_vault", "-", []string{"a", "b"}, "test", nil, "1234", "cafclassic", true, false, true, namePrecedence)
 	expected := "a-b-rsv-test-1234"
 
@@ -263,7 +277,7 @@ func TestGetResourceNameValidRsv(t *testing.T) {
 }
 
 func TestGetResourceNameValidNoSlug(t *testing.T) {
-	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+	namePrecedence := DefaultNamePrecedence
 	resourceName, err := getResourceName("azurerm_resource_group", "-", []string{"a", "b"}, "myrg", nil, "1234", "cafclassic", true, false, false, namePrecedence)
 	expected := "a-b-myrg-1234"
 
@@ -278,7 +292,7 @@ func TestGetResourceNameValidNoSlug(t *testing.T) {
 }
 
 func TestGetResourceNameInvalidResourceType(t *testing.T) {
-	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+	namePrecedence := DefaultNamePrecedence
 	resourceName, err := getResourceName("azurerm_invalid", "-", []string{"a", "b"}, "myrg", nil, "1234", "cafclassic", true, false, true, namePrecedence)
 	expected := "a-b-rg-myrg-1234"
 
@@ -293,7 +307,7 @@ func TestGetResourceNameInvalidResourceType(t *testing.T) {
 }
 
 func TestGetResourceNamePassthrough(t *testing.T) {
-	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+	namePrecedence := DefaultNamePrecedence
 	resourceName, _ := getResourceName("azurerm_resource_group", "-", []string{"a", "b"}, "myrg", nil, "1234", "cafclassic", true, true, true, namePrecedence)
 	expected := "myrg"
 
