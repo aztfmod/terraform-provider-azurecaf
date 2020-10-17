@@ -2208,5 +2208,16 @@
         "dashes": false,
         "lowercase": true,
         "regex": "\"[^0-9a-zA-Z_-]\""
+    },
+    {
+        "name": "azurerm_private_dns_zone_virtual_network_link",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "pnetlk",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\""
     }
 ]
