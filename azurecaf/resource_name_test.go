@@ -158,7 +158,7 @@ func TestAccResourceNameRsv_CafClassic(t *testing.T) {
 }
 
 func TestComposeName(t *testing.T) {
-	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+	namePrecedence := []string{"name", "random", "slug", "suffixes", "prefixes"}
 	prefixes := []string{"a", "b"}
 	suffixes := []string{"c", "d"}
 	name := composeName("-", prefixes, "name", "slug", suffixes, "rd", 21, namePrecedence)
@@ -173,8 +173,20 @@ func TestComposeNameCutCorrect(t *testing.T) {
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 	prefixes := []string{"a", "b"}
 	suffixes := []string{"c", "d"}
-	name := composeName("-", prefixes, "name", "slug", suffixes, "rd", 20, namePrecedence)
+	name := composeName("-", prefixes, "name", "slug", suffixes, "rd", 19, namePrecedence)
 	expected := "b-slug-name-rd-c-d"
+	if name != expected {
+		t.Logf("Fail to generate name expected %s received %s", expected, name)
+		t.Fail()
+	}
+}
+
+func TestComposeNameCutMaxLength(t *testing.T) {
+	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+	prefixes := []string{}
+	suffixes := []string{}
+	name := composeName("-", prefixes, "aaaaaaaaaa", "bla", suffixes, "", 10, namePrecedence)
+	expected := "aaaaaaaaaa"
 	if name != expected {
 		t.Logf("Fail to generate name expected %s received %s", expected, name)
 		t.Fail()
