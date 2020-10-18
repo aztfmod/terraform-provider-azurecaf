@@ -2202,7 +2202,7 @@
         "name": "azurerm_user_assigned_identity",
         "min_length": 3,
         "max_length": 128,
-        "validation_regex": "\"^[0-9a-zA-Z]{3,128}$\"",
+        "validation_regex": "\"^[0-9a-zA-Z_-]{3,128}$\"",
         "scope": "parent",
         "slug": "msi",
         "dashes": false,
