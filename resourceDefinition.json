@@ -2116,7 +2116,7 @@
         "max_length": 36,
         "validation_regex": "\"^[0-9A-Za-z-]{2,36}$\"",
         "scope": "resourceGroup",
-        "slug": "plan",
+        "slug": "ase",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\""
