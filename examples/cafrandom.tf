@@ -153,6 +153,42 @@ output "evh_random" {
   description = "Random result based on the resource type"
 }
 
+# Azure Kubernetes Services
+resource "azurecaf_naming_convention" "aks" {
+    convention      = "cafrandom"
+    name            = "mykubecluster"
+    prefix          = "rdmi"
+    resource_type   = "aks"
+}
+
+output "aks_id" {
+  value       = azurecaf_naming_convention.aks.id
+  description = "Id of the resource's name"
+}
+
+output "aks_random" {
+  value       = azurecaf_naming_convention.aks.result
+  description = "Random result based on the resource type"
+}
+
+# Azure Kubernetes Services DNS Prefix
+resource "azurecaf_naming_convention" "aksdns" {
+    convention      = "cafrandom"
+    name            = "mykubedns"
+    prefix          = "rdmi"
+    resource_type   = "aksdns"
+}
+
+output "aksdns_id" {
+  value       = azurecaf_naming_convention.aksdns.id
+  description = "Id of the resource's name"
+}
+
+output "aksdns_random" {
+  value       = azurecaf_naming_convention.aksdns.result
+  description = "Random result based on the resource type"
+}
+
 # Key Vault
 resource "azurecaf_naming_convention" "kv" {
     convention      = "cafrandom"

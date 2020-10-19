@@ -7,10 +7,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
-func TestAccCafNamingConventionClassic(t *testing.T) {
+func TestAccCafNamingConvention_Classic(t *testing.T) {
 	resource.UnitTest(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceCafClassicConfig,
@@ -64,6 +65,18 @@ func TestAccCafNamingConventionClassic(t *testing.T) {
 						15,
 						"kv"),
 					regexMatch("azurecaf_naming_convention.classic_kv", regexp.MustCompile(Resources["kv"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
+						"azurecaf_naming_convention.classic_aks",
+						"kubedemo",
+						12,
+						"aks"),
+					regexMatch("azurecaf_naming_convention.classic_aks", regexp.MustCompile(Resources["aks"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
+						"azurecaf_naming_convention.classic_aksdns",
+						"kubedemodns",
+						18,
+						"aksdns"),
+					regexMatch("azurecaf_naming_convention.classic_aksdns", regexp.MustCompile(Resources["aksdns"].ValidationRegExp), 1),
 					testAccCafNamingValidation(
 						"azurecaf_naming_convention.classic_la",
 						"logs",
@@ -119,9 +132,6 @@ func TestAccCafNamingConventionClassic(t *testing.T) {
 }
 
 const testAccResourceCafClassicConfig = `
-provider "azurecaf" {
-
-}
 
 #Storage account test
 resource "azurecaf_naming_convention" "classic_st" {
@@ -177,6 +187,19 @@ resource "azurecaf_naming_convention" "classic_kv" {
     convention      = "cafclassic"
     name            = "passepartout"
     resource_type   = "kv"
+}
+
+# Azure Kubernetes Service
+resource "azurecaf_naming_convention" "classic_aks" {
+    convention      = "cafclassic"
+    name            = "kubedemo"
+    resource_type   = "aks"
+}
+# Azure Kubernetes Service
+resource "azurecaf_naming_convention" "classic_aksdns" {
+    convention      = "cafclassic"
+    name            = "kubedemodns"
+    resource_type   = "aksdns"
 }
 
 # Log Analytics Workspace

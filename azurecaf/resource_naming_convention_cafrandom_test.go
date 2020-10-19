@@ -7,10 +7,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
-func TestAccCafNamingConventionCafRandom(t *testing.T) {
+func TestAccCafNamingConventionCaf_Random(t *testing.T) {
 	resource.UnitTest(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceCafRandomConfig,
@@ -70,6 +71,18 @@ func TestAccCafNamingConventionCafRandom(t *testing.T) {
 						Resources["kv"].MaxLength,
 						"rdmi"),
 					regexMatch("azurecaf_naming_convention.kv", regexp.MustCompile(Resources["kv"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
+						"azurecaf_naming_convention.aks",
+						"kubedemo",
+						Resources["aks"].MaxLength,
+						"rdmi"),
+					regexMatch("azurecaf_naming_convention.aks", regexp.MustCompile(Resources["aks"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
+						"azurecaf_naming_convention.aksdns",
+						"kubedemodns",
+						Resources["aksdns"].MaxLength,
+						"rdmi"),
+					regexMatch("azurecaf_naming_convention.aksdns", regexp.MustCompile(Resources["aksdns"].ValidationRegExp), 1),
 					testAccCafNamingValidation(
 						"azurecaf_naming_convention.la",
 						"logs",
@@ -195,6 +208,21 @@ resource "azurecaf_naming_convention" "kv" {
     name            = "passepartout"
     prefix          = "rdmi"
     resource_type   = "kv"
+}
+
+# Azure Kubernetes Service
+resource "azurecaf_naming_convention" "aks" {
+    convention      = "cafrandom"
+    name            = "kubedemo"
+    prefix          = "rdmi"
+    resource_type   = "aks"
+}
+# Azure Kubernetes Service
+resource "azurecaf_naming_convention" "aksdns" {
+    convention      = "cafrandom"
+    name            = "kubedemodns"
+    prefix          = "rdmi"
+    resource_type   = "aksdns"
 }
 
 # Log Analytics Workspace

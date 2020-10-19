@@ -7,10 +7,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
-func TestAccCafNamingConventionPassthrough(t *testing.T) {
+func TestAccCafNamingConvention_Passthrough(t *testing.T) {
 	resource.UnitTest(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourcePassthroughConfig,
@@ -47,6 +48,30 @@ func TestAccCafNamingConventionPassthrough(t *testing.T) {
 						"TEST"),
 					regexMatch("azurecaf_naming_convention.passthrough_appi", regexp.MustCompile(Resources["appi"].ValidationRegExp), 1),
 					testAccCafNamingValidation(
+						"azurecaf_naming_convention.passthrough_aks",
+						"kubedemo",
+						8,
+						"kube"),
+					regexMatch("azurecaf_naming_convention.passthrough_aks", regexp.MustCompile(Resources["aks"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
+						"azurecaf_naming_convention.passthrough_aksdns",
+						"kubedemodns",
+						11,
+						"kube"),
+					regexMatch("azurecaf_naming_convention.passthrough_aksdns", regexp.MustCompile(Resources["aksdns"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
+						"azurecaf_naming_convention.passthrough_aksnpl",
+						"knplinux",
+						8,
+						"knp"),
+					regexMatch("azurecaf_naming_convention.passthrough_aksnpl", regexp.MustCompile(Resources["aksnpl"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
+						"azurecaf_naming_convention.passthrough_aksnpw",
+						"knpwin",
+						6,
+						"knp"),
+					regexMatch("azurecaf_naming_convention.passthrough_aksnpw", regexp.MustCompile(Resources["aksnpw"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
 						"azurecaf_naming_convention.passthrough_ase",
 						"TEST-DEV-ASE-RG",
 						15,
@@ -77,10 +102,6 @@ func TestAccCafNamingConventionPassthrough(t *testing.T) {
 }
 
 const testAccResourcePassthroughConfig = `
-provider "azurecaf" {
-
-}
-
 #Storage account test
 resource "azurecaf_naming_convention" "logs_inv" {
     convention      = "passthrough"
@@ -114,6 +135,34 @@ resource "azurecaf_naming_convention" "passthrough_appi" {
     convention      = "passthrough"
     name            = "TEST-DEV-APPI-RG"
     resource_type   = "azurerm_application_insights"
+}
+
+# Azure Kubernetes Services
+resource "azurecaf_naming_convention" "passthrough_aks" {
+    convention      = "passthrough"
+    name            = "kubedemo"
+    resource_type   = "azurerm_kubernetes_cluster"
+}
+
+# Azure Kubernetes Services DNS Prefix
+resource "azurecaf_naming_convention" "passthrough_aksdns" {
+    convention      = "passthrough"
+    name            = "kubedemodns"
+    resource_type   = "aksdns"
+}
+
+# Azure Kubernetes Services Node pool Linux 
+resource "azurecaf_naming_convention" "passthrough_aksnpl" {
+    convention      = "passthrough"
+    name            = "knplinux"
+    resource_type   = "aksnpl"
+}
+
+# Azure Kubernetes Services Node Pool Windows
+resource "azurecaf_naming_convention" "passthrough_aksnpw" {
+    convention      = "passthrough"
+    name            = "knpwindows" #expecting 6 chars
+    resource_type   = "aksnpw"
 }
 
 # App Service Environment

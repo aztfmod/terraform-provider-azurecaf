@@ -7,10 +7,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
-func TestAccCafNamingConventionFullRandom(t *testing.T) {
+func TestAccCafNamingConventionFull_Random(t *testing.T) {
 	resource.UnitTest(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccResourceRandomConfig,
@@ -47,6 +48,36 @@ func TestAccCafNamingConventionFullRandom(t *testing.T) {
 						"utest"),
 					regexMatch("azurecaf_naming_convention.random_appi", regexp.MustCompile(Resources["appi"].ValidationRegExp), 1),
 					testAccCafNamingValidation(
+						"azurecaf_naming_convention.random_aks",
+						"",
+						Resources["aks"].MaxLength,
+						"utest"),
+					regexMatch("azurecaf_naming_convention.random_aks", regexp.MustCompile(Resources["aks"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
+						"azurecaf_naming_convention.random_aksdns",
+						"",
+						Resources["aksdns"].MaxLength,
+						"utest"),
+					regexMatch("azurecaf_naming_convention.random_aksdns", regexp.MustCompile(Resources["aksdns"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
+						"azurecaf_naming_convention.random_aksnpl",
+						"",
+						Resources["aksnpl"].MaxLength,
+						"pr"),
+					regexMatch("azurecaf_naming_convention.random_aksnpl", regexp.MustCompile(Resources["aksnpl"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
+						"azurecaf_naming_convention.random_aksnpw",
+						"",
+						Resources["aksnpw"].MaxLength,
+						"pr"),
+					regexMatch("azurecaf_naming_convention.random_aksnpl", regexp.MustCompile(Resources["aksnpl"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
+						"azurecaf_naming_convention.random_aksnpw",
+						"",
+						Resources["aksnpw"].MaxLength,
+						"pr"),
+					regexMatch("azurecaf_naming_convention.random_aksnpw", regexp.MustCompile(Resources["aksnpw"].ValidationRegExp), 1),
+					testAccCafNamingValidation(
 						"azurecaf_naming_convention.random_ase",
 						"",
 						Resources["ase"].MaxLength,
@@ -77,9 +108,6 @@ func TestAccCafNamingConventionFullRandom(t *testing.T) {
 }
 
 const testAccResourceRandomConfig = `
-provider "azurecaf" {
-
-}
 
 #Storage account test
 resource "azurecaf_naming_convention" "random_st" {  
@@ -119,6 +147,36 @@ resource "azurecaf_naming_convention" "random_appi" {
     name            = "TEST-DEV-APPI-RG"
     prefix          = "utest"
     resource_type   = "azurerm_application_insights"
+}
+
+# Azure Kubernetes Service
+resource "azurecaf_naming_convention" "random_aks" {
+    convention      = "random"
+    name            = "TEST-DEV-AKS-RG"
+    prefix          = "utest"
+    resource_type   = "azurerm_kubernetes_cluster"
+}
+
+# AKS DNS prefix
+resource "azurecaf_naming_convention" "random_aksdns" {
+    convention      = "random"
+    name            = "myaksdnsdemo"
+    prefix          = "utest"
+    resource_type   = "aks_dns_prefix"
+}
+# AKS Node Pool Linux
+resource "azurecaf_naming_convention" "random_aksnpl" {
+    convention      = "random"
+    name            = "np1"
+    prefix          = "pr"
+    resource_type   = "aksnpl"
+}
+# AKS Node Pool Windows
+resource "azurecaf_naming_convention" "random_aksnpw" {
+    convention      = "random"
+    name            = "np2"
+    prefix          = "pr"
+    resource_type   = "aksnpw"
 }
 
 # App Service Environment
