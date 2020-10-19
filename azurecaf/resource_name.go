@@ -44,7 +44,7 @@ func resourceNameV2() *schema.Resource {
 				Type:         schema.TypeInt,
 				Optional:     true,
 				ForceNew:     true,
-				ValidateFunc: validation.IntAtLeast(1),
+				ValidateFunc: validation.IntAtLeast(0),
 				Default:      0,
 			},
 			"result": {
@@ -309,21 +309,21 @@ func composeName(separator string,
 		switch c := namePrecedence[i]; c {
 		case "name":
 			if len(name) > 0 {
-				if currentlength+len(name)+initialized < maxlength {
+				if currentlength+len(name)+initialized <= maxlength {
 					contents = append(contents, name)
 					currentlength = currentlength + len(name) + initialized
 				}
 			}
 		case "slug":
 			if len(slug) > 0 {
-				if currentlength+len(slug)+initialized < maxlength {
+				if currentlength+len(slug)+initialized <= maxlength {
 					contents = append([]string{slug}, contents...)
 					currentlength = currentlength + len(slug) + initialized
 				}
 			}
 		case "random":
 			if len(randomSuffix) > 0 {
-				if currentlength+len(randomSuffix)+initialized < maxlength {
+				if currentlength+len(randomSuffix)+initialized <= maxlength {
 					contents = append(contents, randomSuffix)
 					currentlength = currentlength + len(randomSuffix) + initialized
 				}
@@ -331,7 +331,7 @@ func composeName(separator string,
 		case "suffixes":
 			if len(suffixes) > 0 {
 				if len(suffixes[0]) > 0 {
-					if currentlength+len(suffixes[0])+initialized < maxlength {
+					if currentlength+len(suffixes[0])+initialized <= maxlength {
 						contents = append(contents, suffixes[0])
 						currentlength = currentlength + len(suffixes[0]) + initialized
 					}
@@ -344,7 +344,7 @@ func composeName(separator string,
 		case "prefixes":
 			if len(prefixes) > 0 {
 				if len(prefixes[len(prefixes)-1]) > 0 {
-					if currentlength+len(prefixes[len(prefixes)-1])+initialized < maxlength {
+					if currentlength+len(prefixes[len(prefixes)-1])+initialized <= maxlength {
 						contents = append([]string{prefixes[len(prefixes)-1]}, contents...)
 						currentlength = currentlength + len(prefixes[len(prefixes)-1]) + initialized
 					}
