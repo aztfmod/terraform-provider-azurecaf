@@ -2113,10 +2113,10 @@
     {
         "name": "azurerm_app_service_environment",
         "min_length": 2,
-        "max_length": 37,
-        "validation_regex": "\"^[0-9A-Za-z-]{2,37}$\"",
+        "max_length": 36,
+        "validation_regex": "\"^[0-9A-Za-z-]{2,36}$\"",
         "scope": "resourceGroup",
-        "slug": "plan",
+        "slug": "ase",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\""
