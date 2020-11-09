@@ -1213,6 +1213,17 @@
         "regex": "\"[^0-9A-Za-z_.-]\""
     },
     {
+        "name": "azurerm_virtual_hub",
+        "min_length": 1,
+        "max_length": 50,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "vwan_hub",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\""
+    },
+    {
         "name": "azurerm_virtual_network",
         "min_length": 2,
         "max_length": 64,
