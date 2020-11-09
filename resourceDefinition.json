@@ -2224,7 +2224,7 @@
         "name": "azurerm_monitor_diagnostic_setting",
         "min_length": 1,
         "max_length": 260,
-        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,258}[a-zA-Z0-9_]$\"",
+        "validation_regex": "\"^[a-zA-Z0-9 ][a-zA-Z0-9-._ ]{0,258}[a-zA-Z0-9_]$\"",
         "scope": "parent",
         "slug": "amds",
         "dashes": true,
