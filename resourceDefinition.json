@@ -2229,6 +2229,6 @@
         "slug": "amds",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z _.-]\""
     }
 ]
