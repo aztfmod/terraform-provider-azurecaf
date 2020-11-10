@@ -122,6 +122,7 @@ Current supported resource types:
 | azurerm_subnet| snet| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
 | azurerm_traffic_manager_profile| traf| 1| 63| false| "^[a-zA-Z0-9][a-zA-Z0-9-.]{0,61}[a-zA-Z0-9_]$"|
 | azurerm_virtual_wan| vwan| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
+| azurerm_virtual_hub| vwan_hub| 1| 50| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
 | azurerm_virtual_network| vnet| 2| 64| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,62}[a-zA-Z0-9_]$"|
 | azurerm_virtual_network_gateway| vgw| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
 | azurerm_virtual_network_peering| vpeer| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
