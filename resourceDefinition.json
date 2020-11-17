@@ -315,7 +315,7 @@
         "validation_regex": "\"^[a-zA-Z0-9_]{1,80}$\"",
         "scope": "resourceGroup",
         "slug": "des",
-        "dashes": true,
+        "dashes": false,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_]\""
     },
@@ -359,7 +359,7 @@
         "validation_regex": "\"^[a-zA-Z0-9_]{1,80}$\"",
         "scope": "resourceGroup",
         "slug": "dsk",
-        "dashes": true,
+        "dashes": false,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_]\""
     },
@@ -1458,12 +1458,12 @@
         "name": "azurerm_shared_image_gallery",
         "min_length": 1,
         "max_length": 80,
-        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9.]{0,78}[a-zA-Z0-9]$\"",
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9]$\"",
         "scope": "resourceGroup",
         "slug": "sig",
-        "dashes": false,
+        "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_-]\""
+        "regex": "\"[^0-9A-Za-z_.-]\""
     },
     {
         "name": "azurerm_shared_image",
@@ -2202,12 +2202,12 @@
         "name": "azurerm_user_assigned_identity",
         "min_length": 3,
         "max_length": 128,
-        "validation_regex": "\"^[0-9a-zA-Z_-]{3,128}$\"",
+        "validation_regex": "\"^[0-9a-zA-Z][0-9a-zA-Z-_]{2,127}$\"",
         "scope": "parent",
         "slug": "msi",
-        "dashes": false,
+        "dashes": true,
         "lowercase": true,
-        "regex": "\"[^0-9a-zA-Z_-]\""
+        "regex": "\"[^0-9a-zA-Z-_]\""
     },
     {
         "name": "azurerm_private_dns_zone_virtual_network_link",
