@@ -84,3 +84,19 @@ func TestRegexValidationMaxLength(t *testing.T) {
 		}
 	}
 }
+
+func TestRegexValidationDashes(t *testing.T) {
+	content := "aaa-aaa"
+	for _, resource := range ResourceDefinitions {
+		exp, err := regexp.Compile(resource.ValidationRegExp)
+		if err != nil {
+			t.Logf("Error on the regex %s for the resource %s error %v", resource.ValidationRegExp, resource.ResourceTypeName, err.Error())
+			t.Fail()
+		}
+		dashes := resource.Dashes
+		if exp.MatchString(content) == !dashes {
+			t.Logf("Error on the regex %s for the resource %s using dashes", resource.ValidationRegExp, resource.ResourceTypeName)
+			t.Fail()
+		}
+	}
+}
