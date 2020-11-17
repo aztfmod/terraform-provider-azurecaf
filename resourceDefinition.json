@@ -1458,23 +1458,23 @@
         "name": "azurerm_shared_image_gallery",
         "min_length": 1,
         "max_length": 80,
-        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9]$\"",
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9._]{0,78}[a-zA-Z0-9]$\"",
         "scope": "resourceGroup",
         "slug": "sig",
-        "dashes": true,
+        "dashes": false,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z_.]\""
     },
     {
         "name": "azurerm_shared_image",
         "min_length": 1,
         "max_length": 80,
-        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9]$\"",
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9._]{0,78}[a-zA-Z0-9]$\"",
         "scope": "parent",
         "slug": "si",
-        "dashes": true,
+        "dashes": false,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z_.]\""
     },
     {
         "name": "azurerm_snapshots",
