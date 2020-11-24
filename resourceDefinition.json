@@ -1477,6 +1477,17 @@
         "regex": "\"[^0-9A-Za-z_.]\""
     },
     {
+        "name": "azurerm_virtual_hub",
+        "min_length": 1,
+        "max_length": 50,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,48}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "vhub",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\""
+    },
+    {
         "name": "azurerm_snapshots",
         "min_length": 1,
         "max_length": 80,
