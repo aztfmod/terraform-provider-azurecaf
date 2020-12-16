@@ -14,10 +14,10 @@
         "name": "azurerm_api_management_service",
         "min_length": 1,
         "max_length": 50,
-        "validation_regex": "\"^[a-z][a-zA-Z0-9-][a-zA-Z0-9]{0,48}$\"",
+        "validation_regex": "\"^[a-z][a-zA-Z0-9-]{0,48}[a-zA-Z0-9]$\"",
         "scope": "global",
         "slug": "apim",
-        "dashes": false,
+        "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\""
     },

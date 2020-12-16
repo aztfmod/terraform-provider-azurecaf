@@ -132,6 +132,18 @@ func TestAccResourceName_CafClassic(t *testing.T) {
 					regexMatch("azurecaf_name.passthrough", regexp.MustCompile(ResourceDefinitions["azurerm_container_registry"].ValidationRegExp), 1),
 				),
 			},
+			{
+				Config: testAccResourceNameCafClassicConfig,
+				Check: resource.ComposeTestCheckFunc(
+
+					testAccCafNamingValidation(
+						"azurecaf_name.apim",
+						"vsic-apim-apim",
+						14,
+						"vsic"),
+					regexMatch("azurecaf_name.apim", regexp.MustCompile(ResourceDefinitions["azurerm_api_management_service"].ValidationRegExp), 1),
+				),
+			},
 		},
 	})
 }
@@ -371,6 +383,16 @@ resource "azurecaf_name" "passthrough" {
 	clean_input     = true
 	passthrough     = true
 }
+
+
+resource "azurecaf_name" "apim" {
+	name = "apim"
+	resource_type = "azurerm_api_management_service"
+	prefixes = ["vsic"]
+	random_length = 0
+	clean_input = true
+	passthrough = false
+   }
 `
 
 const testAccResourceNameCafClassicConfigRsv = `

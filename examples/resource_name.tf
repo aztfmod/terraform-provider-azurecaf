@@ -45,16 +45,3 @@ output "multiple_resources" {
 output "multiple_resources_main" {
   value       = azurecaf_name.multiple_resources.result
 }
-
-
-resource "azurecaf_name" "multiple_resources" {
-    name            = "cogsdemo2"
-    resource_type   = "azurerm_cognitive_account"
-    resource_types   = ["azurerm_storage_account"]
-    prefixes        = ["a", "b"]
-    suffixes        = ["prod"]
-    random_length   = 4
-    random_seed     = 12343
-    clean_input     = true
-    separator       = "-"
-}
