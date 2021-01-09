@@ -2241,5 +2241,38 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z _.-]\""
+    },
+    {
+        "name": "azurerm_virtual_desktop_application_group",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[a-zA-Z0-9 ][a-zA-Z0-9-._ ]{0,258}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "dag",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z _.-]\""
+    },
+    {
+        "name": "azurerm_virtual_desktop_host_pool",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[a-zA-Z0-9 ][a-zA-Z0-9-._ ]{0,258}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "hpool",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z _.-]\""
+    },
+    {
+        "name": "azurerm_virtual_desktop_workspace",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[a-zA-Z0-9 ][a-zA-Z0-9-._ ]{0,258}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "wvdws",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z _.-]\""
     }
 ]
