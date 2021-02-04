@@ -1,12 +1,13 @@
 package azurecaf
 
 import (
+	"context"
 	"reflect"
 	"regexp"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func setData(prefixes []string, name string, suffixes []string, cleanInput bool) *schema.ResourceData {
@@ -339,7 +340,7 @@ func testResourceNameStateDataV3() map[string]interface{} {
 
 func TestResourceExampleInstanceStateUpgradeV2(t *testing.T) {
 	expected := testResourceNameStateDataV3()
-	actual, err := resourceNameStateUpgradeV2(testResourceNameStateDataV2(), nil)
+	actual, err := resourceNameStateUpgradeV2(context.Background(), testResourceNameStateDataV2(), nil)
 	if err != nil {
 		t.Fatalf("error migrating state: %s", err)
 	}

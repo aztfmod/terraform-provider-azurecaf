@@ -1,12 +1,13 @@
 package azurecaf
 
 import (
+	"context"
 	"fmt"
 	"regexp"
 	"strings"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceNameV2() *schema.Resource {
@@ -100,7 +101,7 @@ func resourceNameV2() *schema.Resource {
 	}
 }
 
-func resourceNameStateUpgradeV2(rawState map[string]interface{}, meta interface{}) (map[string]interface{}, error) {
+func resourceNameStateUpgradeV2(ctx context.Context, rawState map[string]interface{}, meta interface{}) (map[string]interface{}, error) {
 	rawState["use_slug"] = true
 
 	return rawState, nil
