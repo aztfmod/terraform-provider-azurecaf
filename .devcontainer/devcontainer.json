@@ -3,37 +3,32 @@
 {
 	"name": "Go",
 	"dockerFile": "Dockerfile",
-	"runArgs": [ 
-		"--cap-add=SYS_PTRACE", 
-		"--security-opt", 
+	"runArgs": [
+		"--cap-add=SYS_PTRACE",
+		"--security-opt",
 		"seccomp=unconfined",
-		"--mount", "type=volume,source=shell,destination=/root",  
-		"--mount", "type=volume,source=go,destination=/go", 
+		"--mount",
+		"type=volume,source=shell,destination=/root",
+		"--mount",
+		"type=volume,source=go,destination=/go",
 		// "--mount", "type=bind,source=${HOME}/.ssh,destination=/tmp/.ssh-localhost,readonly"
 	],
-
 	"mounts": [
 		"source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/tmp/.ssh-localhost,type=bind,consistency=cached"
 	],
-
 	// Set *default* container specific settings.json values on container create.
-	"settings": { 
+	"settings": {
 		"terminal.integrated.shell.linux": "/bin/bash",
 		"go.gopath": "/go"
 	},
-	
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
-
 	// Use 'postCreateCommand' to run commands after the container is created.
-	
-    "postCreateCommand": "cp -R /tmp/.ssh-localhost/* ~/.ssh && chmod 700 ~/.ssh && chmod 600 ~/.ssh/*",
-
+	"postCreateCommand": "cp -R /tmp/.ssh-localhost/* ~/.ssh && chmod 700 ~/.ssh && chmod 600 ~/.ssh/*",
 	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
 	// "remoteUser": "vscode"
-
-		// Add the IDs of extensions you want installed when the container is created.
-		"extensions": [
-			"ms-vscode.go"
-		]
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"ms-vscode.go"
+	]
 }
