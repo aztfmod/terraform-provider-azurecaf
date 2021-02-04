@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	cloud.google.com/go v0.61.0 // indirect
+	github.com/bflad/tfproviderlint v0.21.0 // indirect
 	github.com/go-delve/delve v1.5.0 // indirect
 	github.com/google/go-dap v0.3.0 // indirect
 	github.com/hashicorp/go-getter v1.4.2-0.20200106182914-9813cbd4eb02 // indirect

@@ -645,9 +645,9 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_traffic_manager_geographical_location | ❌ |
 |azurerm_traffic_manager_profile | ✔ |
 |azurerm_user_assigned_identity | ✔ |
-|azurerm_virtual_desktop_application_group | ❌ |
-|azurerm_virtual_desktop_host_pool | ❌ |
-|azurerm_virtual_desktop_workspace | ❌ |
+|azurerm_virtual_desktop_application_group | ✔ |
+|azurerm_virtual_desktop_host_pool | ✔ |
+|azurerm_virtual_desktop_workspace | ✔ |
 |azurerm_virtual_desktop_workspace_application_group_association | ❌ |
 |azurerm_virtual_hub | ✔ |
 |azurerm_virtual_hub_bgp_connection | ❌ |
