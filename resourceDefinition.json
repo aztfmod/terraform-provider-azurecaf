@@ -2296,5 +2296,93 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_logic_app_workflow",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]{1,80}$\"",
+        "scope": "resourceGroup",
+        "slug": "lapp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]\""
+    },
+    {
+        "name": "azurerm_integration_service_environment",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[0-9A-Za-z\\\\-\\\\_\\\\.]{1,80}$\"",
+        "scope": "resourceGroup",
+        "slug": "lappise",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z\\\\-\\\\_\\\\.]\""
+    },
+    {
+        "name": "azurerm_logic_app_action_custom",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]{1,80}$\"",
+        "scope": "resourceGroup",
+        "slug": "lappac",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]\""
+    },
+    {
+        "name": "azurerm_logic_app_action_http",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]{1,80}$\"",
+        "scope": "resourceGroup",
+        "slug": "lappah",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]\""
+    },
+    {
+        "name": "azurerm_logic_app_integration_account",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]{1,80}$\"",
+        "scope": "resourceGroup",
+        "slug": "lappia",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]\""
+    },
+    {
+        "name": "azurerm_logic_app_trigger_custom",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]{1,80}$\"",
+        "scope": "resourceGroup",
+        "slug": "lapptc",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]\""
+    },
+    {
+        "name": "azurerm_logic_app_trigger_http_request",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]{1,80}$\"",
+        "scope": "resourceGroup",
+        "slug": "lappth",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]\""
+    },
+    {
+        "name": "azurerm_logic_app_trigger_recurrence",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]{1,80}$\"",
+        "scope": "resourceGroup",
+        "slug": "lapptc",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]\""
     }
 ]
