@@ -389,7 +389,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_iothub_fallback_route | ❌ |
 |azurerm_iothub_route | ❌ |
 |azurerm_iothub_shared_access_policy | ❌ |
-|azurerm_ip_group | ❌ |
+|azurerm_ip_group | ✔ |
 |azurerm_key_vault | ✔ |
 |azurerm_key_vault_access_policy | ❌ |
 |azurerm_key_vault_certificate | ✔ |
