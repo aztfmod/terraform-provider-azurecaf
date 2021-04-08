@@ -2302,7 +2302,7 @@
         "min_length": 2,
         "max_length": 59,
         "validation_regex": "\"^[0-9A-Za-z][0-9A-Za-z-]{0,57}[0-9a-zA-Z]$\"",
-        "scope": "global",
+        "scope": "parent",
         "slug": "fas",
         "dashes": true,
         "lowercase": false,

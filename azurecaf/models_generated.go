@@ -99,7 +99,7 @@ var ResourceDefinitions = map[string]ResourceStructure{
 	"azurerm_frontdoor":                                          {"azurerm_frontdoor", "fd", 5, 64, false, "[^0-9A-Za-z-]", "^[a-zA-Z0-9][a-zA-Z0-9-]{3,62}[a-zA-Z0-9]$", true, "global"},
 	"azurerm_frontdoor_firewall_policy":                          {"azurerm_frontdoor_firewall_policy", "fdfw", 1, 80, false, "[^0-9A-Za-z_.-]", "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$", true, "global"},
 	"azurerm_function_app":                                       {"azurerm_function_app", "fa", 2, 60, false, "[^0-9A-Za-z-]", "^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$", true, "global"},
-	"azurerm_function_app_slot":                                  {"azurerm_function_app_slot", "fas", 2, 59, false, "[^0-9A-Za-z-]", "^[0-9A-Za-z][0-9A-Za-z-]{0,57}[0-9a-zA-Z]$", true, "global"},
+	"azurerm_function_app_slot":                                  {"azurerm_function_app_slot", "fas", 2, 59, false, "[^0-9A-Za-z-]", "^[0-9A-Za-z][0-9A-Za-z-]{0,57}[0-9a-zA-Z]$", true, "parent"},
 	"azurerm_hdinsight_hadoop_cluster":                           {"azurerm_hdinsight_hadoop_cluster", "hadoop", 3, 59, false, "[^0-9A-Za-z-]", "^[a-zA-Z0-9][a-zA-Z0-9-]{1,57}[a-zA-Z0-9]$", true, "global"},
 	"azurerm_hdinsight_hbase_cluster":                            {"azurerm_hdinsight_hbase_cluster", "hbase", 3, 59, false, "[^0-9A-Za-z-]", "^[a-zA-Z0-9][a-zA-Z0-9-]{1,57}[a-zA-Z0-9]$", true, "global"},
 	"azurerm_hdinsight_interactive_query_cluster":                {"azurerm_hdinsight_interactive_query_cluster", "iqr", 3, 59, false, "[^0-9A-Za-z-]", "^[a-zA-Z0-9][a-zA-Z0-9-]{1,57}[a-zA-Z0-9]$", true, "global"},

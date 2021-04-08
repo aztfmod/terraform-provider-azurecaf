@@ -10,8 +10,7 @@ func Provider() *schema.Provider {
 		Schema: map[string]*schema.Schema{},
 
 		ResourcesMap: map[string]*schema.Resource{
-			"azurecaf_naming_convention": resourceNamingConvention(),
-			"azurecaf_name":              resourceName(),
+			"azurecaf_name": resourceName(),
 		},
 	}
 }
