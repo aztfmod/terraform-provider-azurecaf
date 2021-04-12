@@ -115,7 +115,7 @@ func resourceName() *schema.Resource {
 					ValidateFunc: validation.StringInSlice(resourceMapsKeys, false),
 				},
 				Optional: true,
-				ForceNew: true,
+				ForceNew: false,
 			},
 			"random_seed": {
 				Type:     schema.TypeInt,
@@ -151,13 +151,25 @@ func getDifference(context context.Context, d *schema.ResourceDiff, resource int
 	useSlug := d.Get("use_slug").(bool)
 	randomLength := d.Get("random_length").(int)
 	randomSeed := int64(d.Get("random_seed").(int))
-
 	convention := ConventionCafClassic
-
 	randomSuffix := randSeq(int(randomLength), &randomSeed)
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 	result, results, id, err :=
 		getData(resourceType, resourceTypes, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence)
+	previousResults := d.Get("results")
+	previousResult := d.Get("result")
+	log.Debugf("%v, %v", previousResults, previousResult)
+	d.SetNew("result", result)
+	switch v := previousResults.(type) {
+	default:
+		d.SetNew("results", results)
+	case map[string]interface{}:
+		for k, vv := range v {
+			if _, ok := results[k]; !ok || results[k] != vv {
+				d.SetNew("results", results)
+			}
+		}
+	}
 	if err != nil {
 		return err
 	}
