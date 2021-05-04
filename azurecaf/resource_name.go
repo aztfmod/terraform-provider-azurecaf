@@ -260,7 +260,7 @@ func getResource(resourceType string) (*ResourceStructure, error) {
 	if resource, resourceFound := ResourceDefinitions[resourceType]; resourceFound {
 		return &resource, nil
 	}
-	return nil, fmt.Errorf("Invalid resource type %s", resourceType)
+	return nil, fmt.Errorf("invalid resource type %s", resourceType)
 }
 
 // Retrieve the resource slug / shortname based on the resourceType and the selected convention
@@ -433,7 +433,7 @@ func getResourceName(resourceTypeName string, separator string,
 	}
 
 	if !validationRegEx.MatchString(resourceName) {
-		return "", fmt.Errorf("Invalid name for CAF naming %s %s, the pattern %s doesn't match %s", resource.ResourceTypeName, name, resource.ValidationRegExp, resourceName)
+		return "", fmt.Errorf("invalid name for CAF naming %s %s, the pattern %s doesn't match %s", resource.ResourceTypeName, name, resource.ValidationRegExp, resourceName)
 	}
 
 	return resourceName, nil

@@ -93,6 +93,7 @@ func TestGetSlug_unknown(t *testing.T) {
 
 func TestAccResourceName_CafClassic(t *testing.T) {
 	resource.UnitTest(t, resource.TestCase{
+
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckResourceDestroy,
@@ -149,7 +150,7 @@ func TestAccResourceName_CafClassic(t *testing.T) {
 	})
 }
 
-func TestAccResourceNameRsv_CafClassic(t *testing.T) {
+func TestAccResourceName_CafClassicRSV(t *testing.T) {
 	resource.UnitTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
