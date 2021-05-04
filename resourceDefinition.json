@@ -2395,5 +2395,16 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]\""
-    }
+    },
+    {
+        "name": "azurerm_vm_windows_computer_name_prefix",
+        "min_length": 1,
+        "max_length": 9,
+        "validation_regex": "\"^[^\\\\/\\\"\\\\[\\\\]:|<>+=;,?*@&_][^\\\\/\\\"\\\\[\\\\]:|<>+=;,?*@&]{0,7}[^\\\\/\\\"\\\\[\\\\]:|<>+=;,?*@&.-]$\"",
+        "scope": "resourceGroup",
+        "slug": "cn",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[\\\\/\\\"\\\\[\\\\]:|<>+=;,?*@&_]\""
+    }    
 ]
