@@ -455,13 +455,13 @@
     {
         "name": "azurerm_cosmosdb_account",
         "min_length": 1,
-        "max_length": 63,
-        "validation_regex": "\"^[a-z0-9][a-zA-Z0-9-_.]{0,61}[a-zA-Z0-9]$\"",
+        "max_length": 44,
+        "validation_regex": "\"^[a-z0-9][a-z0-9-]{0,42}[a-z0-9]$\"",
         "scope": "resourceGroup",
         "slug": "cosmos",
         "dashes": true,
-        "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "lowercase": true,
+        "regex": "\"[^0-9a-z-]\""
     },
     {
         "name": "azurerm_custom_provider",
