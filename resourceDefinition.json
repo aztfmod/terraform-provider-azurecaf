@@ -25,12 +25,12 @@
         "name": "azurerm_app_configuration",
         "min_length": 5,
         "max_length": 50,
-        "validation_regex": "\"^[a-zA-Z0-9_-]{5,50}$\"",
+        "validation_regex": "\"^[a-zA-Z0-9-]{5,50}$\"",
         "scope": "resourceGroup",
         "slug": "appcg",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_role_assignment",
@@ -2406,5 +2406,5 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[\\\\/\\\"\\\\[\\\\]:|<>+=;,?*@&_]\""
-    }    
+    }
 ]
