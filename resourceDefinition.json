@@ -2406,5 +2406,16 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[\\\\/\\\"\\\\[\\\\]:|<>+=;,?*@&_]\""
+    },
+    {
+        "name": "azurerm_monitor_activity_log_alert",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[^<>*%:&?#\\\\+\\\\/]{0,259}[^<>*%:&.?#\\\\+\\\\/]$\"",
+        "scope": "parent",
+        "slug": "adfmysql",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z<>*%:&?#\\\\+\\\\/]\""
     }
 ]
