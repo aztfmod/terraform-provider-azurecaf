@@ -308,8 +308,8 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_database_migration_service | ✔ |
 |azurerm_databricks_workspace | ✔ |
 |azurerm_dedicated_hardware_security_module | ❌ |
-|azurerm_dedicated_host | ❌ |
-|azurerm_dedicated_host_group | ❌ |
+|azurerm_dedicated_host | ✔ |
+|azurerm_dedicated_host_group | ✔ |
 |azurerm_dev_test_global_vm_shutdown_schedule | ❌ |
 |azurerm_dev_test_lab | ✔ |
 |azurerm_dev_test_linux_virtual_machine | ✔ |
@@ -666,9 +666,9 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_virtual_network_peering | ✔ |
 |azurerm_virtual_wan | ✔ |
 |azurerm_vpn_gateway | ❌ |
-|azurerm_vpn_gateway_connection | ❌ |
+|azurerm_vpn_gateway_connection | ✔  |
 |azurerm_vpn_server_configuration | ❌ |
-|azurerm_vpn_site | ❌ |
+|azurerm_vpn_site | ✔ |
 |azurerm_web_application_firewall_policy | ❌ |
 |azurerm_windows_virtual_machine | ✔ |
 |azurerm_windows_virtual_machine_scale_set | ✔ |
