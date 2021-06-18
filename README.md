@@ -308,8 +308,8 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_database_migration_service | ✔ |
 |azurerm_databricks_workspace | ✔ |
 |azurerm_dedicated_hardware_security_module | ❌ |
-|azurerm_dedicated_host | ❌ |
-|azurerm_dedicated_host_group | ❌ |
+|azurerm_dedicated_host | ✔ |
+|azurerm_dedicated_host_group | ✔ |
 |azurerm_dev_test_global_vm_shutdown_schedule | ❌ |
 |azurerm_dev_test_lab | ✔ |
 |azurerm_dev_test_linux_virtual_machine | ✔ |
