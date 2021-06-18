@@ -666,9 +666,9 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_virtual_network_peering | ✔ |
 |azurerm_virtual_wan | ✔ |
 |azurerm_vpn_gateway | ❌ |
-|azurerm_vpn_gateway_connection | ❌ |
+|azurerm_vpn_gateway_connection | ✔  |
 |azurerm_vpn_server_configuration | ❌ |
-|azurerm_vpn_site | ❌ |
+|azurerm_vpn_site | ✔ |
 |azurerm_web_application_firewall_policy | ❌ |
 |azurerm_windows_virtual_machine | ✔ |
 |azurerm_windows_virtual_machine_scale_set | ✔ |
