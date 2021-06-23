@@ -1,10 +1,10 @@
 
 #Create the resource groups to host the blueprint
-resource "azurecaf_naming_convention" "pz_ops_name" {  
-  name    = "demo_rg_log"
-  resource_type    = "rg"
-  max_length = 50
-  convention  = "passthrough"
+resource "azurecaf_naming_convention" "pz_ops_name" {
+  name          = "demo_rg_log"
+  resource_type = "rg"
+  max_length    = 50
+  convention    = "passthrough"
 }
 
 resource "azurerm_resource_group" "pz_ops" {
@@ -13,28 +13,28 @@ resource "azurerm_resource_group" "pz_ops" {
 }
 
 locals {
-     solution_plan_map = {
-        NetworkMonitoring = {
-            "publisher" = "Microsoft"
-            "product"   = "OMSGallery/NetworkMonitoring"
-        },
-        ADAssessment = {
-            "publisher" = "Microsoft"
-            "product"   = "OMSGallery/ADAssessment"
-        },
-        ADReplication = {
-            "publisher" = "Microsoft"
-            "product"   = "OMSGallery/ADReplication"
-        },
-        AgentHealthAssessment = {
-            "publisher" = "Microsoft"
-            "product"   = "OMSGallery/AgentHealthAssessment"
-        },
-        DnsAnalytics = {
-            "publisher" = "Microsoft"
-            "product"   = "OMSGallery/DnsAnalytics"
-        }
+  solution_plan_map = {
+    NetworkMonitoring = {
+      "publisher" = "Microsoft"
+      "product"   = "OMSGallery/NetworkMonitoring"
+    },
+    ADAssessment = {
+      "publisher" = "Microsoft"
+      "product"   = "OMSGallery/ADAssessment"
+    },
+    ADReplication = {
+      "publisher" = "Microsoft"
+      "product"   = "OMSGallery/ADReplication"
+    },
+    AgentHealthAssessment = {
+      "publisher" = "Microsoft"
+      "product"   = "OMSGallery/AgentHealthAssessment"
+    },
+    DnsAnalytics = {
+      "publisher" = "Microsoft"
+      "product"   = "OMSGallery/DnsAnalytics"
     }
+  }
 }
 
 
