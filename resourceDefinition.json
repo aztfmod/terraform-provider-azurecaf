@@ -2265,6 +2265,17 @@
         "regex": "\"[^0-9A-Za-z_.-]\""
     },
     {
+        "name": "azurerm_monitor_action_group",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[^|:<>+#%&\\\\?/]{0,259}[^|:<>+#%&\\\\?/. ]$\"",
+        "scope": "resourceGroup",
+        "slug": "amag",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "`[^~!@$^*()\\[\\]\\{\\}_\\-=\"';,0-9A-Za-z _.-]`"
+    },
+    {
         "name": "azurerm_monitor_diagnostic_setting",
         "min_length": 1,
         "max_length": 260,
