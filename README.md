@@ -454,7 +454,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_mariadb_virtual_network_rule | ✔ |
 |azurerm_marketplace_agreement | ❌ |
 |azurerm_media_services_account | ❌ |
-|azurerm_monitor_action_group | ❌ |
+|azurerm_monitor_action_group | ✔ |
 |azurerm_monitor_action_rule_action_group | ❌ |
 |azurerm_monitor_action_rule_suppression | ❌ |
 |azurerm_monitor_activity_log_alert | ❌ |
