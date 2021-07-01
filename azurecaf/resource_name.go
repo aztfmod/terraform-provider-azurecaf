@@ -152,7 +152,6 @@ func resourceName() *schema.Resource {
 			"random_length": {
 				Type:         schema.TypeInt,
 				Optional:     true,
-				ForceNew:     true,
 				ValidateFunc: validation.IntAtLeast(0),
 				Default:      0,
 			},
@@ -186,7 +185,6 @@ func resourceName() *schema.Resource {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validation.StringInSlice(resourceMapsKeys, false),
-				ForceNew:     true,
 			},
 			"resource_types": {
 				Type: schema.TypeSet,
