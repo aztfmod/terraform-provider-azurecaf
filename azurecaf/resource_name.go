@@ -117,6 +117,7 @@ func resourceName() *schema.Resource {
 		Create:        resourceNameCreate,
 		Read:          schema.Noop,
 		Delete:        schema.RemoveFromState,
+		Update:        resourceNameUpdate,
 		SchemaVersion: 3,
 		StateUpgraders: []schema.StateUpgrader{
 			{
@@ -130,7 +131,6 @@ func resourceName() *schema.Resource {
 			"name": {
 				Type:     schema.TypeString,
 				Optional: true,
-				ForceNew: true,
 				Default:  "",
 			},
 			"prefixes": {
@@ -140,7 +140,6 @@ func resourceName() *schema.Resource {
 					ValidateFunc: validation.NoZeroValues,
 				},
 				Optional: true,
-				ForceNew: true,
 			},
 			"suffixes": {
 				Type: schema.TypeList,
@@ -149,7 +148,6 @@ func resourceName() *schema.Resource {
 					ValidateFunc: validation.NoZeroValues,
 				},
 				Optional: true,
-				ForceNew: true,
 			},
 			"random_length": {
 				Type:         schema.TypeInt,
@@ -172,19 +170,16 @@ func resourceName() *schema.Resource {
 			"separator": {
 				Type:     schema.TypeString,
 				Optional: true,
-				ForceNew: true,
 				Default:  "-",
 			},
 			"clean_input": {
 				Type:     schema.TypeBool,
 				Optional: true,
-				ForceNew: true,
 				Default:  true,
 			},
 			"passthrough": {
 				Type:     schema.TypeBool,
 				Optional: true,
-				ForceNew: true,
 				Default:  false,
 			},
 			"resource_type": {
@@ -194,39 +189,45 @@ func resourceName() *schema.Resource {
 				ForceNew:     true,
 			},
 			"resource_types": {
-				Type: schema.TypeList,
+				Type: schema.TypeSet,
 				Elem: &schema.Schema{
 					Type:         schema.TypeString,
 					ValidateFunc: validation.StringInSlice(resourceMapsKeys, false),
 				},
 				Optional: true,
-				ForceNew: true,
 			},
 			"random_seed": {
 				Type:     schema.TypeInt,
 				Optional: true,
-				ForceNew: true,
 			},
 			"use_slug": {
 				Type:     schema.TypeBool,
 				Optional: true,
-				ForceNew: true,
 				Default:  true,
+			},
+			"computed_random_suffix": {
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 		},
 	}
 }
 
 func resourceNameCreate(d *schema.ResourceData, meta interface{}) error {
-	return resourceNameRead(d, meta)
+	randomLength := d.Get("random_length").(int)
+	randomSeed := int64(d.Get("random_seed").(int))
+
+	randomSuffix := randSeq(randomLength, &randomSeed)
+
+	d.Set("computed_random_suffix", randomSuffix)
+
+	return getNameResult(d, meta, randomSuffix)
 }
 
-func resourceNameRead(d *schema.ResourceData, meta interface{}) error {
-	return getNameResult(d, meta)
-}
+func resourceNameUpdate(d *schema.ResourceData, meta interface{}) error {
+	randomSuffix := d.Get("computed_random_suffix").(string)
 
-func resourceNameDelete(d *schema.ResourceData, meta interface{}) error {
-	return nil
+	return getNameResult(d, meta, randomSuffix)
 }
 
 func cleanSlice(names []string, resourceDefinition *ResourceStructure) []string {
@@ -439,22 +440,19 @@ func getResourceName(resourceTypeName string, separator string,
 	return resourceName, nil
 }
 
-func getNameResult(d *schema.ResourceData, meta interface{}) error {
+func getNameResult(d *schema.ResourceData, meta interface{}, randomSuffix string) error {
 	name := d.Get("name").(string)
 	prefixes := convertInterfaceToString(d.Get("prefixes").([]interface{}))
 	suffixes := convertInterfaceToString(d.Get("suffixes").([]interface{}))
 	separator := d.Get("separator").(string)
 	resourceType := d.Get("resource_type").(string)
-	resourceTypes := convertInterfaceToString(d.Get("resource_types").([]interface{}))
+	resourceTypes := convertInterfaceToString(d.Get("resource_types").(*schema.Set).List())
 	cleanInput := d.Get("clean_input").(bool)
 	passthrough := d.Get("passthrough").(bool)
 	useSlug := d.Get("use_slug").(bool)
-	randomLength := d.Get("random_length").(int)
-	randomSeed := int64(d.Get("random_seed").(int))
 
 	convention := ConventionCafClassic
 
-	randomSuffix := randSeq(int(randomLength), &randomSeed)
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 
 	isValid, err := validateResourceType(resourceType, resourceTypes)

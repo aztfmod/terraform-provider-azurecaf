@@ -12,3 +12,4 @@ terraform
 **/*.log
 main
 __debug_bin
+.idea/
