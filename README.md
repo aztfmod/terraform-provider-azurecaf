@@ -251,6 +251,8 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_cdn_profile | ✔ |
 |azurerm_client_config | ❌ |
 |azurerm_cognitive_account | ✔ |
+|azurerm_consumption_budget_resource_group | ✔ |
+|azurerm_consumption_budget_subscription | ✔ |
 |azurerm_container_group | ❌ |
 |azurerm_container_registry | ✔ |
 |azurerm_container_registry_webhook | ✔ |
