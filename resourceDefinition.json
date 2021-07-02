@@ -441,6 +441,17 @@
         "regex": "\"[^a-zA-Z0-9-_]\""
     },
     {
+        "name": "azurerm_consumption_budget_subscription",
+        "min_length": 1,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9-_]{1,63}$\"",
+        "scope": "subscription",
+        "slug": "acbs",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^a-zA-Z0-9-_]\""
+    },
+    {
         "name": "azurerm_containerGroups",
         "min_length": 1,
         "max_length": 63,
