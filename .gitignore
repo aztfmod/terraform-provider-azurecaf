@@ -1,5 +1,4 @@
 terraform-provider-*
-go.sum
 terraform
 **/.terraform
 **/*.tfstate
