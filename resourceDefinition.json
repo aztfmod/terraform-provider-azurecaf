@@ -25,12 +25,12 @@
         "name": "azurerm_app_configuration",
         "min_length": 5,
         "max_length": 50,
-        "validation_regex": "\"^[a-zA-Z0-9_-]{5,50}$\"",
+        "validation_regex": "\"^[a-zA-Z0-9-]{5,50}$\"",
         "scope": "resourceGroup",
         "slug": "appcg",
         "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_-]\""
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_role_assignment",
@@ -309,6 +309,28 @@
         "regex": "\"[^0-9A-Za-z_.-]\""
     },
     {
+        "name": "azurerm_dedicated_host",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "dh",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\""
+    },
+    {
+        "name": "azurerm_dedicated_host_group",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "dhg",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\""
+    },
+    {
         "name": "azurerm_disk_encryption_set",
         "min_length": 1,
         "max_length": 80,
@@ -455,13 +477,13 @@
     {
         "name": "azurerm_cosmosdb_account",
         "min_length": 1,
-        "max_length": 63,
-        "validation_regex": "\"^[a-z0-9][a-zA-Z0-9-_.]{0,61}[a-zA-Z0-9]$\"",
+        "max_length": 44,
+        "validation_regex": "\"^[a-z0-9][a-z0-9-]{0,42}[a-z0-9]$\"",
         "scope": "resourceGroup",
         "slug": "cosmos",
         "dashes": true,
-        "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "lowercase": true,
+        "regex": "\"[^0-9a-z-]\""
     },
     {
         "name": "azurerm_custom_provider",
@@ -2243,6 +2265,17 @@
         "regex": "\"[^0-9A-Za-z_.-]\""
     },
     {
+        "name": "azurerm_monitor_action_group",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[^|:<>+#%&\\\\?/]{0,259}[^|:<>+#%&\\\\?/. ]$\"",
+        "scope": "resourceGroup",
+        "slug": "amag",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "`[^~!@$^*()\\[\\]\\{\\}_\\-=\"';,0-9A-Za-z _.-]`"
+    },
+    {
         "name": "azurerm_monitor_diagnostic_setting",
         "min_length": 1,
         "max_length": 260,
@@ -2406,5 +2439,38 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[\\\\/\\\"\\\\[\\\\]:|<>+=;,?*@&_]\""
-    }    
+    },
+    {
+        "name": "azurerm_monitor_activity_log_alert",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[^<>*%:&?#\\\\+\\\\/]{0,259}[^<>*%:&.?#\\\\+\\\\/]$\"",
+        "scope": "parent",
+        "slug": "adfmysql",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z<>*%:&?#\\\\+\\\\/]\""
+    },
+    {
+        "name": "azurerm_vpn_site",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "vst",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\""
+    },
+    {
+        "name": "azurerm_vpn_gateway_connection",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "vcn",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\""
+    }
 ]
