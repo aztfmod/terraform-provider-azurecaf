@@ -1,9 +1,9 @@
 # Log Analytics Workspace
 resource "azurecaf_naming_convention" "la_passthrough" {
-    convention      = "passthrough"
-    name            = "logs_invalid"
-    prefix          = "rdmi"
-    resource_type   = "la"
+  convention    = "passthrough"
+  name          = "logs_invalid"
+  prefix        = "rdmi"
+  resource_type = "la"
 }
 
 output "la_passthrough_id" {
@@ -18,10 +18,10 @@ output "la_passthrough_random" {
 
 # Resource Group
 resource "azurecaf_naming_convention" "passthrough_rg" {
-    convention      = "passthrough"
-    name            = "TEST-DEV-ASE-RG"
-    prefix          = "rdmi"
-    resource_type   = "azurerm_resource_group"
+  convention    = "passthrough"
+  name          = "TEST-DEV-ASE-RG"
+  prefix        = "rdmi"
+  resource_type = "azurerm_resource_group"
 }
 
 output "rg_passthrough_id" {
@@ -36,10 +36,10 @@ output "rg_passthrough" {
 
 # Application Gateway
 resource "azurecaf_naming_convention" "passthrough_agw" {
-    convention      = "passthrough"
-    name            = "TEST-DEV-AGW-RG"
-    prefix          = "rdmi"
-    resource_type   = "azurerm_application_gateway"
+  convention    = "passthrough"
+  name          = "TEST-DEV-AGW-RG"
+  prefix        = "rdmi"
+  resource_type = "azurerm_application_gateway"
 }
 
 output "agw_passthrough_id" {
@@ -54,10 +54,10 @@ output "agw_passthrough" {
 
 # API Management
 resource "azurecaf_naming_convention" "passthrough_apim" {
-    convention      = "passthrough"
-    name            = "TEST-DEV-APIM-RG"
-    prefix          = "rdmi"
-    resource_type   = "azurerm_api_management"
+  convention    = "passthrough"
+  name          = "TEST-DEV-APIM-RG"
+  prefix        = "rdmi"
+  resource_type = "azurerm_api_management"
 }
 
 output "apim_passthrough_id" {
@@ -72,10 +72,10 @@ output "apim_passthrough" {
 
 # App Service
 resource "azurecaf_naming_convention" "passthrough_app" {
-    convention      = "passthrough"
-    name            = "TEST-DEV-APP-RG"
-    prefix          = "rdmi"
-    resource_type   = "azurerm_app_service"
+  convention    = "passthrough"
+  name          = "TEST-DEV-APP-RG"
+  prefix        = "rdmi"
+  resource_type = "azurerm_app_service"
 }
 
 output "app_passthrough_id" {
@@ -90,10 +90,10 @@ output "app_passthrough" {
 
 # Application Insights
 resource "azurecaf_naming_convention" "passthrough_appi" {
-    convention      = "passthrough"
-    name            = "TEST-DEV-APPI-RG"
-    prefix          = "rdmi"
-    resource_type   = "azurerm_application_insights"
+  convention    = "passthrough"
+  name          = "TEST-DEV-APPI-RG"
+  prefix        = "rdmi"
+  resource_type = "azurerm_application_insights"
 }
 
 output "appi_passthrough_id" {
@@ -108,10 +108,10 @@ output "appi_passthrough" {
 
 # App Service Environment
 resource "azurecaf_naming_convention" "passthrough_ase" {
-    convention      = "passthrough"
-    name            = "TEST-DEV-ASE-RG"
-    prefix          = "rdmi"
-    resource_type   = "azurerm_app_service_environment"
+  convention    = "passthrough"
+  name          = "TEST-DEV-ASE-RG"
+  prefix        = "rdmi"
+  resource_type = "azurerm_app_service_environment"
 }
 
 output "ase_passthrough_id" {
@@ -126,10 +126,10 @@ output "ase_passthrough" {
 
 # App Service Plan
 resource "azurecaf_naming_convention" "passthrough_plan" {
-    convention      = "passthrough"
-    name            = "TEST-DEV-PLAN-RG"
-    prefix          = "rdmi"
-    resource_type   = "azurerm_app_service_plan"
+  convention    = "passthrough"
+  name          = "TEST-DEV-PLAN-RG"
+  prefix        = "rdmi"
+  resource_type = "azurerm_app_service_plan"
 }
 
 output "plan_passthrough_id" {
@@ -144,10 +144,10 @@ output "plan_passthrough" {
 
 # Azure SQL DB Server
 resource "azurecaf_naming_convention" "passthrough_sql" {
-    convention      = "passthrough"
-    name            = "TEST-DEV-SQL-RG"
-    prefix          = "rdmi"
-    resource_type   = "azurerm_sql_server"
+  convention    = "passthrough"
+  name          = "TEST-DEV-SQL-RG"
+  prefix        = "rdmi"
+  resource_type = "azurerm_sql_server"
 }
 
 output "sql_passthrough_id" {
@@ -162,10 +162,10 @@ output "sql_passthrough" {
 
 # Azure SQL DB
 resource "azurecaf_naming_convention" "passthrough_sqldb" {
-    convention      = "passthrough"
-    name            = "TEST-DEV-SQLDB-RG"
-    prefix          = "rdmi"
-    resource_type   = "azurerm_sql_database"
+  convention    = "passthrough"
+  name          = "TEST-DEV-SQLDB-RG"
+  prefix        = "rdmi"
+  resource_type = "azurerm_sql_database"
 }
 
 output "sqldb_passthrough_id" {

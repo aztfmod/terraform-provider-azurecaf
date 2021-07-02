@@ -1,9 +1,9 @@
 
 #Storage account test
 resource "azurecaf_naming_convention" "classic_st" {
-    convention      = "cafclassic"
-    name            = "log"
-    resource_type   = "st"
+  convention    = "cafclassic"
+  name          = "log"
+  resource_type = "st"
 }
 
 output "st_classic_id" {
@@ -18,9 +18,9 @@ output "st_classic" {
 
 # Azure Automation Account
 resource "azurecaf_naming_convention" "classic_aaa" {
-    convention      = "cafclassic"
-    name            = "automation"
-    resource_type   = "aaa"
+  convention    = "cafclassic"
+  name          = "automation"
+  resource_type = "aaa"
 }
 
 output "aaa_classic_id" {
@@ -36,9 +36,9 @@ output "aaa_classic" {
 
 # Azure Container registry
 resource "azurecaf_naming_convention" "classic_acr" {
-    convention      = "cafclassic"
-    name            = "registry"
-    resource_type   = "acr"
+  convention    = "cafclassic"
+  name          = "registry"
+  resource_type = "acr"
 }
 
 output "acr_classic_id" {
@@ -53,9 +53,9 @@ output "acr_classic" {
 
 # Resource Group
 resource "azurecaf_naming_convention" "classic_rg" {
-    convention      = "cafclassic"
-    name            = "myrg"
-    resource_type   = "rg"
+  convention    = "cafclassic"
+  name          = "myrg"
+  resource_type = "rg"
 }
 
 output "rg_classic_id" {
@@ -70,9 +70,9 @@ output "rg_classic" {
 
 # Azure Firewall
 resource "azurecaf_naming_convention" "classic_afw" {
-    convention      = "cafclassic"
-    name            = "fire"
-    resource_type   = "afw"
+  convention    = "cafclassic"
+  name          = "fire"
+  resource_type = "afw"
 }
 
 output "afw_classic_id" {
@@ -87,9 +87,9 @@ output "afw_classic" {
 
 # Azure Recovery Vault
 resource "azurecaf_naming_convention" "classic_asr" {
-    convention      = "cafclassic"
-    name            = "recov"
-    resource_type   = "asr"
+  convention    = "cafclassic"
+  name          = "recov"
+  resource_type = "asr"
 }
 
 output "asr_classic_id" {
@@ -105,9 +105,9 @@ output "asr_classic" {
 
 # Event Hub
 resource "azurecaf_naming_convention" "classic_evh" {
-    convention      = "cafclassic"
-    name            = "hub"
-    resource_type   = "evh"
+  convention    = "cafclassic"
+  name          = "hub"
+  resource_type = "evh"
 }
 
 output "evh_classic_id" {
@@ -122,9 +122,9 @@ output "evh_classic" {
 
 # Key Vault
 resource "azurecaf_naming_convention" "classic_kv" {
-    convention      = "cafclassic"
-    name            = "passepartout"
-    resource_type   = "kv"
+  convention    = "cafclassic"
+  name          = "passepartout"
+  resource_type = "kv"
 }
 
 output "kv_classic_id" {
@@ -139,9 +139,9 @@ output "kv_classic" {
 
 # Log Analytics Workspace
 resource "azurecaf_naming_convention" "classic_la" {
-    convention      = "cafclassic"
-    name            = "logs"
-    resource_type   = "la"
+  convention    = "cafclassic"
+  name          = "logs"
+  resource_type = "la"
 }
 
 output "la_classic_id" {
@@ -156,9 +156,9 @@ output "la_classic" {
 
 # Network Interface
 resource "azurecaf_naming_convention" "classic_nic" {
-    convention      = "cafclassic"
-    name            = "mynetcard"
-    resource_type   = "nic"
+  convention    = "cafclassic"
+  name          = "mynetcard"
+  resource_type = "nic"
 }
 
 output "nic_classic_id" {
@@ -173,9 +173,9 @@ output "nic_classic" {
 
 # Network Security Group
 resource "azurecaf_naming_convention" "classic_nsg" {
-    convention      = "cafclassic"
-    name            = "sec"
-    resource_type   = "nsg"
+  convention    = "cafclassic"
+  name          = "sec"
+  resource_type = "nsg"
 }
 
 output "nsg_classic_id" {
@@ -190,9 +190,9 @@ output "nsg_classic" {
 
 # Public Ip
 resource "azurecaf_naming_convention" "classic_pip" {
-    convention      = "cafclassic"
-    name            = "mypip"
-    resource_type   = "pip"
+  convention    = "cafclassic"
+  name          = "mypip"
+  resource_type = "pip"
 }
 
 output "pip_classic_id" {
@@ -207,9 +207,9 @@ output "pip_classic" {
 
 # subnet
 resource "azurecaf_naming_convention" "classic_snet" {
-    convention      = "cafclassic"
-    name            = "snet"
-    resource_type   = "snet"
+  convention    = "cafclassic"
+  name          = "snet"
+  resource_type = "snet"
 }
 
 output "snet_classic_id" {
@@ -224,9 +224,9 @@ output "snet_classic" {
 
 # Virtual Network
 resource "azurecaf_naming_convention" "classic_vnet" {
-    convention      = "cafclassic"
-    name            = "vnet"
-    resource_type   = "vnet"
+  convention    = "cafclassic"
+  name          = "vnet"
+  resource_type = "vnet"
 }
 
 output "vnet_classic_id" {
@@ -241,9 +241,9 @@ output "vnet_classic" {
 
 # VM Windows
 resource "azurecaf_naming_convention" "classic_vmw" {
-    convention      = "cafclassic"
-    name            = "winVMToolongShouldbetrimmed"
-    resource_type   = "vmw"
+  convention    = "cafclassic"
+  name          = "winVMToolongShouldbetrimmed"
+  resource_type = "vmw"
 }
 
 output "vmw_classic_id" {
@@ -258,9 +258,9 @@ output "vmw_classic" {
 
 # VM Linux
 resource "azurecaf_naming_convention" "classic_vml" {
-    convention      = "cafclassic"
-    name            = "linuxVM"
-    resource_type   = "vml"
+  convention    = "cafclassic"
+  name          = "linuxVM"
+  resource_type = "vml"
 }
 
 output "vml_classic_id" {
