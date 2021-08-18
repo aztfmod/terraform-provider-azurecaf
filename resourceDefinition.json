@@ -2049,7 +2049,7 @@
         "max_length": 50,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,48}[a-zA-Z0-9]$\"",
         "scope": "parent",
-        "slug": "dnsrec",
+        "slug": "sbtar",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
