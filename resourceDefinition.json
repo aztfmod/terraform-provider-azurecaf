@@ -2494,5 +2494,49 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
+    },
+    {
+        "name": "azurerm_netapp_account",
+        "min_length": 1,
+        "max_length": 128,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_]{0,126}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "ana",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },
+    {
+        "name": "azurerm_netapp_pool",
+        "min_length": 1,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_]{0,61}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "anp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },
+    {
+        "name": "azurerm_netapp_volume",
+        "min_length": 1,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_]{0,61}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "anv",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },
+    {
+        "name": "azurerm_netapp_snapshot",
+        "min_length": 1,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_]{0,61}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "ans",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
     }
 ]
