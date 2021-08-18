@@ -962,12 +962,12 @@
         "name": "azurerm_frontdoor_firewall_policy",
         "min_length": 1,
         "max_length": 80,
-        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$\"",
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9]{0,78}[a-zA-Z0-9]$\"",
         "scope": "global",
         "slug": "fdfw",
-        "dashes": true,
+        "dashes": false,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z]\""
     },
     {
         "name": "azurerm_hdinsight_hadoop_cluster",
