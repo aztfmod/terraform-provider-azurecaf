@@ -472,6 +472,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_mssql_database_extended_auditing_policy | ❌ |
 |azurerm_mssql_database_vulnerability_assessment_rule_baseline | ❌ |
 |azurerm_mssql_elasticpool | ✔ |
+|azurerm_mssql_mi | ✔ |
 |azurerm_mssql_server | ✔ |
 |azurerm_mssql_server_extended_auditing_policy | ❌ |
 |azurerm_mssql_server_security_alert_policy | ❌ |
@@ -486,10 +487,10 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_mysql_virtual_network_rule | ✔ |
 |azurerm_nat_gateway | ❌ |
 |azurerm_nat_gateway_public_ip_association | ❌ |
-|azurerm_netapp_account | ❌ |
-|azurerm_netapp_pool | ❌ |
-|azurerm_netapp_snapshot | ❌ |
-|azurerm_netapp_volume | ❌ |
+|azurerm_netapp_account | ✔ |
+|azurerm_netapp_pool | ✔ |
+|azurerm_netapp_snapshot | ✔ |
+|azurerm_netapp_volume | ✔ |
 |azurerm_network_connection_monitor | ❌ |
 |azurerm_network_ddos_protection_plan | ❌ |
 |azurerm_network_interface | ✔ |
@@ -667,11 +668,14 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_virtual_network_gateway_connection | ❌ |
 |azurerm_virtual_network_peering | ✔ |
 |azurerm_virtual_wan | ✔ |
+|azurerm_vmware_cluster | ✔ |
+|azurerm_vmware_express_route_authorization | ✔ |
+|azurerm_vmware_private_cloud | ✔ |
 |azurerm_vpn_gateway | ❌ |
-|azurerm_vpn_gateway_connection | ✔  |
+|azurerm_vpn_gateway_connection | ✔ |
 |azurerm_vpn_server_configuration | ❌ |
 |azurerm_vpn_site | ✔ |
-|azurerm_web_application_firewall_policy | ❌ |
+|azurerm_web_application_firewall_policy | ✔ |
 |azurerm_windows_virtual_machine | ✔ |
 |azurerm_windows_virtual_machine_scale_set | ✔ |
 

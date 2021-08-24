@@ -408,6 +408,39 @@
         "regex": "\"[\\\\/\\\"\\\\[\\\\]:|<>+=;,?*@&_]\""
     },
     {
+        "name": "azurerm_vmware_cluster",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "vwc",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\""
+    },
+    {
+        "name": "azurerm_vmware_express_route_authorization",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "vwera",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\""
+    },
+    {
+        "name": "azurerm_vmware_private_cloud",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "vwpc",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\""
+    },
+    {
         "name": "azurerm_windows_virtual_machine",
         "min_length": 1,
         "max_length": 15,
@@ -962,12 +995,23 @@
         "name": "azurerm_frontdoor_firewall_policy",
         "min_length": 1,
         "max_length": 80,
-        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$\"",
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9]{0,78}[a-zA-Z0-9]$\"",
         "scope": "global",
         "slug": "fdfw",
-        "dashes": true,
+        "dashes": false,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_.-]\""
+        "regex": "\"[^0-9A-Za-z]\""
+    },
+    {
+        "name": "azurerm_web_application_firewall_policy",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9]{0,78}[a-zA-Z0-9]$\"",
+        "scope": "global",
+        "slug": "wafw",
+        "dashes": false,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z]\""
     },
     {
         "name": "azurerm_hdinsight_hadoop_cluster",
@@ -1758,6 +1802,17 @@
         "regex": "\"[^0-9A-Za-z-]\""
     },
     {
+        "name": "azurerm_mssql_mi",
+        "min_length": 1,
+        "max_length": 63,
+        "validation_regex": "\"^[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$\"",
+        "scope": "global",
+        "slug": "sqlmi",
+        "dashes": true,
+        "lowercase": true,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
         "name": "azurerm_mssql_database",
         "min_length": 1,
         "max_length": 128,
@@ -2049,7 +2104,7 @@
         "max_length": 50,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,48}[a-zA-Z0-9]$\"",
         "scope": "parent",
-        "slug": "dnsrec",
+        "slug": "sbtar",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
@@ -2494,5 +2549,49 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
+    },
+    {
+        "name": "azurerm_netapp_account",
+        "min_length": 1,
+        "max_length": 128,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_]{0,126}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "ana",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },
+    {
+        "name": "azurerm_netapp_pool",
+        "min_length": 1,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_]{0,61}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "anp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },
+    {
+        "name": "azurerm_netapp_volume",
+        "min_length": 1,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_]{0,61}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "anv",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },
+    {
+        "name": "azurerm_netapp_snapshot",
+        "min_length": 1,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_]{0,61}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "ans",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
     }
 ]
