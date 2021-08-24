@@ -469,6 +469,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_monitor_scheduled_query_rules_log | ❌ |
 |azurerm_monitor_smart_detector_alert_rule | ❌ |
 |azurerm_mssql_database | ✔ |
+|azurerm_mssql_mi | ✔ |
 |azurerm_mssql_database_extended_auditing_policy | ❌ |
 |azurerm_mssql_database_vulnerability_assessment_rule_baseline | ❌ |
 |azurerm_mssql_elasticpool | ✔ |
