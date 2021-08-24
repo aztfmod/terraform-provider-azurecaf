@@ -667,8 +667,11 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_virtual_network_gateway_connection | ❌ |
 |azurerm_virtual_network_peering | ✔ |
 |azurerm_virtual_wan | ✔ |
+|azurerm_vmware_cluster | ✔ |
+|azurerm_vmware_express_route_authorization | ✔ |
+|azurerm_vmware_private_cloud | ✔ |
 |azurerm_vpn_gateway | ❌ |
-|azurerm_vpn_gateway_connection | ✔  |
+|azurerm_vpn_gateway_connection | ✔ |
 |azurerm_vpn_server_configuration | ❌ |
 |azurerm_vpn_site | ✔ |
 |azurerm_web_application_firewall_policy | ❌ |
