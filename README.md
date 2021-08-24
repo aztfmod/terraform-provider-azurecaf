@@ -486,10 +486,10 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_mysql_virtual_network_rule | ✔ |
 |azurerm_nat_gateway | ❌ |
 |azurerm_nat_gateway_public_ip_association | ❌ |
-|azurerm_netapp_account | ❌ |
-|azurerm_netapp_pool | ❌ |
-|azurerm_netapp_snapshot | ❌ |
-|azurerm_netapp_volume | ❌ |
+|azurerm_netapp_account | ✔ |
+|azurerm_netapp_pool | ✔ |
+|azurerm_netapp_snapshot | ✔ |
+|azurerm_netapp_volume | ✔ |
 |azurerm_network_connection_monitor | ❌ |
 |azurerm_network_ddos_protection_plan | ❌ |
 |azurerm_network_interface | ✔ |
