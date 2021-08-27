@@ -104,6 +104,8 @@ $ make build
 
 If you wish to work on the provider, you'll first need Go installed on your machine (version 1.13+ is required). You'll also need to correctly setup a GOPATH, as well as adding $GOPATH/bin to your $PATH.
 
+To display the makefile help run `make` or `make help`.
+
 To compile the provider, run make build. This will build the provider and put the provider binary in the $GOPATH/bin directory.
 
 ```
@@ -613,8 +615,8 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_storage_queue | ✔ |
 |azurerm_storage_share | ✔ |
 |azurerm_storage_share_directory | ✔ |
-|azurerm_storage_sync | ❌ |
-|azurerm_storage_sync_group | ❌ |
+|azurerm_storage_sync | ✔ |
+|azurerm_storage_sync_group | ✔ |
 |azurerm_storage_table | ✔ |
 |azurerm_storage_table_entity | ❌ |
 |azurerm_stream_analytics_function_javascript_udf | ✔ |
