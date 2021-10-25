@@ -1634,6 +1634,30 @@
         "regex": "\"[^0-9a-z-]\""
     },
     {
+        "name": "azurerm_storage_sync",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[^<>*%:.?\\\\+\\\\/]{0,259}[^<>*%:.?\\\\+\\\\/ ]$\"",
+        "invalid-double-dash": true,
+        "scope": "resourceGroup",
+        "slug": "stsy",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[<>*%:.?\\\\+\\\\/]\""
+    },
+    {
+        "name": "azurerm_storage_sync_group",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[^<>*%:.?\\\\+\\\\/]{0,259}[^<>*%:.?\\\\+\\\\/ ]$\"",
+        "invalid-double-dash": true,
+        "scope": "resourceGroup",
+        "slug": "stsg",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[<>*%:.?\\\\+\\\\/]\""
+    },    
+    {
         "name": "azurerm_storage_table",
         "min_length": 3,
         "max_length": 63,
