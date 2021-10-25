@@ -1,12 +1,10 @@
-[![VScodespaces](https://img.shields.io/endpoint?url=https%3A%2F%2Faka.ms%2Fvso-badge)](https://online.visualstudio.com/environments/new?name=caf%20terraform%20provider&repo=aztfmod/terraform-provider-azurecaf)
-
 # Azure Cloud Adoption Framework - Terraform provider
 
 This provider implements a set of methodologies for naming convention implementation including the default Microsoft Cloud Adoption Framework for Azure recommendations as per https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging.
 
 ## Using the Provider
 
-You can simply consume the provider from the Terraform registry from the following URL: [https://registry.terraform.io/providers/aztfmod/azurecaf/latest](https://registry.terraform.io/providers/aztfmod/azurecaf/latest), then add it in your provider declaration as follow: 
+You can simply consume the provider from the Terraform registry from the following URL: [https://registry.terraform.io/providers/aztfmod/azurecaf/latest](https://registry.terraform.io/providers/aztfmod/azurecaf/latest), then add it in your provider declaration as follow:
 
 ```hcl
 terraform {
@@ -21,10 +19,10 @@ terraform {
 
 The azurecaf_name resource allows you to:
 
-* Clean inputs to make sure they remain compliant with the allowed patterns for each Azure resource
-* Generate random characters to append at the end of the resource name
-* Handle prefix, suffixes (either manual or as per the Azure cloud adoption framework resource conventions)
-* Allow passthrough mode (simply validate the output)
+* Clean inputs to make sure they remain compliant with the allowed patterns for each Azure resource.
+* Generate random characters to append at the end of the resource name.
+* Handle prefix, suffixes (either manual or as per the Azure cloud adoption framework resource conventions).
+* Allow passthrough mode (simply validate the output).
 
 ## Example usage
 
