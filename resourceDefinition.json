@@ -378,12 +378,12 @@
         "name": "azurerm_managed_disk",
         "min_length": 1,
         "max_length": 80,
-        "validation_regex": "\"^[a-zA-Z0-9_]{1,80}$\"",
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,78}[a-zA-Z0-9_]$\"",
         "scope": "resourceGroup",
         "slug": "dsk",
-        "dashes": false,
+        "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_]\""
+        "regex": "\"[^0-9A-Za-z_.-]\""
     },
     {
         "name": "azurerm_virtual_machine",
