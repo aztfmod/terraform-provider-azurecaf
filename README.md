@@ -439,6 +439,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_logic_app_trigger_http_request | ✔ |
 |azurerm_logic_app_trigger_recurrence | ✔ |
 |azurerm_logic_app_workflow | ✔ |
+|azurerm_machine_learning_compute_instance  | ✔ |
 |azurerm_machine_learning_workspace | ✔ |
 |azurerm_maintenance_assignment_dedicated_host | ❌ |
 |azurerm_maintenance_assignment_virtual_machine | ❌ |
