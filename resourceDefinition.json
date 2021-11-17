@@ -2628,5 +2628,16 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9a-z-]\""
-    }    
+    },
+    {
+        "name": "azurerm_communication_service",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9_-]{1,64}$\"",
+        "scope": "parent",
+        "slug": "acs",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    }     
 ]
