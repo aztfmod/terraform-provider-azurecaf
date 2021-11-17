@@ -2617,5 +2617,16 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""
-    }
+    },
+    {
+        "name": "azurerm_machine_learning_compute_instance",
+        "min_length": 1,
+        "max_length": 16,
+        "validation_regex": "\"^[a-zA-Z0-9][a-z0-9-]{0,14}[a-zA-Z0-9]$\"",
+        "scope": "parent",
+        "slug": "amlci",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9a-z-]\""
+    }    
 ]
