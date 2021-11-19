@@ -2639,5 +2639,16 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""
-    }     
+    },
+    {
+        "name": "azurerm_ec_deployment",
+        "min_length": 5,
+        "max_length": 45,
+        "validation_regex": "\"^[a-zA-Z0-9_-]{5,45}$\"",
+        "scope": "parent",
+        "slug": "aecd",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    }
 ]
