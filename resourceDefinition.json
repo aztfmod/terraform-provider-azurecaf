@@ -772,6 +772,62 @@
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
     },
     {
+        "name": "azurerm_data_factory_dataset_azure_blob",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[a-zA-Z0-9][^<>*%:.?\\\\+\\\\/]{0,258}[a-zA-Z0-9]$\"",
+        "scope": "parent",
+        "slug": "adfblob",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
+    },    
+    {
+        "name": "azurerm_data_factory_dataset_cosmosdb_sqlapi",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[a-zA-Z0-9][^<>*%:.?\\\\+\\\\/]{0,258}[a-zA-Z0-9]$\"",
+        "scope": "parent",
+        "slug": "adfsqlapi",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
+    },      
+    {
+        "name": "azurerm_data_factory_dataset_delimited_text",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[a-zA-Z0-9][^<>*%:.?\\\\+\\\\/]{0,258}[a-zA-Z0-9]$\"",
+        "scope": "parent",
+        "slug": "adfdtext",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
+    },        
+    {
+        "name": "azurerm_data_factory_dataset_http",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[a-zA-Z0-9][^<>*%:.?\\\\+\\\\/]{0,258}[a-zA-Z0-9]$\"",
+        "scope": "parent",
+        "slug": "adfhttp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
+    },      
+    {
+        "name": "azurerm_data_factory_dataset_json",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[a-zA-Z0-9][^<>*%:.?\\\\+\\\\/]{0,258}[a-zA-Z0-9]$\"",
+        "scope": "parent",
+        "slug": "adfjson",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
+    },      
+       
+    {
         "name": "azurerm_data_factory_dataset_postgresql",
         "min_length": 1,
         "max_length": 260,
@@ -815,6 +871,73 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
     },
+    {
+        "name": "azurerm_data_factory_linked_service_azure_blob_storage",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[a-zA-Z0-9][^<>*%:.?\\\\+\\\\/]{0,259}$\"",
+        "scope": "parent",
+        "slug": "adflsabs",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
+    },
+    {
+        "name": "azurerm_data_factory_linked_service_azure_databricks",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[a-zA-Z0-9][^<>*%:.?\\\\+\\\\/]{0,259}$\"",
+        "scope": "parent",
+        "slug": "adflsadb",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
+    },
+    {
+        "name": "azurerm_data_factory_linked_service_azure_function",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[a-zA-Z0-9][^<>*%:.?\\\\+\\\\/]{0,259}$\"",
+        "scope": "parent",
+        "slug": "adflsaf",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
+    },        
+    {
+        "name": "azurerm_data_factory_linked_service_azure_sql_database",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[a-zA-Z0-9][^<>*%:.?\\\\+\\\\/]{0,259}$\"",
+        "scope": "parent",
+        "slug": "adflsasdb",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
+    },        
+    {
+        "name": "azurerm_data_factory_linked_service_cosmosdb",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[a-zA-Z0-9][^<>*%:.?\\\\+\\\\/]{0,259}$\"",
+        "scope": "parent",
+        "slug": "adflsacdb",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
+    },
+    {
+        "name": "azurerm_data_factory_linked_service_sftp",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[a-zA-Z0-9][^<>*%:.?\\\\+\\\\/]{0,259}$\"",
+        "scope": "parent",
+        "slug": "adflsaftp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
+    }, 
+     
     {
         "name": "azurerm_data_factory_linked_service_data_lake_storage_gen2",
         "min_length": 1,
@@ -892,6 +1015,18 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
     },
+    {
+        "name": "azurerm_data_factory_linked_service_web",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[a-zA-Z0-9][^<>*%:.?\\\\+\\\\/]{0,259}$\"",
+        "scope": "parent",
+        "slug": "adfsvweb",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
+    },    
+    
     {
         "name": "azurerm_data_factory_trigger_schedule",
         "min_length": 1,
