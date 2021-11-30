@@ -524,6 +524,10 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_postgresql_configuration | ❌ |
 |azurerm_postgresql_database | ✔ |
 |azurerm_postgresql_firewall_rule | ✔ |
+|azurerm_postgresql_flexible_server | ✔ |
+|azurerm_postgresql_flexible_server_configuration | ❌ |
+|azurerm_postgresql_flexible_server_database | ✔ |
+|azurerm_postgresql_flexible_server_firewall_rule | ✔ |
 |azurerm_postgresql_server | ✔ |
 |azurerm_postgresql_server_key | ❌ |
 |azurerm_postgresql_virtual_network_rule | ✔ |
