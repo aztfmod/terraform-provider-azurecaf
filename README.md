@@ -685,7 +685,6 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_web_application_firewall_policy | ✔ |
 |azurerm_windows_virtual_machine | ✔ |
 |azurerm_windows_virtual_machine_scale_set | ✔ |
-|ec_deployment | ✔ |
 
 ❌ = Not yet implemented
 ✔  = Already implemented
