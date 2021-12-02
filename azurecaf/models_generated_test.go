@@ -79,7 +79,7 @@ func TestRegexValidationMaxLength(t *testing.T) {
 		}
 		testGreater := string(contentBase[0 : max+1])
 		if exp.MatchString(testGreater) {
-			t.Logf("Error on the regex %s for the resource %s greter max length %v", resource.ValidationRegExp, resource.ResourceTypeName, resource.MaxLength)
+			t.Logf("Error on the regex %s for the resource %s greater than max length %v", resource.ValidationRegExp, resource.ResourceTypeName, resource.MaxLength)
 			t.Fail()
 		}
 	}

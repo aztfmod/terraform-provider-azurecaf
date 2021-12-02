@@ -1,5 +1,6 @@
 // The following directive is necessary to make the package coherent:
 
+//go:build ignore
 // +build ignore
 
 // This program generates models_generated.go. It can be invoked by running

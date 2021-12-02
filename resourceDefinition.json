@@ -684,6 +684,39 @@
         "regex": "\"[^0-9A-Za-z_-]\""
     },
     {
+        "name": "azurerm_postgresql_flexible_server",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-z0-9][a-zA-Z0-9-]{1,61}[a-z0-9]$\"",
+        "scope": "global",
+        "slug": "psqlf",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_postgresql_flexible_server_database",
+        "min_length": 1,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9-_]{1,63}$\"",
+        "scope": "parent",
+        "slug": "psqlfdb",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },
+    {
+        "name": "azurerm_postgresql_flexible_server_firewall_rule",
+        "min_length": 1,
+        "max_length": 128,
+        "validation_regex": "\"^[a-zA-Z0-9-_]{1,128}$\"",
+        "scope": "parent",
+        "slug": "psqlffw",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },
+    {
         "name": "azurerm_database_migration_project",
         "min_length": 2,
         "max_length": 57,
@@ -2512,6 +2545,17 @@
         "regex": "`[^~!@$^*()\\[\\]\\{\\}_\\-=\"';,0-9A-Za-z _.-]`"
     },
     {
+        "name": "azurerm_monitor_autoscale_setting",
+        "min_length": 2,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{0,62}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "amas",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z _.-]\""
+    },
+    {
         "name": "azurerm_monitor_diagnostic_setting",
         "min_length": 1,
         "max_length": 260,
@@ -2774,5 +2818,5 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""
-    }     
+    }   
 ]
