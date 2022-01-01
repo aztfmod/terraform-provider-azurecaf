@@ -1,8 +1,22 @@
+terraform {
+  required_providers {
+    azurecaf = {
+      source  = "aztfmod/azurecaf"
+      version = "1.2.4"
+    }
+  }
+}
+
+provider "azurecaf" {
+
+}
 
 #Storage account test
 resource "azurecaf_name" "classic_st" {
-  name          = "log2"
+  name          = "log23"
+  random_length = 5
   resource_type = "azurerm_storage_account"
+  resource_types = ["azurerm_cognitive_account"]
 }
 
 output "caf_name_classic_st" {
@@ -16,7 +30,7 @@ resource "azurecaf_name" "azurerm_cognitive_account" {
   prefixes      = ["a", "z"]
   suffixes      = ["prod"]
   random_length = 5
-  random_seed   = 12343
+  random_seed   = 123
   clean_input   = true
   separator     = "-"
 }
@@ -33,7 +47,7 @@ resource "azurecaf_name" "multiple_resources" {
   prefixes       = ["a", "b"]
   suffixes       = ["prod"]
   random_length  = 4
-  random_seed    = 12343
+  random_seed    = 123
   clean_input    = true
   separator      = "-"
 }

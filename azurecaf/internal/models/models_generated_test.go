@@ -1,4 +1,4 @@
-package azurecaf
+package models
 
 import (
 	"regexp"
