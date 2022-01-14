@@ -2818,5 +2818,72 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""
-    }   
+    },
+    {
+        "name": "azurerm_api_management",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$\"",
+        "scope": "global",
+        "slug": "apim",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_api_management_api",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$\"",
+        "scope": "global",
+        "slug": "apimapi",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },    
+    {
+        "name": "azurerm_api_management_api_operation_tag",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$\"",
+        "scope": "global",
+        "slug": "apimapiopt",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_api_management_backend",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$\"",
+        "scope": "global",
+        "slug": "apimapiopt",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },       
+    {
+        "name": "azurerm_api_management_certificate",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$\"",
+        "scope": "global",
+        "slug": "apimapiopt",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_api_management_logger",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$\"",
+        "scope": "global",
+        "slug": "apimapiopt",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    }    
+       
 ]
