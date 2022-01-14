@@ -315,6 +315,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_dedicated_hardware_security_module | ❌ |
 |azurerm_dedicated_host | ✔ |
 |azurerm_dedicated_host_group | ✔ |
+|azurerm_digital_twins_instance | ✔ |
 |azurerm_dev_test_global_vm_shutdown_schedule | ❌ |
 |azurerm_dev_test_lab | ✔ |
 |azurerm_dev_test_linux_virtual_machine | ✔ |
