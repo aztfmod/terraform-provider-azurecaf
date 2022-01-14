@@ -2884,6 +2884,16 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\""
-    }    
-       
+    },    
+    {
+        "name": "azurerm_digital_twins_instance",
+        "min_length": 4,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9_-]{1,63}$\"",
+        "scope": "subscription",
+        "slug": "adt",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    }
 ]
