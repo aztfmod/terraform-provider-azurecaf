@@ -156,6 +156,7 @@ This is the current compreheensive status of the implemented resources in the pr
 
 |resource | status |
 |---|---|
+|azurerm_aadb2c_directory | ✔ |
 |azurerm_advanced_threat_protection | ❌ |
 |azurerm_advisor_recommendations | ❌ |
 |azurerm_analysis_services_server | ✔ |
