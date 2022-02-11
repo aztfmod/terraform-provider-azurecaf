@@ -16,7 +16,7 @@ resource "azurecaf_name" "classic_st" {
   name          = "log23"
   random_length = 5
   resource_type = "azurerm_storage_account"
-  resource_types = ["azurerm_cognitive_account"]
+  resource_types = [ "azurerm_cognitive_account" ]
 }
 
 output "caf_name_classic_st" {

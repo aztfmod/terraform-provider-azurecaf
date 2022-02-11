@@ -70,12 +70,14 @@ func V4_Schema() map[string]*schema.Schema {
 		},
 		"resource_type": {
 			Type:         schema.TypeString,
+			Description:  "The resource type to generate a name for",
 			Optional:     true,
 			ValidateFunc: validation.StringInSlice(resourceMapsKeys, false),
 			ForceNew:     false,
 		},
 		"resource_types": {
-			Type: schema.TypeList,
+			Type:        schema.TypeList,
+			Description: "The list of resource types to generate a name for",
 			Elem: &schema.Schema{
 				Type:         schema.TypeString,
 				ValidateFunc: validation.StringInSlice(resourceMapsKeys, false),
