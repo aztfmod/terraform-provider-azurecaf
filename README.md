@@ -488,6 +488,9 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_mssql_server_security_alert_policy | ❌ |
 |azurerm_mssql_server_vulnerability_assessment | ❌ |
 |azurerm_mssql_virtual_machine | ❌ |
+|azurerm_mysql_flexible_server | ✔ |
+|azurerm_mysql_flexible_server_database | ✔ |
+|azurerm_mysql_flexible_server_firewall_rule | ✔ |
 |azurerm_mysql_active_directory_administrator | ❌ |
 |azurerm_mysql_configuration | ❌ |
 |azurerm_mysql_database | ✔ |
