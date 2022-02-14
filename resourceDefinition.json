@@ -650,6 +650,39 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""
     },
+{
+        "name": "azurerm_mysql_flexible_server",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-z0-9][a-zA-Z0-9-]{1,61}[a-z0-9]$\"",
+        "scope": "global",
+        "slug": "mysqlf",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_mysql_flexible_server_database",
+        "min_length": 1,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9-_]{1,63}$\"",
+        "scope": "parent",
+        "slug": "mysqlfdb",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },
+    {
+        "name": "azurerm_mysql_flexible_server_firewall_rule",
+        "min_length": 1,
+        "max_length": 128,
+        "validation_regex": "\"^[a-zA-Z0-9-_]{1,128}$\"",
+        "scope": "parent",
+        "slug": "mysqlffw",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },    
     {
         "name": "azurerm_postgresql_server",
         "min_length": 3,
