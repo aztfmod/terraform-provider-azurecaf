@@ -59,9 +59,9 @@ RUN apt-get update \
     # && go get -v github.com/alecthomas/gometalinter 2>&1 \
     #
     # Install gocode-gomod
-    && go get -x -d github.com/stamblerre/gocode 2>&1 \
-    && go build -o gocode-gomod github.com/stamblerre/gocode \
-    && mv gocode-gomod $GOPATH/bin/ \
+    #&& go get -x -d github.com/stamblerre/gocode 2>&1 \
+    #&& go build -o gocode-gomod github.com/stamblerre/gocode \
+    #&& mv gocode-gomod $GOPATH/bin/ \
     #
     # Install golangci-lint
     && curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin 2>&1 \
