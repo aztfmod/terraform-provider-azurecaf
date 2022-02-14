@@ -1,5 +1,16 @@
 [
     {
+        "name": "azurerm_aadb2c_directory",
+        "min_length": 1,
+        "max_length": 75,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{0,73}[a-zA-Z0-9]$\"",
+        "scope": "global",
+        "slug": "aadb2c",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },    
+    {
         "name": "azurerm_analysis_services_server",
         "min_length": 3,
         "max_length": 63,
