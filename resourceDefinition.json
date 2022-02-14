@@ -2908,7 +2908,7 @@
         "regex": "\"[^0-9A-Za-z_-]\""
     },
     {
-        "name": "digital_twins_endpoint_eventhub",
+        "name": "azurerm_digital_twins_endpoint_eventhub",
         "min_length": 3,
         "max_length": 50,
         "validation_regex": "\"^[a-zA-Z0-9_-]{1,50}$\"",
