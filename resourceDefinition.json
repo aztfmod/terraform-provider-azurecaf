@@ -1,5 +1,16 @@
 [
     {
+        "name": "azurerm_aadb2c_directory",
+        "min_length": 1,
+        "max_length": 75,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{0,73}[a-zA-Z0-9]$\"",
+        "scope": "global",
+        "slug": "aadb2c",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },    
+    {
         "name": "azurerm_analysis_services_server",
         "min_length": 3,
         "max_length": 63,
@@ -2895,5 +2906,104 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""
-    }
+    },
+    {
+        "name": "azurerm_digital_twins_endpoint_eventhub",
+        "min_length": 3,
+        "max_length": 50,
+        "validation_regex": "\"^[a-zA-Z0-9_-]{1,50}$\"",
+        "scope": "parent",
+        "slug": "adteh",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },
+    {
+        "name": "azurerm_digital_twins_endpoint_eventgrid",
+        "min_length": 3,
+        "max_length": 50,
+        "validation_regex": "\"^[a-zA-Z0-9_-]{1,50}$\"",
+        "scope": "parent",
+        "slug": "adteg",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },
+    {
+        "name": "azurerm_digital_twins_endpoint_servicebus",
+        "min_length": 3,
+        "max_length": 50,
+        "validation_regex": "\"^[a-zA-Z0-9_-]{1,50}$\"",
+        "scope": "parent",
+        "slug": "adtsb",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },    
+    {
+        "name": "azurerm_lb_backend_pool",
+        "min_length": 4,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9_-]{1,63}$\"",
+        "scope": "subscription",
+        "slug": "adt",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },
+    {
+        "name": "azurerm_lb_backend_address_pool",
+        "min_length": 4,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9_-]{1,63}$\"",
+        "scope": "subscription",
+        "slug": "adt",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },
+    {
+        "name": "azurerm_lb_nat_pool",
+        "min_length": 4,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9_-]{1,63}$\"",
+        "scope": "subscription",
+        "slug": "adt",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },
+    {
+        "name": "azurerm_lb_outbound_rule",
+        "min_length": 4,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9_-]{1,63}$\"",
+        "scope": "subscription",
+        "slug": "adt",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },
+    {
+        "name": "azurerm_lb_probe",
+        "min_length": 4,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9_-]{1,63}$\"",
+        "scope": "subscription",
+        "slug": "adt",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },
+    {
+        "name": "azurerm_lb_rule",
+        "min_length": 4,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9_-]{1,63}$\"",
+        "scope": "subscription",
+        "slug": "adt",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    }              
 ]

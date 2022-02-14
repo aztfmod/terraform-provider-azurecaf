@@ -156,6 +156,7 @@ This is the current compreheensive status of the implemented resources in the pr
 
 |resource | status |
 |---|---|
+|azurerm_aadb2c_directory | ✔ |
 |azurerm_advanced_threat_protection | ❌ |
 |azurerm_advisor_recommendations | ❌ |
 |azurerm_analysis_services_server | ✔ |
@@ -316,6 +317,9 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_dedicated_host | ✔ |
 |azurerm_dedicated_host_group | ✔ |
 |azurerm_digital_twins_instance | ✔ |
+|azurerm_digital_twins_endpoint_eventhub | ✔ |
+|azurerm_digital_twins_endpoint_eventgrid | ✔ |
+|azurerm_digital_twins_endpoint_servicebus | ✔ |
 |azurerm_dev_test_global_vm_shutdown_schedule | ❌ |
 |azurerm_dev_test_lab | ✔ |
 |azurerm_dev_test_linux_virtual_machine | ✔ |
@@ -414,12 +418,13 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_kusto_database_principal_assignment | ❌ |
 |azurerm_kusto_eventhub_data_connection | ✔ |
 |azurerm_lb | ✔ |
-|azurerm_lb_backend_address_pool | ❌ |
-|azurerm_lb_nat_pool | ❌ |
+|azurerm_lb_backend_address_pool | ✔ |
+|azurerm_lb_backend_address_pool_address | ✔ |
+|azurerm_lb_nat_pool | ✔ |
 |azurerm_lb_nat_rule | ✔ |
-|azurerm_lb_outbound_rule | ❌ |
-|azurerm_lb_probe | ❌ |
-|azurerm_lb_rule | ❌ |
+|azurerm_lb_outbound_rule | ✔ |
+|azurerm_lb_probe | ✔ |
+|azurerm_lb_rule | ✔ |
 |azurerm_lighthouse_assignment | ❌ |
 |azurerm_lighthouse_definition | ❌ |
 |azurerm_linux_virtual_machine | ✔ |
