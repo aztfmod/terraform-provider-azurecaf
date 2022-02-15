@@ -42,6 +42,11 @@ Please, find below the steps that should be followed to contribute:
 
     You can run `make build` in case you have make installed in your system in case you don't you can run from the repository root `go generate` followed by `go fmt ./...` and them `go test ./...`
 
+7. Update the README.MD with coverage
+ 
+    For quick reference, update the [README.md#resource-status](../README.md) at the root of the provider to mention the coverage you just added:
+    ```|azurerm_api_management_custom_domain | ✔ |```
+
 7. Commit and submit PR
 
     Now you should commit, remembering to put a meaningful commit message. After that, you should [make pull request](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request) remembering to link in the PR the issue that it is solving.

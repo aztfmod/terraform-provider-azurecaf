@@ -172,10 +172,11 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_api_management_authorization_server | ❌ |
 |azurerm_api_management_backend | ✔ |
 |azurerm_api_management_certificate | ✔ |
-|azurerm_api_management_custom_domain | ❌ |
+|azurerm_api_management_custom_domain | ✔ |
 |azurerm_api_management_diagnostic | ❌ |
-|azurerm_api_management_group | ❌ |
-|azurerm_api_management_group_user | ❌ |
+|azurerm_api_management_gateway | ✔ |
+|azurerm_api_management_group | ✔ |
+|azurerm_api_management_group_user | ✔ |
 |azurerm_api_management_identity_provider_aad | ❌ |
 |azurerm_api_management_identity_provider_facebook | ❌ |
 |azurerm_api_management_identity_provider_google | ❌ |
@@ -190,7 +191,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_api_management_product_policy | ❌ |
 |azurerm_api_management_property | ❌ |
 |azurerm_api_management_subscription | ❌ |
-|azurerm_api_management_user | ❌ |
+|azurerm_api_management_user | ✔ |
 |azurerm_app_configuration | ✔ |
 |azurerm_app_service | ✔ |
 |azurerm_app_service_active_slot | ❌ |
