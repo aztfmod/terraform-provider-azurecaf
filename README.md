@@ -360,7 +360,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_firewall_application_rule_collection | ❌ |
 |azurerm_firewall_nat_rule_collection | ❌ |
 |azurerm_firewall_network_rule_collection | ❌ |
-|azurerm_firewall_policy | ❌ |
+|azurerm_firewall_policy | ✔ |
 |azurerm_firewall_policy_rule_collection_group | ❌ |
 |azurerm_frontdoor | ✔ |
 |azurerm_frontdoor_custom_https_configuration | ❌ |
