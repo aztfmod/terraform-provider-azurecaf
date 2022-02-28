@@ -440,7 +440,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_log_analytics_linked_storage_account | ❌ |
 |azurerm_log_analytics_saved_search | ❌ |
 |azurerm_log_analytics_solution | ❌ |
-|azurerm_log_analytics_storage_insights | ❌ |
+|azurerm_log_analytics_storage_insights | ✔ |
 |azurerm_log_analytics_workspace | ✔ |
 |azurerm_logic_app_action_custom | ✔ |
 |azurerm_logic_app_action_http | ✔ |
