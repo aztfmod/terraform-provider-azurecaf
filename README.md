@@ -560,6 +560,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_public_ip | ✔ |
 |azurerm_public_ip_prefix | ✔ |
 |azurerm_public_ips | ❌ |
+|azurerm_purview_account | ✔ |
 |azurerm_recovery_services_vault | ✔ |
 |azurerm_redis_cache | ✔ |
 |azurerm_redis_firewall_rule | ✔ |
@@ -657,9 +658,17 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_subscription_template_deployment | ❌ |
 |azurerm_subscriptions | ❌ |
 |azurerm_synapse_firewall_rule | ✔ |
+|azurerm_synapse_integration_runtime_azure | ✔ |
+|azurerm_synapse_integration_runtime_self_hosted | ✔ |
+|azurerm_synapse_linked_service | ✔ |
+|azurerm_synapse_managed_private_endpoint | ✔ |
+|azurerm_synapse_private_link_hub | ✔ |
+|azurerm_synapse_sql_pool | ✔ |
+|azurerm_synapse_sql_pool_vulnerability_assessment_baseline | ✔ |
+|azurerm_synapse_sql_pool_workload_classifier | ✔ |
+|azurerm_synapse_sql_pool_workload_group | ✔ |
 |azurerm_synapse_role_assignment | ❌ |
 |azurerm_synapse_spark_pool | ✔ |
-|azurerm_synapse_sql_pool | ❌ |
 |azurerm_synapse_workspace | ✔ |
 |azurerm_template_deployment | ✔ |
 |azurerm_traffic_manager_endpoint | ❌ |
