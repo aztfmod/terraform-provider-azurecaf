@@ -2554,7 +2554,7 @@
         "dashes": false,
         "lowercase": true,
         "regex": "\"[^0-9a-zA-Z]\""
-    },
+    },    
     {
         "name": "azurerm_synapse_sql_pool ",
         "min_length": 1,
@@ -3082,5 +3082,115 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""
-    }              
+    },
+    {
+        "name": "azurerm_purview_account",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9_-]$\"",
+        "scope": "subscription",
+        "slug": "purv",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_synapse_integration_runtime_azure",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9-]$\"",
+        "scope": "subscription",
+        "slug": "synira",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_synapse_integration_runtime_self_hosted",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9_-]$\"",
+        "scope": "subscription",
+        "slug": "synirsh",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_synapse_linked_service",
+        "min_length": 1,
+        "max_length": 140,
+        "validation_regex": "\"^[a-zA-Z0-9_]{1,140}$\"",
+        "scope": "subscription",
+        "slug": "synls",
+        "dashes": false,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_]\""
+    },
+    {
+        "name": "azurerm_synapse_managed_private_endpoint",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9_.-]{1,61}[a-zA-Z0-9_]$\"",
+        "scope": "subscription",
+        "slug": "synmpe",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\""
+    },
+    {
+        "name": "azurerm_synapse_private_link_hub",
+        "min_length": 1,
+        "max_length": 45,
+        "validation_regex": "\"^[a-z0-9]{1,45}$\"",
+        "scope": "subscription",
+        "slug": "synplh",
+        "dashes": false,
+        "lowercase": true,
+        "regex": "\"[^0-9a-z]\""
+    },
+    {
+        "name": "azurerm_synapse_sql_pool",
+        "min_length": 3,
+        "max_length": 60,
+        "validation_regex": "\"^[^\\\\/\\\"\\\\[\\\\]:|<>+=;,?*@&_][^\\\\/\\\"\\\\[\\\\]:|<>+=;,?*@&]{0,58}[^\\\\/\\\"\\\\[\\\\]:|<>+=;,?*@&.-]$\"",
+        "scope": "subscription",
+        "slug": "synsp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[\\\\/\\\"\\\\[\\\\]:|<>+=;,?*@&_]\""
+    },
+    {
+        "name": "azurerm_synapse_sql_pool_vulnerability_assessment_baseline",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9]{1,63}$\"",
+        "scope": "subscription",
+        "slug": "synspvab",
+        "dashes": false,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z]\""
+    },
+    {
+        "name": "azurerm_synapse_sql_pool_workload_classifier",
+        "min_length": 1,
+        "max_length": 128,
+        "validation_regex": "\"^[^<>*%:?\\\\+\\\\/]{1,127}[^<>*%:.?\\\\+\\\\/]$\"",
+        "scope": "subscription",
+        "slug": "synspwc",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "`[^-\\w\\._\\(\\)]`"
+    },
+    {
+        "name": "azurerm_synapse_sql_pool_workload_group",
+        "min_length": 1,
+        "max_length": 128,
+        "validation_regex": "\"^[^<>*%:.?\\\\+\\\\/]{0,127}[^<>*%:.?\\\\+\\\\/ ]$\"",
+        "scope": "subscription",
+        "slug": "synspwg",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "`[^-\\w\\._\\(\\)]`"
+    }      
 ]
