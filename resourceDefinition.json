@@ -3152,13 +3152,13 @@
     {
         "name": "azurerm_synapse_sql_pool",
         "min_length": 3,
-        "max_length": 60,
-        "validation_regex": "\"^[^\\\\/\\\"\\\\[\\\\]:|<>+=;,?*@&_][^\\\\/\\\"\\\\[\\\\]:|<>+=;,?*@&]{0,58}[^\\\\/\\\"\\\\[\\\\]:|<>+=;,?*@&.-]$\"",
+        "max_length": 15,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9_]{1,13}[a-zA-Z0-9]$\"",
         "scope": "subscription",
         "slug": "synsp",
-        "dashes": true,
+        "dashes": false,
         "lowercase": false,
-        "regex": "\"[\\\\/\\\"\\\\[\\\\]:|<>+=;,?*@&_]\""
+        "regex": "\"[^0-9A-Za-z_]\""
     },
     {
         "name": "azurerm_synapse_sql_pool_vulnerability_assessment_baseline",
