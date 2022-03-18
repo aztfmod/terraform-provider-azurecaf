@@ -9,15 +9,16 @@ import (
 
 	"github.com/aztfmod/terraform-provider-azurecaf/azurecaf/internal/models"
 	"github.com/aztfmod/terraform-provider-azurecaf/azurecaf/internal/schemas"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceName() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceNameCreate,
-		Update: resourceNameUpdate,
-		Read:   resourceNameRead,
-		Delete: schema.RemoveFromState,
+		CreateContext: resourceNameCreate,
+		UpdateContext: resourceNameUpdate,
+		ReadContext:   resourceNameRead,
+		Delete:        schema.RemoveFromState,
 		Importer: &schema.ResourceImporter{
 			State: importState,
 		},
@@ -75,16 +76,17 @@ func getDifference(context context.Context, d *schema.ResourceDiff, resource int
 	return nil
 }
 
-func resourceNameCreate(d *schema.ResourceData, meta interface{}) error {
-	return getNameResult(d, meta)
+func resourceNameCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	return getNameResult(d, m)
 }
 
-func resourceNameUpdate(d *schema.ResourceData, meta interface{}) error {
-	return getNameResult(d, meta)
+func resourceNameUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	return getNameResult(d, m)
 }
 
-func resourceNameRead(d *schema.ResourceData, meta interface{}) error {
-	return nil
+func resourceNameRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+	return diags
 }
 
 func convertInterfaceToString(source []interface{}) []string {
@@ -95,7 +97,8 @@ func convertInterfaceToString(source []interface{}) []string {
 	return s
 }
 
-func getNameResult(d *schema.ResourceData, meta interface{}) error {
+func getNameResult(d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
 	name := d.Get("name").(string)
 	prefixes := convertInterfaceToString(d.Get("prefixes").([]interface{}))
 	suffixes := convertInterfaceToString(d.Get("suffixes").([]interface{}))
@@ -120,7 +123,7 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	result, results, id, err :=
 		getData(resourceType, resourceTypes, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if len(result) > 0 {
 		d.Set("result", result)
@@ -129,7 +132,7 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 		d.Set("results", results)
 	}
 	d.SetId(id)
-	return nil
+	return diags
 }
 
 func getData(resourceType string, resourceTypes []string, separator string, prefixes []string, name string, suffixes []string, randomSuffix string, convention string, cleanInput bool, passthrough bool, useSlug bool, namePrecedence []string) (result string, results map[string]string, id string, err error) {

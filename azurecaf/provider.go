@@ -12,5 +12,8 @@ func Provider() *schema.Provider {
 		ResourcesMap: map[string]*schema.Resource{
 			"azurecaf_name": resourceName(),
 		},
+		DataSourcesMap: map[string]*schema.Resource{
+			"azurecaf_name": dataSourceName(),
+		},
 	}
 }

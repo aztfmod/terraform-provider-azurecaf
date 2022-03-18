@@ -51,6 +51,21 @@ resource "azurecaf_name" "multiple_resources" {
   clean_input    = true
   separator      = "-"
 }
+data "azurecaf_name" "name_data" {
+  name           = "cogsdemo2"
+  resource_type  = "azurerm_cognitive_account"
+  resource_types = ["azurerm_storage_account"]
+  prefixes       = ["a", "b"]
+  suffixes       = ["prod"]
+  random_length  = 4
+  random_seed    = 123
+  clean_input    = true
+  separator      = "-"
+}
+
+output "name_data" {
+  value       = data.azurecaf_name.name_data.results
+}
 
 output "multiple_resources" {
   value = azurecaf_name.multiple_resources.results
