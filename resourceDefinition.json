@@ -1038,6 +1038,50 @@
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
     },
     {
+        "name": "azurerm_data_protection_backup_vault",
+        "min_length": 2,
+        "max_length": 50,
+        "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9-]{1,49}$\"",
+        "scope": "resourceGroup",
+        "slug": "dpbv",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "`[^a-zA-Z0-9-]`"
+    },
+    {
+        "name": "azurerm_data_protection_backup_policy_disk",
+        "min_length": 3,
+        "max_length": 150,
+        "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9\\\\-]{1,148}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "dpbpd",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "`[^a-zA-Z0-9-]`"
+    },
+    {
+        "name": "azurerm_data_protection_backup_policy_blob_storage",
+        "min_length": 3,
+        "max_length": 150,
+        "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9\\\\-]{1,148}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "dpbpb",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "`[^a-zA-Z0-9-]`"
+    },
+    {
+        "name": "azurerm_data_protection_backup_policy_postgresql",
+        "min_length": 3,
+        "max_length": 150,
+        "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9\\\\-]{1,148}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "dpbpp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "`[^a-zA-Z0-9-]`"
+    },
+    {
         "name": "azurerm_recovery_services_vault",
         "min_length": 2,
         "max_length": 50,

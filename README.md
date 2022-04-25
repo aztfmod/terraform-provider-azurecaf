@@ -304,6 +304,10 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_data_lake_store | ✔ |
 |azurerm_data_lake_store_file | ❌ |
 |azurerm_data_lake_store_firewall_rule | ✔ |
+|azurerm_data_protection_backup_vault | ✔ |
+|azurerm_data_protection_backup_policy_blob_storage | ✔ |
+|azurerm_data_protection_backup_policy_disk | ✔ |
+|azurerm_data_protection_backup_policy_postgresql | ✔ |
 |azurerm_data_share | ❌ |
 |azurerm_data_share_account | ❌ |
 |azurerm_data_share_dataset_blob_storage | ❌ |
