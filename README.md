@@ -681,7 +681,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_virtual_desktop_workspace_application_group_association | ❌ |
 |azurerm_virtual_hub | ✔ |
 |azurerm_virtual_hub_bgp_connection | ❌ |
-|azurerm_virtual_hub_connection | ❌ |
+|azurerm_virtual_hub_connection | ✔ |
 |azurerm_virtual_hub_ip | ❌ |
 |azurerm_virtual_hub_route_table | ❌ |
 |azurerm_virtual_hub_security_partner_provider | ❌ |
