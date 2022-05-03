@@ -53,7 +53,13 @@ func getDifference(context context.Context, d *schema.ResourceDiff, resource int
 	randomLength := d.Get("random_length").(int)
 	randomSeed := int64(d.Get("random_seed").(int))
 	convention := models.ConventionCafClassic
+	randomString := d.Get("random_string").(string)
 	randomSuffix := randSeq(int(randomLength), randomSeed)
+	if len(randomString) > 0 {
+		randomSuffix = randomString
+	} else {
+		d.SetNew("random_string", randomSuffix)
+	}
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 	result, results, _, err :=
 		getData(resourceType, resourceTypes, separator,
@@ -108,10 +114,16 @@ func getNameResult(d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 		randomSeed = time.Now().UnixMicro()
 		d.Set("random_seed", randomSeed)
 	}
+	randomString := d.Get("random_string").(string)
+	randomSuffix := randSeq(int(randomLength), randomSeed)
+	if len(randomString) > 0 {
+		randomSuffix = randomString
+	} else {
+		d.Set("random_string", randomSuffix)
+	}
 
 	convention := models.ConventionCafClassic
 
-	randomSuffix := randSeq(int(randomLength), randomSeed)
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 	result, results, id, err :=
 		getData(resourceType, resourceTypes, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence)
