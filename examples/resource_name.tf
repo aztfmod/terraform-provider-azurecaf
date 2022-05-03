@@ -16,6 +16,14 @@ resource "azurecaf_name" "classic_st" {
   name          = "log23"
   random_length = 5
   resource_type = "azurerm_storage_account"
+  resource_types = [ "azurerm_cognitive_account", "azurerm_bot_web_app" ]
+}
+
+resource "azurecaf_name" "classic_st_randon" {
+  name          = "log23"
+  random_length = 5
+  random_seed = 1
+  resource_type = "azurerm_storage_account"
   resource_types = [ "azurerm_cognitive_account" ]
 }
 
@@ -73,4 +81,8 @@ output "multiple_resources" {
 
 output "multiple_resources_main" {
   value = azurecaf_name.multiple_resources.result
+}
+
+output "classic_st_random" {
+  value = azurecaf_name.classic_st_randon.result
 }

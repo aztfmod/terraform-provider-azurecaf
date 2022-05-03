@@ -160,18 +160,6 @@ func TestAccResourceName_CafClassic(t *testing.T) {
 					regexMatch("azurecaf_name.classic_rg", regexp.MustCompile(models.ResourceDefinitions["azurerm_resource_group"].ValidationRegExp), 1),
 				),
 			},
-			// {
-			// 	Config: testAccResourceNameCafClassicConfig,
-			// 	Check: resource.ComposeTestCheckFunc(
-
-			// 		testAccCafNamingValidation(
-			// 			"azurecaf_name.classic_acr_invalid",
-			// 			"pr1pr2crmyinvalidacrname",
-			// 			35,
-			// 			"pr1pr2"),
-			// 		regexMatch("azurecaf_name.classic_acr_invalid", regexp.MustCompile(models.ResourceDefinitions["azurerm_container_registry"].ValidationRegExp), 1),
-			// 	),
-			// },
 			{
 				Config: testAccResourceNameCafClassicConfig,
 				Check: resource.ComposeTestCheckFunc(

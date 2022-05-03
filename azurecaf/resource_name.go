@@ -20,7 +20,7 @@ func resourceName() *schema.Resource {
 		ReadContext:   resourceNameRead,
 		Delete:        schema.RemoveFromState,
 		Importer: &schema.ResourceImporter{
-			State: importState,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 		SchemaVersion: 4,
 		StateUpgraders: []schema.StateUpgrader{
@@ -40,12 +40,6 @@ func resourceName() *schema.Resource {
 	}
 }
 
-func importState(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	d.Set("result", d.Id())
-	d.SetId("imported")
-	return []*schema.ResourceData{d}, nil
-}
-
 func getDifference(context context.Context, d *schema.ResourceDiff, resource interface{}) error {
 	name := d.Get("name").(string)
 	prefixes := convertInterfaceToString(d.Get("prefixes").([]interface{}))
@@ -58,9 +52,8 @@ func getDifference(context context.Context, d *schema.ResourceDiff, resource int
 	useSlug := d.Get("use_slug").(bool)
 	randomLength := d.Get("random_length").(int)
 	randomSeed := int64(d.Get("random_seed").(int))
-
 	convention := models.ConventionCafClassic
-	randomSuffix := randSeq(int(randomLength), &randomSeed)
+	randomSuffix := randSeq(int(randomLength), randomSeed)
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 	result, results, _, err :=
 		getData(resourceType, resourceTypes, separator,
@@ -118,7 +111,7 @@ func getNameResult(d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 
 	convention := models.ConventionCafClassic
 
-	randomSuffix := randSeq(int(randomLength), &randomSeed)
+	randomSuffix := randSeq(int(randomLength), randomSeed)
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 	result, results, id, err :=
 		getData(resourceType, resourceTypes, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence)

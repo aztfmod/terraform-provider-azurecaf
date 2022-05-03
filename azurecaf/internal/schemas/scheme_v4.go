@@ -1,6 +1,8 @@
 package schemas
 
 import (
+	"fmt"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -89,12 +91,22 @@ func V4_Schema() map[string]*schema.Schema {
 			Type:     schema.TypeInt,
 			Optional: true,
 			ForceNew: false,
+			ValidateFunc: func(v interface{}, k string) (ws []string, errors []error) {
+				if v.(int) == 0 {
+					errors = append(errors,
+						fmt.Errorf("%q must be greater than 0", k))
+					return nil, errors
+				}
+				return nil, nil
+			},
 			DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
 				return new == "0" || old == new
 			},
 		},
 		"random_string": {
 			Type:     schema.TypeString,
+			Optional: true,
+			ForceNew: false,
 			Computed: true,
 		},
 		"use_slug": {
