@@ -11,7 +11,6 @@ import (
 	"github.com/aztfmod/terraform-provider-azurecaf/azurecaf/internal/models"
 	"github.com/aztfmod/terraform-provider-azurecaf/azurecaf/internal/schemas"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
@@ -59,15 +58,6 @@ func regexMatch(id string, exp *regexp.Regexp, requiredMatches int) resource.Tes
 
 		return nil
 	}
-}
-
-func setData(prefixes []string, name string, suffixes []string, cleanInput bool) *schema.ResourceData {
-	data := &schema.ResourceData{}
-	data.Set("name", name)
-	data.Set("prefixes", prefixes)
-	data.Set("suffixes", suffixes)
-	data.Set("clean_input", cleanInput)
-	return data
 }
 
 func TestCleanInput_no_changes(t *testing.T) {
