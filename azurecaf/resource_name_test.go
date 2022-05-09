@@ -124,8 +124,7 @@ func TestConcatenateParameters_azurerm_public_ip_prefix(t *testing.T) {
 
 func TestGetSlug(t *testing.T) {
 	resourceType := "azurerm_resource_group"
-	convention := models.ConventionCafClassic
-	result := getSlug(resourceType, convention)
+	result := getSlug(resourceType)
 	expected := "rg"
 	if result != expected {
 		t.Errorf("Expected %s but received %s", expected, result)
@@ -134,8 +133,7 @@ func TestGetSlug(t *testing.T) {
 
 func TestGetSlug_unknown(t *testing.T) {
 	resourceType := "azurerm_does_not_exist"
-	convention := models.ConventionCafClassic
-	result := getSlug(resourceType, convention)
+	result := getSlug(resourceType)
 	expected := ""
 	if result != expected {
 		t.Errorf("Expected %s but received %s", expected, result)
@@ -298,7 +296,7 @@ func TestValidResourceType_invalidParameters(t *testing.T) {
 
 func TestGetResourceNameValid(t *testing.T) {
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
-	resourceName, err := getResourceName("azurerm_resource_group", "-", []string{"a", "b"}, "myrg", nil, "1234", "cafclassic", true, false, true, namePrecedence)
+	resourceName, err := getResourceName("azurerm_resource_group", "-", []string{"a", "b"}, "myrg", nil, "1234", true, false, true, namePrecedence)
 	expected := "a-b-rg-myrg-1234"
 
 	if err != nil {
@@ -313,7 +311,7 @@ func TestGetResourceNameValid(t *testing.T) {
 
 func TestGetResourceNameValidRsv(t *testing.T) {
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
-	resourceName, err := getResourceName("azurerm_recovery_services_vault", "-", []string{"a", "b"}, "test", nil, "1234", "cafclassic", true, false, true, namePrecedence)
+	resourceName, err := getResourceName("azurerm_recovery_services_vault", "-", []string{"a", "b"}, "test", nil, "1234", true, false, true, namePrecedence)
 	expected := "a-b-rsv-test-1234"
 
 	if err != nil {
@@ -328,7 +326,7 @@ func TestGetResourceNameValidRsv(t *testing.T) {
 
 func TestGetResourceNameValidNoSlug(t *testing.T) {
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
-	resourceName, err := getResourceName("azurerm_resource_group", "-", []string{"a", "b"}, "myrg", nil, "1234", "cafclassic", true, false, false, namePrecedence)
+	resourceName, err := getResourceName("azurerm_resource_group", "-", []string{"a", "b"}, "myrg", nil, "1234", true, false, false, namePrecedence)
 	expected := "a-b-myrg-1234"
 
 	if err != nil {
@@ -343,7 +341,7 @@ func TestGetResourceNameValidNoSlug(t *testing.T) {
 
 func TestGetResourceNameInvalidResourceType(t *testing.T) {
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
-	resourceName, err := getResourceName("azurerm_invalid", "-", []string{"a", "b"}, "myrg", nil, "1234", "cafclassic", true, false, true, namePrecedence)
+	resourceName, err := getResourceName("azurerm_invalid", "-", []string{"a", "b"}, "myrg", nil, "1234", true, false, true, namePrecedence)
 	expected := "a-b-rg-myrg-1234"
 
 	if err == nil {
@@ -358,7 +356,7 @@ func TestGetResourceNameInvalidResourceType(t *testing.T) {
 
 func TestGetResourceNamePassthrough(t *testing.T) {
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
-	resourceName, _ := getResourceName("azurerm_resource_group", "-", []string{"a", "b"}, "myrg", nil, "1234", "cafclassic", true, true, true, namePrecedence)
+	resourceName, _ := getResourceName("azurerm_resource_group", "-", []string{"a", "b"}, "myrg", nil, "1234", true, true, true, namePrecedence)
 	expected := "myrg"
 
 	if expected != resourceName {

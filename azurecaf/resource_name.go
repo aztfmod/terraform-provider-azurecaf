@@ -7,7 +7,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/aztfmod/terraform-provider-azurecaf/azurecaf/internal/models"
 	"github.com/aztfmod/terraform-provider-azurecaf/azurecaf/internal/schemas"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -52,7 +51,6 @@ func getDifference(context context.Context, d *schema.ResourceDiff, resource int
 	useSlug := d.Get("use_slug").(bool)
 	randomLength := d.Get("random_length").(int)
 	randomSeed := int64(d.Get("random_seed").(int))
-	convention := models.ConventionCafClassic
 	randomString := d.Get("random_string").(string)
 	randomSuffix := randSeq(int(randomLength), randomSeed)
 	if len(randomString) > 0 {
@@ -64,7 +62,7 @@ func getDifference(context context.Context, d *schema.ResourceDiff, resource int
 	result, results, _, err :=
 		getData(resourceType, resourceTypes, separator,
 			prefixes, name, suffixes, randomSuffix,
-			convention, cleanInput, passthrough, useSlug, namePrecedence)
+			cleanInput, passthrough, useSlug, namePrecedence)
 	if !d.GetRawState().IsNull() {
 		d.SetNew("result", result)
 		d.SetNew("results", results)
@@ -122,11 +120,9 @@ func getNameResult(d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 		d.Set("random_string", randomSuffix)
 	}
 
-	convention := models.ConventionCafClassic
-
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 	result, results, id, err :=
-		getData(resourceType, resourceTypes, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence)
+		getData(resourceType, resourceTypes, separator, prefixes, name, suffixes, randomSuffix, cleanInput, passthrough, useSlug, namePrecedence)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -140,7 +136,7 @@ func getNameResult(d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	return diags
 }
 
-func getData(resourceType string, resourceTypes []string, separator string, prefixes []string, name string, suffixes []string, randomSuffix string, convention string, cleanInput bool, passthrough bool, useSlug bool, namePrecedence []string) (result string, results map[string]string, id string, err error) {
+func getData(resourceType string, resourceTypes []string, separator string, prefixes []string, name string, suffixes []string, randomSuffix string, cleanInput bool, passthrough bool, useSlug bool, namePrecedence []string) (result string, results map[string]string, id string, err error) {
 	isValid, err := validateResourceType(resourceType, resourceTypes)
 	if !isValid {
 		return
@@ -150,7 +146,7 @@ func getData(resourceType string, resourceTypes []string, separator string, pref
 	}
 	ids := []string{}
 	if len(resourceType) > 0 {
-		result, err = getResourceName(resourceType, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence)
+		result, err = getResourceName(resourceType, separator, prefixes, name, suffixes, randomSuffix, cleanInput, passthrough, useSlug, namePrecedence)
 		if err != nil {
 			return
 		}
@@ -159,7 +155,7 @@ func getData(resourceType string, resourceTypes []string, separator string, pref
 	}
 
 	for _, resourceTypeName := range resourceTypes {
-		results[resourceTypeName], err = getResourceName(resourceTypeName, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence)
+		results[resourceTypeName], err = getResourceName(resourceTypeName, separator, prefixes, name, suffixes, randomSuffix, cleanInput, passthrough, useSlug, namePrecedence)
 		if err != nil {
 			return
 		}

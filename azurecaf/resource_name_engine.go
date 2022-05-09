@@ -43,11 +43,9 @@ func getResource(resourceType string) (*models.ResourceStructure, error) {
 }
 
 // Retrieve the resource slug / shortname based on the resourceType and the selected convention
-func getSlug(resourceType string, convention string) string {
-	if convention == models.ConventionCafClassic || convention == models.ConventionCafRandom {
-		if val, ok := models.ResourceDefinitions[resourceType]; ok {
-			return val.CafPrefix
-		}
+func getSlug(resourceType string) string {
+	if val, ok := models.ResourceDefinitions[resourceType]; ok {
+		return val.CafPrefix
 	}
 	return ""
 }
@@ -162,7 +160,6 @@ func getResourceName(resourceTypeName string, separator string,
 	name string,
 	suffixes []string,
 	randomSuffix string,
-	convention string,
 	cleanInput bool,
 	passthrough bool,
 	useSlug bool,
@@ -179,7 +176,7 @@ func getResourceName(resourceTypeName string, separator string,
 
 	slug := ""
 	if useSlug {
-		slug = getSlug(resourceTypeName, convention)
+		slug = getSlug(resourceTypeName)
 	}
 
 	if cleanInput {
