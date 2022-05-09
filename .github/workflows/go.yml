@@ -37,12 +37,6 @@ jobs:
       - name: test
         run: go test ./...
 
-      - name: lint
-        run: |
-          export PATH=$PATH:$(go env GOPATH)/bin
-          GO111MODULE=off go get github.com/bflad/tfproviderlint/cmd/tfproviderlint
-          tfproviderlint ./...
-
       - name: Import GPG key
         id: import_gpg
         uses: crazy-max/ghaction-import-gpg@v2
