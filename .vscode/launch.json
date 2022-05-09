@@ -10,7 +10,10 @@
 			"args": [
 				"--",
 				"debug"
-			]
+			],
+			"env": {
+				"DEBUG_CAF_PROVIDER": "1",
+			},
 		},
 		{
 			"name": "Launch test package",

@@ -2,8 +2,9 @@ package main
 
 import (
 	"context"
-	"flag"
 	"log"
+	"os"
+	"strings"
 
 	"github.com/aztfmod/terraform-provider-azurecaf/azurecaf"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -14,10 +15,8 @@ import (
 
 func main() {
 	var debugMode bool
-
-	flag.BoolVar(&debugMode, "debug", true, "set to true to run the provider with support for debuggers like delve")
-	flag.Parse()
-
+	debugCAF := strings.ToLower(os.Getenv("DEBUG_CAF_PROVIDER"))
+	debugMode = len(debugCAF) > 0 && (debugCAF == "true" || debugCAF == "1" || debugCAF == "on" || debugCAF == "yes")
 	opts := &plugin.ServeOpts{ProviderFunc: func() *schema.Provider {
 		return azurecaf.Provider()
 	}}
