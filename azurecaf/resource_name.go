@@ -73,15 +73,15 @@ func getDifference(context context.Context, d *schema.ResourceDiff, resource int
 	return nil
 }
 
-func resourceNameCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	return getNameResult(d, m)
+func resourceNameCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	return getNameResult(d, meta)
 }
 
-func resourceNameUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	return getNameResult(d, m)
+func resourceNameUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	return getNameResult(d, meta)
 }
 
-func resourceNameRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceNameRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	return diags
 }
