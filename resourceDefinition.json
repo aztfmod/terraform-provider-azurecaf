@@ -665,7 +665,7 @@
         "name": "azurerm_mysql_flexible_server_database",
         "min_length": 1,
         "max_length": 63,
-        "validation_regex": "\"^[a-zA-Z0-9_]{1,63}$\"",
+        "validation_regex": "\"^[a-zA-Z0-9-_]{1,63}$\"",
         "scope": "parent",
         "slug": "mysqlfdb",
         "dashes": false,
