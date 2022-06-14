@@ -668,7 +668,7 @@
         "validation_regex": "\"^[a-zA-Z0-9-_]{1,63}$\"",
         "scope": "parent",
         "slug": "mysqlfdb",
-        "dashes": false,
+        "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""
     },
