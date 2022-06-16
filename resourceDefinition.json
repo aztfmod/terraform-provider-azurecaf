@@ -9,7 +9,7 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\""
-    },    
+    },
     {
         "name": "azurerm_analysis_services_server",
         "min_length": 3,
@@ -650,7 +650,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""
     },
-{
+    {
         "name": "azurerm_mysql_flexible_server",
         "min_length": 3,
         "max_length": 63,
@@ -682,7 +682,7 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""
-    },    
+    },
     {
         "name": "azurerm_postgresql_server",
         "min_length": 3,
@@ -858,7 +858,7 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
-    },    
+    },
     {
         "name": "azurerm_data_factory_dataset_cosmosdb_sqlapi",
         "min_length": 1,
@@ -869,7 +869,7 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
-    },      
+    },
     {
         "name": "azurerm_data_factory_dataset_delimited_text",
         "min_length": 1,
@@ -880,7 +880,7 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
-    },        
+    },
     {
         "name": "azurerm_data_factory_dataset_http",
         "min_length": 1,
@@ -891,7 +891,7 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
-    },      
+    },
     {
         "name": "azurerm_data_factory_dataset_json",
         "min_length": 1,
@@ -902,8 +902,7 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
-    },      
-       
+    },
     {
         "name": "azurerm_data_factory_dataset_postgresql",
         "min_length": 1,
@@ -980,7 +979,7 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
-    },        
+    },
     {
         "name": "azurerm_data_factory_linked_service_azure_sql_database",
         "min_length": 1,
@@ -991,7 +990,7 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
-    },        
+    },
     {
         "name": "azurerm_data_factory_linked_service_cosmosdb",
         "min_length": 1,
@@ -1013,8 +1012,7 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
-    }, 
-     
+    },
     {
         "name": "azurerm_data_factory_linked_service_data_lake_storage_gen2",
         "min_length": 1,
@@ -1146,8 +1144,7 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\""
-    },    
-    
+    },
     {
         "name": "azurerm_data_factory_trigger_schedule",
         "min_length": 1,
@@ -1610,7 +1607,7 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
-    },    
+    },
     {
         "name": "azurerm_firewall_policy",
         "min_length": 1,
@@ -1934,7 +1931,7 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[<>*%:.?\\\\+\\\\/]\""
-    },    
+    },
     {
         "name": "azurerm_storage_table",
         "min_length": 3,
@@ -2190,7 +2187,7 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\""
-    },    
+    },
     {
         "name": "azurerm_service_fabric_cluster",
         "min_length": 4,
@@ -2609,7 +2606,7 @@
         "dashes": false,
         "lowercase": true,
         "regex": "\"[^0-9a-zA-Z]\""
-    },    
+    },
     {
         "name": "azurerm_synapse_sql_pool ",
         "min_length": 1,
@@ -2961,7 +2958,7 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9-]\""
-    }, 
+    },
     {
         "name": "azurerm_api_management_api_operation_tag",
         "min_length": 1,
@@ -2977,13 +2974,13 @@
         "name": "azurerm_api_management_backend",
         "min_length": 1,
         "max_length": 80,
-        "validation_regex":  "\"^[a-zA-Z][a-zA-Z0-9-]{0,78}[a-zA-Z0-9|]$\"",
+        "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9-]{0,78}[a-zA-Z0-9|]$\"",
         "scope": "global",
         "slug": "apimbe",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9-]\""
-    },       
+    },
     {
         "name": "azurerm_api_management_certificate",
         "min_length": 1,
@@ -3005,7 +3002,7 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9-]\""
-    },   
+    },
     {
         "name": "azurerm_api_management_gateway",
         "min_length": 1,
@@ -3020,14 +3017,14 @@
     {
         "name": "azurerm_api_management_group",
         "min_length": 1,
-        "max_length": 80,   
+        "max_length": 80,
         "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9-]{0,78}[a-zA-Z0-9|]$\"",
         "scope": "global",
         "slug": "apimgr",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9-]\""
-    },       
+    },
     {
         "name": "azurerm_digital_twins_instance",
         "min_length": 4,
@@ -3071,7 +3068,7 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""
-    },    
+    },
     {
         "name": "azurerm_lb_backend_pool",
         "min_length": 4,
@@ -3247,5 +3244,16 @@
         "dashes": true,
         "lowercase": false,
         "regex": "`[^-\\w\\._\\(\\)]`"
-    }      
+    },
+    {
+        "name": "azurerm_vpn_server_configuration",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "vpnsc",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\""
+    }
 ]
