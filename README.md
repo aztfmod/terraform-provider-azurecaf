@@ -393,6 +393,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_iot_time_series_insights_standard_environment | ❌ |
 |azurerm_iotcentral_application | ✔ |
 |azurerm_iothub | ✔ |
+|azurerm_iothub_certificate | ✔ |
 |azurerm_iothub_consumer_group | ✔ |
 |azurerm_iothub_dps | ✔ |
 |azurerm_iothub_dps_certificate | ✔ |
