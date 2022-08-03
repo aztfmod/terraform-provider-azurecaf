@@ -1380,6 +1380,17 @@
         "regex": "\"[^0-9A-Za-z-]\""
     },
     {
+        "name": "azurerm_iothub_certificate",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9-._]{1,64}$\"",
+        "scope": "parent",
+        "slug": "iotcert",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-._]\""
+    },
+    {
         "name": "azurerm_iothub_consumer_group",
         "min_length": 1,
         "max_length": 50,
