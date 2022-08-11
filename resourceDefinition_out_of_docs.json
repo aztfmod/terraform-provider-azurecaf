@@ -1,16 +1,5 @@
 [
   {
-    "name": "azurerm_private_endpoint",
-    "min_length": 1,
-    "max_length": 80,
-    "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9\\\\-\\\\._]{0,78}[a-zA-Z0-9_]$\"",
-    "scope": "resourceGroup",
-    "slug": "pe",
-    "dashes": true,
-    "lowercase": false,
-    "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
-  },
-  {
     "name": "azurerm_private_service_connection",
     "min_length": 1,
     "max_length": 80,
