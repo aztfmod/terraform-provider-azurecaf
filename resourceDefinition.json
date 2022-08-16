@@ -1958,7 +1958,7 @@
         "max_length": 40,
         "validation_regex": "\"^[a-zA-Z0-9-]{1,40}$\"",
         "scope": "resourceGroup",
-        "slug": "swa",
+        "slug": "stapp",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\""
