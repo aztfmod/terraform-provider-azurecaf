@@ -252,10 +252,12 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_bot_web_app | ✔ |
 |azurerm_cdn_endpoint | ✔ |
 |azurerm_cdn_frontdoor_endpoint | ✔ |
+|azurerm_cdn_frontdoor_firewall_policy | ✔ |
 |azurerm_cdn_frontdoor_origin | ✔ |
 |azurerm_cdn_frontdoor_origin_group | ✔ |
 |azurerm_cdn_frontdoor_profile | ✔ |
 |azurerm_cdn_frontdoor_rule_set | ✔ |
+|azurerm_cdn_frontdoor_security_policy | ✔ |
 |azurerm_cdn_profile | ✔ |
 |azurerm_client_config | ❌ |
 |azurerm_cognitive_account | ✔ |

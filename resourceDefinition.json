@@ -287,6 +287,17 @@
         "regex": "\"[^0-9A-Za-z-]\""
     },
     {
+        "name": "azurerm_cdn_frontdoor_firewall_policy",
+        "min_length": 1,
+        "max_length": 128,
+        "validation_regex": "\"^[a-zA-Z][0-9a-zA-Z]{0,127}$\"",
+        "scope": "resourceGroup",
+        "slug": "cfdfp",
+        "dashes": false,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z]\""
+    },
+    {
         "name": "azurerm_cdn_frontdoor_origin",
         "min_length": 1,
         "max_length": 90,
@@ -329,6 +340,17 @@
         "dashes": false,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z]\""
+    },
+    {
+        "name": "azurerm_cdn_frontdoor_security_policy",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[0-9A-Za-z_-]{1,260}$\"",
+        "scope": "parent",
+        "slug": "cfdsp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
     },
     {
         "name": "azurerm_cdn_profile",
