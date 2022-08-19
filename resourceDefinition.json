@@ -276,6 +276,83 @@
         "regex": "\"[^0-9A-Za-z]\""
     },
     {
+        "name": "azurerm_cdn_frontdoor_endpoint",
+        "min_length": 1,
+        "max_length": 46,
+        "validation_regex": "\"^[a-zA-Z0-9]([a-zA-Z0-9-]{0,44}[a-zA-Z0-9])?$\"",
+        "scope": "global",
+        "slug": "cfde",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_cdn_frontdoor_firewall_policy",
+        "min_length": 1,
+        "max_length": 128,
+        "validation_regex": "\"^[a-zA-Z][0-9a-zA-Z]{0,127}$\"",
+        "scope": "resourceGroup",
+        "slug": "cfdfp",
+        "dashes": false,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z]\""
+    },
+    {
+        "name": "azurerm_cdn_frontdoor_origin",
+        "min_length": 1,
+        "max_length": 90,
+        "validation_regex": "\"^[a-zA-Z0-9]([a-zA-Z0-9-]{0,88}[a-zA-Z0-9])?$\"",
+        "scope": "parent",
+        "slug": "cfdo",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_cdn_frontdoor_origin_group",
+        "min_length": 1,
+        "max_length": 90,
+        "validation_regex": "\"^[a-zA-Z0-9]([a-zA-Z0-9-]{0,88}[a-zA-Z0-9])?$\"",
+        "scope": "parent",
+        "slug": "cfdog",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_cdn_frontdoor_profile",
+        "min_length": 1,
+        "max_length": 90,
+        "validation_regex": "\"^[a-zA-Z0-9]([a-zA-Z0-9-]{0,88}[a-zA-Z0-9])?$\"",
+        "scope": "resourceGroup",
+        "slug": "cfdp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_cdn_frontdoor_rule_set",
+        "min_length": 1,
+        "max_length": 60,
+        "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9]{0,59}$\"",
+        "scope": "parent",
+        "slug": "cfdrs",
+        "dashes": false,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z]\""
+    },
+    {
+        "name": "azurerm_cdn_frontdoor_security_policy",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[0-9A-Za-z_-]{1,260}$\"",
+        "scope": "parent",
+        "slug": "cfdsp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },
+    {
         "name": "azurerm_cdn_profile",
         "min_length": 1,
         "max_length": 260,
@@ -731,12 +808,12 @@
         "name": "azurerm_postgresql_flexible_server",
         "min_length": 3,
         "max_length": 63,
-        "validation_regex": "\"^[a-z0-9][a-zA-Z0-9-]{1,61}[a-z0-9]$\"",
+        "validation_regex": "\"^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$\"",
         "scope": "global",
         "slug": "psqlf",
         "dashes": true,
-        "lowercase": false,
-        "regex": "\"[^0-9A-Za-z-]\""
+        "lowercase": true,
+        "regex": "\"[^0-9a-z-]\""
     },
     {
         "name": "azurerm_postgresql_flexible_server_database",
@@ -1358,6 +1435,28 @@
         "regex": "\"[^0-9A-Za-z-]\""
     },
     {
+        "name": "azurerm_healthcare_dicom_service",
+        "min_length": 3,
+        "max_length": 24,
+        "validation_regex": "\"^[a-z0-9][a-z0-9-]{1,22}[a-z0-9]$\"",
+        "scope": "parent",
+        "slug": "dicom",
+        "dashes": true,
+        "lowercase": true,
+        "regex": "\"[^0-9a-z-]\""
+    },
+    {
+        "name": "azurerm_healthcare_workspace",
+        "min_length": 3,
+        "max_length": 24,
+        "validation_regex": "\"^[a-z0-9]{3,24}$\"",
+        "scope": "global",
+        "slug": "hcw",
+        "dashes": false,
+        "lowercase": true,
+        "regex": "\"[^0-9a-z]\""
+    },
+    {
         "name": "azurerm_iotcentral_application",
         "min_length": 2,
         "max_length": 63,
@@ -1876,6 +1975,17 @@
         "regex": "\"[^0-9A-Za-z_.-]\""
     },
     {
+        "name": "azurerm_static_site",
+        "min_length": 1,
+        "max_length": 40,
+        "validation_regex": "\"^[a-zA-Z0-9-]{1,40}$\"",
+        "scope": "resourceGroup",
+        "slug": "stapp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
         "name": "azurerm_storage_account",
         "min_length": 3,
         "max_length": 24,
@@ -2313,6 +2423,17 @@
         "regex": "\"[^0-9A-Za-z_.-]\""
     },
     {
+        "name": "azurerm_private_endpoint",
+        "min_length": 2,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,62}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "pe",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\""
+    },
+    {
         "name": "azurerm_notification_hub",
         "min_length": 1,
         "max_length": 260,
@@ -2697,6 +2818,17 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z _.-]\""
+    },
+    {
+        "name": "azurerm_monitor_private_link_scope",
+        "min_length": 1,
+        "max_length": 255,
+        "validation_regex": "\"^[0-9A-Za-z-._()]{0,254}[0-9A-Za-z-_()]$\"",
+        "scope": "resourceGroup",
+        "slug": "ampls",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-._()]\""
     },
     {
         "name": "azurerm_virtual_desktop_application_group",

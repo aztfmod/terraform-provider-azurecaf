@@ -251,6 +251,13 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_bot_connection | ✔ |
 |azurerm_bot_web_app | ✔ |
 |azurerm_cdn_endpoint | ✔ |
+|azurerm_cdn_frontdoor_endpoint | ✔ |
+|azurerm_cdn_frontdoor_firewall_policy | ✔ |
+|azurerm_cdn_frontdoor_origin | ✔ |
+|azurerm_cdn_frontdoor_origin_group | ✔ |
+|azurerm_cdn_frontdoor_profile | ✔ |
+|azurerm_cdn_frontdoor_rule_set | ✔ |
+|azurerm_cdn_frontdoor_security_policy | ✔ |
 |azurerm_cdn_profile | ✔ |
 |azurerm_client_config | ❌ |
 |azurerm_cognitive_account | ✔ |
@@ -381,7 +388,9 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_hdinsight_rserver_cluster | ✔ |
 |azurerm_hdinsight_spark_cluster | ✔ |
 |azurerm_hdinsight_storm_cluster | ✔ |
+|azurerm_healthcare_dicom_service | ✔ |
 |azurerm_healthcare_service | ❌ |
+|azurerm_healthcare_workspace | ✔ |
 |azurerm_hpc_cache | ❌ |
 |azurerm_hpc_cache_blob_target | ❌ |
 |azurerm_hpc_cache_nfs_target | ❌ |
@@ -481,6 +490,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_monitor_diagnostic_setting | ✔ |
 |azurerm_monitor_log_profile | ❌ |
 |azurerm_monitor_metric_alert | ❌ |
+|azurerm_monitor_private_link_scope | ✔ |
 |azurerm_monitor_scheduled_query_rules_alert | ❌ |
 |azurerm_monitor_scheduled_query_rules_log | ❌ |
 |azurerm_monitor_smart_detector_alert_rule | ❌ |
@@ -557,7 +567,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_private_dns_txt_record | ❌ |
 |azurerm_private_dns_zone | ✔ |
 |azurerm_private_dns_zone_virtual_network_link | ✔ |
-|azurerm_private_endpoint | ❌ |
+|azurerm_private_endpoint | ✔ |
 |azurerm_private_endpoint_connection | ❌ |
 |azurerm_private_link_service | ❌ |
 |azurerm_private_link_service_endpoint_connections | ❌ |
@@ -626,6 +636,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_sql_firewall_rule | ✔ |
 |azurerm_sql_server | ✔ |
 |azurerm_sql_virtual_network_rule | ❌ |
+|azurerm_static_site | ✔ |
 |azurerm_storage_account | ✔ |
 |azurerm_storage_account_blob_container_sas | ❌ |
 |azurerm_storage_account_customer_managed_key | ❌ |

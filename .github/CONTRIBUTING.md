@@ -28,7 +28,7 @@ Please, find below the steps that should be followed to contribute:
 
 3. Check the requirements for your resource Name
 
-    You can check the requirements for your resource name in the [docs](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules) or by checking the error message returned when trying to create the resource on Azure with an invalid name
+    You can check the requirements for your resource name in the [docs](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules) or by checking the error message returned when trying to create the resource on Azure with an invalid name. Slug value can also be checked in the CAF [docs](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations).
 
 4. Choose the slug for the resource
 
