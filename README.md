@@ -221,6 +221,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_automation_credential | ✔ |
 |azurerm_automation_dsc_configuration | ❌ |
 |azurerm_automation_dsc_nodeconfiguration | ❌ |
+|azurerm_automation_hybrid_runbook_worker_group | ✔ |
 |azurerm_automation_job_schedule | ❌ |
 |azurerm_automation_module | ❌ |
 |azurerm_automation_runbook | ✔ |
@@ -256,7 +257,9 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_cdn_frontdoor_origin | ✔ |
 |azurerm_cdn_frontdoor_origin_group | ✔ |
 |azurerm_cdn_frontdoor_profile | ✔ |
+|azurerm_cdn_frontdoor_rule | ✔ |
 |azurerm_cdn_frontdoor_rule_set | ✔ |
+|azurerm_cdn_frontdoor_secret | ✔ |
 |azurerm_cdn_frontdoor_security_policy | ✔ |
 |azurerm_cdn_profile | ✔ |
 |azurerm_client_config | ❌ |
@@ -389,6 +392,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_hdinsight_spark_cluster | ✔ |
 |azurerm_hdinsight_storm_cluster | ✔ |
 |azurerm_healthcare_dicom_service | ✔ |
+|azurerm_healthcare_medtech_service | ✔ |
 |azurerm_healthcare_service | ❌ |
 |azurerm_healthcare_workspace | ✔ |
 |azurerm_hpc_cache | ❌ |
