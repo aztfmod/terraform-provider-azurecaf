@@ -1549,7 +1549,7 @@
         "name": "azurerm_key_vault_secret",
         "min_length": 1,
         "max_length": 127,
-        "validation_regex": "\"^[a-zA-Z0-9-]{1,127}$\"",
+        "validation_regex": "\"^[a-zA-Z0-9-_]{1,127}$\"",
         "scope": "parent",
         "slug": "kvs",
         "dashes": true,
