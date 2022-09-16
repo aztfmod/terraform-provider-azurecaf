@@ -719,6 +719,8 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_vpn_server_configuration | ❌ |
 |azurerm_vpn_site | ✔ |
 |azurerm_web_application_firewall_policy | ✔ |
+|azurerm_web_pubsub | ✔ |
+|azurerm_web_pubsub_hub | ✔ |
 |azurerm_windows_virtual_machine | ✔ |
 |azurerm_windows_virtual_machine_scale_set | ✔ |
 
