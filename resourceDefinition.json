@@ -640,6 +640,28 @@
         "regex": "\"[^0-9A-Za-z]\""
     },
     {
+        "name": "azurerm_redhat_openshift_cluster",
+        "min_length": 1,
+        "max_length": 30,
+        "validation_regex": "\"^[a-zA-Z0-9]{1,30}$\"",
+        "scope": "resourceGroup",
+        "slug": "aroc",
+        "dashes": false,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z]\""
+    },
+    {
+        "name": "azurerm_redhat_openshift_domain",
+        "min_length": 1,
+        "max_length": 30,
+        "validation_regex": "\"^[a-zA-Z0-9]{1,30}$\"",
+        "scope": "resourceGroup",
+        "slug": "arod",
+        "dashes": false,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z]\""
+    },
+    {
         "name": "azurerm_kubernetes_cluster",
         "min_length": 1,
         "max_length": 63,
@@ -3434,5 +3456,27 @@
         "dashes": true,
         "lowercase": false,
         "regex": "`[^-\\w\\._\\(\\)]`"
-    }      
+    },
+    {
+        "name": "azurerm_web_pubsub",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z][-a-zA-Z0-9]{1,61}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "ps",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_web_pubsub_hub",
+        "min_length": 1,
+        "max_length": 128,
+        "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9_`,.\\\\[\\\\]]{0,127}$\"",
+        "scope": "parent",
+        "slug": "pshub",
+        "dashes": false,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_`,.\\\\[\\\\]]\""
+    }
 ]
