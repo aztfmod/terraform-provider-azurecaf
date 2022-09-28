@@ -45,7 +45,7 @@ The following arguments are supported:
 * **name** - (optional) the basename of the resource to create, the basename will be sanitized as per supported characters set for each Azure resources.
 * **prefixes** (optional) - a list of prefix to append as the first characters of the generated name - prefixes will be separated by the separator character
 * **suffixes** (optional) -  a list of additional suffix added after the basename, this is can be used to append resource index (eg. vm-001). Suffixes are separated by the separator character
-* **random_length** (optional) - default to ``0`` : configure additional characters to append to the generated resource name. Random characters will remain compliant with the set of allowed characters per resources and will be appended after the suffixes
+* **random_length** (optional) - default to ``0`` : configure additional characters to append to the generated resource name. Random characters will remain compliant with the set of allowed characters per resources and will be appended before suffix(ess).
 * **random_seed** (optional) - default to ``0`` : Define the seed to be used for random generator. 0 will not be respected and will generate a seed based in the unix time of the generation.
 * **resource_type** (optional) -  describes the type of azure resource you are requesting a name from (eg. azure container registry: azurerm_container_registry). See the Resource Type section
 * **resource_types** (optional) -  a list of additional resource type should you want to use the same settings for a set of resources
