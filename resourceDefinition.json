@@ -607,6 +607,28 @@
         "regex": "\"[^0-9A-Za-z]\""
     },
     {
+        "name": "azurerm_redhat_openshift_cluster",
+        "min_length": 1,
+        "max_length": 30,
+        "validation_regex": "\"^[a-zA-Z0-9]{1,30}$\"",
+        "scope": "resourceGroup",
+        "slug": "aroc",
+        "dashes": false,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z]\""
+    },
+    {
+        "name": "azurerm_redhat_openshift_domain",
+        "min_length": 1,
+        "max_length": 30,
+        "validation_regex": "\"^[a-zA-Z0-9]{1,30}$\"",
+        "scope": "resourceGroup",
+        "slug": "arod",
+        "dashes": false,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z]\""
+    },
+    {
         "name": "azurerm_kubernetes_cluster",
         "min_length": 1,
         "max_length": 63,
