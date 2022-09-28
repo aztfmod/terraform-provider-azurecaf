@@ -99,6 +99,17 @@
         "regex": "`[^-\\w\\._\\(\\)]`"
     },
     {
+        "name": "azurerm_automation_hybrid_runbook_worker_group",
+        "min_length": 1,
+        "max_length": 128,
+        "validation_regex": "\"^([^<>*%&:\\\\?.+/#\\\\s]?[ ]?){0,127}[^<>*%&:\\\\?.+/#\\\\s]$\"",
+        "scope": "parent",
+        "slug": "aahwg",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[<>*%&:\\\\?.+/#]\""
+    },
+    {
         "name": "azurerm_automation_runbook",
         "min_length": 1,
         "max_length": 63,
@@ -331,6 +342,17 @@
         "regex": "\"[^0-9A-Za-z-]\""
     },
     {
+        "name": "azurerm_cdn_frontdoor_rule",
+        "min_length": 1,
+        "max_length": 60,
+        "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9]{0,59}$\"",
+        "scope": "parent",
+        "slug": "cfdr",
+        "dashes": false,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z]\""
+    },
+    {
         "name": "azurerm_cdn_frontdoor_rule_set",
         "min_length": 1,
         "max_length": 60,
@@ -340,6 +362,17 @@
         "dashes": false,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z]\""
+    },
+    {
+        "name": "azurerm_cdn_frontdoor_secret",
+        "min_length": 2,
+        "max_length": 260,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{0,258}[a-zA-Z0-9]$\"",
+        "scope": "parent",
+        "slug": "cfds",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_cdn_frontdoor_security_policy",
@@ -1463,6 +1496,17 @@
         "validation_regex": "\"^[a-z0-9][a-z0-9-]{1,22}[a-z0-9]$\"",
         "scope": "parent",
         "slug": "dicom",
+        "dashes": true,
+        "lowercase": true,
+        "regex": "\"[^0-9a-z-]\""
+    },
+    {
+        "name": "azurerm_healthcare_medtech_service",
+        "min_length": 3,
+        "max_length": 24,
+        "validation_regex": "\"^[a-z0-9][a-z0-9-]{1,22}[a-z0-9]$\"",
+        "scope": "parent",
+        "slug": "medtech",
         "dashes": true,
         "lowercase": true,
         "regex": "\"[^0-9a-z-]\""
