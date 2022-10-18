@@ -222,7 +222,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_automation_dsc_configuration | ❌ |
 |azurerm_automation_dsc_nodeconfiguration | ❌ |
 |azurerm_automation_hybrid_runbook_worker_group | ✔ |
-|azurerm_automation_job_schedule | ❌ |
+|azurerm_automation_job_schedule | ✔ |
 |azurerm_automation_module | ❌ |
 |azurerm_automation_runbook | ✔ |
 |azurerm_automation_schedule | ✔ |
