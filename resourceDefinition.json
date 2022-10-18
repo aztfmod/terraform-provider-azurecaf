@@ -110,6 +110,17 @@
         "regex": "\"[<>*%&:\\\\?.+/#]\""
     },
     {
+        "name": "azurerm_automation_job_schedule",
+        "min_length": 1,
+        "max_length": 128,
+        "validation_regex": "\"^[^<>*%:.?\\\\+\\\\/]{0,127}[^<>*%:.?\\\\+\\\\/ ]$\"",
+        "scope": "parent",
+        "slug": "aajs",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "`[^-\\w\\._\\(\\)]`"
+    },    
+    {
         "name": "azurerm_automation_runbook",
         "min_length": 1,
         "max_length": 63,
