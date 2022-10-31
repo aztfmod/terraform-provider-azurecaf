@@ -571,6 +571,9 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_private_dns_mx_record | ❌ |
 |azurerm_private_dns_ptr_record | ❌ |
 |azurerm_private_dns_resolver | ✔ |
+|azurerm_private_dns_resolver_dns_forwarding_ruleset | ✔ |
+|azurerm_private_dns_resolver_inbound_endpoint | ✔ |
+|azurerm_private_dns_resolver_outbound_endpoint | ✔ |
 |azurerm_private_dns_srv_record | ❌ |
 |azurerm_private_dns_txt_record | ❌ |
 |azurerm_private_dns_zone | ✔ |
