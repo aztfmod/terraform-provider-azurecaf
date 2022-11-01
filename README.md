@@ -252,11 +252,13 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_bot_connection | ✔ |
 |azurerm_bot_web_app | ✔ |
 |azurerm_cdn_endpoint | ✔ |
+|azurerm_cdn_frontdoor_custom_domain | ✔ |
 |azurerm_cdn_frontdoor_endpoint | ✔ |
 |azurerm_cdn_frontdoor_firewall_policy | ✔ |
 |azurerm_cdn_frontdoor_origin | ✔ |
 |azurerm_cdn_frontdoor_origin_group | ✔ |
 |azurerm_cdn_frontdoor_profile | ✔ |
+|azurerm_cdn_frontdoor_route | ✔ |
 |azurerm_cdn_frontdoor_rule | ✔ |
 |azurerm_cdn_frontdoor_rule_set | ✔ |
 |azurerm_cdn_frontdoor_secret | ✔ |
@@ -493,7 +495,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_monitor_diagnostic_categories | ❌ |
 |azurerm_monitor_diagnostic_setting | ✔ |
 |azurerm_monitor_log_profile | ❌ |
-|azurerm_monitor_metric_alert | ❌ |
+|azurerm_monitor_metric_alert | ✔ |
 |azurerm_monitor_private_link_scope | ✔ |
 |azurerm_monitor_scheduled_query_rules_alert | ❌ |
 |azurerm_monitor_scheduled_query_rules_log | ❌ |
@@ -539,6 +541,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_network_service_tags | ❌ |
 |azurerm_network_watcher | ✔ |
 |azurerm_network_watcher_flow_log | ❌ |
+|azurerm_nginx_deployment | ✔ |
 |azurerm_notification_hub | ✔ |
 |azurerm_notification_hub_authorization_rule | ✔ |
 |azurerm_notification_hub_namespace | ✔ |
@@ -567,6 +570,10 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_private_dns_cname_record | ❌ |
 |azurerm_private_dns_mx_record | ❌ |
 |azurerm_private_dns_ptr_record | ❌ |
+|azurerm_private_dns_resolver | ✔ |
+|azurerm_private_dns_resolver_dns_forwarding_ruleset | ✔ |
+|azurerm_private_dns_resolver_inbound_endpoint | ✔ |
+|azurerm_private_dns_resolver_outbound_endpoint | ✔ |
 |azurerm_private_dns_srv_record | ❌ |
 |azurerm_private_dns_txt_record | ❌ |
 |azurerm_private_dns_zone | ✔ |
