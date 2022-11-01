@@ -11,7 +11,7 @@ data "azurecaf_environment_variable" "path" {
   name = "PATH"
 }
 
-# Retreive the PAT_TOKEN variable as a sensitive data and through an error if it does not exist.
+# Retrieve the PAT_TOKEN variable as a sensitive data and through an error if it does not exist.
 data "azurecaf_environment_variable" "PAT" {
     name           = "PAT_TOKEN"
     fails_if_empty = true
