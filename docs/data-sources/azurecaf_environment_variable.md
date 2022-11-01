@@ -15,7 +15,6 @@ data "azurecaf_environment_variable" "path" {
 data "azurecaf_environment_variable" "PAT" {
     name           = "PAT_TOKEN"
     fails_if_empty = true
-    sensitive      = true
 }
 ```
 
@@ -25,12 +24,10 @@ The following arguments are supported:
 
 * name - (required) Name of the environment variable.
 * fails_if_empty (optional) - Through an error if the environment variable is not set (default: false).
-* sensitive (optional) - Do not display the value in the log is the value is sensitive (default: false).
 
 # Attributes Reference
 The following attributes are exported:
 
 * id - The id of the environment variable
-* value - Value of the environment variable.
-* value_sensitive - Value (sensitive) of the environment variable.
+* value - Value (sensitive) of the environment variable.
 

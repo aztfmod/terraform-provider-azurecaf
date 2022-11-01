@@ -22,22 +22,11 @@ func dataEnvironmentVariable() *schema.Resource {
 				Default:     false,
 				Description: "Through an error if the environment variable is not set (default: false).",
 			},
-			"sensitive": {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Default:     false,
-				Description: "Do not display the value in the log is the value is sensitive (default: false).",
-			},
 			"value": {
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "Value of the environment variable.",
-			},
-			"value_sensitive": {
-				Type:        schema.TypeString,
-				Computed:    true,
 				Sensitive:   true,
-				Description: "Value (sensitive) of the environment variable.",
 			},
 		},
 	}
@@ -54,14 +43,7 @@ func resourceAction(ctx context.Context, d *schema.ResourceData, meta interface{
 	}
 
 	d.SetId(name)
-
-	if d.Get("sensitive").(bool) {
-		_ = d.Set("value_sensitive", value)
-		_ = d.Set("value", "")
-	} else {
-		_ = d.Set("value_sensitive", "")
-		_ = d.Set("value", value)
-	}
+	_ = d.Set("value", value)
 
 	return diags
 }
