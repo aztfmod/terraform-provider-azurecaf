@@ -23,7 +23,7 @@ data "azurecaf_environment_variable" "PAT" {
 The following arguments are supported:
 
 * name - (required) Name of the environment variable.
-* fails_if_empty (optional) - Through an error if the environment variable is not set (default: false).
+* fails_if_empty (optional) - Throws an error if the environment variable is not set (default: false).
 
 # Attributes Reference
 The following attributes are exported:
