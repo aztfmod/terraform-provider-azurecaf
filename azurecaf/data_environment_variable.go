@@ -43,7 +43,7 @@ func dataEnvironmentVariable() *schema.Resource {
 	}
 }
 
-func resourceAction(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceAction(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	name := d.Get("name").(string)
