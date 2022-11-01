@@ -298,6 +298,17 @@
         "regex": "\"[^0-9A-Za-z]\""
     },
     {
+        "name": "azurerm_cdn_frontdoor_custom_domain",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[a-zA-Z0-9]([a-zA-Z0-9-]{0,258}[a-zA-Z0-9])?$\"",
+        "scope": "parent",
+        "slug": "cfdcd",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
         "name": "azurerm_cdn_frontdoor_endpoint",
         "min_length": 1,
         "max_length": 46,
@@ -348,6 +359,17 @@
         "validation_regex": "\"^[a-zA-Z0-9]([a-zA-Z0-9-]{0,88}[a-zA-Z0-9])?$\"",
         "scope": "resourceGroup",
         "slug": "cfdp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_cdn_frontdoor_route",
+        "min_length": 1,
+        "max_length": 90,
+        "validation_regex": "\"^[a-zA-Z0-9]([a-zA-Z0-9-]{0,88}[a-zA-Z0-9])?$\"",
+        "scope": "parent",
+        "slug": "cfdroute",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\""
@@ -2412,6 +2434,17 @@
         "regex": "\"[^0-9A-Za-z_.-]\""
     },
     {
+        "name": "azurerm_nginx_deployment",
+        "min_length": 1,
+        "max_length": 30,
+        "validation_regex": "\"^[a-zA-Z0-9]([a-zA-Z0-9-]{0,28}[a-zA-Z0-9])?$\"",
+        "scope": "resourceGroup",
+        "slug": "nginx",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
         "name": "azurerm_network_watcher",
         "min_length": 1,
         "max_length": 80,
@@ -2487,6 +2520,50 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
+    },
+    {
+        "name": "azurerm_private_dns_resolver",
+        "min_length": 3,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9-_]{1,78}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "dnspr",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },
+    {
+        "name": "azurerm_private_dns_resolver_dns_forwarding_ruleset",
+        "min_length": 2,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9-_]{0,78}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "dnsfwrs",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },
+    {
+        "name": "azurerm_private_dns_resolver_inbound_endpoint",
+        "min_length": 3,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9-_]{1,78}[a-zA-Z0-9]$\"",
+        "scope": "parent",
+        "slug": "dnsprie",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },
+    {
+        "name": "azurerm_private_dns_resolver_outbound_endpoint",
+        "min_length": 3,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9-_]{1,78}[a-zA-Z0-9]$\"",
+        "scope": "parent",
+        "slug": "dnsproe",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
     },
     {
         "name": "azurerm_private_dns_zone",
@@ -2875,6 +2952,17 @@
         "regex": "`[^~!@$^*()\\[\\]\\{\\}_\\-=\"';,0-9A-Za-z _.-]`"
     },
     {
+        "name": "azurerm_monitor_activity_log_alert",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[^<>*%:&?#\\\\+\\\\/]{0,259}[^<>*%:&.?#\\\\+\\\\/]$\"",
+        "scope": "parent",
+        "slug": "adfmysql",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z<>*%:&?#\\\\+\\\\/]\""
+    },
+    {
         "name": "azurerm_monitor_autoscale_setting",
         "min_length": 2,
         "max_length": 64,
@@ -2895,6 +2983,17 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z _.-]\""
+    },
+    {
+        "name": "azurerm_monitor_metric_alert",
+        "min_length": 1,
+        "max_length": 251,
+        "validation_regex": "\"^[^<>*%&:\\\\?+/#@{}]{0,250}[^<>*%&:\\\\?+/#@{}. ]$\"",
+        "scope": "resourceGroup",
+        "slug": "ma",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[<>*%&:\\\\?+/#@{}]\""
     },
     {
         "name": "azurerm_monitor_private_link_scope",
@@ -3060,17 +3159,6 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[\\\\/\\\"\\\\[\\\\]:|<>+=;,?*@&_]\""
-    },
-    {
-        "name": "azurerm_monitor_activity_log_alert",
-        "min_length": 1,
-        "max_length": 260,
-        "validation_regex": "\"^[^<>*%:&?#\\\\+\\\\/]{0,259}[^<>*%:&.?#\\\\+\\\\/]$\"",
-        "scope": "parent",
-        "slug": "adfmysql",
-        "dashes": true,
-        "lowercase": false,
-        "regex": "\"[^0-9A-Za-z<>*%:&?#\\\\+\\\\/]\""
     },
     {
         "name": "azurerm_vpn_site",
