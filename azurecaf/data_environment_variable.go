@@ -20,7 +20,7 @@ func dataEnvironmentVariable() *schema.Resource {
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Default:     false,
-				Description: "Through an error if the environment variable is not set (default: false).",
+				Description: "Throws an error if the environment variable is not set (default: false).",
 			},
 			"value": {
 				Type:        schema.TypeString,
