@@ -18,14 +18,19 @@ func resourceName() *schema.Resource {
 	return &schema.Resource{
 		Create:        resourceNameCreate,
 		Update:        resourceNameUpdate,
-		Read:          schema.Noop,
+		Read:          resourceNameRead,
 		Delete:        schema.RemoveFromState,
-		SchemaVersion: 3,
+		SchemaVersion: 4,
 		StateUpgraders: []schema.StateUpgrader{
 			{
 				Type:    resourceNameV2().CoreConfigSchema().ImpliedType(),
 				Upgrade: resourceNameStateUpgradeV2,
 				Version: 2,
+			},
+			{
+				Type:    resourceNameV3().CoreConfigSchema().ImpliedType(),
+				Upgrade: resourceNameStateUpgradeV3,
+				Version: 3,
 			},
 		},
 
@@ -60,6 +65,10 @@ func resourceName() *schema.Resource {
 				ForceNew:     true,
 				ValidateFunc: validation.IntAtLeast(0),
 				Default:      0,
+			},
+			"random_suffix": {
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"result": {
 				Type:     schema.TypeString,
@@ -122,10 +131,11 @@ func resourceName() *schema.Resource {
 }
 
 func resourceNameCreate(d *schema.ResourceData, meta interface{}) error {
-	_, ok := d.GetOk("random_seed")
-	if !ok {
-		d.Set("random_seed", randomSeed())
-	}
+	randomLength := d.Get("random_length").(int)
+	randomSeed := int64(d.Get("random_seed").(int))
+
+	randomSuffix := randSeq(int(randomLength), &randomSeed)
+	d.Set("random_suffix", randomSuffix)
 
 	d.SetId(randSeq(16, nil))
 
@@ -364,12 +374,10 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	cleanInput := d.Get("clean_input").(bool)
 	passthrough := d.Get("passthrough").(bool)
 	useSlug := d.Get("use_slug").(bool)
-	randomLength := d.Get("random_length").(int)
-	randomSeed := int64(d.Get("random_seed").(int))
+	randomSuffix := d.Get("random_suffix").(string)
 
 	convention := ConventionCafClassic
 
-	randomSuffix := randSeq(int(randomLength), &randomSeed)
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 
 	isValid, err := validateResourceType(resourceType, resourceTypes)
