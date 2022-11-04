@@ -488,12 +488,12 @@
         "name": "azurerm_disk_encryption_set",
         "min_length": 1,
         "max_length": 80,
-        "validation_regex": "\"^[a-zA-Z0-9_]{1,80}$\"",
+        "validation_regex": "\"^[a-zA-Z0-9-_]{1,80}$\"",
         "scope": "resourceGroup",
         "slug": "des",
-        "dashes": false,
+        "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_]\""
+        "regex": "\"[^0-9A-Za-z_-]\""
     },
     {
         "name": "azurerm_image",
@@ -3577,5 +3577,27 @@
         "dashes": false,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_`,.\\\\[\\\\]]\""
+    },
+    {
+      "name": "azurerm_subscription_policy_assignment",
+      "min_length": 1,
+      "max_length": 128,
+      "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9\\\\-\\\\._]{0,126}[a-zA-Z0-9_]$\"",
+      "scope": "subscription",
+      "slug": "aspa",
+      "dashes": true,
+      "lowercase": false,
+      "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
+    },
+    {
+      "name": "azurerm_resource_group_policy_assignment",
+      "min_length": 1,
+      "max_length": 128,
+      "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9\\\\-\\\\._]{0,126}[a-zA-Z0-9_]$\"",
+      "scope": "resourceGroup",
+      "slug": "argpa",
+      "dashes": true,
+      "lowercase": false,
+      "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
     }
 ]
