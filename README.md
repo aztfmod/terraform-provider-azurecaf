@@ -596,6 +596,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_relay_hybrid_connection | ✔ |
 |azurerm_relay_namespace | ✔ |
 |azurerm_resource_group | ✔ |
+|azurerm_resource_group_policy_assignment | ✔ |
 |azurerm_resource_group_template_deployment | ❌ |
 |azurerm_role_assignment | ✔ |
 |azurerm_role_definition | ✔ |
@@ -684,6 +685,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_subnet_network_security_group_association | ❌ |
 |azurerm_subnet_route_table_association | ❌ |
 |azurerm_subscription | ❌ |
+|azurerm_subscription_policy_assignment | ✔ |
 |azurerm_subscription_template_deployment | ❌ |
 |azurerm_subscriptions | ❌ |
 |azurerm_synapse_firewall_rule | ✔ |
