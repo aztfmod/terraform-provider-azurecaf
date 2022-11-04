@@ -30,7 +30,7 @@ func TestProvider_impl(t *testing.T) {
 func testAccPreCheck(t *testing.T) {
 }
 
-//Resource are locale and are no instrastructure is created in the test suite
+// Resource are locale and are no instrastructure is created in the test suite
 func testAccCheckResourceDestroy(s *terraform.State) error {
 	return nil
 }
