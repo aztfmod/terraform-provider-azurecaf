@@ -706,6 +706,17 @@
         "regex": "\"[^0-9A-Za-z_-]\""
     },
     {
+        "name": "azurerm_kubernetes_fleet_manager",
+        "min_length": 1,
+        "max_length": 63,
+        "validation_regex": "\"^[0-9a-z]([0-9a-z-]{0,61}[0-9a-z])?$\"",
+        "scope": "resourceGroup",
+        "slug": "fleet",
+        "dashes": true,
+        "lowercase": true,
+        "regex": "\"[^0-9a-z-]\""
+    },
+    {
         "name": "azurerm_cosmosdb_account",
         "min_length": 1,
         "max_length": 44,
@@ -2555,6 +2566,17 @@
         "regex": "\"[^0-9A-Za-z_-]\""
     },
     {
+        "name": "azurerm_private_dns_resolver_forwarding_rule",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9]([a-zA-Z0-9-_]{0,78}[a-zA-Z0-9])?$\"",
+        "scope": "parent",
+        "slug": "dnsfwr",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },
+    {
         "name": "azurerm_private_dns_resolver_inbound_endpoint",
         "min_length": 3,
         "max_length": 80,
@@ -2572,6 +2594,17 @@
         "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9-_]{1,78}[a-zA-Z0-9]$\"",
         "scope": "parent",
         "slug": "dnsproe",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },
+    {
+        "name": "azurerm_private_dns_resolver_virtual_network_link",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9]([a-zA-Z0-9-_]{0,78}[a-zA-Z0-9])?$\"",
+        "scope": "parent",
+        "slug": "dnsfwrsvnetl",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""
@@ -3016,6 +3049,17 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-._()]\""
+    },
+    {
+        "name": "azurerm_monitor_scheduled_query_rules_alert",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[^<>*%&:\\\\?/#{}]{0,259}[^<>*%&:\\\\?/#{}. ]$\"",
+        "scope": "resourceGroup",
+        "slug": "schqra",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[<>*%&:\\\\?/#{}]\""
     },
     {
         "name": "azurerm_virtual_desktop_application_group",
