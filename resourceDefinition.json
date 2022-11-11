@@ -496,6 +496,17 @@
         "regex": "\"[^0-9A-Za-z_-]\""
     },
     {
+        "name": "azurerm_federated_identity_credential",
+        "min_length": 3,
+        "max_length": 120,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9_-]{2,119}$\"",
+        "scope": "parent",
+        "slug": "fedcred",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\""
+    },
+    {
         "name": "azurerm_image",
         "min_length": 1,
         "max_length": 80,
