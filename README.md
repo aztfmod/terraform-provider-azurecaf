@@ -372,6 +372,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_express_route_circuit_authorization | ❌ |
 |azurerm_express_route_circuit_peering | ❌ |
 |azurerm_express_route_gateway | ✔ |
+|azurerm_federated_identity_credential | ✔ |
 |azurerm_firewall | ✔ |
 |azurerm_firewall_application_rule_collection | ❌ |
 |azurerm_firewall_nat_rule_collection | ❌ |
