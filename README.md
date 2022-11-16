@@ -473,7 +473,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_machine_learning_workspace | ✔ |
 |azurerm_maintenance_assignment_dedicated_host | ❌ |
 |azurerm_maintenance_assignment_virtual_machine | ❌ |
-|azurerm_maintenance_configuration | ❌ |
+|azurerm_maintenance_configuration | ✔ |
 |azurerm_managed_application | ❌ |
 |azurerm_managed_application_definition | ❌ |
 |azurerm_managed_disk | ✔ |

@@ -2423,6 +2423,17 @@
         "regex": "\"[^0-9a-z-]\""
     },
     {
+        "name": "azurerm_maintenance_configuration",
+        "min_length": 1,
+        "max_length": 60,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,58}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "mcf",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\""
+    },
+    {
         "name": "azurerm_maps_account",
         "min_length": 1,
         "max_length": 98,

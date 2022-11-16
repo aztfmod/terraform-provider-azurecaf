@@ -40,7 +40,7 @@ Please, find below the steps that should be followed to contribute:
 
 6. Generate the definitions based on the `resourcedefinition.json` and test
 
-    You can run `make build` in case you have make installed in your system in case you don't you can run from the repository root `go generate` followed by `go fmt ./...` and them `go test ./...`
+    You can run `make build` in case you have make installed in your system in case you don't you can run from the repository root `go generate` followed by `go fmt ./...` and then `go test ./...`
 
 7. Update the README.MD with coverage
  
