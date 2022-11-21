@@ -1556,12 +1556,34 @@
         "regex": "\"[^0-9a-z-]\""
     },
     {
+        "name": "azurerm_healthcare_fhir_service",
+        "min_length": 3,
+        "max_length": 24,
+        "validation_regex": "\"^[a-z0-9][a-z0-9-]{1,22}[a-z0-9]$\"",
+        "scope": "parent",
+        "slug": "fhir",
+        "dashes": true,
+        "lowercase": true,
+        "regex": "\"[^0-9a-z-]\""
+    },
+    {
         "name": "azurerm_healthcare_medtech_service",
         "min_length": 3,
         "max_length": 24,
         "validation_regex": "\"^[a-z0-9][a-z0-9-]{1,22}[a-z0-9]$\"",
         "scope": "parent",
         "slug": "medtech",
+        "dashes": true,
+        "lowercase": true,
+        "regex": "\"[^0-9a-z-]\""
+    },
+    {
+        "name": "azurerm_healthcare_service",
+        "min_length": 3,
+        "max_length": 24,
+        "validation_regex": "\"^[a-z0-9][a-z0-9-]{1,22}[a-z0-9]$\"",
+        "scope": "global",
+        "slug": "hcasvc",
         "dashes": true,
         "lowercase": true,
         "regex": "\"[^0-9a-z-]\""
