@@ -209,7 +209,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_application_insights | ✔ |
 |azurerm_application_insights_analytics_item | ❌ |
 |azurerm_application_insights_api_key | ❌ |
-|azurerm_application_insights_web_test | ❌ |
+|azurerm_application_insights_web_test | ✔ |
 |azurerm_application_security_group | ✔ |
 |azurerm_attestation | ❌ |
 |azurerm_automation_account | ✔ |
