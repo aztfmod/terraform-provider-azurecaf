@@ -395,8 +395,9 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_hdinsight_spark_cluster | ✔ |
 |azurerm_hdinsight_storm_cluster | ✔ |
 |azurerm_healthcare_dicom_service | ✔ |
+|azurerm_healthcare_fhir_service | ✔ |
 |azurerm_healthcare_medtech_service | ✔ |
-|azurerm_healthcare_service | ❌ |
+|azurerm_healthcare_service | ✔ |
 |azurerm_healthcare_workspace | ✔ |
 |azurerm_hpc_cache | ❌ |
 |azurerm_hpc_cache_blob_target | ❌ |
