@@ -372,6 +372,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_express_route_circuit_authorization | ❌ |
 |azurerm_express_route_circuit_peering | ❌ |
 |azurerm_express_route_gateway | ✔ |
+|azurerm_federated_identity_credential | ✔ |
 |azurerm_firewall | ✔ |
 |azurerm_firewall_application_rule_collection | ❌ |
 |azurerm_firewall_nat_rule_collection | ❌ |
@@ -394,8 +395,9 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_hdinsight_spark_cluster | ✔ |
 |azurerm_hdinsight_storm_cluster | ✔ |
 |azurerm_healthcare_dicom_service | ✔ |
+|azurerm_healthcare_fhir_service | ✔ |
 |azurerm_healthcare_medtech_service | ✔ |
-|azurerm_healthcare_service | ❌ |
+|azurerm_healthcare_service | ✔ |
 |azurerm_healthcare_workspace | ✔ |
 |azurerm_hpc_cache | ❌ |
 |azurerm_hpc_cache_blob_target | ❌ |
@@ -429,6 +431,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_key_vault_secret | ✔ |
 |azurerm_kubernetes_cluster | ✔ |
 |azurerm_kubernetes_cluster_node_pool | ❌ |
+|azurerm_kubernetes_fleet_manager | ✔ |
 |azurerm_kubernetes_service_versions | ❌ |
 |azurerm_kusto_attached_database_configuration | ❌ |
 |azurerm_kusto_cluster | ✔ |
@@ -497,7 +500,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_monitor_log_profile | ❌ |
 |azurerm_monitor_metric_alert | ✔ |
 |azurerm_monitor_private_link_scope | ✔ |
-|azurerm_monitor_scheduled_query_rules_alert | ❌ |
+|azurerm_monitor_scheduled_query_rules_alert | ✔ |
 |azurerm_monitor_scheduled_query_rules_log | ❌ |
 |azurerm_monitor_smart_detector_alert_rule | ❌ |
 |azurerm_mssql_database | ✔ |
@@ -572,8 +575,10 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_private_dns_ptr_record | ❌ |
 |azurerm_private_dns_resolver | ✔ |
 |azurerm_private_dns_resolver_dns_forwarding_ruleset | ✔ |
+|azurerm_private_dns_resolver_forwarding_rule | ✔ |
 |azurerm_private_dns_resolver_inbound_endpoint | ✔ |
 |azurerm_private_dns_resolver_outbound_endpoint | ✔ |
+|azurerm_private_dns_resolver_virtual_network_link | ✔ |
 |azurerm_private_dns_srv_record | ❌ |
 |azurerm_private_dns_txt_record | ❌ |
 |azurerm_private_dns_zone | ✔ |
