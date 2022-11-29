@@ -1,4 +1,4 @@
-# [Issue-id](https://github.com/Azure/caf-terraform-landingzones/issues/ISSUE-ID-GOES-HERE)
+# [Issue-id](https://github.com/aztfmod/terraform-provider-azurecaf/issues/ISSUE-ID-GOES-HERE)
 
 ## PR Checklist
 
