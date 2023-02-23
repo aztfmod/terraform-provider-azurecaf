@@ -617,6 +617,17 @@
         "regex": "\"[\\\\/\\\"\\\\[\\\\]:|<>+=;,?*@&_]\""
     },
     {
+        "name": "azurerm_virtual_machine_portal_name",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[^\\\\/\\\"\\\\[\\\\]:|<>+=;,?*@&_][^\\\\/\\\"\\\\[\\\\]:|<>+=;,?*@&]{0,62}[^\\\\/\\\"\\\\[\\\\]:|<>+=;,?*@&.-]$\"",            
+        "scope": "resourceGroup",
+        "slug": "vm",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[\\\\/\\\"\\\\[\\\\]:|<>+=;,?*@&_]\""
+    },
+    {
         "name": "azurerm_windows_virtual_machine_scale_set",
         "min_length": 1,
         "max_length": 15,
