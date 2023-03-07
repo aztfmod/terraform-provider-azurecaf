@@ -83,6 +83,8 @@ func randSeq(length int, seed *int64) string {
 // Resources currently supported
 var Resources = map[string]ResourceStructure{
 	"aaa":    {"azure automation account", "aaa", 6, 50, false, alphanumh, "^[a-zA-Z][0-9A-Za-z-]{5,49}$", true, "resourceGroup"},
+	"ac":     {"azure container app", "ac", 1, 32, true, alphanumh, "^[a-z0-9][a-z0-9-]{0,30}[a-z0-9]$", true, "resourceGroup"},
+	"ace":    {"azure container app environment", "ace", 1, 60, false, alphanumh, "^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$", true, "resourceGroup"},
 	"acr":    {"azure container registry", "acr", 5, 50, true, alphanum, "^[0-9A-Za-z]{5,50}$", true, "resourceGroup"},
 	"afw":    {"azure firewall", "afw", 1, 80, false, alphanumhup, "^[a-zA-Z][0-9A-Za-z_.-]{0,79}$", true, "resourceGroup"},
 	"agw":    {"application gateway", "agw", 1, 80, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,78}[0-9a-zA-Z_]$", true, "resourceGroup"},
@@ -116,6 +118,8 @@ var Resources = map[string]ResourceStructure{
 // ResourcesMapping enforcing new naming convention
 var ResourcesMapping = map[string]ResourceStructure{
 	"azurerm_automation_account":              Resources["aaa"],
+	"azurerm_container_app":                   Resources["ac"],
+	"azurerm_container_app_environment":       Resources["ace"],
 	"azurerm_container_registry":              Resources["acr"],
 	"azurerm_firewall":                        Resources["afw"],
 	"azurerm_application_gateway":             Resources["agw"],
