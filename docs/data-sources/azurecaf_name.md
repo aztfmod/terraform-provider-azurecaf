@@ -9,30 +9,7 @@ The azurecaf_name resource allows you to:
 * Handle prefix, suffixes (either manual or as per the Azure cloud adoption framework resource conventions)
 * Allow passthrough mode (simply validate the output)
 
-## Exemple usage
-This example shows how to get the value of an environment variable.
-
-```hcl
-data "azurecaf_name" "rg_example" {
-  name          = "demogroup"
-  resource_type = "azurerm_resource_group"
-  prefixes      = ["a", "b"]
-  suffixes      = ["y", "z"]
-  random_length = 5
-  clean_input   = true
-}
-
-output "rg_example" {
-  value = data.azurecaf_name.rg_example.result
-}
-```
-```bash
-data.azurecaf_name.rg_example: Reading...
-data.azurecaf_name.rg_example: Read complete after 0s [id=a-b-rg-demogroup-sjdeh-y-z]
-
-Changes to Outputs:
-  + rg_example = "a-b-rg-demogroup-sjdeh-y-z"
-```
+## Example usage
 
 ## Combined with Azure resource
 The data source evaluates the name before the resource got created and is visible at plan time.
@@ -41,8 +18,8 @@ The data source evaluates the name before the resource got created and is visibl
 data "azurecaf_name" "rg_example" {
   name          = "demogroup"
   resource_type = "azurerm_resource_group"
-  prefixes      = ["a", "b"]
-  suffixes      = ["y", "z"]
+  # prefixes      = ["a", "b"]
+  # suffixes      = ["y", "z"]
   random_length = 5
   clean_input   = true
 }
@@ -54,7 +31,7 @@ resource "azurerm_resource_group" "rg" {
 ```
 ```bash
 data.azurecaf_name.rg_example: Reading...
-data.azurecaf_name.rg_example: Read complete after 0s [id=a-b-rg-demogroup-wjyhr-y-z]
+data.azurecaf_name.rg_example: Read complete after 0s [id=rg-demogroup-wjyhr]
 
 Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
   + create
@@ -65,7 +42,7 @@ Terraform will perform the following actions:
   + resource "azurerm_resource_group" "rg" {
       + id       = (known after apply)
       + location = "southeastasia"
-      + name     = "a-b-rg-demogroup-wjyhr-y-z"
+      + name     = "rg-demogroup-wjyhr"
     }
 
 Plan: 1 to add, 0 to change, 0 to destroy.
