@@ -32,19 +32,25 @@ The example generates a 23 characters name compatible with the specification for
 dev-aztfmod-001
 
 ```hcl
-resource "azurecaf_name" "rg_example" {
-  name            = "demogroup"
-    resource_type   = "azurerm_resource_group"
-    prefixes        = ["a", "b"]
-    suffixes        = ["y", "z"]
-    random_length   = 5
-    clean_input     = true
+data "azurecaf_name" "rg_example" {
+  name          = "demogroup"
+  resource_type = "azurerm_resource_group"
+  prefixes      = ["a", "b"]
+  suffixes      = ["y", "z"]
+  random_length = 5
+  clean_input   = true
 }
 
-resource "azurerm_resource_group" "demo" {
-  name     = azurecaf_name.rg_example.result
-  location = "southeastasia"
+output "rg_example" {
+  value = data.azurecaf_name.rg_example.result
 }
+```
+```bash
+data.azurecaf_name.rg_example: Reading...
+data.azurecaf_name.rg_example: Read complete after 0s [id=a-b-rg-demogroup-sjdeh-y-z]
+
+Changes to Outputs:
+  + rg_example = "a-b-rg-demogroup-sjdeh-y-z"
 ```
 
 The provider generates a name using the input parameters and automatically appends a prefix (if defined), a caf prefix (resource type) and postfix (if defined) in addition to a generated padding string based on the selected naming convention.
