@@ -673,6 +673,28 @@
         "regex": "\"[^0-9A-Za-z-]\""
     },
     {
+        "name": "azurerm_container_app",
+        "min_length": 1,
+        "max_length": 32,
+        "validation_regex": "\"^[a-z0-9][a-z0-9-]{0,30}[a-z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "ca",
+        "dashes": true,
+        "lowercase": true,
+        "regex": "\"[^0-9a-z-]\""
+    },
+    {
+        "name": "azurerm_container_app_environment",
+        "min_length": 1,
+        "max_length": 60,
+        "validation_regex": "\"^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$\"",
+        "scope": "resourceGroup",
+        "slug": "cae",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
         "name": "azurerm_container_registry",
         "min_length": 1,
         "max_length": 63,

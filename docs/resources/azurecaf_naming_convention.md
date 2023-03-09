@@ -73,6 +73,8 @@ Current prototype supports:
 | Resource type                       | Resource type code (short)  | Resource type code (long)               |
 | ----------------------------------- | ----------------------------|-----------------------------------------|
 | Azure Automation                    | aaa                         | azurerm_automation_account              |
+| Azure Container App                 | ac                          | azurerm_container_app                   |
+| Azure Container App Environment     | ace                         | azurerm_container_app_environment       |
 | Azure Container Registry            | acr                         | azurerm_container_registry              |
 | Azure Firewall                      | afw                         | azurerm_firewall                        |
 | Application Gateway                 | agw                         | azurerm_application_gateway             |
