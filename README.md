@@ -422,14 +422,14 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_iothub_consumer_group | ✔ |
 |azurerm_iothub_dps | ✔ |
 |azurerm_iothub_dps_certificate | ✔ |
-|azurerm_iothub_dps_shared_access_policy | ❌ |
+|azurerm_iothub_dps_shared_access_policy | ✔ |
 |azurerm_iothub_endpoint_eventhub | ❌ |
 |azurerm_iothub_endpoint_servicebus_queue | ❌ |
 |azurerm_iothub_endpoint_servicebus_topic | ❌ |
 |azurerm_iothub_endpoint_storage_container | ❌ |
 |azurerm_iothub_fallback_route | ❌ |
 |azurerm_iothub_route | ❌ |
-|azurerm_iothub_shared_access_policy | ❌ |
+|azurerm_iothub_shared_access_policy | ✔ |
 |azurerm_ip_group | ✔ |
 |azurerm_key_vault | ✔ |
 |azurerm_key_vault_access_policy | ❌ |
