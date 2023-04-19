@@ -413,6 +413,8 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_image | ✔ |
 |azurerm_images | ❌ |
 |azurerm_integration_service_environment | ✔ |
+|azurerm_iot_security_device_group | ✔ |
+|azurerm_iot_security_solution | ✔ |
 |azurerm_iot_time_series_insights_access_policy | ❌ |
 |azurerm_iot_time_series_insights_reference_data_set | ❌ |
 |azurerm_iot_time_series_insights_standard_environment | ❌ |
