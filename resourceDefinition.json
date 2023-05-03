@@ -1666,6 +1666,17 @@
         "regex": "\"[^0-9A-Za-z-._]\""
     },
     {
+        "name": "azurerm_iothub_shared_access_policy",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9-._]{1,64}$\"",
+        "scope": "parent",
+        "slug": "iotsap",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-._]\""
+    },
+    {
         "name": "azurerm_iothub_consumer_group",
         "min_length": 1,
         "max_length": 50,
@@ -1697,6 +1708,39 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
+    },
+    {
+        "name": "azurerm_iothub_dps_shared_access_policy",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9-._]{1,64}$\"",
+        "scope": "parent",
+        "slug": "dpssap",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-._]\""
+    },
+    {
+        "name": "azurerm_iot_security_device_group",
+        "min_length": 1,
+        "max_length": 32,
+        "validation_regex": "\"^[a-zA-Z0-9-._]{1,32}$\"",
+        "scope": "parent",
+        "slug": "iotdg",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-._]\""
+    },
+    {
+        "name": "azurerm_iot_security_solution",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[a-zA-Z0-9-_]{1,260}$\"",
+        "scope": "resourceGroup",
+        "slug": "iotss",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-_]\""
     },
     {
         "name": "azurerm_key_vault",
