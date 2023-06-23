@@ -463,6 +463,8 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_lighthouse_definition | ❌ |
 |azurerm_linux_virtual_machine | ✔ |
 |azurerm_linux_virtual_machine_scale_set | ✔ |
+|azurerm_linux_web_app | ✔ |
+|azurerm_linux_web_app_slot | ⚠ |
 |azurerm_local_network_gateway | ✔ |
 |azurerm_log_analytics_cluster | ✔ |
 |azurerm_log_analytics_data_export_rule | ❌ |
@@ -752,6 +754,9 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_web_pubsub_hub | ✔ |
 |azurerm_windows_virtual_machine | ✔ |
 |azurerm_windows_virtual_machine_scale_set | ✔ |
+|azurerm_windows_web_app | ✔ |
+|azurerm_windows_web_app_slot | ⚠ |
+
 
 ❌ = Not yet implemented
 ✔  = Already implemented

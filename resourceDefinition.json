@@ -540,6 +540,17 @@
         "regex": "\"[\\\\/\\\"\\\\[\\\\]:|<>+=;,?*@&_]\""
     },
     {
+        "name": "azurerm_linux_web_app",
+        "min_length": 2,
+        "max_length": 60,
+        "validation_regex": "\"^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$\"",
+        "scope": "global",
+        "slug": "lwapp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
         "name": "azurerm_managed_disk",
         "min_length": 1,
         "max_length": 80,
@@ -637,6 +648,17 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[\\\\/\\\"\\\\[\\\\]:|<>+=;,?*@&_]\""
+    },
+    {
+        "name": "azurerm_windows_web_app",
+        "min_length": 2,
+        "max_length": 60,
+        "validation_regex": "\"^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$\"",
+        "scope": "global",
+        "slug": "wwapp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
     },
     {
         "name": "azurerm_consumption_budget_resource_group",
