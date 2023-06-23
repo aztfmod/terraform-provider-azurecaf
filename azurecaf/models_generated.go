@@ -109,7 +109,7 @@ var ResourceDefinitions = map[string]ResourceStructure{
 	"azurerm_data_protection_backup_vault":                       {"azurerm_data_protection_backup_vault", "dpbv", 2, 50, false, `[^a-zA-Z0-9-]`, "^[a-zA-Z][a-zA-Z0-9-]{1,49}$", true, "resourceGroup"},
 	"azurerm_database_migration_project":                         {"azurerm_database_migration_project", "migr", 2, 57, false, "[^0-9A-Za-z_.-]", "^[a-zA-Z0-9][a-zA-Z0-9-_.]{1,56}$", true, "parent"},
 	"azurerm_database_migration_service":                         {"azurerm_database_migration_service", "dms", 2, 62, false, "[^0-9A-Za-z_.-]", "^[a-zA-Z0-9][a-zA-Z0-9-_.]{1,61}$", true, "resourceGroup"},
-	"azurerm_databricks_workspace":                               {"azurerm_databricks_workspace", "dbw", 3, 30, false, "[^0-9A-Za-z_-]", "^[a-zA-Z0-9-_]{3,30}$", true, "resourceGroup"},
+	"azurerm_databricks_workspace":                               {"azurerm_databricks_workspace", "dbw", 3, 64, false, "[^0-9A-Za-z_-]", "^[a-zA-Z0-9-_]{3,64}$", true, "resourceGroup"},
 	"azurerm_dedicated_host":                                     {"azurerm_dedicated_host", "dh", 1, 80, false, "[^0-9A-Za-z_.-]", "^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$", true, "resourceGroup"},
 	"azurerm_dedicated_host_group":                               {"azurerm_dedicated_host_group", "dhg", 1, 80, false, "[^0-9A-Za-z_.-]", "^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$", true, "resourceGroup"},
 	"azurerm_dev_test_lab":                                       {"azurerm_dev_test_lab", "lab", 1, 50, false, "[^0-9A-Za-z_-]", "^[a-zA-Z0-9-_]{1,50}$", true, "resourceGroup"},

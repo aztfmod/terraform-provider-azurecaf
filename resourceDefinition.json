@@ -1027,8 +1027,8 @@
     {
         "name": "azurerm_databricks_workspace",
         "min_length": 3,
-        "max_length": 30,
-        "validation_regex": "\"^[a-zA-Z0-9-_]{3,30}$\"",
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9-_]{3,64}$\"",
         "scope": "resourceGroup",
         "slug": "dbw",
         "dashes": true,
