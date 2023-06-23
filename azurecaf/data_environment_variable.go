@@ -36,9 +36,9 @@ func resourceAction(ctx context.Context, d *schema.ResourceData, meta interface{
 	var diags diag.Diagnostics
 
 	name := d.Get("name").(string)
-	value := os.Getenv(name)
+	value, ok := os.LookupEnv(name)
 
-	if d.Get("fails_if_empty").(bool) {
+	if !ok {
 		return diag.Errorf("Value is not set for environment variable: %s", name)
 	}
 
