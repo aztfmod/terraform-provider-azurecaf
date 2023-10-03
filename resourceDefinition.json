@@ -3172,6 +3172,17 @@
         "regex": "\"[^0-9A-Za-z _.-]\""
     },
     {
+        "name": "azurerm_monitor_data_collection_endpoint",
+        "min_length": 3,
+        "max_length": 44,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,42}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "dce",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\""
+    },
+    {
         "name": "azurerm_monitor_diagnostic_setting",
         "min_length": 1,
         "max_length": 260,
