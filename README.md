@@ -293,6 +293,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_cost_management_export_resource_group | ❌ |
 |azurerm_custom_provider | ✔ |
 |azurerm_dashboard | ✔ |
+|azurerm_portal_dashboard | ✔ |
 |azurerm_data_factory | ✔ |
 |azurerm_data_factory_dataset_azure_blob | ✔ |
 |azurerm_data_factory_dataset_cosmosdb_sqlapi | ✔ |
