@@ -13,7 +13,7 @@ provider "azurecaf" {
 
 #Resource Group AKS Test
 resource "azurecaf_naming_convention" "rg_aks" {
-  name          = "aks"
+  name          = "gke"
   prefix        = "ievb"
   resource_type = "azurerm_resource_group"
   convention    = "cafrandom"
@@ -163,20 +163,20 @@ output "evh_random" {
 }
 
 # Azure Kubernetes Services
-resource "azurecaf_naming_convention" "aks" {
+resource "azurecaf_naming_convention" "gke" {
   convention    = "cafrandom"
   name          = "mykubecluster"
   prefix        = "rdmi"
-  resource_type = "aks"
+  resource_type = "gke"
 }
 
 output "aks_id" {
-  value       = azurecaf_naming_convention.aks.id
+  value       = azurecaf_naming_convention.gke.id
   description = "Id of the resource's name"
 }
 
 output "aks_random" {
-  value       = azurecaf_naming_convention.aks.result
+  value       = azurecaf_naming_convention.gke.result
   description = "Random result based on the resource type"
 }
 

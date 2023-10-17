@@ -69,8 +69,8 @@ func TestAccCafNamingConvention_Classic(t *testing.T) {
 						"azurecaf_naming_convention.classic_aks",
 						"kubedemo",
 						12,
-						"aks"),
-					regexMatch("azurecaf_naming_convention.classic_aks", regexp.MustCompile(Resources["aks"].ValidationRegExp), 1),
+						"gke"),
+					regexMatch("azurecaf_naming_convention.classic_aks", regexp.MustCompile(Resources["gke"].ValidationRegExp), 1),
 					testAccCafNamingValidation(
 						"azurecaf_naming_convention.classic_aksdns",
 						"kubedemodns",
@@ -193,7 +193,7 @@ resource "azurecaf_naming_convention" "classic_kv" {
 resource "azurecaf_naming_convention" "classic_aks" {
     convention      = "cafclassic"
     name            = "kubedemo"
-    resource_type   = "aks"
+    resource_type   = "gke"
 }
 # Azure Kubernetes Service
 resource "azurecaf_naming_convention" "classic_aksdns" {

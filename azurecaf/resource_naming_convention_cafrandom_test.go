@@ -72,11 +72,11 @@ func TestAccCafNamingConventionCaf_Random(t *testing.T) {
 						"rdmi"),
 					regexMatch("azurecaf_naming_convention.kv", regexp.MustCompile(Resources["kv"].ValidationRegExp), 1),
 					testAccCafNamingValidation(
-						"azurecaf_naming_convention.aks",
+						"azurecaf_naming_convention.gke",
 						"kubedemo",
-						Resources["aks"].MaxLength,
+						Resources["gke"].MaxLength,
 						"rdmi"),
-					regexMatch("azurecaf_naming_convention.aks", regexp.MustCompile(Resources["aks"].ValidationRegExp), 1),
+					regexMatch("azurecaf_naming_convention.gke", regexp.MustCompile(Resources["gke"].ValidationRegExp), 1),
 					testAccCafNamingValidation(
 						"azurecaf_naming_convention.aksdns",
 						"kubedemodns",
@@ -211,11 +211,11 @@ resource "azurecaf_naming_convention" "kv" {
 }
 
 # Azure Kubernetes Service
-resource "azurecaf_naming_convention" "aks" {
+resource "azurecaf_naming_convention" "gke" {
     convention      = "cafrandom"
     name            = "kubedemo"
     prefix          = "rdmi"
-    resource_type   = "aks"
+    resource_type   = "gke"
 }
 # Azure Kubernetes Service
 resource "azurecaf_naming_convention" "aksdns" {

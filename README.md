@@ -439,8 +439,8 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_key_vault_certificate_issuer | ❌ |
 |azurerm_key_vault_key | ✔ |
 |azurerm_key_vault_secret | ✔ |
-|azurerm_kubernetes_cluster | ✔ |
-|azurerm_kubernetes_cluster_node_pool | ❌ |
+|gke_kubernetes_cluster | ✔ |
+|gke_kubernetes_cluster_node_pool | ❌ |
 |azurerm_kubernetes_fleet_manager | ✔ |
 |azurerm_kubernetes_service_versions | ❌ |
 |azurerm_kusto_attached_database_configuration | ❌ |

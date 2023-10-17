@@ -761,12 +761,12 @@
         "regex": "\"[^0-9A-Za-z]\""
     },
     {
-        "name": "azurerm_kubernetes_cluster",
+        "name": "gke_kubernetes_cluster",
         "min_length": 1,
         "max_length": 63,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_]{0,61}[a-zA-Z0-9]$\"",
         "scope": "resourceGroup",
-        "slug": "aks",
+        "slug": "gke",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""

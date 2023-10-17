@@ -113,7 +113,7 @@ Current supported resource types:
 | azurerm_container_app_environment| cae| 1| 60| false| "^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$"|
 | azurerm_container_registry| cr| 1| 63| true| "^[a-zA-Z0-9]{1,63}$"|
 | azurerm_container_registry_webhook| crwh| 1| 50| false| "^[a-zA-Z0-9]{1,50}$"|
-| azurerm_kubernetes_cluster| aks| 1| 63| false| "^[a-zA-Z0-9][a-zA-Z0-9-_]{0,61}[a-zA-Z0-9]$"|
+| gke_kubernetes_cluster| aks| 1| 63| false| "^[a-zA-Z0-9][a-zA-Z0-9-_]{0,61}[a-zA-Z0-9]$"|
 | azurerm_cosmosdb_account| cosmos| 1| 63| false| "^[a-z0-9][a-zA-Z0-9-_.]{0,61}[a-zA-Z0-9]$"|
 | azurerm_custom_provider| prov| 3| 64| false| "^[^&%?\\/]{2,63}[^&%.?\\/ ]$"|
 | azurerm_mariadb_server| maria| 3| 63| false| "^[a-z0-9][a-zA-Z0-9-]{1,61}[a-z0-9]$"|
