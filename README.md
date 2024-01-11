@@ -293,6 +293,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_cost_management_export_resource_group | ❌ |
 |azurerm_custom_provider | ✔ |
 |azurerm_dashboard | ✔ |
+|azurerm_portal_dashboard | ✔ |
 |azurerm_data_factory | ✔ |
 |azurerm_data_factory_dataset_azure_blob | ✔ |
 |azurerm_data_factory_dataset_cosmosdb_sqlapi | ✔ |
@@ -619,6 +620,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_role_definition | ✔ |
 |azurerm_route | ✔ |
 |azurerm_route_filter | ❌ |
+|azurerm_route_server | ✔ |
 |azurerm_route_table | ✔ |
 |azurerm_search_service | ❌ |
 |azurerm_security_center_auto_provisioning | ❌ |
