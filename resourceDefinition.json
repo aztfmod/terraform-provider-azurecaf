@@ -2930,6 +2930,17 @@
         "regex": "\"[^0-9A-Za-z-]\""
     },
     {
+        "name": "azurerm_portal_dashboard",
+        "min_length": 3,
+        "max_length": 160,
+        "validation_regex": "\"^[a-zA-Z0-9-]{3,160}$\"",
+        "scope": "parent",
+        "slug": "dsb",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },    
+    {
         "name": "azurerm_signalr_service",
         "min_length": 3,
         "max_length": 63,
