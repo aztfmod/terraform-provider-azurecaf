@@ -452,6 +452,17 @@
         "regex": "\"[^0-9A-Za-z-]\""
     },
     {
+        "name": "azurerm_search_service",
+        "min_length": 2,
+        "max_length": 60,
+        "validation_regex": "\"^[a-z0-9](?:[a-z0-9-]{0,58}[a-z0-9])?$\"",
+        "scope": "global",
+        "slug": "srch",
+        "dashes": true,
+        "lowercase": true,
+        "regex": "\"[a-z0-9-]*--[a-z0-9-]*$\""
+    },
+    {
         "name": "azurerm_availability_set",
         "min_length": 1,
         "max_length": 80,
