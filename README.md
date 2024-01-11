@@ -507,6 +507,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_monitor_action_rule_suppression | ❌ |
 |azurerm_monitor_activity_log_alert | ❌ |
 |azurerm_monitor_autoscale_setting | ✔ |
+|azurerm_monitor_data_collection_endpoint | ✔ |
 |azurerm_monitor_diagnostic_categories | ❌ |
 |azurerm_monitor_diagnostic_setting | ✔ |
 |azurerm_monitor_log_profile | ❌ |
