@@ -260,7 +260,7 @@ var ResourceDefinitions = map[string]ResourceStructure{
 	"azurerm_postgresql_flexible_server_firewall_rule":           {"azurerm_postgresql_flexible_server_firewall_rule", "psqlffw", 1, 128, false, "[^0-9A-Za-z_-]", "^[a-zA-Z0-9-_]{1,128}$", true, "parent"},
 	"azurerm_postgresql_server":                                  {"azurerm_postgresql_server", "psql", 3, 63, false, "[^0-9A-Za-z-]", "^[a-z0-9][a-zA-Z0-9-]{1,61}[a-z0-9]$", true, "global"},
 	"azurerm_postgresql_virtual_network_rule":                    {"azurerm_postgresql_virtual_network_rule", "psqlvn", 1, 128, false, "[^0-9A-Za-z_-]", "^[a-zA-Z0-9-_]{1,128}$", true, "parent"},
-	"azurerm_powerbi_embedded":                                   {"azurerm_powerbi_embedded", "pbi", 3, 63, false, "[^0-9A-Za-z_.-]", "^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$", true, "region"},
+	"azurerm_powerbi_embedded":                                   {"azurerm_powerbi_embedded", "pbi", 3, 63, false, "[^0-9a-z]", "^[a-zA-Z0-9][a-zA-Z0-9]{2,62}$", false, "region"},
 	"azurerm_private_dns_a_record":                               {"azurerm_private_dns_a_record", "pdnsrec", 1, 80, false, "[^a-zA-Z0-9\\-\\._]", "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$", true, "parent"},
 	"azurerm_private_dns_aaaa_record":                            {"azurerm_private_dns_aaaa_record", "pdnsrec", 1, 80, false, "[^a-zA-Z0-9\\-\\._]", "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$", true, "parent"},
 	"azurerm_private_dns_cname_record":                           {"azurerm_private_dns_cname_record", "pdnsrec", 1, 80, false, "[^a-zA-Z0-9\\-\\._]", "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$", true, "parent"},
