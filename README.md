@@ -622,7 +622,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_route_filter | ❌ |
 |azurerm_route_server | ✔ |
 |azurerm_route_table | ✔ |
-|azurerm_search_service | ❌ |
+|azurerm_search_service | ✔ |
 |azurerm_security_center_auto_provisioning | ❌ |
 |azurerm_security_center_automation | ❌ |
 |azurerm_security_center_contact | ❌ |
