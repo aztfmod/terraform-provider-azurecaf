@@ -2910,7 +2910,7 @@
         "name": "azurerm_powerbi_embedded",
         "min_length": 3,
         "max_length": 63,
-        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9]{2,62}$\"",
+        "validation_regex": "\"^[a-z0-9][a-z0-9]{2,62}$\"",
         "invalid-double-dash": true,
         "scope": "region",
         "slug": "pbi",
