@@ -3852,5 +3852,16 @@
       "dashes": true,
       "lowercase": false,
       "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\""
+    },
+    {
+        "name": "azurerm_load_test",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9-_]{0,62}[a-zA-Z0-9|]$\"",
+        "scope": "global",
+        "slug": "load",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-_]\""
     }
 ]
