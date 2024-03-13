@@ -198,6 +198,34 @@ func TestAccResourceName_CafClassic(t *testing.T) {
 	})
 }
 
+func TestAccResourceName_ChangeResourceTypes(t *testing.T) {
+	resource.UnitTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccResourceNameSingleResourceType,
+				Check: resource.ComposeTestCheckFunc(
+					regexMatch("azurecaf_name.test", regexp.MustCompile(ResourceDefinitions["azurerm_resource_group"].ValidationRegExp), 1),
+					resource.TestCheckResourceAttr("azurecaf_name.test", "results.%", "0"),
+				),
+			},
+			{
+				Config: testAccResourceNameMultipleResourceType,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("azurecaf_name.test", "result", ""),
+					resource.TestCheckResourceAttr("azurecaf_name.test", "results.%", "4"),
+					resource.TestMatchResourceAttr("azurecaf_name.test", "results.azurerm_resource_group", regexp.MustCompile(ResourceDefinitions["azurerm_resource_group"].ValidationRegExp)),
+					resource.TestMatchResourceAttr("azurecaf_name.test", "results.azurerm_recovery_services_vault", regexp.MustCompile(ResourceDefinitions["azurerm_recovery_services_vault"].ValidationRegExp)),
+					resource.TestMatchResourceAttr("azurecaf_name.test", "results.azurerm_api_management_service", regexp.MustCompile(ResourceDefinitions["azurerm_api_management_service"].ValidationRegExp)),
+					resource.TestMatchResourceAttr("azurecaf_name.test", "results.azurerm_container_registry", regexp.MustCompile(ResourceDefinitions["azurerm_container_registry"].ValidationRegExp)),
+				),
+			},
+		},
+	})
+}
+
 func TestAccResourceName_CafClassicRSV(t *testing.T) {
 	resource.UnitTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
@@ -458,7 +486,7 @@ resource "azurecaf_name" "apim" {
 	random_length = 0
 	clean_input = true
 	passthrough = false
-   }
+}
 `
 
 const testAccResourceNameCafClassicConfigRsv = `
@@ -475,5 +503,29 @@ resource "azurecaf_name" "rsv" {
 	random_seed     = 1
 	clean_input     = true
 	passthrough     = false
+}
+`
+
+const testAccResourceNameMultipleResourceType = `
+resource "azurecaf_name" "test" {
+    name            = "test"
+	resource_types  = ["azurerm_resource_group", "azurerm_recovery_services_vault", "azurerm_api_management_service", "azurerm_container_registry"]
+	prefixes        = ["pr1", "pr2"]
+	suffixes        = ["su1", "su2"]
+	random_seed     = 1
+	random_length   = 5
+	clean_input     = true
+}
+`
+
+const testAccResourceNameSingleResourceType = `
+resource "azurecaf_name" "test" {
+    name            = "test"
+	resource_type   = "azurerm_resource_group"
+	prefixes        = ["pr1", "pr2"]
+	suffixes        = ["su1", "su2"]
+	random_seed     = 1
+	random_length   = 5
+	clean_input     = true
 }
 `
