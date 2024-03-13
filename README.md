@@ -1,6 +1,8 @@
-# Azure Cloud Adoption Framework - Terraform provider
+# Azure Terraform SRE - Terraform provider
 
-This provider implements a set of methodologies for naming convention implementation including the default Microsoft Cloud Adoption Framework for Azure recommendations as per https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging.
+> :warning: This solution, offered by the Open-Source community, will no longer receive contributions from Microsoft.
+
+This provider implements a set of methodologies for naming convention implementation including the default Microsoft Cloud Adoption Framework for Azure recommendations as per <https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging>.
 
 ## Using the Provider
 
@@ -45,6 +47,7 @@ output "rg_example" {
   value = data.azurecaf_name.rg_example.result
 }
 ```
+
 ```bash
 data.azurecaf_name.rg_example: Reading...
 data.azurecaf_name.rg_example: Read complete after 0s [id=a-b-rg-demogroup-sjdeh-y-z]
@@ -86,21 +89,21 @@ The following attributes are exported:
 We define resource types as per [naming-and-tagging](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging)
 The comprehensive list of resource type can be found [here](./docs/resources/azurecaf_name.md)
 
-
 ## Building the provider
 
 Clone repository to: $GOPATH/src/github.com/aztfmod/terraform-provider-azurecaf
 
 ```
-$ mkdir -p $GOPATH/src/github.com/aztfmod; cd $GOPATH/src/github.com/aztfmod
-$ git clone https://github.com/aztfmod/terraform-provider-azurecaf.git
+mkdir -p $GOPATH/src/github.com/aztfmod; cd $GOPATH/src/github.com/aztfmod
+git clone https://github.com/aztfmod/terraform-provider-azurecaf.git
 
 ```
+
 Enter the provider directory and build the provider
 
 ```
-$ cd $GOPATH/src/github.com/aztfmod/terraform-provider-azurecaf
-$ make build
+cd $GOPATH/src/github.com/aztfmod/terraform-provider-azurecaf
+make build
 
 ```
 
@@ -119,11 +122,13 @@ $ $GOPATH/bin/terraform-provider-azurecaf
 ...
 
 ```
+
 ## Testing
 
-Running the acceptance test suite requires does not require an Azure subscription. 
+Running the acceptance test suite requires does not require an Azure subscription.
 
 to run the unit test:
+
 ```
 make unittest
 ```
@@ -142,7 +147,6 @@ make test
 | [rover](https://github.com/aztfmod/rover)                                                        | devops toolset for operating landing zones                 |
 | [azure_caf_provider](https://github.com/aztfmod/terraform-provider-azurecaf)                     | custom provider for naming conventions                     |
 | [module](https://registry.terraform.io/modules/aztfmod)                                          | official CAF module available in the Terraform registry    |
-
 
 ## Community
 
@@ -760,7 +764,6 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_windows_virtual_machine_scale_set | ✔ |
 |azurerm_windows_web_app | ✔ |
 |azurerm_windows_web_app_slot | ⚠ |
-
 
 ❌ = Not yet implemented
 ✔  = Already implemented
