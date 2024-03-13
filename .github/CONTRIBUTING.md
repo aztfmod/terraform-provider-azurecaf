@@ -32,7 +32,7 @@ Please, find below the steps that should be followed to contribute:
 
 4. Choose the slug for the resource
 
-    Every resource in CAF does have a slug that associate with this resource this is 2 to 5 letters that identify that resource, for example, the slug for a `key vault` is `kv` for a storage account `st` What is important here it is to try to keep this short but meaningful and avoid collision with existing ones. Don't worry about knowing all existing ones if you choose one that exists already the tests will fail.
+    Every resource in CAF does have a slug that associate with this resource this is 2 to 5 letters that identify that resource, for example, the slug for a `key vault` is `kv` for a storage account `st` What is important here it is to try to keep this short but meaningful and avoid collision with existing ones. Don't worry about knowing all existing ones if you choose one that exists already the tests will fail. You can also check if the resource has a example abbreviation on this page: [doc](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations)
 
 5. Modify the `resourceDefinition.json`
 

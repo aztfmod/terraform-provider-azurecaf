@@ -1,6 +1,8 @@
-# Azure Cloud Adoption Framework - Terraform provider
+# Azure Terraform SRE - Terraform provider
 
-This provider implements a set of methodologies for naming convention implementation including the default Microsoft Cloud Adoption Framework for Azure recommendations as per https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging.
+> :warning: This solution, offered by the Open-Source community, will no longer receive contributions from Microsoft.
+
+This provider implements a set of methodologies for naming convention implementation including the default Microsoft Cloud Adoption Framework for Azure recommendations as per <https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging>.
 
 ## Using the Provider
 
@@ -32,19 +34,26 @@ The example generates a 23 characters name compatible with the specification for
 dev-aztfmod-001
 
 ```hcl
-resource "azurecaf_name" "rg_example" {
-  name            = "demogroup"
-    resource_type   = "azurerm_resource_group"
-    prefixes        = ["a", "b"]
-    suffixes        = ["y", "z"]
-    random_length   = 5
-    clean_input     = true
+data "azurecaf_name" "rg_example" {
+  name          = "demogroup"
+  resource_type = "azurerm_resource_group"
+  prefixes      = ["a", "b"]
+  suffixes      = ["y", "z"]
+  random_length = 5
+  clean_input   = true
 }
 
-resource "azurerm_resource_group" "demo" {
-  name     = azurecaf_name.rg_example.result
-  location = "southeastasia"
+output "rg_example" {
+  value = data.azurecaf_name.rg_example.result
 }
+```
+
+```bash
+data.azurecaf_name.rg_example: Reading...
+data.azurecaf_name.rg_example: Read complete after 0s [id=a-b-rg-demogroup-sjdeh-y-z]
+
+Changes to Outputs:
+  + rg_example = "a-b-rg-demogroup-sjdeh-y-z"
 ```
 
 The provider generates a name using the input parameters and automatically appends a prefix (if defined), a caf prefix (resource type) and postfix (if defined) in addition to a generated padding string based on the selected naming convention.
@@ -80,21 +89,21 @@ The following attributes are exported:
 We define resource types as per [naming-and-tagging](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging)
 The comprehensive list of resource type can be found [here](./docs/resources/azurecaf_name.md)
 
-
 ## Building the provider
 
 Clone repository to: $GOPATH/src/github.com/aztfmod/terraform-provider-azurecaf
 
 ```
-$ mkdir -p $GOPATH/src/github.com/aztfmod; cd $GOPATH/src/github.com/aztfmod
-$ git clone https://github.com/aztfmod/terraform-provider-azurecaf.git
+mkdir -p $GOPATH/src/github.com/aztfmod; cd $GOPATH/src/github.com/aztfmod
+git clone https://github.com/aztfmod/terraform-provider-azurecaf.git
 
 ```
+
 Enter the provider directory and build the provider
 
 ```
-$ cd $GOPATH/src/github.com/aztfmod/terraform-provider-azurecaf
-$ make build
+cd $GOPATH/src/github.com/aztfmod/terraform-provider-azurecaf
+make build
 
 ```
 
@@ -113,11 +122,13 @@ $ $GOPATH/bin/terraform-provider-azurecaf
 ...
 
 ```
+
 ## Testing
 
-Running the acceptance test suite requires does not require an Azure subscription. 
+Running the acceptance test suite requires does not require an Azure subscription.
 
 to run the unit test:
+
 ```
 make unittest
 ```
@@ -136,7 +147,6 @@ make test
 | [rover](https://github.com/aztfmod/rover)                                                        | devops toolset for operating landing zones                 |
 | [azure_caf_provider](https://github.com/aztfmod/terraform-provider-azurecaf)                     | custom provider for naming conventions                     |
 | [module](https://registry.terraform.io/modules/aztfmod)                                          | official CAF module available in the Terraform registry    |
-
 
 ## Community
 
@@ -269,6 +279,8 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_communication_service | ✔ |
 |azurerm_consumption_budget_resource_group | ✔ |
 |azurerm_consumption_budget_subscription | ✔ |
+|azurerm_container_app | ✔ |
+|azurerm_container_app_environment | ✔ |
 |azurerm_container_group | ❌ |
 |azurerm_container_registry | ✔ |
 |azurerm_container_registry_webhook | ✔ |
@@ -285,6 +297,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_cost_management_export_resource_group | ❌ |
 |azurerm_custom_provider | ✔ |
 |azurerm_dashboard | ✔ |
+|azurerm_portal_dashboard | ✔ |
 |azurerm_data_factory | ✔ |
 |azurerm_data_factory_dataset_azure_blob | ✔ |
 |azurerm_data_factory_dataset_cosmosdb_sqlapi | ✔ |
@@ -405,6 +418,8 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_image | ✔ |
 |azurerm_images | ❌ |
 |azurerm_integration_service_environment | ✔ |
+|azurerm_iot_security_device_group | ✔ |
+|azurerm_iot_security_solution | ✔ |
 |azurerm_iot_time_series_insights_access_policy | ❌ |
 |azurerm_iot_time_series_insights_reference_data_set | ❌ |
 |azurerm_iot_time_series_insights_standard_environment | ❌ |
@@ -414,14 +429,14 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_iothub_consumer_group | ✔ |
 |azurerm_iothub_dps | ✔ |
 |azurerm_iothub_dps_certificate | ✔ |
-|azurerm_iothub_dps_shared_access_policy | ❌ |
+|azurerm_iothub_dps_shared_access_policy | ✔ |
 |azurerm_iothub_endpoint_eventhub | ❌ |
 |azurerm_iothub_endpoint_servicebus_queue | ❌ |
 |azurerm_iothub_endpoint_servicebus_topic | ❌ |
 |azurerm_iothub_endpoint_storage_container | ❌ |
 |azurerm_iothub_fallback_route | ❌ |
 |azurerm_iothub_route | ❌ |
-|azurerm_iothub_shared_access_policy | ❌ |
+|azurerm_iothub_shared_access_policy | ✔ |
 |azurerm_ip_group | ✔ |
 |azurerm_key_vault | ✔ |
 |azurerm_key_vault_access_policy | ❌ |
@@ -453,9 +468,11 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_lighthouse_definition | ❌ |
 |azurerm_linux_virtual_machine | ✔ |
 |azurerm_linux_virtual_machine_scale_set | ✔ |
+|azurerm_linux_web_app | ✔ |
+|azurerm_linux_web_app_slot | ⚠ |
+|azurerm_load_test | ✔ |
 |azurerm_local_network_gateway | ✔ |
-|azurerm_log_analytics_cluster | ❌ |
-|azurerm_log_analytics_cluster_customer_managed_key | ❌ |
+|azurerm_log_analytics_cluster | ✔ |
 |azurerm_log_analytics_data_export_rule | ❌ |
 |azurerm_log_analytics_datasource_windows_event | ❌ |
 |azurerm_log_analytics_datasource_windows_performance_counter | ❌ |
@@ -495,6 +512,7 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_monitor_action_rule_suppression | ❌ |
 |azurerm_monitor_activity_log_alert | ❌ |
 |azurerm_monitor_autoscale_setting | ✔ |
+|azurerm_monitor_data_collection_endpoint | ✔ |
 |azurerm_monitor_diagnostic_categories | ❌ |
 |azurerm_monitor_diagnostic_setting | ✔ |
 |azurerm_monitor_log_profile | ❌ |
@@ -607,8 +625,9 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_role_definition | ✔ |
 |azurerm_route | ✔ |
 |azurerm_route_filter | ❌ |
+|azurerm_route_server | ✔ |
 |azurerm_route_table | ✔ |
-|azurerm_search_service | ❌ |
+|azurerm_search_service | ✔ |
 |azurerm_security_center_auto_provisioning | ❌ |
 |azurerm_security_center_automation | ❌ |
 |azurerm_security_center_contact | ❌ |
@@ -743,6 +762,8 @@ This is the current compreheensive status of the implemented resources in the pr
 |azurerm_web_pubsub_hub | ✔ |
 |azurerm_windows_virtual_machine | ✔ |
 |azurerm_windows_virtual_machine_scale_set | ✔ |
+|azurerm_windows_web_app | ✔ |
+|azurerm_windows_web_app_slot | ⚠ |
 
 ❌ = Not yet implemented
 ✔  = Already implemented
