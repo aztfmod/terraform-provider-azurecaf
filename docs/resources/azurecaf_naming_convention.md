@@ -4,7 +4,7 @@ The resource naming_convention implements a set of methodologies to apply consis
 
 The naming_convention is the initial resource released as part of the azurecaf provider, the naming_convention supports a fixed set of resources as described in the documention. In order to provider more flexibility and support the large breadth of Azure resources available you can use the azurecaf_name resource.
 
-## Exemple usage
+## Example usage
 This example outputs one name, the result of the naming convention query. The result attribute returns the name based on the convention and parameters input.
 
 The example generates a 23 characters name compatible with the specification for an Azure Resource Group
@@ -44,7 +44,7 @@ The following arguments are supported:
 * prefix (optional) - prefix to append as the first characters of the generated name
 * postfix (optional) -  additional postfix added after the basename, this is can be used to append resource index (eg. vm-001)
 * max_length (optional) - configure the maximum length of the returned object name, is the specified length is longer than the supported length of the Azure resource the later applies
-* resource_type (optional) -  describes the type of azure resource you are requesting a name from (eg. azure container registrly: acr). See the Resource Type section
+* resource_type (optional) -  describes the type of azure resource you are requesting a name from (eg. azure container registry: acr). See the Resource Type section
 
 # Attributes Reference
 The following attributes are exported:
