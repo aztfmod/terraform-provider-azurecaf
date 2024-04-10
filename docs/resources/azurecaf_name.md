@@ -21,11 +21,11 @@ dev-aztfmod-001
 ```hcl
 resource "azurecaf_name" "rg_example" {
   name            = "demogroup"
-    resource_type   = "azurerm_resource_group"
-    prefixes        = ["a", "b"]
-    suffixes        = ["y", "z"]
-    random_length   = 5
-    clean_input     = true
+  resource_type   = "azurerm_resource_group"
+  prefixes        = ["a", "b"]
+  suffixes        = ["y", "z"]
+  random_length   = 5
+  clean_input     = true
 }
 
 resource "azurerm_resource_group" "demo" {

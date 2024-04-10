@@ -48,7 +48,7 @@ output "rg_example" {
 }
 ```
 
-```bash
+```
 data.azurecaf_name.rg_example: Reading...
 data.azurecaf_name.rg_example: Read complete after 0s [id=a-b-rg-demogroup-sjdeh-y-z]
 
@@ -162,7 +162,7 @@ information about contributing can be found at [CONTRIBUTING.md](.github/CONTRIB
 
 ## Resource Status
 
-This is the current compreheensive status of the implemented resources in the provider comparing with the current list of resources in the azurerm terraform provider.
+This is the current comprehensive status of the implemented resources in the provider comparing with the current list of resources in the azurerm terraform provider.
 
 |resource | status |
 |---|---|

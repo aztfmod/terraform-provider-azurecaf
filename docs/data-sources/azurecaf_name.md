@@ -29,7 +29,8 @@ resource "azurerm_resource_group" "rg" {
   location = "southeastasia"
 }
 ```
-```bash
+
+```
 data.azurecaf_name.rg_example: Reading...
 data.azurecaf_name.rg_example: Read complete after 0s [id=rg-demogroup-wjyhr]
 
