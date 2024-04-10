@@ -2,7 +2,7 @@
 
 The data source azurecaf_environment_variable retrieve an OS environment variable.
 
-## Exemple usage
+## Example usage
 This example shows how to get the value of an environment variable.
 
 ```hcl
