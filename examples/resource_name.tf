@@ -26,6 +26,21 @@ output "azurerm_cognitive_account" {
   description = "Random result based on the resource type"
 }
 
+#Azure Open AI Deployment test
+resource "azurecaf_name" "azurerm_cognitive_deployment" {
+  name          = "openai-deployment"
+  resource_type = "azurerm_cognitive_deployment"
+  prefixes      = ["a", "b"]
+  suffixes      = ["y", "z"]
+  random_length = 5
+  clean_input   = true
+}
+
+output "azurerm_cognitive_deployment" {
+  value = azurecaf_name.azurerm_cognitive_deployment.result
+  description = "Random result based on the resource type"
+}
+
 resource "azurecaf_name" "multiple_resources" {
   name           = "cogsdemo2"
   resource_type  = "azurerm_cognitive_account"
