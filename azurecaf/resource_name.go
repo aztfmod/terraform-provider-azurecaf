@@ -1,7 +1,6 @@
 package azurecaf
 
 import (
-	"context"
 	"fmt"
 	"regexp"
 	"strings"
@@ -9,103 +8,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
-
-func resourceNameV2() *schema.Resource {
-	resourceMapsKeys := make([]string, 0, len(ResourceDefinitions))
-	for k := range ResourceDefinitions {
-		resourceMapsKeys = append(resourceMapsKeys, k)
-	}
-	return &schema.Resource{
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Optional: true,
-				ForceNew: true,
-				Default:  "",
-			},
-			"prefixes": {
-				Type: schema.TypeList,
-				Elem: &schema.Schema{
-					Type:         schema.TypeString,
-					ValidateFunc: validation.NoZeroValues,
-				},
-				Optional: true,
-				ForceNew: true,
-			},
-			"suffixes": {
-				Type: schema.TypeList,
-				Elem: &schema.Schema{
-					Type:         schema.TypeString,
-					ValidateFunc: validation.NoZeroValues,
-				},
-				Optional: true,
-				ForceNew: true,
-			},
-			"random_length": {
-				Type:         schema.TypeInt,
-				Optional:     true,
-				ForceNew:     true,
-				ValidateFunc: validation.IntAtLeast(0),
-				Default:      0,
-			},
-			"result": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"results": {
-				Type: schema.TypeMap,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-				Computed: true,
-			},
-			"separator": {
-				Type:     schema.TypeString,
-				Optional: true,
-				ForceNew: true,
-				Default:  "-",
-			},
-			"clean_input": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				ForceNew: true,
-				Default:  true,
-			},
-			"passthrough": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				ForceNew: true,
-				Default:  false,
-			},
-			"resource_type": {
-				Type:         schema.TypeString,
-				Optional:     true,
-				ValidateFunc: validation.StringInSlice(resourceMapsKeys, false),
-				ForceNew:     true,
-			},
-			"resource_types": {
-				Type: schema.TypeList,
-				Elem: &schema.Schema{
-					Type:         schema.TypeString,
-					ValidateFunc: validation.StringInSlice(resourceMapsKeys, false),
-				},
-				Optional: true,
-				ForceNew: true,
-			},
-			"random_seed": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				ForceNew: true,
-			},
-		},
-	}
-}
-
-func resourceNameStateUpgradeV2(ctx context.Context, rawState map[string]interface{}, meta interface{}) (map[string]interface{}, error) {
-	rawState["use_slug"] = true
-
-	return rawState, nil
-}
 
 func resourceName() *schema.Resource {
 	resourceMapsKeys := make([]string, 0, len(ResourceDefinitions))
@@ -115,14 +17,20 @@ func resourceName() *schema.Resource {
 
 	return &schema.Resource{
 		Create:        resourceNameCreate,
-		Read:          schema.Noop,
+		Update:        resourceNameUpdate,
+		Read:          resourceNameRead,
 		Delete:        schema.RemoveFromState,
-		SchemaVersion: 3,
+		SchemaVersion: 4,
 		StateUpgraders: []schema.StateUpgrader{
 			{
 				Type:    resourceNameV2().CoreConfigSchema().ImpliedType(),
 				Upgrade: resourceNameStateUpgradeV2,
 				Version: 2,
+			},
+			{
+				Type:    resourceNameV3().CoreConfigSchema().ImpliedType(),
+				Upgrade: resourceNameStateUpgradeV3,
+				Version: 3,
 			},
 		},
 
@@ -158,6 +66,10 @@ func resourceName() *schema.Resource {
 				ValidateFunc: validation.IntAtLeast(0),
 				Default:      0,
 			},
+			"random_suffix": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 			"result": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -188,10 +100,10 @@ func resourceName() *schema.Resource {
 				Default:  false,
 			},
 			"resource_type": {
-				Type:         schema.TypeString,
-				Optional:     true,
-				ValidateFunc: validation.StringInSlice(resourceMapsKeys, false),
-				ForceNew:     true,
+				Type:          schema.TypeString,
+				Optional:      true,
+				ValidateFunc:  validation.StringInSlice(resourceMapsKeys, false),
+				ConflictsWith: []string{"resource_types"},
 			},
 			"resource_types": {
 				Type: schema.TypeList,
@@ -199,11 +111,12 @@ func resourceName() *schema.Resource {
 					Type:         schema.TypeString,
 					ValidateFunc: validation.StringInSlice(resourceMapsKeys, false),
 				},
-				Optional: true,
-				ForceNew: true,
+				Optional:      true,
+				ConflictsWith: []string{"resource_type"},
 			},
 			"random_seed": {
 				Type:     schema.TypeInt,
+				Computed: true,
 				Optional: true,
 				ForceNew: true,
 			},
@@ -218,6 +131,18 @@ func resourceName() *schema.Resource {
 }
 
 func resourceNameCreate(d *schema.ResourceData, meta interface{}) error {
+	randomLength := d.Get("random_length").(int)
+	randomSeed := int64(d.Get("random_seed").(int))
+
+	randomSuffix := randSeq(int(randomLength), &randomSeed)
+	d.Set("random_suffix", randomSuffix)
+
+	d.SetId(randSeq(16, nil))
+
+	return resourceNameRead(d, meta)
+}
+
+func resourceNameUpdate(d *schema.ResourceData, meta interface{}) error {
 	return resourceNameRead(d, meta)
 }
 
@@ -449,12 +374,10 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	cleanInput := d.Get("clean_input").(bool)
 	passthrough := d.Get("passthrough").(bool)
 	useSlug := d.Get("use_slug").(bool)
-	randomLength := d.Get("random_length").(int)
-	randomSeed := int64(d.Get("random_seed").(int))
+	randomSuffix := d.Get("random_suffix").(string)
 
 	convention := ConventionCafClassic
 
-	randomSuffix := randSeq(int(randomLength), &randomSeed)
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 
 	isValid, err := validateResourceType(resourceType, resourceTypes)
@@ -462,13 +385,15 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
+	resourceName := ""
 	if len(resourceType) > 0 {
-		resourceName, err := getResourceName(resourceType, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence)
+		resourceName, err = getResourceName(resourceType, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence)
 		if err != nil {
 			return err
 		}
-		d.Set("result", resourceName)
 	}
+	d.Set("result", resourceName)
+
 	resourceNames := make(map[string]string, len(resourceTypes))
 	for _, resourceTypeName := range resourceTypes {
 		var err error
@@ -478,6 +403,5 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 		}
 	}
 	d.Set("results", resourceNames)
-	d.SetId(randSeq(16, nil))
 	return nil
 }
