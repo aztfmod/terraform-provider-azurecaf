@@ -1,34 +1,60 @@
 // For format details, see https://aka.ms/vscode-remote/devcontainer.json or this file's README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.101.0/containers/go
 {
-	"name": "Go",
-	"dockerFile": "Dockerfile",
-	"runArgs": [
-		"--cap-add=SYS_PTRACE",
-		"--security-opt",
-		"seccomp=unconfined",
-		"--mount",
-		"type=volume,source=shell,destination=/root",
-		"--mount",
-		"type=volume,source=go,destination=/go",
-		// "--mount", "type=bind,source=${HOME}/.ssh,destination=/tmp/.ssh-localhost,readonly"
-	],
-	"mounts": [
-		"source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/tmp/.ssh-localhost,type=bind,consistency=cached"
-	],
-	// Set *default* container specific settings.json values on container create.
-	"settings": {
-		"terminal.integrated.shell.linux": "/bin/bash",
-		"go.gopath": "/go"
-	},
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
-	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "cp -R /tmp/.ssh-localhost/* ~/.ssh && chmod 700 ~/.ssh && chmod 600 ~/.ssh/*",
-	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
-	// "remoteUser": "vscode"
-	// Add the IDs of extensions you want installed when the container is created.
-	"extensions": [
-		"ms-vscode.go"
-	]
+    "name": "Azure SRE TF provider",
+
+    // Use a specific image for the dev container
+    "image": "mcr.microsoft.com/devcontainers/base:jammy",
+    "remoteUser": "vscode",
+
+    // Mount local SSH keys into the container
+    "mounts": [
+        "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/tmp/.ssh-localhost,type=bind,consistency=cached"
+    ],
+
+    // Additional arguments for running the container
+    "runArgs": [
+        "--cap-add=SYS_PTRACE",
+        "--security-opt",
+        "seccomp=unconfined",
+        "--mount",
+        "type=volume,source=shell,destination=/root",
+        "--mount",
+        "type=volume,source=go,destination=/go"
+    ],
+    
+    // Features to be installed in the container
+    "features": {
+        "ghcr.io/azure/azure-dev/azd:latest": {},
+        "ghcr.io/devcontainers/features/azure-cli:1": {},
+        "ghcr.io/devcontainers/features/go:1": {
+            "version": "1.23"
+        },
+        "ghcr.io/devcontainers/features/github-cli:1": {},
+        "ghcr.io/devcontainers/features/terraform:1": {},
+        "ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {
+            "plugins": [
+                "aliases",
+                "syntax-highlighting",
+                "autosuggestions"
+            ],
+            "username": "vscode"
+        }
+    },
+
+    // Customizations for VS Code
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.go",
+                "GitHub.copilot",
+                "mutantdino.resourcemonitor",
+                "eamodio.gitlens"
+            ],
+            "settings": {
+                "terminal.integrated.shell.linux": "/bin/bash",
+                "go.gopath": "/go"
+            }
+        }
+    }
 }
