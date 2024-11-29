@@ -332,6 +332,7 @@ This is the current comprehensive status of the implemented resources in the pro
 |azurerm_data_protection_backup_policy_blob_storage | ✔ |
 |azurerm_data_protection_backup_policy_disk | ✔ |
 |azurerm_data_protection_backup_policy_postgresql | ✔ |
+|azurerm_data_protection_backup_policy_postgresql_flexible_server | ✔ |
 |azurerm_data_protection_backup_vault | ✔ |
 |azurerm_data_share | ❌ |
 |azurerm_data_share_account | ❌ |
