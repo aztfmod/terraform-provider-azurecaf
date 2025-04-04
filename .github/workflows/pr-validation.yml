@@ -4,9 +4,14 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+permissions:
+  contents: read
+  pull-requests: read
+  checks: write
+
 jobs:
   pr-validation:
-    name: PR Quality Checks
+    name: Basic PR Quality Checks
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -17,92 +22,52 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: './go.mod'
-          cache: true
-
-      - name: Verify PR title
-        uses: amannn/action-semantic-pull-request@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          types:
-            - feat
-            - fix
-            - docs
-            - style
-            - refactor
-            - perf
-            - test
-            - build
-            - ci
-            - chore
-            - revert
-          warnOnFailure: true
+          go-version: '1.20'
 
       - name: Check for large files
         run: |
-          # Fail if any files are larger than 5MB
           large_files=$(find . -type f -not -path "*/\.*" -size +5M | grep -v "\.git" || true)
           if [ -n "$large_files" ]; then
-            echo "::warning::The following files are larger than 5MB:"
+            echo "::warning::Found large files (>5MB):"
             echo "$large_files"
-            # Don't fail the build for now
-            # exit 1
           fi
 
-      - name: Ensure PR has description
+      - name: Check for PR description
         if: github.event.pull_request.body == ''
-        run: |
-          echo "::warning::Pull request is missing a description. Please add a description to help reviewers understand the changes."
-          # Don't fail the build for now
-          # exit 1
-
-      # Removed gitleaks temporarily - will add back once configured properly
-      # Using a simpler approach for detecting secrets
-      - name: Basic secrets scan
-        run: |
-          # Simple grep for common secret patterns
-          found_secrets=$(grep -r -E "(secret|password|token|key).*['\"][a-zA-Z0-9_\+\-/]{16,}['\"]" --include="*.{go,tf,json,yml,yaml}" . || true)
-          if [ -n "$found_secrets" ]; then
-            echo "::warning::Potentially sensitive data found. Please verify these are not actual secrets:"
-            echo "$found_secrets" | sed 's/\(secret\|password\|token\|key\).*['\''"][a-zA-Z0-9_\+\-/]\{3\}\([a-zA-Z0-9_\+\-/]\{10,\}\)[a-zA-Z0-9_\+\-/]\{3\}['\''"]/<REDACTED>/g'
-          else
-            echo "No obvious secrets detected."
-          fi
+        run: echo "::warning::This PR doesn't have a description. Please add one to help reviewers understand your changes."
 
       - name: Run tests for modified packages
         run: |
-          # Get list of modified Go files - handle case where base_ref might not be set
+          # Get modified Go files
           if [ -n "${{ github.base_ref }}" ]; then
             echo "Comparing changes against ${{ github.base_ref }}"
-            go_files=$(git diff --name-only origin/${{ github.base_ref }} HEAD | grep '\.go$' || true)
+            modified_files=$(git diff --name-only origin/${{ github.base_ref }} HEAD)
           else
-            echo "No base ref found, comparing against HEAD~1"
-            go_files=$(git diff --name-only HEAD~1 HEAD | grep '\.go$' || true)
+            echo "No base ref, comparing against HEAD~1"
+            modified_files=$(git diff --name-only HEAD~1 HEAD)
           fi
           
+          # Filter Go files
+          go_files=$(echo "$modified_files" | grep "\.go$" || true)
+          
           if [ -n "$go_files" ]; then
-            # Extract unique packages
-            packages=$(echo "$go_files" | xargs -n1 dirname | sort -u)
+            echo "Modified Go files:"
+            echo "$go_files"
             
-            # Run tests only for affected packages
-            for pkg in $packages; do
-              if [ -d "$pkg" ]; then
-                echo "Testing package: $pkg"
-                go test -v ./$pkg/... || echo "::warning::Tests failed in package $pkg - please fix before merging"
-              fi
-            done
+            # Run go vet on all packages
+            go vet ./...
+            
+            # Run tests with coverage
+            go test -v ./... -coverprofile=pr-coverage.out
           else
             echo "No Go files modified, skipping targeted tests"
           fi
-          
-      - name: Upload test results
+
+      - name: Upload test coverage 
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
-          path: |
-            **/*-test.xml
-            **/*.log
+          name: pr-test-coverage
+          path: pr-coverage.out
           if-no-files-found: ignore
           retention-days: 7

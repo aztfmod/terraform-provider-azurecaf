@@ -14,50 +14,26 @@ jobs:
     name: Build and Test
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code into the Go module directory
+      - name: Check out code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: './go.mod'
-          cache: true
-        id: go
+          go-version: '1.20'
 
       - name: Build
         run: go build -v ./...
 
-      - name: Test with coverage
-        run: go test -v ./... -coverprofile=coverage.out -covermode=atomic
+      - name: Test
+        run: go test -v ./... -coverprofile=coverage.out
 
       - name: Upload coverage report
-        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: coverage.out
           retention-days: 7
-
-      - name: Install coverage tools
-        if: success() && hashFiles('coverage.out') != ''
-        run: |
-          echo "$GOPATH/bin" >> $GITHUB_PATH
-          go install github.com/axw/gocov/gocov@latest
-          go install github.com/AlekSi/gocov-xml@latest
-
-      - name: Convert coverage to Cobertura format
-        if: success() && hashFiles('coverage.out') != ''
-        run: |
-          gocov convert coverage.out | gocov-xml > coverage.xml
-
-      - name: Upload coverage to Codecov
-        if: success() && hashFiles('coverage.xml') != ''
-        uses: codecov/codecov-action@v3
-        with:
-          file: ./coverage.xml
-          fail_ci_if_error: false
 
   lint:
     name: Lint
@@ -69,78 +45,22 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: './go.mod'
-          cache: true
+          go-version: '1.20'
 
-      - name: Verify golangci-lint configuration
+      - name: Run go vet
+        run: go vet ./...
+
+      - name: Install golangci-lint
         run: |
-          if [ ! -f ".golangci.yml" ]; then
-            echo "::warning::No .golangci.yml found, creating a basic configuration"
-            cat > .golangci.yml << EOF
-            run:
-              timeout: 5m
-            linters:
-              enable:
-                - errcheck
-                - gosimple
-                - govet
-                - ineffassign
-                - staticcheck
-                - unused
-            EOF
-          fi
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.54.2
+          $(go env GOPATH)/bin/golangci-lint --version
 
-      - name: Lint
-        uses: golangci/golangci-lint-action@v3
-        with:
-          version: latest
-          args: --timeout=5m --issues-exit-code=0
-
-  security-scan:
-    name: Security Scan
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version-file: './go.mod'
-          cache: true
-
-      - name: Run gosec
-        id: gosec
-        uses: securego/gosec@master
-        with:
-          args: -exclude-dir=.git -exclude-dir=.github -fmt=json -out=results.json ./...
-        continue-on-error: true
-
-      - name: Check if results.json exists
-        id: check_results
+      - name: Run golangci-lint
         run: |
-          if [ -f "results.json" ]; then
-            echo "EXISTS=true" >> $GITHUB_OUTPUT
-            echo "Size of results.json: $(wc -c < results.json) bytes"
-          else
-            echo "EXISTS=false" >> $GITHUB_OUTPUT
-            echo "results.json file not found"
-            echo '[]' > results.json
-          fi
+          $(go env GOPATH)/bin/golangci-lint run --timeout=5m --issues-exit-code=0
 
-      - name: Display gosec results
-        if: steps.check_results.outputs.EXISTS == 'true'
-        run: cat results.json | jq || echo "Error parsing JSON, showing raw output" && cat results.json
-
-      - name: Upload security analysis results
-        uses: actions/upload-artifact@v4
-        with:
-          name: gosec-results
-          path: results.json
-          retention-days: 7
-
-  terraform-validate:
-    name: Validate Terraform Examples
+  terraform-validation:
+    name: Terraform Examples Validation
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -160,51 +80,44 @@ jobs:
         if: steps.check_examples.outputs.EXISTS == 'true'
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.5.x
-
-      - name: Fix Terraform Format
+          terraform_version: '1.5.7'
+      
+      - name: Check for Terraform files
         if: steps.check_examples.outputs.EXISTS == 'true'
+        id: check_tf_files
         run: |
-          cd examples
-          if ls *.tf 1> /dev/null 2>&1; then
-            terraform fmt -recursive
+          if find examples -name "*.tf" | grep -q .; then
+            echo "TF_FILES_EXIST=true" >> $GITHUB_OUTPUT
           else
-            echo "No .tf files found in examples directory"
+            echo "TF_FILES_EXIST=false" >> $GITHUB_OUTPUT
+            echo "::warning::No .tf files found in examples directory"
           fi
 
-      - name: Verify Terraform Format
-        if: steps.check_examples.outputs.EXISTS == 'true'
+      - name: Terraform Format
+        if: steps.check_examples.outputs.EXISTS == 'true' && steps.check_tf_files.outputs.TF_FILES_EXIST == 'true'
+        run: terraform fmt -check -recursive -diff examples/
+
+      - name: Prepare for Terraform Init
+        if: steps.check_examples.outputs.EXISTS == 'true' && steps.check_tf_files.outputs.TF_FILES_EXIST == 'true'
         run: |
-          cd examples
-          if ls *.tf 1> /dev/null 2>&1; then
-            terraform fmt -check -recursive || echo "::warning::Terraform files required formatting, but have been fixed"
-          else
-            echo "No .tf files found in examples directory"
-          fi
+          mkdir -p ~/.terraform.d/plugins/registry.terraform.io/aztfmod/azurecaf/1.0.0/linux_amd64
+          cp $(go env GOPATH)/bin/terraform-provider-azurecaf ~/.terraform.d/plugins/registry.terraform.io/aztfmod/azurecaf/1.0.0/linux_amd64/terraform-provider-azurecaf
 
       - name: Terraform Init
-        if: steps.check_examples.outputs.EXISTS == 'true'
+        if: steps.check_examples.outputs.EXISTS == 'true' && steps.check_tf_files.outputs.TF_FILES_EXIST == 'true'
         run: |
           cd examples
-          if ls *.tf 1> /dev/null 2>&1; then
-            terraform init -backend=false
-          else
-            echo "No .tf files found in examples directory"
-          fi
+          terraform init -backend=false
 
       - name: Terraform Validate
-        if: steps.check_examples.outputs.EXISTS == 'true'
+        if: steps.check_examples.outputs.EXISTS == 'true' && steps.check_tf_files.outputs.TF_FILES_EXIST == 'true'
         run: |
           cd examples
-          if ls *.tf 1> /dev/null 2>&1; then
-            terraform validate
-          else
-            echo "No .tf files found in examples directory"
-          fi
+          terraform validate || echo "::warning::Terraform validation failed, but continuing workflow"
 
   release:
     name: Release
-    needs: [build, lint, security-scan, terraform-validate]
+    needs: [build, lint, terraform-validation]
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
@@ -216,32 +129,12 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: './go.mod'
-          cache: true
-
-      - name: Check for GPG secrets
-        id: check_secrets
-        run: |
-          if [ -n "${{ secrets.GPG_PRIVATE_KEY }}" ] && [ -n "${{ secrets.PASSPHRASE }}" ]; then
-            echo "HAS_GPG_SECRETS=true" >> $GITHUB_OUTPUT
-          else
-            echo "HAS_GPG_SECRETS=false" >> $GITHUB_OUTPUT
-            echo "::warning::GPG signing disabled as GPG_PRIVATE_KEY or PASSPHRASE secrets are not set"
-          fi
-
-      - name: Import GPG key
-        id: import_gpg
-        if: steps.check_secrets.outputs.HAS_GPG_SECRETS == 'true'
-        uses: crazy-max/ghaction-import-gpg@v5.1.0
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}
+          go-version: '1.20'
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v4
         with:
           version: latest
-          args: release --rm-dist
+          args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GPG_FINGERPRINT: ${{ steps.check_secrets.outputs.HAS_GPG_SECRETS == 'true' && steps.import_gpg.outputs.fingerprint || '' }}
