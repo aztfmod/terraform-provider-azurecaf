@@ -1,0 +1,52 @@
+name: Scorecard Analysis
+
+on:
+  # For Branch-Protection check. Only the default branch is supported.
+  branch_protection_rule:
+  # To guarantee Maintained check is occasionally updated.
+  schedule:
+    - cron: '30 1 * * 0' # Weekly at 1:30 UTC on Sundays
+  push:
+    branches: [ "main" ]
+
+permissions: read-all
+
+jobs:
+  analysis:
+    name: Scorecard Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      # Needed to upload the results to code-scanning dashboard.
+      security-events: write
+      # Needed to publish results as a PR comment.
+      actions: read
+      contents: read
+      id-token: write
+
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: "Run analysis"
+        uses: ossf/scorecard-action@v2
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          # A read-only PAT token, which is sufficient for the action to function.
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          # Publish the results for commits to the default branch
+          publish_results: ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
+
+      - name: "Upload artifact"
+        uses: actions/upload-artifact@v4
+        with:
+          name: SARIF file
+          path: results.sarif
+          retention-days: 5
+          
+      - name: "Upload to code-scanning"
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: results.sarif
