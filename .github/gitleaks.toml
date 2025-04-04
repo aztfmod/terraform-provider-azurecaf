@@ -1,0 +1,49 @@
+# GitLeaks configuration for Terraform provider security scanning
+title = "GitLeaks Configuration"
+
+[allowlist]
+description = "Allowlisted files"
+paths = [
+    '''(^|/)\.git/''',
+    '''(^|/)\.github/''',
+    '''(^|/)go\.sum$''',
+    '''(^|/)node_modules/''',
+]
+
+# Allow test fixtures/examples
+regexes = [
+    '''example''',
+    '''test_fixtures''',
+    '''test''',
+]
+
+[rules]
+    [rules.terraform-provider-key]
+    description = "Terraform provider secrets"
+    regex = '''(access_key|secret_key|private_key|token)["\s]*[=:]["\s]*.{8,}'''
+    tags = ["terraform", "config"]
+    severity = "MEDIUM"
+    
+    [rules.aws-keys]
+    description = "AWS Access Keys"
+    regex = '''AKIA[0-9A-Z]{16}'''
+    tags = ["aws", "key"]
+    severity = "HIGH"
+    
+    [rules.azure-keys]
+    description = "Azure Keys/Tokens"
+    regex = '''([0-9a-zA-Z-_.]{16,})([0-9a-zA-Z-_./+=]{16,})'''
+    tags = ["azure", "key"]
+    severity = "MEDIUM"
+    
+    [rules.gcp-keys]
+    description = "Google Cloud API Keys"
+    regex = '''AIza[0-9A-Za-z-_]{35}'''
+    tags = ["gcp", "api", "key"]
+    severity = "HIGH"
+    
+    [rules.private-key]
+    description = "Private key"
+    regex = '''(?i)-----BEGIN[ A-Z0-9_-]{0,100}PRIVATE KEY'''
+    tags = ["key", "private"]
+    severity = "CRITICAL"

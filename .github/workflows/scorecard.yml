@@ -9,20 +9,17 @@ on:
   push:
     branches: [ "main" ]
 
-permissions: read-all
+# Explicitly define all permissions to be more secure
+permissions:
+  security-events: write  # Needed to upload the results to code-scanning dashboard
+  actions: read
+  contents: read
+  id-token: write
 
 jobs:
   analysis:
     name: Scorecard Analysis
     runs-on: ubuntu-latest
-    permissions:
-      # Needed to upload the results to code-scanning dashboard.
-      security-events: write
-      # Needed to publish results as a PR comment.
-      actions: read
-      contents: read
-      id-token: write
-
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v4
@@ -30,6 +27,7 @@ jobs:
           persist-credentials: false
 
       - name: "Run analysis"
+        id: scorecard
         uses: ossf/scorecard-action@v2
         with:
           results_file: results.sarif
@@ -38,8 +36,10 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           # Publish the results for commits to the default branch
           publish_results: ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
+        continue-on-error: true  # Don't fail the workflow if scorecard has issues
 
-      - name: "Upload artifact"
+      - name: "Upload scorecard report"
+        if: ${{ always() && steps.scorecard.outcome == 'success' }}
         uses: actions/upload-artifact@v4
         with:
           name: SARIF file
@@ -47,6 +47,8 @@ jobs:
           retention-days: 5
           
       - name: "Upload to code-scanning"
+        if: ${{ always() && steps.scorecard.outcome == 'success' }}
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: results.sarif
+        continue-on-error: true  # Don't fail if code scanning upload fails

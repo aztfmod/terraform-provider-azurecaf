@@ -1,0 +1,86 @@
+linters-settings:
+  gocyclo:
+    min-complexity: 15
+  govet:
+    check-shadowing: true
+  misspell:
+    locale: US
+  dupl:
+    threshold: 100
+  goconst:
+    min-len: 3
+    min-occurrences: 3
+  goimports:
+    local-prefixes: github.com/aztfmod/terraform-provider-azurecaf
+  funlen:
+    lines: 100
+    statements: 50
+  gomnd:
+    ignored-numbers:
+      - '0666'
+      - '0644'
+      - '0600'
+      - '0755'
+      - '0750'
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - style
+      - performance
+    disabled-checks:
+      - commentFormatting
+      - hugeParam
+      - rangeValCopy
+      - unnamedResult
+      - whyNoLint
+  nolintlint:
+    allow-leading-space: false
+    require-specific: true
+
+linters:
+  disable-all: true
+  enable:
+    - bodyclose
+    - errcheck
+    - gocyclo
+    - goprintffuncname
+    - gosimple
+    - govet
+    - ineffassign
+    - misspell
+    - nakedret
+    - staticcheck
+    - typecheck
+    - unused
+    - whitespace
+    # Don't enable initially to avoid too many failures
+    # - gocritic
+    # - gosec
+    # - revive
+    # - dupl
+    # - goimports
+    # - funlen
+
+run:
+  timeout: 5m
+  skip-dirs:
+    - vendor
+    - .git
+  skip-files:
+    - "*_test.go"
+    - "*_generated.go"
+
+issues:
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - errcheck
+        - gosec
+    - path: models_generated\.go
+      linters:
+        - all
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  new: true
+  new-from-rev: HEAD~
+  exclude-use-default: false
