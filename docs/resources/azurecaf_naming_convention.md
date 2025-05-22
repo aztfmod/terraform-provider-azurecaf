@@ -95,6 +95,7 @@ Current prototype supports:
 | Network Security Group              | nsg                         | azurerm_network_security_group          |
 | Public IP                           | pip                         | azurerm_public_ip                       |
 | App Service Plan                    | plan                        | azurerm_app_service_plan                |
+| Service Plan                        | plan                        | azurerm_service_plan                    |
 | Resource group                      | rg                          | azurerm_resource_group                  |
 | Subnet                              | snet                        | azurerm_subnet                          |
 | Azure SQL DB Server                 | sql                         | azurerm_sql_server                      |
