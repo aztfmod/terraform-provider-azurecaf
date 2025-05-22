@@ -140,6 +140,7 @@ var ResourcesMapping = map[string]ResourceStructure{
 	"azurerm_network_security_group":          Resources["nsg"],
 	"azurerm_public_ip":                       Resources["pip"],
 	"azurerm_app_service_plan":                Resources["plan"],
+	"azurerm_service_plan":                    Resources["plan"],
 	"azurerm_resource_group":                  Resources["rg"],
 	"azurerm_subnet":                          Resources["snet"],
 	"azurerm_sql_server":                      Resources["sql"],
