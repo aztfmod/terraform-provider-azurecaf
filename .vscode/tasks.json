@@ -1,0 +1,21 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "Build Provider",
+			"command": "make build",
+			"group": "build",
+			"problemMatcher": [],
+			"args": []
+		},
+		{
+			"type": "shell",
+			"label": "Test Provider",
+			"command": "make test",
+			"group": "test",
+			"problemMatcher": [],
+			"args": []
+		}
+	]
+}
