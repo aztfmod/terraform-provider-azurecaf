@@ -60,6 +60,10 @@ var (
 	alphagenerator = []rune("abcdefghijklmnopqrstuvwxyz")
 )
 
+func randomSeed() int64 {
+	return time.Now().UnixNano()
+}
+
 // Generate a random value to add to the resource names
 func randSeq(length int, seed *int64) string {
 	if length == 0 {
@@ -67,7 +71,7 @@ func randSeq(length int, seed *int64) string {
 	}
 	// initialize random seed
 	if seed == nil || *seed == 0 {
-		value := time.Now().UnixNano()
+		value := randomSeed()
 		seed = &value
 	}
 	rand.Seed(*seed)
