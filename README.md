@@ -261,6 +261,7 @@ This is the current comprehensive status of the implemented resources in the pro
 |azurerm_bot_channel_slack | ✔ |
 |azurerm_bot_channels_registration | ✔ |
 |azurerm_bot_connection | ✔ |
+|azurerm_bot_service_azure_bot | ✔ |
 |azurerm_bot_web_app | ✔ |
 |azurerm_cdn_endpoint | ✔ |
 |azurerm_cdn_frontdoor_custom_domain | ✔ |

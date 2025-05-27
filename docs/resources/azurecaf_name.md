@@ -93,6 +93,7 @@ Current supported resource types:
 | azurerm_bot_channel_directline| botline| 2| 64| false| "^[a-zA-Z0-9][a-zA-Z0-9-_.]{1,63}$"|
 | azurerm_bot_channels_registration| botchan| 2| 64| false| "^[a-zA-Z0-9][a-zA-Z0-9-_.]{1,63}$"|
 | azurerm_bot_connection| botcon| 2| 64| false| "^[a-zA-Z0-9][a-zA-Z0-9-_.]{1,63}$"|
+| azurerm_bot_service_azure_bot| botaz| 2| 64| false| "^[a-zA-Z0-9][a-zA-Z0-9-_.]{1,63}$"|
 | azurerm_redis_cache| redis| 1| 63| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]$"|
 | azurerm_redis_firewall_rule| redisfw| 1| 256| false| "^[a-zA-Z0-9]{1,256}$"|
 | azurerm_cdn_profile| cdnprof| 1| 260| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{0,258}[a-zA-Z0-9]$"|
