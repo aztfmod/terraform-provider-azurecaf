@@ -2885,6 +2885,17 @@
         "regex": "\"[^0-9A-Za-z_.-]\""
     },
     {
+        "name": "azurerm_servicebus_namespace_disaster_recovery_config",
+        "min_length": 1,
+        "max_length": 50,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,48}[a-zA-Z0-9]$\"",
+        "scope": "parent",
+        "slug": "sbdr",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\""
+    },
+    {
         "name": "azurerm_servicebus_queue",
         "min_length": 1,
         "max_length": 260,

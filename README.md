@@ -653,6 +653,7 @@ This is the current comprehensive status of the implemented resources in the pro
 |azurerm_servicebus_subscription_rule | ✔ |
 |azurerm_servicebus_topic | ✔ |
 |azurerm_servicebus_topic_authorization_rule | ✔ |
+|azurerm_servicebus_namespace_disaster_recovery_config | ✔ |
 |azurerm_shared_image | ✔ |
 |azurerm_shared_image_gallery | ✔ |
 |azurerm_shared_image_version | ❌ |
