@@ -27,17 +27,17 @@ output "azurerm_cognitive_account" {
 }
 
 #Azure Open AI Deployment test
-resource "azurecaf_name" "azurerm_cognitive_deployment" {
+resource "azurecaf_name" "azurerm_synapse_workspace" {
   name          = "openai-deployment"
-  resource_type = "azurerm_cognitive_deployment"
+  resource_type = "azurerm_synapse_workspace"
   prefixes      = ["a", "b"]
   suffixes      = ["y", "z"]
   random_length = 5
   clean_input   = true
 }
 
-output "azurerm_cognitive_deployment" {
-  value = azurecaf_name.azurerm_cognitive_deployment.result
+output "azurerm_synapse_workspace" {
+  value = azurecaf_name.azurerm_synapse_workspace.result
   description = "Random result based on the resource type"
 }
 

@@ -62,7 +62,8 @@ var (
 
 // Generate a random value to add to the resource names
 func randSeq(length int, seed *int64) string {
-	if length == 0 {
+	// Handle invalid input: negative or zero length
+	if length <= 0 {
 		return ""
 	}
 	// initialize random seed
