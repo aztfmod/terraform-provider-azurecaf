@@ -6,10 +6,6 @@ This directory contains example configurations for the Azure Cloud Adoption Fram
 
 - **resource_name.tf**: Demonstrates the use of the `azurecaf_name` resource
 - **name_resource_and_datasource.tf**: Compares the use of both the resource and data source versions of `azurecaf_name`
-- **cafclassic.tf**: Shows the use of the `azurecaf_naming_convention` resource with the classic CAF convention
-- **cafrandom.tf**: Shows the use of the `azurecaf_naming_convention` resource with the cafrandom convention
-- **passthrough.tf**: Demonstrates the passthrough mode for name validation
-- **random.tf**: Shows the use of the `azurecaf_naming_convention` resource with the random convention
 
 ## Key Examples
 
