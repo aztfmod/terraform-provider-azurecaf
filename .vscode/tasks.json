@@ -17,5 +17,70 @@
 			"problemMatcher": [],
 			"args": []
 		}
+		,
+		{
+			"type": "shell",
+			"label": "Test Coverage",
+			"command": "make test_coverage",
+			"group": "test",
+			"problemMatcher": [],
+			"args": []
+		},
+		{
+			"type": "shell",
+			"label": "Test Coverage HTML",
+			"command": "make test_coverage_html",
+			"group": "test",
+			"problemMatcher": [],
+			"args": []
+		},
+		{
+			"type": "shell",
+			"label": "Test Integration",
+			"command": "make test_integration",
+			"group": "test",
+			"problemMatcher": [],
+			"args": []
+		},
+		{
+			"type": "shell",
+			"label": "Test Data Sources",
+			"command": "make test_data_sources",
+			"group": "test",
+			"problemMatcher": [],
+			"args": []
+		},
+		{
+			"type": "shell",
+			"label": "Test Error Handling",
+			"command": "make test_error_handling",
+			"group": "test",
+			"problemMatcher": [],
+			"args": []
+		},
+		{
+			"type": "shell",
+			"label": "Test Resource Naming",
+			"command": "make test_resource_naming",
+			"group": "test",
+			"problemMatcher": [],
+			"args": []
+		},
+		{
+			"type": "shell",
+			"label": "Test All",
+			"command": "make test_all",
+			"group": "test",
+			"problemMatcher": [],
+			"args": []
+		},
+		{
+			"type": "shell",
+			"label": "Test CI",
+			"command": "make test_ci",
+			"group": "test",
+			"problemMatcher": [],
+			"args": []
+		}
 	]
 }

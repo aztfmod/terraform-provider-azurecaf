@@ -26,14 +26,58 @@ jobs:
       - name: Build
         run: go build -v ./...
 
-      - name: Test
-        run: go test -v ./...
+      - name: Unit Tests
+        run: make unittest
 
-      # To be updated
-      # - name: lint
-      #   uses: golangci/golangci-lint-action@v3
-      #   # with:
-      #   #   version: 'v3.4.0'
+      - name: Test Coverage
+        run: make test_coverage
+
+      - name: Test Coverage HTML
+        run: make test_coverage_html
+
+      - name: Test Integration
+        run: make test_integration
+
+      - name: Test Data Sources
+        run: make test_data_sources
+
+      - name: Test Error Handling
+        run: make test_error_handling
+
+      - name: Test Resource Naming
+        run: make test_resource_naming
+
+      - name: Test All
+        run: make test_all
+
+      - name: Test CI
+        run: make test_ci
+
+      - name: Generate Go Coverage Badge
+        uses: tj-actions/coverage-badge-go@v2
+        with:
+          filename: coverage.out
+
+      - name: Verify Changed files
+        uses: tj-actions/verify-changed-files@v16
+        id: verify-changed-files
+        with:
+          files: README.md
+
+      - name: Commit coverage badge
+        if: steps.verify-changed-files.outputs.files_changed == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git commit -m "chore: Updated coverage badge."
+
+      - name: Push coverage badge
+        if: steps.verify-changed-files.outputs.files_changed == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.head_ref }}
 
       - name: Import GPG key
         id: import_gpg
