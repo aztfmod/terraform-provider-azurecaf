@@ -97,12 +97,22 @@ func main() {
 	}
 	data = append(data, dataUndocumented...)
 
-	sort.SliceStable(data, func(i, j int) bool {
-		return data[i].ResourceTypeName < data[j].ResourceTypeName
+	// Deduplicate by ResourceTypeName (keep the first occurrence)
+	uniqueData := make([]ResourceStructure, 0, len(data))
+	seen := make(map[string]bool)
+	for _, res := range data {
+		if !seen[res.ResourceTypeName] {
+			uniqueData = append(uniqueData, res)
+			seen[res.ResourceTypeName] = true
+		}
+	}
+
+	sort.SliceStable(uniqueData, func(i, j int) bool {
+		return uniqueData[i].ResourceTypeName < uniqueData[j].ResourceTypeName
 	})
 
 	slugMap := make(map[string]string)
-	for _, res := range data {
+	for _, res := range uniqueData {
 		if _, exists := slugMap[res.CafPrefix]; !exists {
 			slugMap[res.CafPrefix] = res.ResourceTypeName
 		}
@@ -114,7 +124,7 @@ func main() {
 	}
 	err = parsedTemplate.ExecuteTemplate(modelsFile, "model.tmpl", templateData{
 		GeneratedTime:      time.Now(),
-		ResourceStructures: data,
+		ResourceStructures: uniqueData,
 		SlugMap:            slugMap,
 	})
 
