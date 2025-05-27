@@ -286,6 +286,17 @@
         "regex": "\"[^0-9A-Za-z_.-]\""
     },
     {
+        "name": "azurerm_bot_service_azure_bot",
+        "min_length": 2,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{1,63}$\"",
+        "scope": "global",
+        "slug": "botaz",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\""
+    },
+    {
         "name": "azurerm_redis_cache",
         "min_length": 1,
         "max_length": 63,
