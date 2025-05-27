@@ -30,7 +30,7 @@ test_coverage_html: 	## Generate HTML coverage report
 	@echo "Coverage report generated at: coverage.html"
 
 test_coverage_specific: ## Run coverage-focused tests specifically
-	go test -v ./azurecaf/... -run="Test.*" -coverprofile=coverage.out ./...
+	go test -v ./azurecaf/... -run="Test.*" -coverprofile=coverage.out
 
 test_integration: 	## Run integration tests
 	TF_ACC=1 go test -v ./azurecaf/... -run="TestAcc"
