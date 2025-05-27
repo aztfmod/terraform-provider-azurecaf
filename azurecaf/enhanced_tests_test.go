@@ -220,7 +220,7 @@ func TestNamingConventions(t *testing.T) {
 			resourceData := map[string]interface{}{
 				"name":              "test",
 				"resource_type":     "azurerm_storage_account",
-				"naming_convention": convention,
+				"convention":        convention,
 			}
 
 			// Add random length for conventions that support it
