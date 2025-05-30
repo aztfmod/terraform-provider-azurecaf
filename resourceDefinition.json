@@ -2621,6 +2621,28 @@
         "regex": "\"[^0-9A-Za-z-]\""
     },    
     {
+        "name": "azurerm_log_analytics_solution",
+        "min_length": 4,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{2,61}[a-zA-Z0-9]$\"",
+        "scope": "parent",
+        "slug": "las",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },    
+    {
+        "name": "azurerm_log_analytics_query_pack",
+        "min_length": 4,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{2,61}[a-zA-Z0-9]$\"",
+        "scope": "parent",
+        "slug": "laqp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },    
+    {
         "name": "azurerm_service_fabric_cluster",
         "min_length": 4,
         "max_length": 23,
@@ -3255,6 +3277,17 @@
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,42}[a-zA-Z0-9]$\"",
         "scope": "resourceGroup",
         "slug": "dce",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\""
+    },
+    {
+        "name": "azurerm_monitor_data_collection_rule",
+        "min_length": 3,
+        "max_length": 44,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,42}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "dcr",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
