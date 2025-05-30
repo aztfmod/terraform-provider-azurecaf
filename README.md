@@ -481,7 +481,8 @@ This is the current comprehensive status of the implemented resources in the pro
 |azurerm_log_analytics_linked_service | ❌ |
 |azurerm_log_analytics_linked_storage_account | ❌ |
 |azurerm_log_analytics_saved_search | ❌ |
-|azurerm_log_analytics_solution | ❌ |
+|azurerm_log_analytics_solution | ✔ |
+|azurerm_log_analytics_query_pack | ✔ |
 |azurerm_log_analytics_storage_insights | ✔ |
 |azurerm_log_analytics_workspace | ✔ |
 |azurerm_logic_app_action_custom | ✔ |
@@ -515,6 +516,7 @@ This is the current comprehensive status of the implemented resources in the pro
 |azurerm_monitor_activity_log_alert | ❌ |
 |azurerm_monitor_autoscale_setting | ✔ |
 |azurerm_monitor_data_collection_endpoint | ✔ |
+|azurerm_monitor_data_collection_rule | ✔ |
 |azurerm_monitor_diagnostic_categories | ❌ |
 |azurerm_monitor_diagnostic_setting | ✔ |
 |azurerm_monitor_log_profile | ❌ |
