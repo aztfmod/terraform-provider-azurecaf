@@ -349,6 +349,14 @@ This is the current comprehensive status of the implemented resources in the pro
 |azurerm_dedicated_hardware_security_module | ❌ |
 |azurerm_dedicated_host | ✔ |
 |azurerm_dedicated_host_group | ✔ |
+|azurerm_dev_center | ✔ |
+|azurerm_dev_center_catalog | ✔ |
+|azurerm_dev_center_dev_box_definition | ✔ |
+|azurerm_dev_center_environment_type | ✔ |
+|azurerm_dev_center_gallery | ✔ |
+|azurerm_dev_center_network_connection | ✔ |
+|azurerm_dev_center_project | ✔ |
+|azurerm_dev_center_project_environment_type | ✔ |
 |azurerm_dev_test_global_vm_shutdown_schedule | ❌ |
 |azurerm_dev_test_lab | ✔ |
 |azurerm_dev_test_linux_virtual_machine | ✔ |
