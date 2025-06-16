@@ -3254,7 +3254,7 @@
         "max_length": 260,
         "validation_regex": "\"^[^<>*%:&?#\\\\+\\\\/]{0,259}[^<>*%:&.?#\\\\+\\\\/]$\"",
         "scope": "parent",
-        "slug": "adfmysql",
+        "slug": "amala",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:&?#\\\\+\\\\/]\""
@@ -3716,7 +3716,7 @@
         "max_length": 63,
         "validation_regex": "\"^[a-zA-Z0-9_-]{1,63}$\"",
         "scope": "subscription",
-        "slug": "adt",
+        "slug": "lbbp",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""
@@ -3727,7 +3727,7 @@
         "max_length": 63,
         "validation_regex": "\"^[a-zA-Z0-9_-]{1,63}$\"",
         "scope": "subscription",
-        "slug": "adt",
+        "slug": "lbbap",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""
@@ -3738,7 +3738,7 @@
         "max_length": 63,
         "validation_regex": "\"^[a-zA-Z0-9_-]{1,63}$\"",
         "scope": "subscription",
-        "slug": "adt",
+        "slug": "lbnp",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""
@@ -3749,7 +3749,7 @@
         "max_length": 63,
         "validation_regex": "\"^[a-zA-Z0-9_-]{1,63}$\"",
         "scope": "subscription",
-        "slug": "adt",
+        "slug": "lbor",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""
@@ -3760,7 +3760,7 @@
         "max_length": 63,
         "validation_regex": "\"^[a-zA-Z0-9_-]{1,63}$\"",
         "scope": "subscription",
-        "slug": "adt",
+        "slug": "lbp",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""
@@ -3771,7 +3771,7 @@
         "max_length": 63,
         "validation_regex": "\"^[a-zA-Z0-9_-]{1,63}$\"",
         "scope": "subscription",
-        "slug": "adt",
+        "slug": "lbr",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""
