@@ -211,6 +211,7 @@ This is the current comprehensive status of the implemented resources in the pro
 |azurerm_app_service_environment | ✔ |
 |azurerm_app_service_hybrid_connection | ❌ |
 |azurerm_app_service_plan | ✔ |
+|azurerm_service_plan | ✔ |
 |azurerm_app_service_slot | ❌ |
 |azurerm_app_service_slot_virtual_network_swift_connection | ❌ |
 |azurerm_app_service_source_control_token | ❌ |

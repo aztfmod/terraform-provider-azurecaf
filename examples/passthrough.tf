@@ -142,6 +142,24 @@ output "plan_passthrough" {
   description = "Random result based on the resource type"
 }
 
+# Service Plan (replaces App Service Plan in Azure provider v3+)
+resource "azurecaf_naming_convention" "passthrough_service_plan" {
+  convention    = "passthrough"
+  name          = "TEST-DEV-SVCPLAN-RG"
+  prefix        = "rdmi"
+  resource_type = "azurerm_service_plan"
+}
+
+output "service_plan_passthrough_id" {
+  value       = azurecaf_naming_convention.passthrough_service_plan.id
+  description = "Id of the resource's name"
+}
+
+output "service_plan_passthrough" {
+  value       = azurecaf_naming_convention.passthrough_service_plan.result
+  description = "Random result based on the resource type"
+}
+
 # Azure SQL DB Server
 resource "azurecaf_naming_convention" "passthrough_sql" {
   convention    = "passthrough"
