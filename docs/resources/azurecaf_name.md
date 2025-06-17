@@ -93,6 +93,7 @@ Current supported resource types:
 | azurerm_bot_channel_directline| botline| 2| 64| false| "^[a-zA-Z0-9][a-zA-Z0-9-_.]{1,63}$"|
 | azurerm_bot_channels_registration| botchan| 2| 64| false| "^[a-zA-Z0-9][a-zA-Z0-9-_.]{1,63}$"|
 | azurerm_bot_connection| botcon| 2| 64| false| "^[a-zA-Z0-9][a-zA-Z0-9-_.]{1,63}$"|
+| azurerm_bot_service_azure_bot| botaz| 2| 64| false| "^[a-zA-Z0-9][a-zA-Z0-9-_.]{1,63}$"|
 | azurerm_redis_cache| redis| 1| 63| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]$"|
 | azurerm_redis_firewall_rule| redisfw| 1| 256| false| "^[a-zA-Z0-9]{1,256}$"|
 | azurerm_cdn_profile| cdnprof| 1| 260| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{0,258}[a-zA-Z0-9]$"|
@@ -264,6 +265,7 @@ Current supported resource types:
 | azurerm_relay_hybrid_connection| rlhc| 1| 260| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,258}[a-zA-Z0-9]$"|
 | azurerm_app_service| app| 2| 60| false| "^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$"|
 | azurerm_app_service_plan| plan| 1| 40| false| "^[0-9A-Za-z-]{1,40}$"|
+| azurerm_service_plan| plan| 1| 40| false| "^[0-9A-Za-z-]{1,40}$"|
 | azurerm_app_service_environment| ase| 2| 36| false| "^[0-9A-Za-z-]{2,36}$"|
 | azurerm_application_insights| appi| 1| 260| false| "^[^%&\\?/. ][^%&\\?/]{0,258}[^%&\\?/. ]$"|
 | aks_node_pool_linux| npl| 1| 12| false| "^[a-z][0-9a-z]{0,11}$"|
