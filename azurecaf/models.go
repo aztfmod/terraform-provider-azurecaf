@@ -213,6 +213,3 @@ var ResourcesMapping = map[string]ResourceStructure{
 	"azurerm_windows_virtual_machine_windows": Resources["vmw"],
 	"azurerm_virtual_network":                 Resources["vnet"],
 }
-
-// ResourceDefinitions  - Holds the resource definitions
-var ResourceDefinitions = ResourcesMapping
