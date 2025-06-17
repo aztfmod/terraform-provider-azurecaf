@@ -124,8 +124,9 @@ func TestGetNameReadResult(t *testing.T) {
 		{
 			name: "with_passthrough",
 			resourceData: map[string]interface{}{
-				"name":        "test",
-				"passthrough": true,
+				"name":          "test",
+				"resource_type": "azurerm_storage_account",
+				"passthrough":   true,
 			},
 			expectedErr: false,
 		},
