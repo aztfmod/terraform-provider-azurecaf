@@ -1,7 +1,10 @@
 package azurecaf
 
 import (
+	"crypto/sha256"
+	"fmt"
 	"math/rand"
+	"strings"
 	"time"
 )
 
@@ -60,6 +63,36 @@ var (
 	alphagenerator = []rune("abcdefghijklmnopqrstuvwxyz")
 )
 
+// Generate a deterministic seed based on input parameters for data sources
+func generateDeterministicSeed(name string, prefixes []string, suffixes []string, separator string, resourceType string, randomLength int) int64 {
+	// Create a consistent string representation of all input parameters
+	var parts []string
+	parts = append(parts, name)
+	parts = append(parts, strings.Join(prefixes, ","))
+	parts = append(parts, strings.Join(suffixes, ","))
+	parts = append(parts, separator)
+	parts = append(parts, resourceType)
+	parts = append(parts, fmt.Sprintf("%d", randomLength))
+	
+	input := strings.Join(parts, "|")
+	
+	// Generate SHA256 hash of the input
+	hash := sha256.Sum256([]byte(input))
+	
+	// Convert first 8 bytes of hash to int64
+	seed := int64(0)
+	for i := 0; i < 8; i++ {
+		seed = (seed << 8) | int64(hash[i])
+	}
+	
+	// Ensure seed is positive
+	if seed < 0 {
+		seed = -seed
+	}
+	
+	return seed
+}
+
 // Generate a random value to add to the resource names
 func randSeq(length int, seed *int64) string {
 	if length == 0 {
@@ -71,6 +104,30 @@ func randSeq(length int, seed *int64) string {
 		seed = &value
 	}
 	rand.Seed(*seed)
+	// generate at least one random character
+	b := make([]rune, length)
+	for i := range b {
+		// We need the random generated string to start with a letter
+		b[i] = alphagenerator[rand.Intn(len(alphagenerator)-1)]
+	}
+	return string(b)
+}
+
+// Generate a random value for data sources with deterministic behavior
+func randSeqForDataSource(length int, seed *int64, name string, prefixes []string, suffixes []string, separator string, resourceType string) string {
+	if length == 0 {
+		return ""
+	}
+	
+	var finalSeed int64
+	// If no explicit seed provided, generate a deterministic one based on input parameters
+	if seed == nil || *seed == 0 {
+		finalSeed = generateDeterministicSeed(name, prefixes, suffixes, separator, resourceType, length)
+	} else {
+		finalSeed = *seed
+	}
+	
+	rand.Seed(finalSeed)
 	// generate at least one random character
 	b := make([]rune, length)
 	for i := range b {
@@ -156,3 +213,6 @@ var ResourcesMapping = map[string]ResourceStructure{
 	"azurerm_windows_virtual_machine_windows": Resources["vmw"],
 	"azurerm_virtual_network":                 Resources["vnet"],
 }
+
+// ResourceDefinitions  - Holds the resource definitions
+var ResourceDefinitions = ResourcesMapping
