@@ -110,7 +110,7 @@ func getNameReadResult(d *schema.ResourceData, meta interface{}) error {
 
 	convention := ConventionCafClassic
 
-	randomSuffix := randSeq(int(randomLength), &randomSeed)
+	randomSuffix := randSeqForDataSource(int(randomLength), &randomSeed, name, prefixes, suffixes, separator, resourceType)
 
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 
