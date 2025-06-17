@@ -17,6 +17,12 @@ jobs:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v3
 
+
+      - name: Install tfproviderlint
+        run: |
+          go install github.com/bflad/tfproviderlint/cmd/tfproviderlint@latest
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
@@ -26,14 +32,33 @@ jobs:
       - name: Build
         run: go build -v ./...
 
-      - name: Test
-        run: go test -v ./...
+      - name: Unit Tests
+        run: make unittest
 
-      # To be updated
-      # - name: lint
-      #   uses: golangci/golangci-lint-action@v3
-      #   # with:
-      #   #   version: 'v3.4.0'
+      - name: Test Coverage
+        run: make test_coverage
+
+      - name: Test Coverage HTML
+        run: make test_coverage_html
+
+      - name: Test Integration
+        run: make test_integration
+
+      - name: Test Data Sources
+        run: make test_data_sources
+
+      - name: Test Error Handling
+        run: make test_error_handling
+
+      - name: Test Resource Naming
+        run: make test_resource_naming
+
+      - name: Test All
+        run: make test_all
+
+      - name: Test CI
+        run: make test_ci
+
 
       - name: Import GPG key
         id: import_gpg
