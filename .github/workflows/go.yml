@@ -9,6 +9,10 @@ on:
     branches: [main]
   repository_dispatch:
 
+# Restrict permissions for all jobs by default
+permissions:
+  contents: read
+
 jobs:
   build:
     name: Build
