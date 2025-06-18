@@ -11,18 +11,79 @@ dev_container:
 	go fmt
 	go build -o ~/.terraform.d/plugins/linux_amd64/terraform-provider-azurecaf
 
-build:	## Build the project
+build:	## Build the project and run unit tests
 	go generate
 	go fmt ./...
 	go build -o ./terraform-provider-azurecaf
-	go test ./...
+	go test -cover ./...
 
-unittest: 	## Init go test
+unittest: 	## Run unit tests without coverage
 	go test ./...
 	tfproviderlint ./...
+
+test_coverage: 	## Run tests with coverage reporting
+	go test -cover ./...
+
+test_coverage_html: 	## Generate HTML coverage report
+	go test -coverprofile=coverage.out ./...
+	go tool cover -html=coverage.out -o coverage.html
+	@echo "Coverage report generated at: coverage.html"
+
+test_coverage_specific: ## Run coverage-focused tests specifically
+	go test -v ./azurecaf/... -run="Test.*" -coverprofile=coverage.out
+
+test_integration: 	## Run integration tests
+	TF_ACC=1 go test -v ./azurecaf/... -run="TestAcc"
+
+test_data_sources: 	## Run data source integration tests
+	TF_ACC=1 go test -v ./azurecaf/... -run="TestAccDataSourcesIntegration"
+
+test_error_handling: 	## Run error handling integration tests
+	TF_ACC=1 go test -v ./azurecaf/... -run="TestAccErrorHandling"
+
+test_resource_naming: ## Run naming convention tests
+	go test -v ./azurecaf/... -run="TestAcc.*NamingConvention" -coverprofile=naming_coverage.out ./...
+	go tool cover -html=naming_coverage.out -o naming_coverage.html
+	@echo "Naming coverage report generated at: naming_coverage.html"
+
+test_all: unittest test_integration	## Run all tests (unit and integration)
+
+test_ci: unittest test_coverage	## Run CI tests (unit tests with coverage, no integration tests)
+
+clean:	## Clean up build artifacts and test results
+	rm -f coverage.out coverage.html terraform-provider-azurecaf
+	go clean
+
+test: ## Run terraform examples with local provider
+	# First build the provider
+	go build -o ./terraform-provider-azurecaf
 	
-test: # Start a terraform test / invisible help comment
-	cd ./examples && terraform init && terraform plan && terraform apply -auto-approve
+	# Create script to set up and run the examples
+	@echo '#!/bin/bash' > run_examples.sh
+	@echo 'GOOS=$$(go env GOOS)' >> run_examples.sh
+	@echo 'GOARCH=$$(go env GOARCH)' >> run_examples.sh
+	@echo 'LOCAL_PLUGIN_DIR=~/.terraform.d/plugins/aztfmod.com/arnaudlh/azurecaf/1.0.0/$${GOOS}_$${GOARCH}' >> run_examples.sh
+	@echo 'echo "Using local plugin directory: $$LOCAL_PLUGIN_DIR"' >> run_examples.sh
+	@echo 'mkdir -p $$LOCAL_PLUGIN_DIR' >> run_examples.sh
+	@echo 'cp ./terraform-provider-azurecaf $$LOCAL_PLUGIN_DIR/' >> run_examples.sh
+	@echo '' >> run_examples.sh
+	@echo '# Create development override file for examples' >> run_examples.sh
+	@echo 'cat > examples/terraform.rc << EOF' >> run_examples.sh
+	@echo 'provider_installation {' >> run_examples.sh
+	@echo '  dev_overrides {' >> run_examples.sh
+	@echo '    "aztfmod.com/arnaudlh/azurecaf" = "$${HOME}/.terraform.d/plugins/aztfmod.com/arnaudlh/azurecaf/1.0.0/$${GOOS}_$${GOARCH}"' >> run_examples.sh
+	@echo '  }' >> run_examples.sh
+	@echo '  direct {}' >> run_examples.sh
+	@echo '}' >> run_examples.sh
+	@echo 'EOF' >> run_examples.sh
+	@echo '' >> run_examples.sh
+	@echo '# Run terraform in examples directory using the local config' >> run_examples.sh
+	@echo 'cd ./examples && TF_CLI_CONFIG_FILE=terraform.rc terraform init -upgrade && terraform plan && terraform apply -auto-approve' >> run_examples.sh
+	
+	# Make the script executable and run it
+	@chmod +x run_examples.sh
+	@./run_examples.sh
+	@rm run_examples.sh
 
 generate_resource_table:  	## Generate resource table (output only)
 	cat resourceDefinition.json | jq -r '.[] | "| \(.name)| \(.slug)| \(.min_length)| \(.max_length)| \(.lowercase)| \(.validation_regex)|"'

@@ -1490,6 +1490,94 @@
         "regex": "\"[^0-9A-Za-z_-]\""
     },
     {
+        "name": "azurerm_dev_center",
+        "min_length": 3,
+        "max_length": 26,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,24}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "dc",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_dev_center_catalog",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$\"",
+        "scope": "parent",
+        "slug": "dcc",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_dev_center_dev_box_definition",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$\"",
+        "scope": "parent",
+        "slug": "dcdb",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_dev_center_environment_type",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$\"",
+        "scope": "parent",
+        "slug": "dcet",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_dev_center_gallery",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$\"",
+        "scope": "parent",
+        "slug": "dcg",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_dev_center_network_connection",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "dcnc",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_dev_center_project",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "dcp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
+        "name": "azurerm_dev_center_project_environment_type",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$\"",
+        "scope": "parent",
+        "slug": "dcpet",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\""
+    },
+    {
         "name": "azurerm_dev_test_lab",
         "min_length": 1,
         "max_length": 50,
@@ -3193,17 +3281,7 @@
         "lowercase": true,
         "regex": "\"[^0-9a-zA-Z]\""
     },    
-    {
-        "name": "azurerm_synapse_sql_pool ",
-        "min_length": 1,
-        "max_length": 15,
-        "validation_regex": "\"^[0-9a-zA-Z]{1,15}$\"",
-        "scope": "parent",
-        "slug": "sysql",
-        "dashes": false,
-        "lowercase": true,
-        "regex": "\"[^0-9a-zA-Z]\""
-    },
+
     {
         "name": "azurerm_synapse_firewall_rule",
         "min_length": 1,
