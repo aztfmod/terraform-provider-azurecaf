@@ -21,10 +21,11 @@ func resourceNamingConvention() *schema.Resource {
 	}
 
 	return &schema.Resource{
-		Create:        resourceNamingConventionCreate,
-		Read:          schema.Noop,
-		Delete:        schema.RemoveFromState,
-		SchemaVersion: 2,
+		Create:             resourceNamingConventionCreate,
+		Read:               schema.Noop,
+		Delete:             schema.RemoveFromState,
+		SchemaVersion:      2,
+		DeprecationMessage: "The azurecaf_naming_convention resource is deprecated. Please use azurecaf_name instead, which provides more flexibility and supports a broader range of Azure resources.",
 
 		Schema: map[string]*schema.Schema{
 			"name": {

@@ -1,5 +1,7 @@
 # azurecaf_naming_convention
 
+!> **WARNING:** This resource is deprecated. Please use [`azurecaf_name`](azurecaf_name.md) instead, which provides more flexibility and supports a broader range of Azure resources.
+
 The resource naming_convention implements a set of methodologies to apply consistent resource naming using the default Microsoft Cloud Adoption Framework for Azure recommendations as per https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging.
 
 The naming_convention is the initial resource released as part of the azurecaf provider, the naming_convention supports a fixed set of resources as described in the documention. In order to provider more flexibility and support the large breadth of Azure resources available you can use the azurecaf_name resource.
@@ -63,6 +65,46 @@ The following methods are implemented for naming conventions:
 | cafrandom | follows Cloud Adoption Framework for Azure recommendations as per https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging and adds randomly generated characters up to maximum length of name |
 | random | name will be generated automatically in full lengths of azure object |
 | passthrough | naming convention is implemented manually, fields given as input will be same as the output (but lengths and forbidden chars will be filtered out) |
+
+## Migration to azurecaf_name
+
+To migrate from `azurecaf_naming_convention` to `azurecaf_name`, you need to update your configuration. Here's how the parameters map between the old and new resources:
+
+### Parameter Mapping
+
+| azurecaf_naming_convention | azurecaf_name | Notes |
+|----------------------------|---------------|-------|
+| `name` | `name` | Same parameter |
+| `prefix` | `prefixes` | Single string becomes a list |
+| `postfix` | `suffixes` | Single string becomes a list |
+| `resource_type` | `resource_type` | Use the azurerm resource type (see mapping table below) |
+| `convention` | N/A | Replaced by other parameters: use `random_length` for random characters |
+| `max_length` | `resource_types` | Length validation is automatic based on resource type |
+
+### Migration Example
+
+**Old configuration:**
+```hcl
+resource "azurecaf_naming_convention" "cafrandom_rg" {  
+  name          = "aztfmod"
+  prefix        = "dev"
+  resource_type = "rg"
+  postfix       = "001"
+  max_length    = 23
+  convention    = "cafrandom"
+}
+```
+
+**New configuration:**
+```hcl
+resource "azurecaf_name" "rg_example" {
+  name          = "aztfmod"
+  prefixes      = ["dev"]
+  resource_type = "azurerm_resource_group"
+  suffixes      = ["001"]
+  random_length = 5  # If you want random characters
+}
+```
 
 ## Resource types
 
