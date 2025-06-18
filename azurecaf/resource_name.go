@@ -452,6 +452,21 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	randomLength := d.Get("random_length").(int)
 	randomSeed := int64(d.Get("random_seed").(int))
 
+	// Validate random_length parameter
+	if randomLength < 0 {
+		return fmt.Errorf("random_length must be non-negative, got: %d", randomLength)
+	}
+
+	// Validate against resource type constraints if resource_type is specified
+	if resourceType != "" {
+		if resource, exists := ResourceDefinitions[resourceType]; exists {
+			maxLen := resource.MaxLength
+			if randomLength > maxLen {
+				return fmt.Errorf("random_length (%d) exceeds maximum length for resource type %s (%d)", randomLength, resourceType, maxLen)
+			}
+		}
+	}
+
 	convention := ConventionCafClassic
 
 	randomSuffix := randSeq(int(randomLength), &randomSeed)

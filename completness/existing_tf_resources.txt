@@ -482,6 +482,7 @@ azurerm_database_migration_project
 azurerm_lb_rule
 azurerm_servicebus_queue_authorization_rule
 azurerm_app_service_plan
+azurerm_service_plan
 azurerm_bot_connection
 azurerm_eventhub_namespace_authorization_rule
 azurerm_dns_zone

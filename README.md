@@ -86,6 +86,113 @@ The following attributes are exported:
 We define resource types as per [naming-and-tagging](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging)
 The comprehensive list of resource type can be found [here](./docs/resources/azurecaf_name.md)
 
+## Testing the provider
+
+The Azure CAF terraform provider includes comprehensive testing to ensure reliability and correctness.
+
+### Running Unit Tests
+
+To run the standard unit tests:
+
+```bash
+go test ./azurecaf/...
+```
+
+To run tests with coverage information:
+
+```bash
+go test -cover ./azurecaf/...
+```
+
+For a detailed coverage report:
+
+```bash
+go test -coverprofile=coverage.out ./azurecaf/...
+go tool cover -html=coverage.out -o coverage.html
+```
+
+### Running Integration Tests
+
+Integration tests verify the provider works correctly with Terraform itself. These tests require setting the `TF_ACC` environment variable:
+
+```bash
+# Run all integration tests
+TF_ACC=1 go test -v ./azurecaf/... -run="TestAcc"
+
+# Run specific integration tests
+TF_ACC=1 go test -v ./azurecaf/... -run="TestAccDataSourcesIntegration"
+TF_ACC=1 go test -v ./azurecaf/... -run="TestAccErrorHandling"
+```
+
+Note: Integration tests take longer to run than unit tests.
+
+### Test Coverage
+
+The project maintains high test coverage (99.3% of statements) to ensure code quality and reliability. Tests are designed to cover:
+
+- Basic functionality for all resources and data sources
+- Edge cases and error handling
+- Various resource types and naming conventions
+- Different configuration combinations
+- Environment variable interactions
+- Validation and constraints
+
+### Test Organization
+
+The test files are organized as follows:
+
+- **Unit Tests**: Basic test files like `resource_name_test.go`
+- **Enhanced Tests**: More comprehensive tests in files like `enhanced_tests_test.go`
+- **Integration Tests**: Tests with the prefix `TestAcc` that interact with Terraform directly
+- **Error Handling Tests**: Tests that verify proper error reporting in edge cases
+- **Complete Coverage Tests**: Tests designed specifically to achieve maximum code coverage
+
+### Writing New Tests
+
+When writing new tests, consider the following guidelines:
+
+1. **Unit Tests**: Test individual functions and components in isolation
+2. **Integration Tests**: Test full resources with actual Terraform configurations
+3. **Error Cases**: Include tests for edge cases and error conditions
+4. **Resource Types**: Test with various Azure resource types to ensure naming compatibility
+5. **Validation**: Test validation rules for different resource constraints
+
+### Makefile Targets
+
+The project includes Makefile targets for common testing operations:
+
+```bash
+# Run unit tests without coverage
+make unittest
+
+# Run tests with coverage reporting
+make test_coverage
+
+# Generate HTML coverage report
+make test_coverage_html
+
+# Run integration tests
+make test_integration
+
+# Run data source integration tests
+make test_data_sources
+
+# Run error handling integration tests
+make test_error_handling
+
+# Run all tests (unit and integration)
+make test_all
+
+# Run CI tests (unit tests with coverage, no integration tests)
+make test_ci
+
+# Build the project and run unit tests
+make build
+
+# Clean up build artifacts
+make clean
+```
+
 ## Building the provider
 
 Clone repository to: $GOPATH/src/github.com/aztfmod/terraform-provider-azurecaf
@@ -208,6 +315,7 @@ This is the current comprehensive status of the implemented resources in the pro
 |azurerm_app_service_environment | ✔ |
 |azurerm_app_service_hybrid_connection | ❌ |
 |azurerm_app_service_plan | ✔ |
+|azurerm_service_plan | ✔ |
 |azurerm_app_service_slot | ❌ |
 |azurerm_app_service_slot_virtual_network_swift_connection | ❌ |
 |azurerm_app_service_source_control_token | ❌ |
@@ -345,6 +453,14 @@ This is the current comprehensive status of the implemented resources in the pro
 |azurerm_dedicated_hardware_security_module | ❌ |
 |azurerm_dedicated_host | ✔ |
 |azurerm_dedicated_host_group | ✔ |
+|azurerm_dev_center | ✔ |
+|azurerm_dev_center_catalog | ✔ |
+|azurerm_dev_center_dev_box_definition | ✔ |
+|azurerm_dev_center_environment_type | ✔ |
+|azurerm_dev_center_gallery | ✔ |
+|azurerm_dev_center_network_connection | ✔ |
+|azurerm_dev_center_project | ✔ |
+|azurerm_dev_center_project_environment_type | ✔ |
 |azurerm_dev_test_global_vm_shutdown_schedule | ❌ |
 |azurerm_dev_test_lab | ✔ |
 |azurerm_dev_test_linux_virtual_machine | ✔ |
