@@ -30,9 +30,6 @@ The azurecaf_name resource allows you to:
 
 This example outputs one name, the result of the naming convention query. The result attribute returns the name based on the convention and parameters input.
 
-The example generates a 23 characters name compatible with the specification for an Azure Resource Group
-dev-aztfmod-001
-
 ```hcl
 data "azurecaf_name" "rg_example" {
   name          = "demogroup"
