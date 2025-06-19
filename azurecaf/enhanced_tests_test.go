@@ -218,9 +218,9 @@ func TestNamingConventions(t *testing.T) {
 	for _, convention := range conventions {
 		t.Run(convention, func(t *testing.T) {
 			resourceData := map[string]interface{}{
-				"name":              "test",
-				"resource_type":     "azurerm_storage_account",
-				"convention":        convention,
+				"name":          "test",
+				"resource_type": "azurerm_storage_account",
+				"convention":    convention,
 			}
 
 			// Add random length for conventions that support it
