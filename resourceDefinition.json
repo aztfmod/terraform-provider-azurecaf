@@ -1535,14 +1535,14 @@
     },
     {
         "name": "azurerm_dev_center_gallery",
-        "min_length": 3,
-        "max_length": 63,
-        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$\"",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9]([a-zA-Z0-9_.]{0,78}[a-zA-Z0-9])?$\"",
         "scope": "parent",
         "slug": "dcg",
-        "dashes": true,
+        "dashes": false,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z-]\""
+        "regex": "\"[^0-9A-Za-z_.]\""
     },
     {
         "name": "azurerm_dev_center_network_connection",
