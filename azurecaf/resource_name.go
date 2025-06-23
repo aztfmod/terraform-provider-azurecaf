@@ -10,19 +10,35 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
+// resourceNameV2 creates and returns the schema for the azurecaf_name resource (version 2).
+// This resource generates Azure-compliant resource names following Cloud Adoption Framework
+// naming conventions and Azure resource naming requirements.
+//
+// The resource supports:
+//   - Multiple naming conventions (CAF classic, CAF random, passthrough, etc.)
+//   - Custom prefixes and suffixes
+//   - Random character generation with configurable length
+//   - Input sanitization and validation
+//   - Multiple resource types in a single configuration
+//
+// This is an improved version that supersedes the original azurecaf_naming_convention resource.
 func resourceNameV2() *schema.Resource {
+	// Get all available resource types for validation
 	resourceMapsKeys := make([]string, 0, len(ResourceDefinitions))
 	for k := range ResourceDefinitions {
 		resourceMapsKeys = append(resourceMapsKeys, k)
 	}
+	
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
+			// Base name for the resource (will be sanitized according to Azure rules)
 			"name": {
 				Type:     schema.TypeString,
 				Optional: true,
 				ForceNew: true,
 				Default:  "",
 			},
+			// List of prefixes to add before the resource name
 			"prefixes": {
 				Type: schema.TypeList,
 				Elem: &schema.Schema{
@@ -32,6 +48,7 @@ func resourceNameV2() *schema.Resource {
 				Optional: true,
 				ForceNew: true,
 			},
+			// List of suffixes to add after the resource name
 			"suffixes": {
 				Type: schema.TypeList,
 				Elem: &schema.Schema{
@@ -41,6 +58,7 @@ func resourceNameV2() *schema.Resource {
 				Optional: true,
 				ForceNew: true,
 			},
+			// Number of random characters to append to the name
 			"random_length": {
 				Type:         schema.TypeInt,
 				Optional:     true,

@@ -1,95 +1,371 @@
-# Azure Terraform SRE - Terraform provider
+# Azure Cloud Adoption Framework (CAF) Terraform Provider
 
-> :warning: This solution, offered by the Open-Source community, will no longer receive contributions from Microsoft.
+[![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)](https://registry.terraform.io/providers/aztfmod/azurecaf/latest)
+[![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)](https://golang.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
-This provider implements a set of methodologies for naming convention implementation including the default Microsoft Cloud Adoption Framework for Azure recommendations as per <https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging>.
+> :warning: **Important Notice**: This solution, offered by the Open-Source community, will no longer receive contributions from Microsoft.
 
-## Using the Provider
+The Azure CAF Terraform Provider implements a set of methodologies for naming convention implementation, including the default Microsoft Cloud Adoption Framework for Azure recommendations as per the [Azure naming and tagging best practices](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging).
 
-You can simply consume the provider from the Terraform registry from the following URL: [https://registry.terraform.io/providers/aztfmod/azurecaf/latest](https://registry.terraform.io/providers/aztfmod/azurecaf/latest), then add it in your provider declaration as follow:
+## 🎯 Key Features
+
+The Azure CAF provider allows you to:
+
+- **🏗️ Generate compliant Azure resource names** following CAF guidelines and Azure naming restrictions
+- **🧹 Clean and sanitize inputs** to ensure compliance with allowed patterns for each Azure resource
+- **🎲 Add random characters** to resource names for uniqueness
+- **🏷️ Handle prefixes and suffixes** (either manual or as per Azure CAF resource conventions)
+- **✅ Validate existing names** using passthrough mode
+- **🔄 Support multiple naming conventions** (CAF classic, CAF random, passthrough, etc.)
+- **📋 Generate names for 200+ Azure resource types** with accurate validation rules
+
+## 📦 Quick Start
+
+### Installation
+
+Add the provider to your Terraform configuration:
 
 ```hcl
 terraform {
   required_providers {
     azurecaf = {
-      source = "aztfmod/azurecaf"
-      version = "1.2.10"
+      source  = "aztfmod/azurecaf"
+      version = "~> 1.2.28"  # Use the latest version
     }
   }
 }
 ```
 
-The azurecaf_name resource allows you to:
+### Basic Usage
 
-* Clean inputs to make sure they remain compliant with the allowed patterns for each Azure resource.
-* Generate random characters to append at the end of the resource name.
-* Handle prefix, suffixes (either manual or as per the Azure cloud adoption framework resource conventions).
-* Allow passthrough mode (simply validate the output).
-
-## Example usage
-
-This example outputs one name, the result of the naming convention query. The result attribute returns the name based on the convention and parameters input.
-
-The example generates a 23 characters name compatible with the specification for an Azure Resource Group
-dev-aztfmod-001
+Generate an Azure-compliant resource group name:
 
 ```hcl
+# Using data source (recommended - evaluated at plan time)
 data "azurecaf_name" "rg_example" {
-  name          = "demogroup"
+  name          = "myproject"
   resource_type = "azurerm_resource_group"
-  prefixes      = ["a", "b"]
-  suffixes      = ["y", "z"]
+  prefixes      = ["demo"]
+  suffixes      = ["001"]
   random_length = 5
   clean_input   = true
 }
 
-output "rg_example" {
+resource "azurerm_resource_group" "example" {
+  name     = data.azurecaf_name.rg_example.result
+  location = "East US"
+}
+
+output "resource_group_name" {
   value = data.azurecaf_name.rg_example.result
+  # Output: rg-demo-myproject-001-a1b2c
 }
 ```
 
+## 📚 Comprehensive Examples
+
+### Example 1: Simple Resource Naming
+
+Generate names with automatic resource type prefixes:
+
+```hcl
+data "azurecaf_name" "storage_account" {
+  name          = "mydata"
+  resource_type = "azurerm_storage_account"
+  random_length = 3
+}
+
+resource "azurerm_storage_account" "example" {
+  name                     = data.azurecaf_name.storage_account.result
+  resource_group_name      = azurerm_resource_group.example.name
+  location                 = azurerm_resource_group.example.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
+# Result: "stmydata123" (st = storage account slug, mydata = name, 123 = random)
 ```
-data.azurecaf_name.rg_example: Reading...
-data.azurecaf_name.rg_example: Read complete after 0s [id=a-b-rg-demogroup-sjdeh-y-z]
 
-Changes to Outputs:
-  + rg_example = "a-b-rg-demogroup-sjdeh-y-z"
+### Example 2: Multiple Resources with Consistent Naming
+
+Generate names for multiple related resources:
+
+```hcl
+locals {
+  project = "webapp"
+  env     = "prod"
+}
+
+data "azurecaf_name" "app_service_plan" {
+  name          = local.project
+  resource_type = "azurerm_app_service_plan"
+  prefixes      = [local.env]
+  suffixes      = ["001"]
+}
+
+data "azurecaf_name" "app_service" {
+  name          = local.project
+  resource_type = "azurerm_app_service"
+  prefixes      = [local.env]
+  suffixes      = ["001"]
+}
+
+data "azurecaf_name" "key_vault" {
+  name          = local.project
+  resource_type = "azurerm_key_vault"
+  prefixes      = [local.env]
+  suffixes      = ["001"]
+}
+
+# Results:
+# App Service Plan: "plan-prod-webapp-001"
+# App Service: "app-prod-webapp-001"  
+# Key Vault: "kv-prod-webapp-001"
 ```
 
-The provider generates a name using the input parameters and automatically appends a prefix (if defined), a caf prefix (resource type) and postfix (if defined) in addition to a generated padding string based on the selected naming convention.
+### Example 3: Using Resource (vs Data Source)
 
-The example above would generate a name using the pattern [prefix]-[cafprefix]-[name]-[postfix]-[5_random_chars]:
+For cases where you need to generate multiple resource names:
 
-## Argument Reference
+```hcl
+resource "azurecaf_name" "multiple_resources" {
+  name           = "myapp"
+  resource_type  = "azurerm_app_service"
+  resource_types = [
+    "azurerm_app_service_plan",
+    "azurerm_application_insights"
+  ]
+  prefixes       = ["prod"]
+  suffixes       = ["web"]
+  random_length  = 3
+  clean_input    = true
+}
 
-The following arguments are supported:
+# Access individual names:
+# Primary: azurecaf_name.multiple_resources.result
+# All: azurecaf_name.multiple_resources.results
+```
 
-* **name** - (optional) the basename of the resource to create, the basename will be sanitized as per supported characters set for each Azure resources.
-* **prefixes** (optional) - a list of prefix to append as the first characters of the generated name - prefixes will be separated by the separator character
-* **suffixes** (optional) -  a list of additional suffix added after the basename, this is can be used to append resource index (eg. vm-001). Suffixes are separated by the separator character
-* **random_length** (optional) - default to ``0`` : configure additional characters to append to the generated resource name. Random characters will remain compliant with the set of allowed characters per resources and will be appended before suffix(ess).
-* **random_seed** (optional) - default to ``0`` : Define the seed to be used for random generator. 0 will not be respected and will generate a seed based in the unix time of the generation.
-* **resource_type** (optional) -  describes the type of azure resource you are requesting a name from (eg. azure container registry: azurerm_container_registry). See the Resource Type section
-* **resource_types** (optional) -  a list of additional resource type should you want to use the same settings for a set of resources
-* **separator** (optional) - defaults to ``-``. The separator character to use between prefixes, resource type, name, suffixes, random character
-* **clean_input** (optional) - defaults to ``true``. remove any noncompliant character from the name, suffix or prefix.
-* **passthrough** (optional) - defaults to ``false``. Enables the passthrough mode - in that case only the clean input option is considered and the prefixes, suffixes, random, and are ignored. The resource prefixe is not added either to the resulting string
-* **use_slug** (optional) - defaults to ``true``. If a slug should be added to the name - If you put false no slug (the few letters that identify the resource type) will be added to the name.
+### Example 4: Passthrough Mode for Validation
 
-## Attributes Reference
+Validate existing resource names without modification:
 
-The following attributes are exported:
+```hcl
+data "azurecaf_name" "existing_storage" {
+  name          = "mystorageaccount123"
+  resource_type = "azurerm_storage_account"
+  passthrough   = true
+}
 
-* **id** - The id of the naming convention object
-* **result** - The generated named for an Azure Resource based on the input parameter and the selected naming convention
-* **results** - The generated name for the Azure resources based in the resource_types list
+# Validates that "mystorageaccount123" is compliant with storage account naming rules
+```
 
-## Resource types
+### Example 5: Advanced Configuration
 
-We define resource types as per [naming-and-tagging](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging)
-The comprehensive list of resource type can be found [here](./docs/resources/azurecaf_name.md)
+Complex naming with custom separators and no resource slugs:
 
-## Testing the provider
+```hcl
+data "azurecaf_name" "custom_vm" {
+  name          = "database-server"
+  resource_type = "azurerm_linux_virtual_machine"
+  prefixes      = ["corp", "prod"]
+  suffixes      = ["db", "001"]
+  separator     = "_"
+  use_slug      = false
+  random_length = 4
+  clean_input   = true
+}
+
+# Result: "corp_prod_database_server_db_001_a1b2"
+```
+
+## 🛠️ Configuration Reference
+
+### Supported Parameters
+
+| Parameter | Type | Description | Default |
+|-----------|------|-------------|---------|
+| `name` | string | Base name for the resource | `""` |
+| `resource_type` | string | Azure resource type (e.g., `azurerm_storage_account`) | Required |
+| `resource_types` | list(string) | Additional resource types for multi-resource naming | `[]` |
+| `prefixes` | list(string) | List of prefixes to prepend | `[]` |
+| `suffixes` | list(string) | List of suffixes to append | `[]` |
+| `random_length` | number | Number of random characters to add | `0` |
+| `random_seed` | number | Seed for random generation (0 = time-based) | `0` |
+| `separator` | string | Character to separate name components | `"-"` |
+| `clean_input` | bool | Remove non-compliant characters from inputs | `true` |
+| `passthrough` | bool | Validate without modification | `false` |
+| `use_slug` | bool | Include resource type abbreviation | `true` |
+
+### Output Attributes
+
+| Attribute | Description |
+|-----------|-------------|
+| `id` | Unique identifier for the naming configuration |
+| `result` | Generated name for the primary resource type |
+| `results` | Map of all generated names (when using `resource_types`) |
+
+## 🔧 Supported Azure Resources
+
+This provider supports **200+ Azure resource types** with accurate naming validation rules. Each resource type has specific constraints for:
+
+- **Minimum and maximum length**
+- **Allowed characters and patterns** 
+- **Case sensitivity requirements**
+- **Uniqueness scope** (global, resource group, or parent resource)
+
+### Popular Resource Types
+
+| Resource Type | Slug | Min Length | Max Length | Example Generated Name |
+|---------------|------|------------|------------|----------------------|
+| `azurerm_resource_group` | `rg` | 1 | 90 | `rg-prod-myapp-001` |
+| `azurerm_storage_account` | `st` | 3 | 24 | `stprodmyapp001` |
+| `azurerm_key_vault` | `kv` | 3 | 24 | `kv-prod-myapp-001` |
+| `azurerm_app_service` | `app` | 2 | 60 | `app-prod-myapp-001` |
+| `azurerm_kubernetes_cluster` | `aks` | 1 | 63 | `aks-prod-myapp-001` |
+| `azurerm_virtual_machine` | `vm` | 1 | 15 | `vm-prod-001` |
+| `azurerm_sql_server` | `sql` | 1 | 63 | `sql-prod-myapp-001` |
+
+<details>
+<summary>📋 View Full Resource Type List</summary>
+
+For the complete list of 200+ supported resource types, see the [Resource Types Documentation](docs/index.md#resource-types).
+
+</details>
+
+## 🎨 Naming Conventions
+
+### CAF Classic (Default)
+Follows Microsoft Cloud Adoption Framework naming conventions:
+```
+[prefix]-[resource-type-slug]-[name]-[suffix]-[random]
+```
+
+### CAF Random  
+Similar to CAF Classic but fills remaining space with random characters:
+```
+[prefix]-[resource-type-slug]-[name]-[suffix]-[random-to-max-length]
+```
+
+### Passthrough
+Validates existing names without modification:
+```
+[exact-input-name]  # validated against Azure rules
+```
+
+### Custom Patterns
+Use custom separators and disable slugs for full control:
+```
+[prefix][separator][name][separator][suffix][separator][random]
+```
+
+## 🚀 Advanced Usage
+
+### Environment-Based Naming
+
+```hcl
+locals {
+  environment_config = {
+    dev = {
+      prefix = "dev"
+      random_length = 3
+    }
+    prod = {
+      prefix = "prod" 
+      random_length = 5
+    }
+  }
+  
+  current_env = local.environment_config[var.environment]
+}
+
+data "azurecaf_name" "app_service" {
+  name          = var.application_name
+  resource_type = "azurerm_app_service"
+  prefixes      = [local.current_env.prefix]
+  random_length = local.current_env.random_length
+}
+```
+
+### Integration with Terraform Modules
+
+```hcl
+# In your module
+variable "project_name" {
+  description = "Name of the project"
+  type        = string
+}
+
+variable "environment" {
+  description = "Environment (dev, test, prod)"
+  type        = string
+}
+
+data "azurecaf_name" "resources" {
+  for_each = toset([
+    "azurerm_resource_group",
+    "azurerm_storage_account", 
+    "azurerm_key_vault"
+  ])
+  
+  name          = var.project_name
+  resource_type = each.key
+  prefixes      = [var.environment]
+  random_length = 3
+}
+
+output "resource_names" {
+  value = { for k, v in data.azurecaf_name.resources : k => v.result }
+}
+```
+
+## 🔍 Troubleshooting
+
+### Common Issues
+
+**Issue: Names too long for resource type**
+```hcl
+# Problem: Generated name exceeds Azure limits
+data "azurecaf_name" "long_name" {
+  name          = "very-long-application-name-that-exceeds-limits"
+  resource_type = "azurerm_storage_account"  # max 24 chars
+}
+
+# Solution: Use shorter base name or disable slug
+data "azurecaf_name" "fixed_name" {
+  name          = "shortname"
+  resource_type = "azurerm_storage_account"
+  use_slug      = false  # Removes 'st' prefix
+}
+```
+
+**Issue: Invalid characters in resource names**
+```hcl
+# Problem: Special characters not allowed
+data "azurecaf_name" "invalid_chars" {
+  name          = "my_app@domain.com"
+  resource_type = "azurerm_app_service"
+  clean_input   = false  # Keeps invalid chars
+}
+
+# Solution: Enable input cleaning (default)
+data "azurecaf_name" "clean_name" {
+  name          = "my_app@domain.com"
+  resource_type = "azurerm_app_service"
+  clean_input   = true   # Removes invalid chars
+}
+```
+
+### Validation Errors
+
+The provider validates names against Azure requirements and will show specific error messages:
+
+```
+Error: Invalid resource name "my--invalid--name"
+│ The generated name contains consecutive separators, which is not allowed for azurerm_storage_account
+```
+
+## 🧪 Testing & Development
 
 The Azure CAF terraform provider includes comprehensive testing to ensure reliability and correctness.
 
@@ -196,80 +472,71 @@ make build
 make clean
 ```
 
-## Building the provider
+### Building the Provider
 
-Clone repository to: $GOPATH/src/github.com/aztfmod/terraform-provider-azurecaf
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/aztfmod/terraform-provider-azurecaf.git
+   cd terraform-provider-azurecaf
+   ```
 
-```
-mkdir -p $GOPATH/src/github.com/aztfmod; cd $GOPATH/src/github.com/aztfmod
-git clone https://github.com/aztfmod/terraform-provider-azurecaf.git
+2. **Build the provider:**
+   ```bash
+   make build
+   ```
 
-```
+3. **Run tests:**
+   ```bash
+   # Unit tests only
+   make unittest
+   
+   # All tests (unit + integration)  
+   make test_all
+   ```
 
-Enter the provider directory and build the provider
+For detailed testing information, see [TESTING.md](TESTING.md).
 
-```
-cd $GOPATH/src/github.com/aztfmod/terraform-provider-azurecaf
-make build
+## 🤝 Contributing
 
-```
+We welcome contributions to the Azure CAF Terraform Provider! Here's how you can help:
 
-## Developing the provider
+### Contributing Guidelines
 
-If you wish to work on the provider, you'll first need Go installed on your machine (version 1.13+ is required). You'll also need to correctly setup a GOPATH, as well as adding $GOPATH/bin to your $PATH.
+- **🐛 Bug Reports**: [Open an issue](https://github.com/aztfmod/terraform-provider-azurecaf/issues) with detailed reproduction steps
+- **💡 Feature Requests**: Discuss new features in issues before implementing
+- **📝 Documentation**: Help improve documentation and examples
+- **🔧 Code**: Submit pull requests for bug fixes and new features
 
-To display the makefile help run `make` or `make help`.
+For detailed contribution guidelines, see [CONTRIBUTING.md](.github/CONTRIBUTING.md).
 
-To compile the provider, run make build. This will build the provider and put the provider binary in the $GOPATH/bin directory.
+### Adding New Resource Types
 
-```
-$ make build
-...
-$ $GOPATH/bin/terraform-provider-azurecaf
-...
+1. Check the [resource status table](#-resource-status) to see if it's already implemented
+2. Create an issue requesting the new resource type
+3. Add the resource definition to `resourceDefinition.json`
+4. Run `make build` to generate the updated code
+5. Add tests and submit a pull request
 
-```
+## 🌟 Community & Support
 
-## Testing
+- **💬 Questions**: Reach out to tf-landingzones at microsoft dot com
+- **💭 Discussions**: Join us on [Gitter](https://gitter.im/aztfmod/community)
+- **🐛 Issues**: Report bugs and request features on [GitHub Issues](https://github.com/aztfmod/terraform-provider-azurecaf/issues)
 
-Running the acceptance test suite requires does not require an Azure subscription.
+## 🔗 Related Projects
 
-to run the unit test:
+| Project | Description |
+|---------|-------------|
+| [CAF Landing Zones](https://github.com/azure/caf-terraform-landingzones) | Landing zones with sample and core documentation |
+| [Rover](https://github.com/aztfmod/rover) | DevOps toolset for operating landing zones |
+| [CAF Modules](https://registry.terraform.io/modules/aztfmod) | Official CAF modules in Terraform Registry |
 
-```
-make unittest
-```
+## 📊 Resource Status
 
-to run the integration test
+This provider supports 200+ Azure resource types. Here's the implementation status compared to the azurerm provider:
 
-```
-make test
-```
-
-## Related repositories
-
-| Repo                                                                                             | Description                                                |
-|--------------------------------------------------------------------------------------------------|------------------------------------------------------------|
-| [caf-terraform-landingzones](https://github.com/azure/caf-terraform-landingzones)                | landing zones repo with sample and core documentations     |
-| [rover](https://github.com/aztfmod/rover)                                                        | devops toolset for operating landing zones                 |
-| [azure_caf_provider](https://github.com/aztfmod/terraform-provider-azurecaf)                     | custom provider for naming conventions                     |
-| [module](https://registry.terraform.io/modules/aztfmod)                                          | official CAF module available in the Terraform registry    |
-
-## Community
-
-Feel free to open an issue for feature or bug, or to submit a PR.
-
-In case you have any question, you can reach out to tf-landingzones at microsoft dot com.
-
-You can also reach us on [Gitter](https://gitter.im/aztfmod/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
-## Contributing
-
-information about contributing can be found at [CONTRIBUTING.md](.github/CONTRIBUTING.md)
-
-## Resource Status
-
-This is the current comprehensive status of the implemented resources in the provider comparing with the current list of resources in the azurerm terraform provider.
+<details>
+<summary>🔍 View Detailed Resource Status Table</summary>
 
 |resource | status |
 |---|---|
@@ -883,6 +1150,23 @@ This is the current comprehensive status of the implemented resources in the pro
 |azurerm_web_pubsub_hub | ✔ |
 |azurerm_windows_virtual_machine | ✔ |
 |azurerm_windows_virtual_machine_scale_set | ✔ |
+|azurerm_app_service_custom_hostname_binding | ❌ |
+
+</details>
+
+## 📜 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Microsoft Azure team for the Cloud Adoption Framework guidelines
+- Terraform community for the excellent provider SDK
+- All contributors who have helped improve this provider
+
+---
+
+**Made with ❤️ by the Azure CAF community**
 |azurerm_windows_web_app | ✔ |
 |azurerm_windows_web_app_slot | ⚠ |
 
