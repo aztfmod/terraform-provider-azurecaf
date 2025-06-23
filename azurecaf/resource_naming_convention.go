@@ -21,10 +21,11 @@ func resourceNamingConvention() *schema.Resource {
 	}
 
 	return &schema.Resource{
-		Create:        resourceNamingConventionCreate,
-		Read:          schema.Noop,
-		Delete:        schema.RemoveFromState,
-		SchemaVersion: 2,
+		Create:             resourceNamingConventionCreate,
+		Read:               schema.Noop,
+		Delete:             schema.RemoveFromState,
+		SchemaVersion:      2,
+		DeprecationMessage: DeprecationMessage,
 
 		Schema: map[string]*schema.Schema{
 			"name": {

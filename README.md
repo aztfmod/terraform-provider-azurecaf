@@ -19,6 +19,10 @@ terraform {
 }
 ```
 
+## Important Notice
+
+> :warning: **Deprecation Notice**: The `azurecaf_naming_convention` resource is deprecated. Please use `azurecaf_name` instead, which provides more flexibility and supports a broader range of Azure resources. See the [migration guide](./docs/resources/azurecaf_naming_convention.md#migration-to-azurecaf_name) for details on how to migrate your configurations.
+
 The azurecaf_name resource allows you to:
 
 * Clean inputs to make sure they remain compliant with the allowed patterns for each Azure resource.
