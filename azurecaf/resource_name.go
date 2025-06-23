@@ -28,7 +28,7 @@ func resourceNameV2() *schema.Resource {
 	for k := range ResourceDefinitions {
 		resourceMapsKeys = append(resourceMapsKeys, k)
 	}
-	
+
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			// Base name for the resource (will be sanitized according to Azure rules)

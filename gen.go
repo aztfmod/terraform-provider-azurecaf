@@ -71,17 +71,17 @@ type ResourceStructure struct {
 
 // templateData holds the data structure passed to the Go template for code generation
 type templateData struct {
-	GeneratedTime      time.Time              // Timestamp when the code was generated
-	ResourceStructures []ResourceStructure    // All resource definitions from JSON
-	SlugMap            map[string]string      // Mapping of CAF prefixes to resource types
+	GeneratedTime      time.Time           // Timestamp when the code was generated
+	ResourceStructures []ResourceStructure // All resource definitions from JSON
+	SlugMap            map[string]string   // Mapping of CAF prefixes to resource types
 }
 
 // main is the entry point for the code generator.
 // It performs the following steps:
-//   1. Reads resource definitions from resourceDefinition.json
-//   2. Loads and parses Go templates from the templates/ directory
-//   3. Processes the resource data to create mappings and deduplicate entries
-//   4. Generates models_generated.go with all resource definitions and validation logic
+//  1. Reads resource definitions from resourceDefinition.json
+//  2. Loads and parses Go templates from the templates/ directory
+//  3. Processes the resource data to create mappings and deduplicate entries
+//  4. Generates models_generated.go with all resource definitions and validation logic
 func main() {
 	// Get the current working directory to locate input files
 	wd, err := os.Getwd()
@@ -140,7 +140,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	// Combine documented and undocumented resource definitions
 	data = append(data, dataUndocumented...)
 

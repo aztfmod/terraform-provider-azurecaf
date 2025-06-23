@@ -8,6 +8,20 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
+// dataName creates and returns the schema for the azurecaf_name data source.
+//
+// This data source provides the same naming functionality as the azurecaf_name resource
+// but is evaluated during the plan phase, making the generated name visible before
+// resource creation. This is the recommended approach for most use cases.
+//
+// Key benefits of using the data source over the resource:
+//   - Names are generated during terraform plan, providing early visibility
+//   - No state management required (data sources are read-only)
+//   - Better for single resource name generation
+//   - Integrates naturally with Terraform's data flow
+//
+// Use the resource version when you need to generate multiple related names
+// using the resource_types parameter.
 func dataName() *schema.Resource {
 	resourceMapsKeys := make([]string, 0, len(ResourceDefinitions))
 	for k := range ResourceDefinitions {
