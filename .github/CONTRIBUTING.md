@@ -1,82 +1,389 @@
-# Contributing to the CAF provider
+# Contributing to the Azure CAF Terraform Provider
 
 👍🎉 First off, thanks for taking the time to contribute! 🎉👍
 
-## Code of conduct
+We're excited to have you help improve the Azure Cloud Adoption Framework (CAF) Terraform Provider. This document provides guidelines and information to help you contribute effectively.
+
+## 📋 Table of Contents
+
+- [Code of Conduct](#code-of-conduct)
+- [What Should I Know Before I Get Started?](#what-should-i-know-before-i-get-started)
+- [How Can I Contribute?](#how-can-i-contribute)
+- [Adding a New Resource](#adding-a-new-resource)
+- [Development Setup](#development-setup)
+- [Testing Guidelines](#testing-guidelines)
+- [Submitting Changes](#submitting-changes)
+- [Documentation Standards](#documentation-standards)
+
+## Code of Conduct
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
-## What should I know before I get started?
+## What Should I Know Before I Get Started?
 
-The current goal of the CAFprovider is to support the CAF landing zones but can also be used to standardize the naming convention of your projects. It is important to keep in mind that many of the design decisions on the provider have been made to accommodate the needs of CAF.
+### Project Overview
 
-To contribute to this project you are required to have at least go 1.13 installed in your system
+The Azure CAF Terraform Provider is designed to support the Microsoft Cloud Adoption Framework for Azure by providing:
 
-## Adding a new resource
+- **Naming Convention Enforcement**: Ensures Azure resource names follow CAF guidelines
+- **Resource Validation**: Validates names against Azure-specific constraints
+- **Flexibility**: Supports multiple naming patterns and customization options
+- **Comprehensive Coverage**: Supports 200+ Azure resource types
 
-Please, find below the steps that should be followed to contribute:
+### Architecture
 
-1. Check if the resource has been implemented already
+The provider consists of several key components:
 
-    You can find a list of resources implemented in the [README.md#resource-status](../README.md) under the resource status section.
+- **Resource Definitions** (`resourceDefinition.json`): JSON file containing all Azure resource naming rules
+- **Code Generation** (`gen.go`): Generates Go code from resource definitions
+- **Provider Core** (`azurecaf/`): Main provider logic and resources
+- **Templates** (`templates/`): Go templates for code generation
 
-2. Create an issue for the missing resource
+## How Can I Contribute?
 
-    If there is no [issue created already](https://github.com/aztfmod/terraform-provider-azurecaf/issues) for the implementation of this resource you should [create an issue](https://docs.github.com/en/free-pro-team@latest/github/managing-your-work-on-github/creating-an-issue) requesting the implementation of the resource.
+### 🐛 Reporting Bugs
 
-3. Check the requirements for your resource Name
+When reporting bugs, please include:
 
-    You can check the requirements for your resource name in the [docs](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules) or by checking the error message returned when trying to create the resource on Azure with an invalid name. Slug value can also be checked in the CAF [docs](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations).
+- **Clear Description**: What you expected vs. what happened
+- **Reproduction Steps**: Minimal Terraform configuration to reproduce the issue
+- **Environment Details**: Terraform version, provider version, OS
+- **Error Messages**: Full error output if applicable
 
-4. Choose the slug for the resource
+### 💡 Suggesting Enhancements
 
-    Every resource in CAF does have a slug that associate with this resource this is 2 to 5 letters that identify that resource, for example, the slug for a `key vault` is `kv` for a storage account `st` What is important here it is to try to keep this short but meaningful and avoid collision with existing ones. Don't worry about knowing all existing ones if you choose one that exists already the tests will fail. You can also check if the resource has a example abbreviation on this page: [doc](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations)
+Enhancement suggestions are welcome! Please:
 
-5. Modify the `resourceDefinition.json`
+- **Search Existing Issues**: Check if your idea has already been suggested
+- **Provide Clear Use Case**: Explain why this enhancement would be valuable
+- **Include Examples**: Show how the enhancement would be used
 
-    You should now add your resource to the resource definitions in the just add another resource on the list. You can use the existing resources as a template for your resource implementation
+### 📝 Improving Documentation
 
-6. Generate the definitions based on the `resourcedefinition.json` and test
+Documentation improvements are always appreciated:
 
-    You can run `make build` in case you have make installed in your system in case you don't you can run from the repository root `go generate` followed by `go fmt ./...` and then `go test ./...`
+- **Code Comments**: Improve inline documentation
+- **Examples**: Add more usage examples
+- **Guides**: Create tutorials or best practices guides
+- **API Documentation**: Enhance resource and data source documentation
 
-7. Update the README.MD with coverage
- 
-    For quick reference, update the [README.md#resource-status](../README.md) at the root of the provider to mention the coverage you just added:
-    ```|azurerm_api_management_custom_domain | ✔ |```
+## Adding a New Resource
 
-7. Commit and submit PR
+Contributing new Azure resource types is one of the most valuable ways to help the project. Here's a comprehensive guide:
 
-    Now you should commit, remembering to put a meaningful commit message. After that, you should [make pull request](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request) remembering to link in the PR the issue that it is solving.
+### Step 1: Verify the Resource Isn't Already Implemented
 
-### The `resourceDefinition.json`
+1. **Check the Resource Status**: Look at the [resource status table](../README.md#-resource-status) in the README
+2. **Search Issues**: Check if there's already an [open issue](https://github.com/aztfmod/terraform-provider-azurecaf/issues) for this resource
+3. **Review Recent PRs**: Make sure someone isn't already working on it
 
-Once you have all the information and have created an issue if one doesn't exist yet you can start to fill up the resource in the `resourceDefinition.json`
+### Step 2: Research Resource Requirements
 
-Each resource in the `resourceDefinitions.json` follow the following schema:
+Before implementing, gather these details:
+
+1. **Naming Rules**: Check the [Azure resource naming rules](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules)
+2. **CAF Abbreviation**: Look up the recommended abbreviation in the [CAF resource abbreviations guide](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations)
+3. **Validation Patterns**: Test Azure's actual validation by attempting to create resources with various names
+
+### Step 3: Create an Issue
+
+[Create a new issue](https://github.com/aztfmod/terraform-provider-azurecaf/issues/new) with:
+
+- **Resource Type**: Full Terraform resource name (e.g., `azurerm_synapse_workspace`)
+- **Proposed Slug**: CAF abbreviation (e.g., `syws`)
+- **Naming Requirements**: Min/max length, allowed characters, case sensitivity
+- **Use Case**: Why this resource is needed
+
+### Step 4: Choose the Resource Slug
+
+The slug is a 2-5 character abbreviation that identifies the resource type:
+
+**Guidelines:**
+- Keep it short but meaningful
+- Follow CAF recommendations when available
+- Avoid conflicts with existing slugs
+- Use lowercase letters and numbers only
+
+**Examples:**
+- Storage Account: `st`
+- Key Vault: `kv`
+- Virtual Machine: `vm`
+- Synapse Workspace: `syws`
+
+### Step 5: Update `resourceDefinition.json`
+
+Add your resource definition to the JSON file:
 
 ```json
 {
-    "name": "azurerm_snapshots", //Azurerm name of the resource
-    "min_length": 1, // Minumum number of chars that this resource requires
-    "max_length": 80, // Maximum number of chars that this resource can have
-    "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$\"", // A regex expression that will match only a valid resource name
-    "scope": "parent", // Where this name must be unique. global means that only one resource with this name it is allowed in azure. parent means that only one resource of this name based in the parent resource. Resource group means only one resource with this name per resource group.
-    "slug": "snap", // This are the letters that identify the resource type
-    "dashes": true, // if this resource allows you to use dashes '-'
-    "lowercase": false, // if this resource will ONLY allow lowercase
-    "regex": "\"[^0-9A-Za-z_.-]\"" // This is the 'cleaning' regex anything that is matched by this regex will be removed from the resource name that is why you normally use the negation of all the allowed chars in this regex.
+  "name": "azurerm_example_resource",
+  "slug": "example",
+  "min_length": 3,
+  "max_length": 63,
+  "lowercase": false,
+  "validation_regex": "^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$",
+  "dashes": true,
+  "scope": "resourceGroup",
+  "regex": "[^a-zA-Z0-9-]"
 }
 ```
 
-## Legal
+**Field Descriptions:**
+- `name`: Full Terraform resource type name
+- `slug`: CAF abbreviation/prefix
+- `min_length`/`max_length`: Azure's length constraints
+- `lowercase`: Whether the resource name must be lowercase
+- `validation_regex`: Pattern the final name must match
+- `dashes`: Whether dashes are allowed
+- `scope`: Uniqueness scope (`global`, `resourceGroup`, `parent`)
+- `regex`: Pattern to remove invalid characters (cleaning regex)
 
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
-Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+### Step 6: Generate and Test
 
-When you submit a pull request, a CLA bot will automatically determine whether you need to provide
-a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
-provided by the bot. You will only need to do this once across all repos using our CLA.
+1. **Generate the code:**
+   ```bash
+   make build
+   ```
+   
+   This runs:
+   - `go generate` (regenerates `models_generated.go`)
+   - `go fmt ./...` (formats the code)
+   - `go test ./...` (runs tests)
+
+2. **Write tests:**
+   ```bash
+   # Test your specific resource type
+   go test ./azurecaf/... -run="TestResourceName.*YourResourceType"
+   ```
+
+3. **Verify the implementation:**
+   ```bash
+   # Create a simple Terraform configuration to test
+   echo 'data "azurecaf_name" "test" {
+     name = "mytest"
+     resource_type = "azurerm_your_new_resource"
+   }
+   
+   output "name" {
+     value = data.azurecaf_name.test.result
+   }' > test.tf
+   
+   terraform init && terraform plan
+   ```
+
+### Step 7: Update Documentation
+
+1. **Update README**: The resource status table should automatically reflect your addition
+2. **Add Examples**: Include usage examples in documentation if the resource type is commonly used
+3. **Test Documentation**: Ensure all links and references work correctly
+
+### Step 8: Submit Your Contribution
+
+1. **Commit Changes**: Use descriptive commit messages
+   ```bash
+   git commit -m "Add support for azurerm_example_resource with 'example' slug"
+   ```
+
+2. **Create Pull Request**: Include:
+   - Link to the issue you're addressing
+   - Description of the resource and its naming constraints
+   - Test results showing the implementation works
+   - Any special considerations or limitations
+
+## Development Setup
+
+### Prerequisites
+
+- **Go 1.19+**: [Download Go](https://golang.org/dl/)
+- **Terraform 1.0+**: [Download Terraform](https://www.terraform.io/downloads.html)
+- **Make**: For running build commands
+- **Git**: For version control
+
+### Local Development Environment
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/aztfmod/terraform-provider-azurecaf.git
+   cd terraform-provider-azurecaf
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   go mod download
+   ```
+
+3. **Build the provider:**
+   ```bash
+   make build
+   ```
+
+4. **Run tests:**
+   ```bash
+   # Unit tests only
+   make unittest
+   
+   # Integration tests (optional)
+   make test_integration
+   ```
+
+### Development Workflow
+
+1. **Create a feature branch:**
+   ```bash
+   git checkout -b feature/add-new-resource-type
+   ```
+
+2. **Make your changes:**
+   - Update `resourceDefinition.json`
+   - Run `make build` to regenerate code
+   - Add/update tests as needed
+
+3. **Test your changes:**
+   ```bash
+   make test_all
+   ```
+
+4. **Commit and push:**
+   ```bash
+   git add .
+   git commit -m "Descriptive commit message"
+   git push origin feature/add-new-resource-type
+   ```
+
+## Testing Guidelines
+
+### Unit Tests
+
+Unit tests should cover:
+- **Name Generation**: Verify correct name patterns
+- **Validation**: Test regex patterns and constraints
+- **Edge Cases**: Test boundary conditions and error cases
+- **Different Configurations**: Test various parameter combinations
+
+Example test structure:
+```go
+func TestResourceName_ExampleResource(t *testing.T) {
+    tests := []struct {
+        name     string
+        input    map[string]interface{}
+        expected string
+        wantErr  bool
+    }{
+        {
+            name: "basic name generation",
+            input: map[string]interface{}{
+                "name":          "mytest",
+                "resource_type": "azurerm_example_resource",
+            },
+            expected: "example-mytest",
+            wantErr:  false,
+        },
+        // Add more test cases...
+    }
+    
+    for _, tt := range tests {
+        t.Run(tt.name, func(t *testing.T) {
+            // Test implementation
+        })
+    }
+}
+```
+
+### Integration Tests
+
+Integration tests verify that the provider works correctly with Terraform:
+
+```go
+func TestAccDataSourceAzureCAFName_ExampleResource(t *testing.T) {
+    resource.Test(t, resource.TestCase{
+        Providers: testAccProviders,
+        Steps: []resource.TestStep{
+            {
+                Config: testAccDataSourceAzureCAFName_ExampleResource(),
+                Check: resource.ComposeTestCheckFunc(
+                    resource.TestCheckResourceAttr("data.azurecaf_name.test", "result", "example-mytest"),
+                ),
+            },
+        },
+    })
+}
+```
+
+### Test Coverage
+
+Maintain high test coverage by:
+- Testing all new functionality
+- Adding edge case tests
+- Testing error conditions
+- Verifying regex patterns work correctly
+
+## Submitting Changes
+
+### Pull Request Guidelines
+
+**Before submitting:**
+- ✅ All tests pass (`make test_all`)
+- ✅ Code is properly formatted (`go fmt`)
+- ✅ Documentation is updated
+- ✅ Commit messages are descriptive
+- ✅ Changes are focused and atomic
+
+**Pull Request Template:**
+```markdown
+## Description
+Brief description of the changes
+
+## Related Issue
+Fixes #123
+
+## Type of Change
+- [ ] Bug fix
+- [ ] New feature (new resource type)
+- [ ] Documentation update
+- [ ] Code refactoring
+
+## Testing
+- [ ] Unit tests pass
+- [ ] Integration tests pass
+- [ ] Manual testing completed
+
+## Checklist
+- [ ] Code follows project style guidelines
+- [ ] Self-review completed
+- [ ] Documentation updated
+- [ ] Tests added/updated
+```
+
+### Review Process
+
+1. **Automated Checks**: CI/CD will run tests and checks
+2. **Code Review**: Maintainers will review your changes
+3. **Feedback**: Address any requested changes
+4. **Merge**: Once approved, changes will be merged
+
+## Documentation Standards
+
+### Code Documentation
+
+- **Function Comments**: Document all public functions
+- **Complex Logic**: Explain non-obvious code sections
+- **Examples**: Include usage examples where helpful
+- **Parameter Documentation**: Document all parameters and return values
+
+### Markdown Standards
+
+- **Consistent Formatting**: Use standard markdown conventions
+- **Code Blocks**: Always specify language for syntax highlighting
+- **Links**: Use relative links for internal documentation
+- **Tables**: Use consistent table formatting
+
+## Recognition
+
+Contributors are recognized in:
+- Git commit history
+- Release notes for significant contributions
+- Community discussions and announcements
+
+Thank you for contributing to the Azure CAF Terraform Provider! 🚀
