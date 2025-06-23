@@ -1,4 +1,4 @@
-# Azure CAF Terraform Provider Examples
+# Azurecaf Terraform Provider Examples
 
 This directory contains example configurations for the Azure Cloud Adoption Framework (CAF) Terraform Provider. These examples demonstrate different usage patterns and features to help you get started quickly.
 

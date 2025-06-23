@@ -1,4 +1,4 @@
-# Testing Guide for Azure CAF Terraform Provider
+# Testing Guide for azurecaf Terraform Provider
 
 This comprehensive guide covers testing strategies, tools, and best practices for the Azure CAF Terraform Provider. The project maintains high test coverage (>99%) to ensure reliability and correctness.
 

@@ -1,12 +1,11 @@
-# Azure Cloud Adoption Framework (CAF) Terraform Provider
+# Azurecaf Terraform Provider
 
 [![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)](https://registry.terraform.io/providers/aztfmod/azurecaf/latest)
 [![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)](https://golang.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
-> :warning: **Important Notice**: This solution, offered by the Open-Source community, will no longer receive contributions from Microsoft.
-
-The Azure CAF Terraform Provider implements a set of methodologies for naming convention implementation, including the default Microsoft Cloud Adoption Framework for Azure recommendations as per the [Azure naming and tagging best practices](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging).
+The azurecaf provider implements a set of methodologies for naming convention implementation, including the default Microsoft Cloud Adoption Framework for Azure recommendations as per the [Azure naming and tagging best practices](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging). 
+Please note this project is not part of Azure Cloud Adoption Framework and is supported by the community, not by Microsoft Support.
 
 ## 🎯 Key Features
 
@@ -1167,8 +1166,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 **Made with ❤️ by the Azure CAF community**
-|azurerm_windows_web_app | ✔ |
-|azurerm_windows_web_app_slot | ⚠ |
 
 ❌ = Not yet implemented
 ✔  = Already implemented
