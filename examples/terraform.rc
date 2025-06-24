@@ -1,0 +1,6 @@
+provider_installation {
+  dev_overrides {
+    "aztfmod.com/arnaudlh/azurecaf" = "/home/runner/.terraform.d/plugins/aztfmod.com/arnaudlh/azurecaf/1.0.0/linux_amd64"
+  }
+  direct {}
+}
