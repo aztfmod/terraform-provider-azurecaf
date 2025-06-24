@@ -107,23 +107,28 @@ func (h *integrationTestHelper) runImportTest(tc testCase) {
 	})
 }
 
-// createTestCasesFromResourceTypes creates test cases from resource type definitions
-func createTestCasesFromResourceTypes(resourceTypes []struct {resourceType string; validName string; description string}) []testCase {
-	testCases := make([]testCase, len(resourceTypes))
-	for i, rt := range resourceTypes {
-		testCases[i] = testCase{
-			name:        fmt.Sprintf("%s_%s", rt.resourceType, rt.validName),
-			importID:    fmt.Sprintf("%s:%s", rt.resourceType, rt.validName),
-			expectError: false,
-			expectedAttrs: map[string]interface{}{
-				"name":          rt.validName,
-				"resource_type": rt.resourceType,
-				"passthrough":   true,
-				"result":        rt.validName,
-			},
-			description: rt.description,
+// createTestCasesFromRegistry creates test cases from the resource type registry
+func createTestCasesFromRegistry(pattern string) []testCase {
+	registry := getResourceTypeRegistry()
+	var testCases []testCase
+	
+	for _, rt := range registry {
+		if rt.Pattern == pattern || pattern == "all" {
+			testCases = append(testCases, testCase{
+				name:        fmt.Sprintf("%s_%s", rt.ResourceType, rt.Name),
+				importID:    fmt.Sprintf("%s:%s", rt.ResourceType, rt.Name),
+				expectError: false,
+				expectedAttrs: map[string]interface{}{
+					"name":          rt.Name,
+					"resource_type": rt.ResourceType,
+					"passthrough":   true,
+					"result":        rt.Name,
+				},
+				description: rt.Description,
+			})
 		}
 	}
+	
 	return testCases
 }
 
@@ -253,274 +258,83 @@ func TestResourceNameImport_AcceptanceStyleBasic(t *testing.T) {
 	t.Log("Acceptance-style test configuration is properly structured")
 }
 
-// configResource represents a resource configuration for testing
-type configResource struct {
-	Name         string
+// resourceTypeDefinition represents a comprehensive resource type definition for testing
+type resourceTypeDefinition struct {
 	ResourceType string
-	ImportID     string
+	Name         string
+	Description  string
+	Pattern      string
 }
 
-// configPattern represents different configuration patterns
-type configPattern string
+// getResourceTypeRegistry returns a comprehensive registry of resource types for testing
+func getResourceTypeRegistry() []resourceTypeDefinition {
+	return []resourceTypeDefinition{
+		{"azurerm_storage_account", "mystorageaccount123", "Storage Account with valid lowercase alphanumeric name", "basic"},
+		{"azurerm_resource_group", "my-resource-group", "Resource Group with hyphens", "basic"},
+		{"azurerm_virtual_network", "my-vnet-prod", "Virtual Network with standard naming", "basic"},
+		{"azurerm_key_vault", "mycompanykeyvault01", "Key Vault with alphanumeric name", "basic"},
+		{"azurerm_linux_virtual_machine", "myproductionvm01", "Linux Virtual Machine with numbered suffix", "basic"},
+		{"azurerm_application_gateway", "my-appgw-prod", "Application Gateway with environment suffix", "basic"},
+		{"azurerm_storage_account", "modulestorageaccount123", "Module storage account", "submodule_internal"},
+		{"azurerm_resource_group", "module-production-rg", "Module resource group", "submodule_internal"},
+		{"azurerm_storage_account", "rootstorageformodule", "Root storage for module", "root_to_submodule"},
+		{"azurerm_resource_group", "root-rg-for-module", "Root RG for module", "root_to_submodule"},
+	}
+}
 
-const (
-	PatternBasic            configPattern = "basic"
-	PatternRootLevel        configPattern = "root"
-	PatternSubmoduleInternal configPattern = "submodule_internal"
-	PatternSubmodulePassed  configPattern = "submodule_passed"
-)
-
-// generateTerraformConfig generates Terraform configuration based on pattern and resources
-func generateTerraformConfig(pattern configPattern, resources []configResource) string {
+// generateTerraformConfigForPattern generates Terraform configuration for specific patterns
+func generateTerraformConfigForPattern(pattern string, resourceType, name string) string {
 	switch pattern {
-	case PatternBasic:
-		return generateBasicConfig(resources[0])
-	case PatternRootLevel:
-		return generateRootLevelConfig(resources)
-	case PatternSubmoduleInternal:
-		return generateSubmoduleInternalConfig(resources)
-	case PatternSubmodulePassed:
-		return generateSubmodulePassedConfig(resources)
+	case "basic":
+		return fmt.Sprintf(`resource "azurecaf_name" "test" {
+  name          = "%s"
+  resource_type = "%s"
+  passthrough   = true
+}`, name, resourceType)
+	case "root_level":
+		return fmt.Sprintf(`import {
+  to = azurecaf_name.imported
+  id = "%s:%s"
+}
+
+resource "azurecaf_name" "imported" {
+  name          = "%s"
+  resource_type = "%s"
+  passthrough   = true
+}`, resourceType, name, name, resourceType)
+	case "submodule_internal":
+		return fmt.Sprintf(`import {
+  to = module.naming.azurecaf_name.module_resource
+  id = "%s:%s"
+}
+
+module "naming" {
+  source = "./modules/naming"
+}`, resourceType, name)
 	default:
 		return ""
 	}
 }
 
-// generateBasicConfig creates a basic resource configuration
-func generateBasicConfig(resource configResource) string {
-	return fmt.Sprintf(`
-resource "azurecaf_name" "test" {
-  name          = "%s"
-  resource_type = "%s"
-  passthrough   = true
-}
-`, resource.Name, resource.ResourceType)
-}
-
-// generateRootLevelConfig creates root level import block configuration
-func generateRootLevelConfig(resources []configResource) string {
-	var config strings.Builder
-	
-	// Generate import blocks
-	for i, resource := range resources {
-		resourceName := fmt.Sprintf("imported_%d", i)
-		config.WriteString(fmt.Sprintf(`
-import {
-  to = azurecaf_name.%s
-  id = "%s"
-}
-`, resourceName, resource.ImportID))
-	}
-	
-	// Generate resource definitions
-	for i, resource := range resources {
-		resourceName := fmt.Sprintf("imported_%d", i)
-		config.WriteString(fmt.Sprintf(`
-resource "azurecaf_name" "%s" {
-  name          = "%s"
-  resource_type = "%s"
-  passthrough   = true
-}
-`, resourceName, resource.Name, resource.ResourceType))
-	}
-	
-	return config.String()
-}
-
-// generateSubmoduleInternalConfig creates submodule internal configuration
-func generateSubmoduleInternalConfig(resources []configResource) string {
-	var config strings.Builder
-	
-	// Import blocks targeting module resources
-	for i, resource := range resources {
-		resourceName := fmt.Sprintf("module_%d", i)
-		config.WriteString(fmt.Sprintf(`
-import {
-  to = module.naming.azurecaf_name.%s
-  id = "%s"
-}
-`, resourceName, resource.ImportID))
-	}
-	
-	config.WriteString(`
-module "naming" {
-  source = "./modules/naming"
-}
-`)
-	
-	return config.String()
-}
-
-// generateSubmodulePassedConfig creates submodule passed configuration
-func generateSubmodulePassedConfig(resources []configResource) string {
-	var config strings.Builder
-	
-	// Root level imports and resources
-	for i, resource := range resources {
-		resourceName := fmt.Sprintf("root_%d", i)
-		config.WriteString(fmt.Sprintf(`
-import {
-  to = azurecaf_name.%s
-  id = "%s"
-}
-
-resource "azurecaf_name" "%s" {
-  name          = "%s"
-  resource_type = "%s"
-  passthrough   = true
-}
-`, resourceName, resource.ImportID, resourceName, resource.Name, resource.ResourceType))
-	}
-	
-	config.WriteString(`
-module "infrastructure" {
-  source = "./modules/infrastructure"
-`)
-	
-	// Add variable assignments
-	for i := range resources {
-		resourceName := fmt.Sprintf("root_%d", i)
-		varName := fmt.Sprintf("var_%d", i)
-		config.WriteString(fmt.Sprintf(`  %s = azurecaf_name.%s.result
-`, varName, resourceName))
-	}
-	
-	config.WriteString("}\n")
-	return config.String()
-}
-
-// getDefaultResourcesForPattern returns default resources for configuration patterns
-func getDefaultResourcesForPattern(pattern configPattern) []configResource {
-	switch pattern {
-	case PatternBasic:
-		return []configResource{{
-			Name:         "mystorageaccount123",
-			ResourceType: "azurerm_storage_account",
-			ImportID:     "azurerm_storage_account:mystorageaccount123",
-		}}
-	case PatternRootLevel:
-		return []configResource{
-			{Name: "mystorageaccount123", ResourceType: "azurerm_storage_account", ImportID: "azurerm_storage_account:mystorageaccount123"},
-			{Name: "my-production-rg", ResourceType: "azurerm_resource_group", ImportID: "azurerm_resource_group:my-production-rg"},
-			{Name: "mycompanykeyvault01", ResourceType: "azurerm_key_vault", ImportID: "azurerm_key_vault:mycompanykeyvault01"},
-		}
-	case PatternSubmoduleInternal:
-		return []configResource{
-			{Name: "modulestorageaccount123", ResourceType: "azurerm_storage_account", ImportID: "azurerm_storage_account:modulestorageaccount123"},
-			{Name: "module-production-rg", ResourceType: "azurerm_resource_group", ImportID: "azurerm_resource_group:module-production-rg"},
-		}
-	case PatternSubmodulePassed:
-		return []configResource{
-			{Name: "rootstorageaccount123", ResourceType: "azurerm_storage_account", ImportID: "azurerm_storage_account:rootstorageaccount123"},
-			{Name: "root-production-rg", ResourceType: "azurerm_resource_group", ImportID: "azurerm_resource_group:root-production-rg"},
-		}
-	default:
-		return []configResource{}
-	}
-}
-
 // testAccResourceNameImportBasicConfig provides configuration for acceptance tests
 func testAccResourceNameImportBasicConfig() string {
-	resources := getDefaultResourcesForPattern(PatternBasic)
-	return generateTerraformConfig(PatternBasic, resources)
+	return generateTerraformConfigForPattern("basic", "azurerm_storage_account", "mystorageaccount123")
 }
 
-// testAccResourceNameImportBlockRootConfig provides configuration for testing import {} blocks at root level
-func testAccResourceNameImportBlockRootConfig() string {
-	resources := getDefaultResourcesForPattern(PatternRootLevel)
-	return generateTerraformConfig(PatternRootLevel, resources)
-}
-
-// testAccResourceNameImportBlockSubmoduleInternalNamesConfig provides configuration for testing import {} blocks 
-// where azurecaf_name resources are declared within the submodule and imported from root level
-func testAccResourceNameImportBlockSubmoduleInternalNamesConfig() string {
-	resources := getDefaultResourcesForPattern(PatternSubmoduleInternal)
-	return generateTerraformConfig(PatternSubmoduleInternal, resources)
-}
-
-// testAccResourceNameImportBlockSubmodulePassedNamesConfig provides configuration for testing import {} blocks
-// where azurecaf_name resources are declared at root level and passed to submodule
-func testAccResourceNameImportBlockSubmodulePassedNamesConfig() string {
-	resources := getDefaultResourcesForPattern(PatternSubmodulePassed)
-	return generateTerraformConfig(PatternSubmodulePassed, resources)
-}
-
-// Simplified configuration templates for module files
-func testAccResourceNameImportBlockSubmoduleInternalNamesInternalConfig() string {
-	return `# Resource definitions within submodule
-resource "azurecaf_name" "module_0" {
-  name          = "modulestorageaccount123"
-  resource_type = "azurerm_storage_account"
-  passthrough   = true
-}
-
-output "storage_name" {
-  value = azurecaf_name.module_0.result
-}`
-}
-
-func testAccResourceNameImportBlockSubmodulePassedNamesVariablesConfig() string {
-	return `variable "var_0" {
-  description = "Variable passed from root"
-  type        = string
-}`
-}
-
-func testAccResourceNameImportBlockSubmodulePassedNamesInternalConfig() string {
-	return `resource "azurerm_storage_account" "main" {
-  name = var.var_0
-  # ... other configuration
-}`
-}
-
-// testAccResourceNameImportBlockDocumentation provides documentation and examples for import {} blocks
+// testAccResourceNameImportBlockDocumentation provides documentation for import {} blocks
 func testAccResourceNameImportBlockDocumentation() string {
 	return `# Import {} Block Usage Documentation
-# The import {} block feature introduced in Terraform 1.5+ allows for configuration-driven imports.
-# This feature works seamlessly with the azurecaf_name resource import functionality.
 # Basic syntax: import { to = <resource_address>; id = "<resource_type>:<existing_name>" }
-# Key Benefits: Declarative imports, version control friendly, repeatable, works at any module level
-# Important Notes: Requires Terraform 1.5+, passthrough = true is automatically set during import`
+# Key Benefits: Declarative imports, version control friendly, repeatable
+# Requires Terraform 1.5+, passthrough = true is automatically set during import`
 }
 
 // TestResourceNameImport_IntegrationMultipleResourceTypes tests importing various Azure resource types
 func TestResourceNameImport_IntegrationMultipleResourceTypes(t *testing.T) {
 	helper := newIntegrationTestHelper(t)
 	
-	// Define test cases for multiple resource types
-	resourceTypeTests := []struct {
-		resourceType string
-		validName    string
-		description  string
-	}{
-		{"azurerm_storage_account", "mystorageaccount123", "Storage Account with valid lowercase alphanumeric name"},
-		{"azurerm_resource_group", "my-resource-group", "Resource Group with hyphens"},
-		{"azurerm_virtual_network", "my-vnet-prod", "Virtual Network with standard naming"},
-		{"azurerm_subnet", "my-subnet-web", "Subnet with descriptive name"},
-		{"azurerm_key_vault", "mycompanykeyvault01", "Key Vault with alphanumeric name"},
-		{"azurerm_linux_virtual_machine", "myproductionvm01", "Linux Virtual Machine with numbered suffix"},
-		{"azurerm_windows_virtual_machine", "mywindowsvm01", "Windows Virtual Machine with numbered suffix"},
-		{"azurerm_application_gateway", "my-appgw-prod", "Application Gateway with environment suffix"},
-		{"azurerm_network_security_group", "my-nsg-web", "Network Security Group with tier suffix"},
-		{"azurerm_public_ip", "my-pip-gateway", "Public IP with purpose suffix"},
-	}
-	
-	// Convert to test cases and run
-	var testCases []testCase
-	for _, rt := range resourceTypeTests {
-		testCases = append(testCases, testCase{
-			name:        fmt.Sprintf("%s_%s", rt.resourceType, rt.validName),
-			importID:    fmt.Sprintf("%s:%s", rt.resourceType, rt.validName),
-			expectError: false,
-			expectedAttrs: map[string]interface{}{
-				"name":          rt.validName,
-				"resource_type": rt.resourceType,
-				"passthrough":   true,
-				"result":        rt.validName,
-			},
-			description: rt.description,
-		})
-	}
+	// Use registry to get test cases
+	testCases := createTestCasesFromRegistry("basic")
 	
 	for _, tc := range testCases {
 		helper.runImportTest(tc)
@@ -618,131 +432,56 @@ func TestResourceNameImport_IntegrationEdgeCases(t *testing.T) {
 }
 
 // TestResourceNameImport_AcceptanceStyleImportBlocks tests the import {} block functionality
-// This test demonstrates configurations for import blocks at root and submodule levels
 func TestResourceNameImport_AcceptanceStyleImportBlocks(t *testing.T) {
-	// Skip this test unless explicitly requested since it requires Terraform CLI
 	if testing.Short() {
 		t.Skip("Skipping import {} block acceptance tests in short mode - requires Terraform CLI")
 	}
 	
-	// Validate that our test configurations are properly structured
-	t.Log("Validating import {} block configurations")
-	
-	configValidators := []struct{
-		name string
-		config func() string
-	}{
-		{"Root level", testAccResourceNameImportBlockRootConfig},
-		{"Submodule internal", testAccResourceNameImportBlockSubmoduleInternalNamesConfig},
-		{"Submodule passed", testAccResourceNameImportBlockSubmodulePassedNamesConfig},
-		{"Submodule internal names", testAccResourceNameImportBlockSubmoduleInternalNamesInternalConfig},
-		{"Submodule passed names", testAccResourceNameImportBlockSubmodulePassedNamesInternalConfig},
-		{"Submodule variables", testAccResourceNameImportBlockSubmodulePassedNamesVariablesConfig},
-		{"Documentation", testAccResourceNameImportBlockDocumentation},
+	// Validate configurations are properly structured
+	configs := []struct{ name, config string }{
+		{"Basic", testAccResourceNameImportBasicConfig()},
+		{"Documentation", testAccResourceNameImportBlockDocumentation()},
 	}
 	
-	for _, validator := range configValidators {
-		if config := validator.config(); config == "" {
-			t.Errorf("%s import block configuration is empty", validator.name)
+	for _, cfg := range configs {
+		if cfg.config == "" {
+			t.Errorf("%s configuration is empty", cfg.name)
 		}
 	}
 	
 	t.Log("Import {} block configurations are properly structured")
-	t.Log("Import {} block documentation is available")
 }
 
-// TestResourceNameImport_ImportBlockValidationSimulation tests the import {} block scenarios using schema validation
-// This test simulates the behavior of import {} blocks by testing the scenarios they would create
+// TestResourceNameImport_ImportBlockValidationSimulation tests import {} block scenarios using schema validation
 func TestResourceNameImport_ImportBlockValidationSimulation(t *testing.T) {
 	helper := newIntegrationTestHelper(t)
 	
-	// Define test scenarios with patterns
-	scenarios := []struct {
-		resourceType string
-		name         string
-		pattern      string
-	}{
-		{"azurerm_storage_account", "mystorageaccount123", "root_level"},
-		{"azurerm_resource_group", "my-production-rg", "root_level"},
-		{"azurerm_key_vault", "mycompanykeyvault01", "root_level"},
-		{"azurerm_virtual_network", "my-production-vnet", "submodule_internal"},
-		{"azurerm_subnet", "my-web-subnet", "submodule_internal"},
-		{"azurerm_linux_virtual_machine", "my-production-vm01", "submodule_internal"},
-		{"azurerm_storage_account", "rootpassedstorageaccount", "root_to_submodule"},
-		{"azurerm_resource_group", "root-passed-rg", "root_to_submodule"},
-		{"azurerm_key_vault", "rootpassedkeyvault01", "root_to_submodule"},
-		{"azurerm_application_gateway", "prod-eastus-agw-web-01", "complex_naming"},
-	}
+	// Use registry for comprehensive test cases
+	testCases := createTestCasesFromRegistry("all")
 	
-	// Generate and run test cases
-	for _, scenario := range scenarios {
-		importID := fmt.Sprintf("%s:%s", scenario.resourceType, scenario.name)
-		tc := createTestCaseWithDefaults(
-			fmt.Sprintf("%s_%s_import_simulation", scenario.pattern, scenario.resourceType),
-			importID,
-			false,
-			nil,
-		)
-		tc.description = fmt.Sprintf("Simulates %s import {} block for %s", scenario.pattern, scenario.resourceType)
+	for _, tc := range testCases {
+		tc.name = fmt.Sprintf("import_simulation_%s", tc.name)
+		tc.description = fmt.Sprintf("Simulates import {} block for %s", tc.name)
 		helper.runImportTest(tc)
 	}
 	
 	t.Log("Import {} block simulation tests completed successfully")
 	t.Log("These tests validate the same provider functionality that import {} blocks would use")
-	t.Log("Both patterns tested: internal submodule names and root-to-submodule passed names")
 }
 
 // TestResourceNameImport_SubmodulePatternValidation tests both patterns for submodule import usage
-// Pattern 1: azurecaf_name declared within submodule with import {} block
-// Pattern 2: azurecaf_name declared at root with import {} block, then passed to submodule  
 func TestResourceNameImport_SubmodulePatternValidation(t *testing.T) {
 	helper := newIntegrationTestHelper(t)
 	
-	// Define test patterns with resource types
-	patterns := []struct {
-		name        string
-		pattern     string
-		resources   []struct{ resourceType, name string }
-		description string
-	}{
-		{
-			name:    "Pattern1_SubmoduleInternal",
-			pattern: "submodule_internal",
-			resources: []struct{ resourceType, name string }{
-				{"azurerm_storage_account", "modulestorageaccount123"},
-				{"azurerm_resource_group", "module-production-rg"},
-			},
-			description: "azurecaf_name declared within submodule",
-		},
-		{
-			name:    "Pattern2_RootToSubmodule", 
-			pattern: "root_to_submodule",
-			resources: []struct{ resourceType, name string }{
-				{"azurerm_storage_account", "rootstorageformodule"},
-				{"azurerm_resource_group", "root-rg-for-module"},
-			},
-			description: "azurecaf_name declared at root, passed to submodule",
-		},
-	}
+	// Test Pattern 1: SubmoduleInternal
+	submoduleInternalCases := createTestCasesFromRegistry("submodule_internal")
+	helper.runTestGroup(t, "Pattern1_SubmoduleInternal", submoduleInternalCases)
+	t.Log("Pattern1_SubmoduleInternal tests completed: azurecaf_name declared within submodule")
 	
-	// Execute pattern tests
-	for _, pattern := range patterns {
-		var testCases []testCase
-		for _, resource := range pattern.resources {
-			importID := fmt.Sprintf("%s:%s", resource.resourceType, resource.name)
-			tc := createTestCaseWithDefaults(
-				fmt.Sprintf("%s_pattern_%s", pattern.pattern, resource.resourceType),
-				importID,
-				false,
-				nil,
-			)
-			tc.description = fmt.Sprintf("Pattern: %s - %s", pattern.description, resource.resourceType)
-			testCases = append(testCases, tc)
-		}
-		
-		helper.runTestGroup(t, pattern.name, testCases)
-		t.Logf("%s tests completed: %s", pattern.name, pattern.description)
-	}
+	// Test Pattern 2: RootToSubmodule  
+	rootToSubmoduleCases := createTestCasesFromRegistry("root_to_submodule")
+	helper.runTestGroup(t, "Pattern2_RootToSubmodule", rootToSubmoduleCases)
+	t.Log("Pattern2_RootToSubmodule tests completed: azurecaf_name declared at root, passed to submodule")
 	
 	t.Log("Both submodule patterns validated successfully")
 }
