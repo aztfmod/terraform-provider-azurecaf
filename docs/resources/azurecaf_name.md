@@ -471,6 +471,65 @@ All generated names are automatically validated against:
 
 The resource supports generating multiple names simultaneously using the `resource_types` argument, which is more efficient than creating multiple separate `azurecaf_name` resources.
 
+## Import
+
+The `azurecaf_name` resource can be imported to manage pre-existing Azure resource names. This allows you to bring existing names under Terraform management without recreating resources.
+
+### Import Syntax
+
+```bash
+terraform import azurecaf_name.<resource_name> <resource_type>:<existing_name>
+```
+
+### Import Examples
+
+**Import a storage account name:**
+```bash
+terraform import azurecaf_name.storage azurerm_storage_account:mystorageaccount123
+```
+
+**Import a resource group name:**
+```bash
+terraform import azurecaf_name.rg azurerm_resource_group:my-resource-group
+```
+
+**Import a virtual machine name:**
+```bash
+terraform import azurecaf_name.vm azurerm_linux_virtual_machine:my-vm-01
+```
+
+### Import Behavior
+
+When importing a resource:
+
+1. **Validation**: The existing name is validated against Azure naming requirements for the specified resource type
+2. **Passthrough Mode**: The imported resource automatically uses `passthrough = true` to preserve the original name
+3. **Minimal Configuration**: Only essential parameters are set; prefixes, suffixes, and random components are empty since they cannot be reverse-engineered
+4. **State Reconstruction**: The imported name becomes the `result` value, making it immediately usable in other resources
+
+### Post-Import Configuration
+
+After importing, you should update your Terraform configuration to match the imported state:
+
+```hcl
+resource "azurecaf_name" "storage" {
+  name          = "mystorageaccount123"
+  resource_type = "azurerm_storage_account"
+  passthrough   = true
+}
+```
+
+> **Note**: Imported resources use `passthrough = true` by default, which means the name is used as-is without applying CAF naming conventions. This preserves the original name exactly as it exists in Azure.
+
+### Import Validation
+
+The import process validates that:
+- The resource type is supported by the provider
+- The existing name complies with Azure naming requirements for the specified resource type
+- The name format matches the expected pattern for the resource type
+
+If validation fails, the import will be rejected with a detailed error message explaining the issue.
+
 ## Related Resources
 
 - [`azurecaf_name` data source](../data-sources/azurecaf_name.md) - Recommended approach for name generation
