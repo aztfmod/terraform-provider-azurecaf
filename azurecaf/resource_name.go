@@ -4,10 +4,18 @@ import (
 	"context"
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+)
+
+// Constants for error messages to avoid duplication
+const (
+	ErrInvalidImportIDFormat = "invalid import ID format"
+	ErrResourceTypeRequired  = "resource_type is required for import"
+	ErrInvalidResourceType   = "invalid resource type"
 )
 
 // resourceNameV2 creates and returns the schema for the azurecaf_name resource (version 2).
@@ -135,6 +143,9 @@ func resourceName() *schema.Resource {
 		Create:        resourceNameCreate,
 		Read:          schema.Noop,
 		Delete:        schema.RemoveFromState,
+		Importer: &schema.ResourceImporter{
+			StateContext: resourceNameImport,
+		},
 		SchemaVersion: 3,
 		StateUpgraders: []schema.StateUpgrader{
 			{
@@ -235,6 +246,76 @@ func resourceName() *schema.Resource {
 	}
 }
 
+// resourceNameImport handles the import of azurecaf_name resources
+func resourceNameImport(ctx context.Context, d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
+	importID := d.Id()
+	if importID == "" {
+		return nil, fmt.Errorf("%s: empty import ID", ErrInvalidImportIDFormat)
+	}
+
+	// Parse import ID format: resourceType:name:separator:clean_input:passthrough:use_slug:random_length
+	parts := strings.Split(importID, ":")
+	if len(parts) < 2 {
+		return nil, fmt.Errorf("%s: expected format 'resourceType:name[:separator:clean_input:passthrough:use_slug:random_length]'", ErrInvalidImportIDFormat)
+	}
+
+	resourceType := parts[0]
+	name := parts[1]
+
+	// Validate resource type
+	if _, exists := ResourceDefinitions[resourceType]; !exists {
+		return nil, fmt.Errorf("%s: %s", ErrInvalidResourceType, resourceType)
+	}
+
+	// Set basic required fields
+	d.Set("resource_type", resourceType)
+	d.Set("name", name)
+
+	// Set optional fields with defaults
+	separator := "-"
+	cleanInput := true
+	passthrough := false
+	useSlug := true
+	randomLength := 0
+
+	// Parse optional fields if provided
+	if len(parts) > 2 && parts[2] != "" {
+		separator = parts[2]
+	}
+	if len(parts) > 3 && parts[3] != "" {
+		if val, err := strconv.ParseBool(parts[3]); err == nil {
+			cleanInput = val
+		}
+	}
+	if len(parts) > 4 && parts[4] != "" {
+		if val, err := strconv.ParseBool(parts[4]); err == nil {
+			passthrough = val
+		}
+	}
+	if len(parts) > 5 && parts[5] != "" {
+		if val, err := strconv.ParseBool(parts[5]); err == nil {
+			useSlug = val
+		}
+	}
+	if len(parts) > 6 && parts[6] != "" {
+		if val, err := strconv.Atoi(parts[6]); err == nil && val >= 0 {
+			randomLength = val
+		}
+	}
+
+	// Set the parsed values
+	d.Set("separator", separator)
+	d.Set("clean_input", cleanInput)
+	d.Set("passthrough", passthrough)
+	d.Set("use_slug", useSlug)
+	d.Set("random_length", randomLength)
+
+	// Generate a unique ID for the imported resource
+	d.SetId(randSeq(16, nil))
+
+	return []*schema.ResourceData{d}, nil
+}
+
 func resourceNameCreate(d *schema.ResourceData, meta interface{}) error {
 	return resourceNameRead(d, meta)
 }
@@ -317,44 +398,24 @@ func composeName(separator string,
 	randomSuffix string,
 	maxlength int,
 	namePrecedence []string) string {
-	contents := []string{}
-	currentlength := 0
+	composer := nameComposer{
+		separator:     separator,
+		maxlength:     maxlength,
+		contents:      []string{},
+		currentlength: 0,
+	}
 
 	for i := 0; i < len(namePrecedence); i++ {
-		initialized := 0
-		if len(contents) > 0 {
-			initialized = len(separator)
-		}
-		switch c := namePrecedence[i]; c {
+		switch namePrecedence[i] {
 		case "name":
-			if len(name) > 0 {
-				if currentlength+len(name)+initialized <= maxlength {
-					contents = append(contents, name)
-					currentlength = currentlength + len(name) + initialized
-				}
-			}
+			composer.addComponent(name)
 		case "slug":
-			if len(slug) > 0 {
-				if currentlength+len(slug)+initialized <= maxlength {
-					contents = append([]string{slug}, contents...)
-					currentlength = currentlength + len(slug) + initialized
-				}
-			}
+			composer.prependComponent(slug)
 		case "random":
-			if len(randomSuffix) > 0 {
-				if currentlength+len(randomSuffix)+initialized <= maxlength {
-					contents = append(contents, randomSuffix)
-					currentlength = currentlength + len(randomSuffix) + initialized
-				}
-			}
+			composer.addComponent(randomSuffix)
 		case "suffixes":
 			if len(suffixes) > 0 {
-				if len(suffixes[0]) > 0 {
-					if currentlength+len(suffixes[0])+initialized <= maxlength {
-						contents = append(contents, suffixes[0])
-						currentlength = currentlength + len(suffixes[0]) + initialized
-					}
-				}
+				composer.addComponent(suffixes[0])
 				suffixes = suffixes[1:]
 				if len(suffixes) > 0 {
 					i--
@@ -362,23 +423,57 @@ func composeName(separator string,
 			}
 		case "prefixes":
 			if len(prefixes) > 0 {
-				if len(prefixes[len(prefixes)-1]) > 0 {
-					if currentlength+len(prefixes[len(prefixes)-1])+initialized <= maxlength {
-						contents = append([]string{prefixes[len(prefixes)-1]}, contents...)
-						currentlength = currentlength + len(prefixes[len(prefixes)-1]) + initialized
-					}
-				}
+				composer.prependComponent(prefixes[len(prefixes)-1])
 				prefixes = prefixes[:len(prefixes)-1]
 				if len(prefixes) > 0 {
 					i--
 				}
 			}
-
 		}
-
 	}
-	content := strings.Join(contents, separator)
-	return content
+	return strings.Join(composer.contents, separator)
+}
+
+// nameComposer helps build names while respecting length constraints
+type nameComposer struct {
+	separator     string
+	maxlength     int
+	contents      []string
+	currentlength int
+}
+
+// addComponent adds a component to the end if it fits within length constraints
+func (nc *nameComposer) addComponent(component string) {
+	if len(component) > 0 && nc.canAddComponent(component) {
+		nc.contents = append(nc.contents, component)
+		nc.updateLength(component)
+	}
+}
+
+// prependComponent adds a component to the beginning if it fits within length constraints
+func (nc *nameComposer) prependComponent(component string) {
+	if len(component) > 0 && nc.canAddComponent(component) {
+		nc.contents = append([]string{component}, nc.contents...)
+		nc.updateLength(component)
+	}
+}
+
+// canAddComponent checks if a component can be added without exceeding max length
+func (nc *nameComposer) canAddComponent(component string) bool {
+	separatorLength := 0
+	if len(nc.contents) > 0 {
+		separatorLength = len(nc.separator)
+	}
+	return nc.currentlength+len(component)+separatorLength <= nc.maxlength
+}
+
+// updateLength updates the current length after adding a component
+func (nc *nameComposer) updateLength(component string) {
+	separatorLength := 0
+	if len(nc.contents) > 1 { // Only count separator if we have more than one component
+		separatorLength = len(nc.separator)
+	}
+	nc.currentlength += len(component) + separatorLength
 }
 
 func validateResourceType(resourceType string, resourceTypes []string) (bool, error) {
@@ -458,59 +553,92 @@ func getResourceName(resourceTypeName string, separator string,
 }
 
 func getNameResult(d *schema.ResourceData, meta interface{}) error {
-	name := d.Get("name").(string)
-	prefixes := convertInterfaceToString(d.Get("prefixes").([]interface{}))
-	suffixes := convertInterfaceToString(d.Get("suffixes").([]interface{}))
-	separator := d.Get("separator").(string)
-	resourceType := d.Get("resource_type").(string)
-	resourceTypes := convertInterfaceToString(d.Get("resource_types").([]interface{}))
-	cleanInput := d.Get("clean_input").(bool)
-	passthrough := d.Get("passthrough").(bool)
-	useSlug := d.Get("use_slug").(bool)
-	randomLength := d.Get("random_length").(int)
-	randomSeed := int64(d.Get("random_seed").(int))
-
-	// Validate random_length parameter
-	if randomLength < 0 {
-		return fmt.Errorf("random_length must be non-negative, got: %d", randomLength)
-	}
-
-	// Validate against resource type constraints if resource_type is specified
-	if resourceType != "" {
-		if resource, exists := ResourceDefinitions[resourceType]; exists {
-			maxLen := resource.MaxLength
-			if randomLength > maxLen {
-				return fmt.Errorf("random_length (%d) exceeds maximum length for resource type %s (%d)", randomLength, resourceType, maxLen)
-			}
-		}
+	config := extractConfigFromResourceData(d)
+	
+	if err := validateNameConfig(config); err != nil {
+		return err
 	}
 
 	convention := ConventionCafClassic
-
-	randomSuffix := randSeq(int(randomLength), &randomSeed)
+	randomSuffix := randSeq(config.randomLength, &config.randomSeed)
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 
-	isValid, err := validateResourceType(resourceType, resourceTypes)
+	isValid, err := validateResourceType(config.resourceType, config.resourceTypes)
 	if !isValid {
 		return err
 	}
 
-	if len(resourceType) > 0 {
-		resourceName, err := getResourceName(resourceType, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence)
+	// Handle single resource type
+	if len(config.resourceType) > 0 {
+		resourceName, err := getResourceName(config.resourceType, config.separator, config.prefixes, config.name, config.suffixes, randomSuffix, convention, config.cleanInput, config.passthrough, config.useSlug, namePrecedence)
 		if err != nil {
 			return err
 		}
 		d.Set("result", resourceName)
 	}
-	resourceNames := make(map[string]string, len(resourceTypes))
-	for _, resourceTypeName := range resourceTypes {
+
+	// Handle multiple resource types
+	resourceNames := make(map[string]string, len(config.resourceTypes))
+	for _, resourceTypeName := range config.resourceTypes {
 		var err error
-		resourceNames[resourceTypeName], err = getResourceName(resourceTypeName, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence)
+		resourceNames[resourceTypeName], err = getResourceName(resourceTypeName, config.separator, config.prefixes, config.name, config.suffixes, randomSuffix, convention, config.cleanInput, config.passthrough, config.useSlug, namePrecedence)
 		if err != nil {
 			return err
 		}
 	}
 	d.Set("results", resourceNames)
 	d.SetId(randSeq(16, nil))
+	return nil
+}
+
+// nameConfig holds all configuration parameters for name generation
+type nameConfig struct {
+	name          string
+	prefixes      []string
+	suffixes      []string
+	separator     string
+	resourceType  string
+	resourceTypes []string
+	cleanInput    bool
+	passthrough   bool
+	useSlug       bool
+	randomLength  int
+	randomSeed    int64
+}
+
+// extractConfigFromResourceData extracts configuration from Terraform resource data
+func extractConfigFromResourceData(d *schema.ResourceData) nameConfig {
+	return nameConfig{
+		name:          d.Get("name").(string),
+		prefixes:      convertInterfaceToString(d.Get("prefixes").([]interface{})),
+		suffixes:      convertInterfaceToString(d.Get("suffixes").([]interface{})),
+		separator:     d.Get("separator").(string),
+		resourceType:  d.Get("resource_type").(string),
+		resourceTypes: convertInterfaceToString(d.Get("resource_types").([]interface{})),
+		cleanInput:    d.Get("clean_input").(bool),
+		passthrough:   d.Get("passthrough").(bool),
+		useSlug:       d.Get("use_slug").(bool),
+		randomLength:  d.Get("random_length").(int),
+		randomSeed:    int64(d.Get("random_seed").(int)),
+	}
+}
+
+// validateNameConfig validates the configuration parameters
+func validateNameConfig(config nameConfig) error {
+	// Validate random_length parameter
+	if config.randomLength < 0 {
+		return fmt.Errorf("random_length must be non-negative, got: %d", config.randomLength)
+	}
+
+	// Validate against resource type constraints if resource_type is specified
+	if config.resourceType != "" {
+		if resource, exists := ResourceDefinitions[config.resourceType]; exists {
+			maxLen := resource.MaxLength
+			if config.randomLength > maxLen {
+				return fmt.Errorf("random_length (%d) exceeds maximum length for resource type %s (%d)", config.randomLength, config.resourceType, maxLen)
+			}
+		}
+	}
+
 	return nil
 }
