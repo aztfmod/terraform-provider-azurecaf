@@ -459,7 +459,7 @@ func validateResourceType(resourceType string, resourceTypes []string) (bool, er
 		}
 	}
 	if len(errorStrings) > 0 {
-		return false, fmt.Errorf("%s", strings.Join(errorStrings, "\n"))
+		return false, fmt.Errorf(strings.Join(errorStrings, "\n"))
 	}
 	return true, nil
 }
