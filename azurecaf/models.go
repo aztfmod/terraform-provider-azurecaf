@@ -1,3 +1,8 @@
+// Package azurecaf provides data structures and constants for Azure Cloud Adoption Framework
+// naming conventions and resource definitions.
+//
+// This file contains the core constants and enumerations used throughout the provider
+// for defining naming conventions, resource types, and validation rules.
 package azurecaf
 
 import (
@@ -5,26 +10,53 @@ import (
 	"time"
 )
 
+// Naming convention constants define the different methodologies supported by the provider
+// for generating Azure resource names that comply with CAF guidelines.
 const (
 	// ConventionCafClassic applies the CAF recommended naming convention
+	// Format: [prefix]-[resource-slug]-[name]-[suffix]
 	ConventionCafClassic string = "cafclassic"
+
 	// ConventionCafRandom defines the CAF random naming convention
+	// Fills remaining space with random characters up to maximum length
 	ConventionCafRandom string = "cafrandom"
+
 	// ConventionRandom applies a random naming convention based on the max length of the resource
+	// Generates completely random names within Azure resource constraints
 	ConventionRandom string = "random"
-	// ConventionPassThrough defines the CAF random naming convention
+
+	// ConventionPassThrough validates existing names without modification
+	// Used for checking compliance of pre-existing resource names
 	ConventionPassThrough string = "passthrough"
 )
 
+// Regular expression patterns for cleaning input strings to ensure compliance
+// with Azure naming requirements. These patterns define which characters to remove
+// from input names for different Azure resource types.
 const (
-	alphanum    string = "[^0-9A-Za-z]"
-	alphanumh   string = "[^0-9A-Za-z-]"
-	alphanumu   string = "[^0-9A-Za-z_]"
-	alphanumhu  string = "[^0-9A-Za-z_-]"
+	// alphanum removes all characters except alphanumeric (a-z, A-Z, 0-9)
+	alphanum string = "[^0-9A-Za-z]"
+
+	// alphanumh allows alphanumeric characters and hyphens
+	alphanumh string = "[^0-9A-Za-z-]"
+
+	// alphanumu allows alphanumeric characters and underscores
+	alphanumu string = "[^0-9A-Za-z_]"
+
+	// alphanumhu allows alphanumeric characters, hyphens, and underscores
+	alphanumhu string = "[^0-9A-Za-z_-]"
+
+	// alphanumhup allows alphanumeric characters, hyphens, underscores, and periods
 	alphanumhup string = "[^0-9A-Za-z_.-]"
-	unicode     string = `[^-\w\._\(\)]`
-	invappi     string = "[%&\\?/]"     //appinisghts invalid character
-	invsqldb    string = "[<>*%&:\\/?]" //sql db invalid character
+
+	// unicode allows extended unicode characters, word characters, and common punctuation
+	unicode string = `[^-\w\._\(\)]`
+
+	// invappi defines invalid characters for Application Insights resources
+	invappi string = "[%&\\?/]"
+
+	// invsqldb defines invalid characters for SQL Database resources
+	invsqldb string = "[<>*%&:\\/?]"
 
 	//Need to find a way to filter beginning and end of string
 	//alphanumstartletter string = "\\A[^a-z][^0-9A-Za-z]"
