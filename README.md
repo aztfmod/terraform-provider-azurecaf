@@ -17,7 +17,7 @@ The Azure CAF provider allows you to:
 - **🏷️ Handle prefixes and suffixes** (either manual or as per Azure CAF resource conventions)
 - **✅ Validate existing names** using passthrough mode
 - **🔄 Support multiple naming conventions** (CAF classic, CAF random, passthrough, etc.)
-- **📋 Generate names for 200+ Azure resource types** with accurate validation rules
+- **📋 Generate names for 300+ Azure resource types** with accurate validation rules
 
 ## 📦 Quick Start
 
@@ -206,7 +206,7 @@ data "azurecaf_name" "custom_vm" {
 
 ## 🔧 Supported Azure Resources
 
-This provider supports **200+ Azure resource types** with accurate naming validation rules. Each resource type has specific constraints for:
+This provider supports **300+ Azure resource types** with accurate naming validation rules. Each resource type has specific constraints for:
 
 - **Minimum and maximum length**
 - **Allowed characters and patterns** 
@@ -228,7 +228,7 @@ This provider supports **200+ Azure resource types** with accurate naming valida
 <details>
 <summary>📋 View Full Resource Type List</summary>
 
-For the complete list of 200+ supported resource types, see the [Resource Types Documentation](docs/index.md#resource-types).
+For the complete list of 300+ supported resource types, see the [Resource Types Documentation](docs/index.md#resource-types).
 
 </details>
 
@@ -532,7 +532,7 @@ For detailed contribution guidelines, see [CONTRIBUTING.md](.github/CONTRIBUTING
 
 ## 📊 Resource Status
 
-This provider supports 200+ Azure resource types. Here's the implementation status compared to the azurerm provider:
+This provider supports 300+ Azure resource types. Here's the implementation status compared to the azurerm provider:
 
 <details>
 <summary>🔍 View Detailed Resource Status Table</summary>

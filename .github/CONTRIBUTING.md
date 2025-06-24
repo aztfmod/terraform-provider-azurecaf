@@ -30,7 +30,7 @@ The Azure CAF Terraform Provider is designed to support the Microsoft Cloud Adop
 - **Naming Convention Enforcement**: Ensures Azure resource names follow CAF guidelines
 - **Resource Validation**: Validates names against Azure-specific constraints
 - **Flexibility**: Supports multiple naming patterns and customization options
-- **Comprehensive Coverage**: Supports 200+ Azure resource types
+- **Comprehensive Coverage**: Supports 300+ Azure resource types
 
 ### Architecture
 

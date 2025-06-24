@@ -9,7 +9,7 @@ The `azurecaf_name` data source generates Azure-compliant resource names followi
 - **CAF guidelines** - Follows Microsoft Cloud Adoption Framework recommendations
 - **Flexible configuration** - Supports prefixes, suffixes, random generation, and custom separators
 - **Input sanitization** - Cleans inputs to ensure compliance
-- **200+ resource types** - Comprehensive coverage of Azure services
+- **300+ resource types** - Comprehensive coverage of Azure services
 
 ## Example Usage
 

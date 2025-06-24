@@ -6,7 +6,7 @@ The `azurecaf_name` resource generates Azure-compliant resource names following 
 
 ## Key Features
 
-- **200+ Resource Types** - Comprehensive coverage of Azure services with accurate validation
+- **300+ Resource Types** - Comprehensive coverage of Azure services with accurate validation
 - **CAF Compliance** - Follows Microsoft Cloud Adoption Framework recommendations
 - **Multi-Resource Support** - Generate names for multiple related resource types simultaneously
 - **Flexible Configuration** - Supports prefixes, suffixes, random generation, and custom patterns
@@ -442,7 +442,7 @@ resource "azurecaf_name" "new" {
 
 ## Supported Resource Types
 
-This resource supports **200+ Azure resource types** with accurate naming validation rules. 
+This resource supports **300+ Azure resource types** with accurate naming validation rules. 
 
 For the complete list of supported resource types, validation rules, and examples, see the [main provider documentation](../index.md#supported-azure-resource-types).
 
