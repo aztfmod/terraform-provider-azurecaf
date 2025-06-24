@@ -249,10 +249,26 @@ resource "azurecaf_name" "imported_kv" {
 }
 
 // testAccResourceNameImportBlockSubmoduleInternalNamesConfig provides configuration for testing import {} blocks 
-// where azurecaf_name resources are declared within the submodule
+// where azurecaf_name resources are declared within the submodule and imported from root level
 func testAccResourceNameImportBlockSubmoduleInternalNamesConfig() string {
 	return `
-# Root level configuration that calls the module
+# Import blocks at root level targeting resources within submodule
+import {
+  to = module.naming.azurecaf_name.module_storage
+  id = "azurerm_storage_account:modulestorageaccount123"
+}
+
+import {
+  to = module.naming.azurecaf_name.module_rg
+  id = "azurerm_resource_group:module-production-rg"
+}
+
+import {
+  to = module.naming.azurecaf_name.module_kv
+  id = "azurerm_key_vault:modulecompanykeyvault01"
+}
+
+# Module that contains the azurecaf_name resources
 module "naming" {
   source = "./modules/naming"
 }
@@ -338,39 +354,25 @@ output "final_key_vault_name" {
 
 // File: modules/naming/main.tf
 // Configuration where azurecaf_name resources are declared within the submodule
+// Import blocks are at root level targeting these module resources
 func testAccResourceNameImportBlockSubmoduleInternalNamesInternalConfig() string {
 	return `
-# Import blocks within submodule
-import {
-  to = azurecaf_name.imported_rg
-  id = "azurerm_resource_group:my-production-rg"
-}
-
-import {
-  to = azurecaf_name.imported_storage
-  id = "azurerm_storage_account:mystorageaccount123"
-}
-
-import {
-  to = azurecaf_name.imported_kv
-  id = "azurerm_key_vault:mycompanykeyvault01"
-}
-
 # Resource definitions within submodule
-resource "azurecaf_name" "imported_rg" {
-  name          = "my-production-rg"
-  resource_type = "azurerm_resource_group"
-  passthrough   = true
-}
-
-resource "azurecaf_name" "imported_storage" {
-  name          = "mystorageaccount123"
+# These will be imported from root level using module.naming.azurecaf_name.* syntax
+resource "azurecaf_name" "module_storage" {
+  name          = "modulestorageaccount123"
   resource_type = "azurerm_storage_account"
   passthrough   = true
 }
 
-resource "azurecaf_name" "imported_kv" {
-  name          = "mycompanykeyvault01"
+resource "azurecaf_name" "module_rg" {
+  name          = "module-production-rg"
+  resource_type = "azurerm_resource_group"
+  passthrough   = true
+}
+
+resource "azurecaf_name" "module_kv" {
+  name          = "modulecompanykeyvault01"
   resource_type = "azurerm_key_vault"
   passthrough   = true
 }
@@ -378,17 +380,17 @@ resource "azurecaf_name" "imported_kv" {
 # Outputs for accessing the named resources
 output "storage_name" {
   description = "Generated storage account name"
-  value       = azurecaf_name.imported_storage.result
+  value       = azurecaf_name.module_storage.result
 }
 
 output "resource_group_name" {
   description = "Generated resource group name"
-  value       = azurecaf_name.imported_rg.result
+  value       = azurecaf_name.module_rg.result
 }
 
 output "key_vault_name" {
   description = "Generated key vault name"
-  value       = azurecaf_name.imported_kv.result
+  value       = azurecaf_name.module_kv.result
 }
 `
 }
@@ -505,12 +507,22 @@ resource "azurecaf_name" "my_rg" {
 # =========================
 #
 # Pattern 1: Import and define azurecaf_name within submodule
-# In modules/naming/main.tf:
+# In root main.tf:
 import {
-  to = azurecaf_name.module_storage
+  to = module.naming.azurecaf_name.module_storage
   id = "azurerm_storage_account:modulestorageaccount"
 }
 
+module "naming" {
+  source = "./modules/naming"
+}
+
+# Access the imported name through module output
+output "final_storage_name" {
+  value = module.naming.storage_name
+}
+
+# In modules/naming/main.tf:
 resource "azurecaf_name" "module_storage" {
   name          = "modulestorageaccount"
   resource_type = "azurerm_storage_account" 
@@ -519,16 +531,6 @@ resource "azurecaf_name" "module_storage" {
 
 output "storage_name" {
   value = azurecaf_name.module_storage.result
-}
-
-# In root main.tf:
-module "naming" {
-  source = "./modules/naming"
-}
-
-# Access the imported name through module output
-output "final_storage_name" {
-  value = module.naming.storage_name
 }
 
 # Pattern 2: Import and define azurecaf_name at root, pass to submodule
@@ -977,25 +979,25 @@ func TestResourceNameImport_SubmodulePatternValidation(t *testing.T) {
 	submoduleInternalPatternTests := []testCase{
 		{
 			name:        "submodule_internal_pattern_storage",
-			importID:    "azurerm_storage_account:submodulestorage123",
+			importID:    "azurerm_storage_account:modulestorageaccount123",
 			expectError: false,
 			expectedAttrs: map[string]interface{}{
-				"name":          "submodulestorage123",
+				"name":          "modulestorageaccount123",
 				"resource_type": "azurerm_storage_account",
 				"passthrough":   true,
-				"result":        "submodulestorage123",
+				"result":        "modulestorageaccount123",
 			},
 			description: "Pattern 1: azurecaf_name declared within submodule - storage account",
 		},
 		{
 			name:        "submodule_internal_pattern_rg",
-			importID:    "azurerm_resource_group:submodule-rg-prod",
+			importID:    "azurerm_resource_group:module-production-rg",
 			expectError: false,
 			expectedAttrs: map[string]interface{}{
-				"name":          "submodule-rg-prod",
+				"name":          "module-production-rg",
 				"resource_type": "azurerm_resource_group",
 				"passthrough":   true,
-				"result":        "submodule-rg-prod",
+				"result":        "module-production-rg",
 			},
 			description: "Pattern 1: azurecaf_name declared within submodule - resource group",
 		},
