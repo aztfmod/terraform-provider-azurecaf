@@ -74,15 +74,6 @@ The Azure CAF provider includes:
 - **[azurecaf_name](data-sources/azurecaf_name.md)** - Generate names at plan time (recommended approach)
 - **[azurecaf_environment_variable](data-sources/azurecaf_environment_variable.md)** - Read environment variables securely
 
-## Naming Conventions
-
-| Convention | Description | Pattern |
-|------------|-------------|---------|
-| **CAF Classic** | Microsoft CAF standard | `[prefix]-[resource-type]-[name]-[suffix]-[random]` |
-| **CAF Random** | CAF with max random fill | `[prefix]-[resource-type]-[name]-[suffix]-[random-to-max]` |
-| **Random** | Full random generation | `[prefix]-[name]-[suffix]-[random]` |
-| **Passthrough** | Validation only | `[exact-input-validated]` |
-
 ## Migration Guide
 
 If you're using the legacy `azurecaf_naming_convention` resource, migrate to `azurecaf_name`:
