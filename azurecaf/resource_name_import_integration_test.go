@@ -22,9 +22,25 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-// TestResourceNameImport_IntegrationBasic tests the basic import functionality using provider schema
-func TestResourceNameImport_IntegrationBasic(t *testing.T) {
-	// Get the provider and resource definition
+// testCase represents a single import test case
+type testCase struct {
+	name           string
+	importID       string
+	expectError    bool
+	expectedAttrs  map[string]interface{}
+	errorSubstring string
+	description    string
+}
+
+// integrationTestHelper provides common functionality for integration tests
+type integrationTestHelper struct {
+	provider           *schema.Provider
+	resourceDefinition *schema.Resource
+	t                  *testing.T
+}
+
+// newIntegrationTestHelper creates a new helper instance
+func newIntegrationTestHelper(t *testing.T) *integrationTestHelper {
 	provider := Provider()
 	resourceDefinition := provider.ResourcesMap["azurecaf_name"]
 	
@@ -32,16 +48,110 @@ func TestResourceNameImport_IntegrationBasic(t *testing.T) {
 		t.Fatal("azurecaf_name resource not found in provider")
 	}
 	
-	// Verify that the importer is properly configured
-	if resourceDefinition.Importer == nil {
-		t.Fatal("azurecaf_name resource does not have importer configured")
+	if resourceDefinition.Importer == nil || resourceDefinition.Importer.State == nil {
+		t.Fatal("azurecaf_name resource does not have importer configured properly")
 	}
 	
-	if resourceDefinition.Importer.State == nil {
-		t.Fatal("azurecaf_name resource importer does not have State function configured")
+	return &integrationTestHelper{
+		provider:           provider,
+		resourceDefinition: resourceDefinition,
+		t:                  t,
 	}
-	
+}
+
+// runImportTest executes a single import test case
+func (h *integrationTestHelper) runImportTest(tc testCase) {
+	h.t.Run(tc.name, func(t *testing.T) {
+		// Create ResourceData instance
+		resourceData := schema.TestResourceDataRaw(t, h.resourceDefinition.Schema, map[string]interface{}{})
+		resourceData.SetId(tc.importID)
+		
+		// Execute import
+		result, err := h.resourceDefinition.Importer.State(resourceData, nil)
+		
+		// Handle error cases
+		if tc.expectError {
+			if err == nil {
+				t.Errorf("Expected error but got none")
+				return
+			}
+			if tc.errorSubstring != "" && !regexp.MustCompile(tc.errorSubstring).MatchString(err.Error()) {
+				t.Errorf("Expected error to contain '%s', but got: %s", tc.errorSubstring, err.Error())
+			}
+			t.Logf("Got expected error: %s", err.Error())
+			return
+		}
+		
+		// Handle success cases
+		if err != nil {
+			t.Errorf("Unexpected error: %v", err)
+			return
+		}
+		
+		if len(result) != 1 {
+			t.Errorf("Expected 1 resource data object, got %d", len(result))
+			return
+		}
+		
+		// Validate attributes
+		importedData := result[0]
+		for attrName, expectedValue := range tc.expectedAttrs {
+			actualValue := importedData.Get(attrName)
+			if actualValue != expectedValue {
+				t.Errorf("Expected %s to be %v, got %v", attrName, expectedValue, actualValue)
+			}
+		}
+		
+		t.Logf("Successfully imported %s with result: %s", tc.importID, importedData.Get("result"))
+	})
+}
+
+// TestResourceNameImport_IntegrationBasic tests the basic import functionality using provider schema
+func TestResourceNameImport_IntegrationBasic(t *testing.T) {
+	helper := newIntegrationTestHelper(t)
 	t.Log("Import functionality is properly configured in the provider")
+	
+	// Basic integration test cases
+	testCases := []testCase{
+		{
+			name:        "valid_storage_account_import",
+			importID:    "azurerm_storage_account:mystorageaccount123",
+			expectError: false,
+			expectedAttrs: map[string]interface{}{
+				"name":          "mystorageaccount123",
+				"resource_type": "azurerm_storage_account",
+				"passthrough":   true,
+				"result":        "mystorageaccount123",
+			},
+		},
+		{
+			name:        "valid_resource_group_import",
+			importID:    "azurerm_resource_group:my-production-rg",
+			expectError: false,
+			expectedAttrs: map[string]interface{}{
+				"name":          "my-production-rg",
+				"resource_type": "azurerm_resource_group",
+				"passthrough":   true,
+				"result":        "my-production-rg",
+			},
+		},
+		{
+			name:           "invalid_format",
+			importID:       "invalid-format-no-colon",
+			expectError:    true,
+			errorSubstring: "invalid import ID format",
+		},
+		{
+			name:           "unsupported_resource_type",
+			importID:       "invalid_resource_type:somename",
+			expectError:    true,
+			errorSubstring: "unsupported resource type",
+		},
+	}
+	
+	for _, tc := range testCases {
+		helper.runImportTest(tc)
+	}
 }
 
 // TestResourceNameImport_AcceptanceStyleBasic demonstrates how the import tests would work in full acceptance test mode
@@ -96,301 +206,86 @@ resource "azurecaf_name" "test" {
 `
 }
 
-// TestResourceNameImport_IntegrationWithResourceData tests the import function with actual ResourceData
-func TestResourceNameImport_IntegrationWithResourceData(t *testing.T) {
-	// Get the provider and resource definition
-	provider := Provider()
-	resourceDefinition := provider.ResourcesMap["azurecaf_name"]
-	
-	testCases := []struct {
-		name            string
-		importID        string
-		expectError     bool
-		expectedAttrs   map[string]interface{}
-		errorSubstring  string
-	}{
-		{
-			name:        "valid_storage_account_import",
-			importID:    "azurerm_storage_account:mystorageaccount123",
-			expectError: false,
-			expectedAttrs: map[string]interface{}{
-				"name":          "mystorageaccount123",
-				"resource_type": "azurerm_storage_account",
-				"passthrough":   true,
-				"result":        "mystorageaccount123",
-			},
-		},
-		{
-			name:        "valid_resource_group_import",
-			importID:    "azurerm_resource_group:my-production-rg",
-			expectError: false,
-			expectedAttrs: map[string]interface{}{
-				"name":          "my-production-rg",
-				"resource_type": "azurerm_resource_group",
-				"passthrough":   true,
-				"result":        "my-production-rg",
-			},
-		},
-		{
-			name:           "invalid_format",
-			importID:       "invalid-format-no-colon",
-			expectError:    true,
-			errorSubstring: "invalid import ID format",
-		},
-		{
-			name:           "unsupported_resource_type",
-			importID:       "invalid_resource_type:somename",
-			expectError:    true,
-			errorSubstring: "unsupported resource type",
-		},
-		{
-			name:           "invalid_name",
-			importID:       "azurerm_storage_account:Invalid-Storage-Account-Name!@#",
-			expectError:    true,
-			errorSubstring: "does not comply with Azure naming requirements",
-		},
-	}
-	
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			// Create a new ResourceData instance for each test
-			resourceData := schema.TestResourceDataRaw(t, resourceDefinition.Schema, map[string]interface{}{})
-			resourceData.SetId(tc.importID)
-			
-			// Call the import function
-			result, err := resourceDefinition.Importer.State(resourceData, nil)
-			
-			if tc.expectError {
-				if err == nil {
-					t.Errorf("Expected error but got none")
-				} else {
-					if tc.errorSubstring != "" && !regexp.MustCompile(tc.errorSubstring).MatchString(err.Error()) {
-						t.Errorf("Expected error to contain '%s', but got: %s", tc.errorSubstring, err.Error())
-					}
-					t.Logf("Got expected error: %s", err.Error())
-				}
-				return
-			}
-			
-			if err != nil {
-				t.Errorf("Unexpected error: %v", err)
-				return
-			}
-			
-			if len(result) != 1 {
-				t.Errorf("Expected 1 resource data object, got %d", len(result))
-				return
-			}
-			
-			// Verify the imported data
-			importedData := result[0]
-			
-			for attrName, expectedValue := range tc.expectedAttrs {
-				actualValue := importedData.Get(attrName)
-				if actualValue != expectedValue {
-					t.Errorf("Expected %s to be %v, got %v", attrName, expectedValue, actualValue)
-				}
-			}
-			
-			t.Logf("Successfully imported %s with result: %s", tc.importID, importedData.Get("result"))
-		})
-	}
-}
-
 // TestResourceNameImport_IntegrationMultipleResourceTypes tests importing various Azure resource types
 func TestResourceNameImport_IntegrationMultipleResourceTypes(t *testing.T) {
-	// Get the provider and resource definition
-	provider := Provider()
-	resourceDefinition := provider.ResourcesMap["azurecaf_name"]
+	helper := newIntegrationTestHelper(t)
 	
-	testCases := []struct {
+	// Define test cases for multiple resource types
+	resourceTypeTests := []struct {
 		resourceType string
 		validName    string
 		description  string
 	}{
-		{
-			resourceType: "azurerm_storage_account",
-			validName:    "mystorageaccount123",
-			description:  "Storage Account with valid lowercase alphanumeric name",
-		},
-		{
-			resourceType: "azurerm_resource_group",
-			validName:    "my-resource-group",
-			description:  "Resource Group with hyphens",
-		},
-		{
-			resourceType: "azurerm_virtual_network",
-			validName:    "my-vnet-prod",
-			description:  "Virtual Network with standard naming",
-		},
-		{
-			resourceType: "azurerm_subnet",
-			validName:    "my-subnet-web",
-			description:  "Subnet with descriptive name",
-		},
-		{
-			resourceType: "azurerm_key_vault",
-			validName:    "mycompanykeyvault01",
-			description:  "Key Vault with alphanumeric name",
-		},
-		{
-			resourceType: "azurerm_linux_virtual_machine",
-			validName:    "myproductionvm01",
-			description:  "Linux Virtual Machine with numbered suffix",
-		},
-		{
-			resourceType: "azurerm_windows_virtual_machine",
-			validName:    "mywindowsvm01",
-			description:  "Windows Virtual Machine with numbered suffix",
-		},
-		{
-			resourceType: "azurerm_application_gateway",
-			validName:    "my-appgw-prod",
-			description:  "Application Gateway with environment suffix",
-		},
-		{
-			resourceType: "azurerm_network_security_group",
-			validName:    "my-nsg-web",
-			description:  "Network Security Group with tier suffix",
-		},
-		{
-			resourceType: "azurerm_public_ip",
-			validName:    "my-pip-gateway",
-			description:  "Public IP with purpose suffix",
-		},
+		{"azurerm_storage_account", "mystorageaccount123", "Storage Account with valid lowercase alphanumeric name"},
+		{"azurerm_resource_group", "my-resource-group", "Resource Group with hyphens"},
+		{"azurerm_virtual_network", "my-vnet-prod", "Virtual Network with standard naming"},
+		{"azurerm_subnet", "my-subnet-web", "Subnet with descriptive name"},
+		{"azurerm_key_vault", "mycompanykeyvault01", "Key Vault with alphanumeric name"},
+		{"azurerm_linux_virtual_machine", "myproductionvm01", "Linux Virtual Machine with numbered suffix"},
+		{"azurerm_windows_virtual_machine", "mywindowsvm01", "Windows Virtual Machine with numbered suffix"},
+		{"azurerm_application_gateway", "my-appgw-prod", "Application Gateway with environment suffix"},
+		{"azurerm_network_security_group", "my-nsg-web", "Network Security Group with tier suffix"},
+		{"azurerm_public_ip", "my-pip-gateway", "Public IP with purpose suffix"},
+	}
+	
+	// Convert to test cases and run
+	var testCases []testCase
+	for _, rt := range resourceTypeTests {
+		testCases = append(testCases, testCase{
+			name:        fmt.Sprintf("%s_%s", rt.resourceType, rt.validName),
+			importID:    fmt.Sprintf("%s:%s", rt.resourceType, rt.validName),
+			expectError: false,
+			expectedAttrs: map[string]interface{}{
+				"name":          rt.validName,
+				"resource_type": rt.resourceType,
+				"passthrough":   true,
+				"result":        rt.validName,
+			},
+			description: rt.description,
+		})
 	}
 	
 	for _, tc := range testCases {
-		t.Run(fmt.Sprintf("%s_%s", tc.resourceType, tc.validName), func(t *testing.T) {
-			importID := fmt.Sprintf("%s:%s", tc.resourceType, tc.validName)
-			
-			// Create a new ResourceData instance for each test
-			resourceData := schema.TestResourceDataRaw(t, resourceDefinition.Schema, map[string]interface{}{})
-			resourceData.SetId(importID)
-			
-			// Call the import function
-			result, err := resourceDefinition.Importer.State(resourceData, nil)
-			
-			if err != nil {
-				t.Errorf("Unexpected error for %s: %v", tc.description, err)
-				return
-			}
-			
-			if len(result) != 1 {
-				t.Errorf("Expected 1 resource data object, got %d", len(result))
-				return
-			}
-			
-			// Verify the imported data
-			importedData := result[0]
-			
-			expectedAttrs := map[string]interface{}{
-				"name":          tc.validName,
-				"resource_type": tc.resourceType,
-				"passthrough":   true,
-				"result":        tc.validName,
-			}
-			
-			for attrName, expectedValue := range expectedAttrs {
-				actualValue := importedData.Get(attrName)
-				if actualValue != expectedValue {
-					t.Errorf("For %s - Expected %s to be %v, got %v", tc.description, attrName, expectedValue, actualValue)
-				}
-			}
-			
-			t.Logf("Successfully imported %s: %s -> %s", tc.description, importID, importedData.Get("result"))
-		})
+		helper.runImportTest(tc)
 	}
 }
 
 // TestResourceNameImport_IntegrationPassthroughBehavior verifies that imported resources automatically use passthrough mode
 func TestResourceNameImport_IntegrationPassthroughBehavior(t *testing.T) {
-	provider := Provider()
-	resourceDefinition := provider.ResourcesMap["azurecaf_name"]
+	helper := newIntegrationTestHelper(t)
 	
-	testCases := []struct {
+	passthroughTests := []struct {
 		importID     string
 		expectedName string
 	}{
-		{
-			importID:     "azurerm_storage_account:mystorageaccount123",
-			expectedName: "mystorageaccount123",
-		},
-		{
-			importID:     "azurerm_resource_group:very-long-resource-group-name",
-			expectedName: "very-long-resource-group-name",
-		},
-		{
-			importID:     "azurerm_key_vault:SpecialCharactersKV",
-			expectedName: "SpecialCharactersKV",
-		},
+		{"azurerm_storage_account:mystorageaccount123", "mystorageaccount123"},
+		{"azurerm_resource_group:very-long-resource-group-name", "very-long-resource-group-name"},
+		{"azurerm_key_vault:SpecialCharactersKV", "SpecialCharactersKV"},
 	}
 	
-	for _, tc := range testCases {
-		t.Run(tc.importID, func(t *testing.T) {
-			// Create a new ResourceData instance for each test
-			resourceData := schema.TestResourceDataRaw(t, resourceDefinition.Schema, map[string]interface{}{})
-			resourceData.SetId(tc.importID)
-			
-			// Call the import function
-			result, err := resourceDefinition.Importer.State(resourceData, nil)
-			
-			if err != nil {
-				t.Errorf("Unexpected error: %v", err)
-				return
-			}
-			
-			if len(result) != 1 {
-				t.Errorf("Expected 1 resource data object, got %d", len(result))
-				return
-			}
-			
-			importedData := result[0]
-			
-			// Verify passthrough is enabled
-			if !importedData.Get("passthrough").(bool) {
-				t.Errorf("Expected passthrough to be true for imported resource")
-			}
-			
-			// Verify the result matches the original name exactly
-			if importedData.Get("result").(string) != tc.expectedName {
-				t.Errorf("Expected result to be %s, got %s", tc.expectedName, importedData.Get("result"))
-			}
-			
-			// Verify that other attributes are set to sensible defaults for import
-			if importedData.Get("clean_input").(bool) != true {
-				t.Errorf("Expected clean_input to be true for imported resource")
-			}
-			
-			if importedData.Get("use_slug").(bool) != true {
-				t.Errorf("Expected use_slug to be true for imported resource")
-			}
-			
-			if importedData.Get("separator").(string) != "-" {
-				t.Errorf("Expected separator to be '-' for imported resource")
-			}
-			
-			if importedData.Get("random_length").(int) != 0 {
-				t.Errorf("Expected random_length to be 0 for imported resource")
-			}
-			
-			t.Logf("Verified passthrough behavior for imported resource: %s", tc.importID)
-		})
+	for _, pt := range passthroughTests {
+		tc := testCase{
+			name:        pt.importID,
+			importID:    pt.importID,
+			expectError: false,
+			expectedAttrs: map[string]interface{}{
+				"passthrough":    true,
+				"result":         pt.expectedName,
+				"clean_input":    true,
+				"use_slug":       true,
+				"separator":      "-",
+				"random_length":  0,
+			},
+		}
+		helper.runImportTest(tc)
 	}
 }
 
 // TestResourceNameImport_IntegrationEdgeCases tests edge cases in import functionality
 func TestResourceNameImport_IntegrationEdgeCases(t *testing.T) {
-	provider := Provider()
-	resourceDefinition := provider.ResourcesMap["azurecaf_name"]
+	helper := newIntegrationTestHelper(t)
 	
-	testCases := []struct {
-		name           string
-		importID       string
-		expectError    bool
-		errorSubstring string
-		description    string
-	}{
+	edgeCases := []testCase{
 		{
 			name:           "empty_import_id",
 			importID:       "",
@@ -413,10 +308,10 @@ func TestResourceNameImport_IntegrationEdgeCases(t *testing.T) {
 			description:    "Import ID with multiple colons should be rejected",
 		},
 		{
-			name:           "empty_resource_type",
-			importID:       ":mystorageaccount123",
-			expectError:    false,  // Empty resource type maps to "general" resource type in models_generated.go
-			description:    "Empty resource type maps to general resource type",
+			name:        "empty_resource_type",
+			importID:    ":mystorageaccount123",
+			expectError: false, // Empty resource type maps to "general" resource type
+			description: "Empty resource type maps to general resource type",
 		},
 		{
 			name:           "empty_name",
@@ -426,10 +321,10 @@ func TestResourceNameImport_IntegrationEdgeCases(t *testing.T) {
 			description:    "Empty name should be rejected",
 		},
 		{
-			name:           "valid_minimum_length_name",
-			importID:       "azurerm_storage_account:abc",
-			expectError:    false,
-			description:    "Minimum length valid name should be accepted",
+			name:        "valid_minimum_length_name",
+			importID:    "azurerm_storage_account:abc",
+			expectError: false,
+			description: "Minimum length valid name should be accepted",
 		},
 		{
 			name:           "case_sensitive_resource_type",
@@ -440,38 +335,7 @@ func TestResourceNameImport_IntegrationEdgeCases(t *testing.T) {
 		},
 	}
 	
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			// Create a new ResourceData instance for each test
-			resourceData := schema.TestResourceDataRaw(t, resourceDefinition.Schema, map[string]interface{}{})
-			resourceData.SetId(tc.importID)
-			
-			// Call the import function
-			result, err := resourceDefinition.Importer.State(resourceData, nil)
-			
-			if tc.expectError {
-				if err == nil {
-					t.Errorf("Expected error for %s but got none", tc.description)
-				} else {
-					if tc.errorSubstring != "" && !regexp.MustCompile(tc.errorSubstring).MatchString(err.Error()) {
-						t.Errorf("Expected error to contain '%s', but got: %s", tc.errorSubstring, err.Error())
-					}
-					t.Logf("%s: Got expected error: %s", tc.description, err.Error())
-				}
-				return
-			}
-			
-			if err != nil {
-				t.Errorf("Unexpected error for %s: %v", tc.description, err)
-				return
-			}
-			
-			if len(result) != 1 {
-				t.Errorf("Expected 1 resource data object, got %d", len(result))
-				return
-			}
-			
-			t.Logf("%s: Successfully handled edge case", tc.description)
-		})
+	for _, tc := range edgeCases {
+		helper.runImportTest(tc)
 	}
 }
