@@ -232,32 +232,6 @@ For the complete list of 300+ supported resource types, see the [Resource Types 
 
 </details>
 
-## 🎨 Naming Conventions
-
-### CAF Classic (Default)
-Follows Microsoft Cloud Adoption Framework naming conventions:
-```
-[prefix]-[resource-type-slug]-[name]-[suffix]-[random]
-```
-
-### CAF Random  
-Similar to CAF Classic but fills remaining space with random characters:
-```
-[prefix]-[resource-type-slug]-[name]-[suffix]-[random-to-max-length]
-```
-
-### Passthrough
-Validates existing names without modification:
-```
-[exact-input-name]  # validated against Azure rules
-```
-
-### Custom Patterns
-Use custom separators and disable slugs for full control:
-```
-[prefix][separator][name][separator][suffix][separator][random]
-```
-
 ## 🚀 Advanced Usage
 
 ### Environment-Based Naming
