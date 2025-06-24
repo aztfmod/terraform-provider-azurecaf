@@ -11,6 +11,18 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
+// resourceNamingConvention creates and returns the schema for the azurecaf_naming_convention resource.
+//
+// This is the legacy naming convention resource that has been superseded by azurecaf_name.
+// It is maintained for backward compatibility but new implementations should use azurecaf_name instead.
+//
+// The resource supports different naming methodologies:
+//   - cafclassic: Standard CAF naming with prefixes and suffixes
+//   - cafrandom: CAF naming with random padding to maximum length
+//   - random: Fully random naming within Azure constraints
+//   - passthrough: Validation-only mode for existing names
+//
+// Deprecated: Use azurecaf_name resource instead for new implementations.
 func resourceNamingConvention() *schema.Resource {
 	resourceMapsKeys := make([]string, 0, len(Resources))
 	for k := range Resources {

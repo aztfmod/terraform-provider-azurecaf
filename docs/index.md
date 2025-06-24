@@ -1,18 +1,124 @@
-# Azurecaf provider
+# Azure CAF Terraform Provider
 
-> :warning: This solution, offered by the Open-Source community, will no longer receive contributions from Microsoft.
+[![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)](https://registry.terraform.io/providers/aztfmod/azurecaf/latest)
+[![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)](https://golang.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
-The Azurecaf provider is a *logical provider* which means that it works entirely within Terraform's logic, and doesn't interact with any other services. The goal of this provider is to provider helper methods in implementing Azure landing zones using Terraform.
+> :information_source: This solution is offered and supported by the Open-Source community
 
-The Azurecaf provider currently contains a two resources based on the Terraform Random_string provider. The naming_convention resources enforce is the first iteration of our naming convention implementation enforcing Azure Cloud Adoption Framework naming convention.
+## Overview
 
-As per the growing number of azure resources a new implementation is now available using the azurecaf_name resource to avoid breaking changes. The new implementation supports an extensive list of resource types and will be updated on a regular basis as new services are released
+The Azure CAF (Cloud Adoption Framework) provider is a *logical provider* that operates entirely within Terraform's logic without interacting with external services. It provides helper methods for implementing Azure landing zones using Terraform with consistent, compliant resource naming.
 
-## Resource types
+## Key Features
 
-We define resource types as per: <https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging>
+- **🏗️ Generate compliant Azure resource names** following CAF guidelines and Azure naming restrictions
+- **🧹 Clean and sanitize inputs** to ensure compliance with allowed patterns for each Azure resource type
+- **🎲 Add random characters** for uniqueness when required
+- **🏷️ Handle prefixes and suffixes** (manual or CAF-compliant)
+- **✅ Validate existing names** using passthrough mode
+- **🔄 Support multiple naming conventions** (CAF Classic, CAF Random, Random, Passthrough)
+- **📋 Support 300+ Azure resource types** with accurate validation rules
 
-Current supported resource types:
+## Quick Start
+
+### Installation
+
+Add the provider to your Terraform configuration:
+
+```hcl
+terraform {
+  required_providers {
+    azurecaf = {
+      source  = "aztfmod/azurecaf"
+      version = "~> 1.2.28"
+    }
+  }
+}
+
+provider "azurecaf" {
+  # Configuration options
+}
+```
+
+### Basic Example
+
+```hcl
+# Data source (recommended - evaluated at plan time)
+data "azurecaf_name" "example" {
+  name          = "myproject"
+  resource_type = "azurerm_resource_group"
+  prefixes      = ["prod"]
+  suffixes      = ["001"]
+  random_length = 5
+  clean_input   = true
+}
+
+resource "azurerm_resource_group" "example" {
+  name     = data.azurecaf_name.example.result
+  location = "East US"
+}
+
+# Output: "rg-prod-myproject-001-a1b2c"
+```
+
+## Provider Components
+
+The Azure CAF provider includes:
+
+### Resources
+- **[azurecaf_name](resources/azurecaf_name.md)** - Generate Azure-compliant resource names (recommended)
+- **[azurecaf_naming_convention](resources/azurecaf_naming_convention.md)** - Legacy naming convention resource
+
+### Data Sources
+- **[azurecaf_name](data-sources/azurecaf_name.md)** - Generate names at plan time (recommended approach)
+- **[azurecaf_environment_variable](data-sources/azurecaf_environment_variable.md)** - Read environment variables securely
+
+## Migration Guide
+
+If you're using the legacy `azurecaf_naming_convention` resource, migrate to `azurecaf_name`:
+
+```hcl
+# Legacy (deprecated)
+resource "azurecaf_naming_convention" "old" {
+  name         = "myapp"
+  resource_type = "rg"
+  convention   = "cafrandom"
+}
+
+# New (recommended)
+data "azurecaf_name" "new" {
+  name          = "myapp"
+  resource_type = "azurerm_resource_group"
+  random_length = 5
+}
+```
+
+## Supported Azure Resource Types
+
+The provider supports **300+ Azure resource types** with accurate naming validation rules. Each resource type has specific constraints for:
+
+- **Length requirements** (minimum and maximum)
+- **Character restrictions** (allowed patterns)
+- **Case sensitivity** requirements
+- **Uniqueness scope** (global, resource group, or parent resource)
+
+### Popular Resource Types
+
+| Resource Type | Slug | Min | Max | Example Generated Name |
+|---------------|------|-----|-----|----------------------|
+| `azurerm_resource_group` | `rg` | 1 | 90 | `rg-prod-myapp-001` |
+| `azurerm_storage_account` | `st` | 3 | 24 | `stprodmyapp001` |
+| `azurerm_key_vault` | `kv` | 3 | 24 | `kv-prod-myapp-001` |
+| `azurerm_app_service` | `app` | 2 | 60 | `app-prod-myapp-001` |
+| `azurerm_kubernetes_cluster` | `aks` | 1 | 63 | `aks-prod-myapp-001` |
+| `azurerm_virtual_machine` | `vm` | 1 | 15 | `vm-prod-001` |
+| `azurerm_sql_server` | `sql` | 1 | 63 | `sql-prod-myapp-001` |
+
+<details>
+<summary>📋 View Complete Resource Type List</summary>
+
+### Complete Supported Resource Types
 
 | Resource type           | Resource type code (short)  | minimum length  |  maximum length | lowercase only | validation regex                          |
 | ------------------------| ----------------------------|-----------------|-----------------|----------------|-------------------------------------------|
@@ -237,3 +343,82 @@ cat resourceDefinition_out_of_docs.json | jq -r '.[] | "| \(.name)| \(.slug)| \(
 | databricks_cluster| dbc| 3| 30| false| "^[a-zA-Z0-9-_]{3,30}$"|
 | databricks_standard_cluster| dbsc| 3| 30| false| "^[a-zA-Z0-9-_]{3,30}$"|
 | databricks_high_concurrency_cluster| dbhcc| 3| 30| false| "^[a-zA-Z0-9-_]{3,30}$"|
+
+</details>
+
+*Resource types are defined according to [Azure Cloud Adoption Framework naming and tagging best practices](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging).*
+
+## Configuration Examples
+
+### Environment-Based Naming
+
+```hcl
+locals {
+  environment_config = {
+    dev = {
+      prefix = "dev"
+      random_length = 3
+    }
+    prod = {
+      prefix = "prod" 
+      random_length = 5
+    }
+  }
+  
+  current_env = local.environment_config[var.environment]
+}
+
+data "azurecaf_name" "app_service" {
+  name          = var.application_name
+  resource_type = "azurerm_app_service"
+  prefixes      = [local.current_env.prefix]
+  random_length = local.current_env.random_length
+}
+```
+
+### Multiple Resource Generation
+
+```hcl
+data "azurecaf_name" "resources" {
+  for_each = toset([
+    "azurerm_resource_group",
+    "azurerm_storage_account", 
+    "azurerm_key_vault"
+  ])
+  
+  name          = var.project_name
+  resource_type = each.key
+  prefixes      = [var.environment]
+  random_length = 3
+}
+
+output "resource_names" {
+  value = { for k, v in data.azurecaf_name.resources : k => v.result }
+}
+```
+
+## Best Practices
+
+1. **Use Data Sources**: Prefer `data "azurecaf_name"` over `resource "azurecaf_name"` for better plan visibility
+2. **Consistent Naming**: Use the same prefixes and patterns across your infrastructure
+3. **Environment Separation**: Include environment identifiers in prefixes
+4. **Random Length**: Use appropriate random length for uniqueness without excessive length
+5. **Input Cleaning**: Keep `clean_input = true` (default) for compliance
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](https://github.com/aztfmod/terraform-provider-azurecaf/blob/main/CONTRIBUTING.md) for details.
+
+## Support
+
+- **Documentation**: [Terraform Registry](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs)
+- **Issues**: [GitHub Issues](https://github.com/aztfmod/terraform-provider-azurecaf/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/aztfmod/terraform-provider-azurecaf/discussions)
+
+## Related Projects
+
+| Project | Description |
+|---------|-------------|
+| [CAF Landing Zones](https://github.com/azure/caf-terraform-landingzones) | Azure landing zones implementation |
+| [CAF Modules](https://registry.terraform.io/modules/aztfmod) | Official CAF modules |
+| [Rover](https://github.com/aztfmod/rover) | DevOps toolset for landing zones |

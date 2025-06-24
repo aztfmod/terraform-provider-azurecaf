@@ -1,308 +1,479 @@
-# azurecaf_name
+# azurecaf_name (Resource)
 
-The resource azurecaf_name implements a set of methodologies to apply consistent resource naming using the default Microsoft Cloud Adoption Framework for Azure recommendations as per [naming-and-tagging](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging).
+The `azurecaf_name` resource generates Azure-compliant resource names following the Cloud Adoption Framework guidelines. This resource provides more flexibility and comprehensive resource type support compared to the legacy `azurecaf_naming_convention` resource.
 
-the azurecaf_name supersedes the previous azurecaf_naming_convention. This new resource provides more flexibility and will be updated on a regular basis as new Azure services are released.
+> **Note**: For most use cases, the [`azurecaf_name` data source](../data-sources/azurecaf_name.md) is recommended as it evaluates names at plan time, making them visible before resource creation.
 
-The azurecaf_name resource allows you to:
+## Key Features
 
-* Clean inputs to make sure they remain compliant with the allowed patterns for each Azure resource
-* Generate random characters to append at the end of the resource name
-* Handle prefix, suffixes (either manual or as per the Azure cloud adoption framework resource conventions)
-* Allow passthrough mode (simply validate the output)
+- **300+ Resource Types** - Comprehensive coverage of Azure services with accurate validation
+- **CAF Compliance** - Follows Microsoft Cloud Adoption Framework recommendations
+- **Multi-Resource Support** - Generate names for multiple related resource types simultaneously
+- **Flexible Configuration** - Supports prefixes, suffixes, random generation, and custom patterns
+- **Input Sanitization** - Automatically cleans inputs to ensure Azure compliance
+- **Validation Rules** - Enforces length, character, and pattern requirements per resource type
 
-## Example usage
+## Example Usage
 
-This example outputs one name, the result of the naming convention query. The result attribute returns the name based on the convention and parameters input.
+### Basic Resource Naming
 
-The example generates a 23 characters name compatible with the specification for an Azure Resource Group
-dev-aztfmod-001
+```hcl
+resource "azurecaf_name" "example" {
+  name          = "myapp"
+  resource_type = "azurerm_storage_account"
+  prefixes      = ["prod"]
+  suffixes      = ["001"]
+  random_length = 3
+  clean_input   = true
+}
+
+resource "azurerm_storage_account" "example" {
+  name                     = azurecaf_name.example.result
+  resource_group_name      = azurerm_resource_group.example.name
+  location                 = azurerm_resource_group.example.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
+
+# Output: "stprodmyapp001abc"
+```
+
+### Multi-Resource Naming
+
+Generate names for multiple related resource types with consistent settings:
+
+```hcl
+resource "azurecaf_name" "webapp_resources" {
+  name           = "webapp"
+  resource_type  = "azurerm_app_service"
+  resource_types = [
+    "azurerm_app_service_plan",
+    "azurerm_application_insights"
+  ]
+  prefixes       = ["prod"]
+  suffixes       = ["web"]
+  random_length  = 3
+  clean_input    = true
+}
+
+# Access names:
+# Primary: azurecaf_name.webapp_resources.result
+# Additional: azurecaf_name.webapp_resources.results["azurerm_app_service_plan"]
+# Additional: azurecaf_name.webapp_resources.results["azurerm_application_insights"]
+
+resource "azurerm_app_service_plan" "example" {
+  name                = azurecaf_name.webapp_resources.results["azurerm_app_service_plan"]
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+  
+  sku {
+    tier = "Standard"
+    size = "S1"
+  }
+}
+
+resource "azurerm_app_service" "example" {
+  name                = azurecaf_name.webapp_resources.result
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+  app_service_plan_id = azurerm_app_service_plan.example.id
+}
+```
+
+### Complex Naming Pattern
 
 ```hcl
 resource "azurecaf_name" "rg_example" {
-  name            = "demogroup"
-  resource_type   = "azurerm_resource_group"
-  prefixes        = ["a", "b"]
-  suffixes        = ["y", "z"]
-  random_length   = 5
-  clean_input     = true
+  name          = "demogroup"
+  resource_type = "azurerm_resource_group"
+  prefixes      = ["corp", "proj"]
+  suffixes      = ["web", "001"]
+  random_length = 5
+  separator     = "_"
+  clean_input   = true
 }
 
 resource "azurerm_resource_group" "demo" {
   name     = azurecaf_name.rg_example.result
   location = "southeastasia"
 }
+
+# Output: "corp_proj_rg_demogroup_web_001_abc12"
 ```
 
-The provider generates a name using the input parameters and automatically appends a prefix (if defined), a caf prefix (resource type) and postfix (if defined) in addition to a generated padding string based on the selected naming convention.
+### Passthrough Mode (Validation)
 
-The example above would generate a name using the pattern [prefix]-[cafprefix]-[name]-[postfix]-[5_random_chars]:
+```hcl
+resource "azurecaf_name" "existing_name" {
+  name          = "mystorageaccount123"
+  resource_type = "azurerm_storage_account"
+  passthrough   = true
+}
+
+# Validates and returns "mystorageaccount123" if compliant
+```
+
+### Custom Patterns
+
+```hcl
+resource "azurecaf_name" "custom_vm" {
+  name          = "database-server"
+  resource_type = "azurerm_linux_virtual_machine"
+  prefixes      = ["corp", "prod"]
+  suffixes      = ["db", "001"]
+  separator     = "_"
+  use_slug      = false  # No "vm" prefix
+  random_length = 4
+  clean_input   = true
+}
+
+# Output: "corp_prod_database_server_db_001_a1b2"
+```
 
 ## Argument Reference
 
 The following arguments are supported:
 
-* **name** - (optional) the basename of the resource to create, the basename will be sanitized as per supported characters set for each Azure resources.
-* **prefixes** (optional) - a list of prefix to append as the first characters of the generated name - prefixes will be separated by the separator character
-* **suffixes** (optional) -  a list of additional suffix added after the basename, this is can be used to append resource index (eg. vm-001). Suffixes are separated by the separator character
-* **random_length** (optional) - default to ``0`` : configure additional characters to append to the generated resource name. Random characters will remain compliant with the set of allowed characters per resources and will be appended before suffix(ess).
-* **random_seed** (optional) - default to ``0`` : Define the seed to be used for random generator. 0 will not be respected and will generate a seed based in the unix time of the generation.
-* **resource_type** (optional) -  describes the type of azure resource you are requesting a name from (eg. azure container registry: azurerm_container_registry). See the Resource Type section
-* **resource_types** (optional) -  a list of additional resource type should you want to use the same settings for a set of resources
-* **separator** (optional) - defaults to ``-``. The separator character to use between prefixes, resource type, name, suffixes, random character
-* **clean_input** (optional) - defaults to ``true``. remove any noncompliant character from the name, suffix or prefix.
-* **passthrough** (optional) - defaults to ``false``. Enables the passthrough mode - in that case only the clean input option is considered and the prefixes, suffixes, random, and are ignored. The resource prefixe is not added either to the resulting string
-* **use_slug** (optional) - defaults to ``true``. If a slug should be added to the name - If you put false no slug (the few letters that identify the resource type) will be added to the name.
+### Required Arguments
+
+* `resource_type` - (Required) The Azure resource type for name generation (e.g., `azurerm_storage_account`, `azurerm_resource_group`). See [supported resource types](../index.md#supported-azure-resource-types).
+
+### Optional Arguments
+
+* `name` - (Optional) The base name for the resource. Will be sanitized according to the resource type's allowed character set. Defaults to empty string.
+
+* `resource_types` - (Optional) List of additional resource types for generating multiple names with the same configuration. Used with the `results` attribute.
+
+* `prefixes` - (Optional) List of prefixes to prepend to the generated name. Prefixes are separated by the separator character. Defaults to `[]`.
+
+* `suffixes` - (Optional) List of suffixes to append to the generated name. Suffixes are separated by the separator character. Defaults to `[]`.
+
+* `random_length` - (Optional) Number of random characters to append. Random characters comply with the resource's allowed character set. Defaults to `0`.
+
+* `random_seed` - (Optional) Seed for random character generation. Use `0` for time-based seed (default behavior). Defaults to `0`.
+
+* `separator` - (Optional) Character used to separate name components (prefixes, resource type slug, name, suffixes). Defaults to `"-"`.
+
+* `clean_input` - (Optional) Remove non-compliant characters from name, prefixes, and suffixes. **Recommended to keep enabled.** Defaults to `true`.
+
+* `passthrough` - (Optional) Enable passthrough mode for name validation only. When enabled, only input cleaning is applied; prefixes, suffixes, random characters, and resource slug are ignored. Defaults to `false`.
+
+* `use_slug` - (Optional) Include resource type abbreviation (slug) in the generated name. When `false`, no resource type identifier is added. Defaults to `true`.
+
+# Name Composition and Truncation
+
+This section provides detailed information about how the Azure CAF provider composes resource names, handles length constraints, and applies truncation when necessary.
+
+## Name Composition Order
+
+The provider follows a specific order when composing resource names, controlled by the **name precedence** algorithm. The default precedence order is:
+
+1. **`name`** - The base name parameter
+2. **`slug`** - The resource type abbreviation (when `use_slug = true`)
+3. **`random`** - Random characters (when `random_length > 0`)
+4. **`suffixes`** - Suffix strings (applied in order)
+5. **`prefixes`** - Prefix strings (applied in reverse order)
+
+### Component Placement
+
+- **Prefixes**: Added to the **beginning** of the name (in reverse order: last prefix first)
+- **Slug**: Added to the **beginning** after prefixes
+- **Name**: The core name component
+- **Suffixes**: Added to the **end** (in order: first suffix first)
+- **Random**: Added to the **end** after suffixes
+
+### Example Composition
+
+```hcl
+resource "azurecaf_name" "example" {
+  name          = "myapp"
+  resource_type = "azurerm_storage_account"
+  prefixes      = ["corp", "prod"]
+  suffixes      = ["web", "001"]
+  random_length = 3
+  separator     = "-"
+}
+```
+
+**Composition process:**
+1. Start with empty name: `""`
+2. Add prefixes (reverse order): `"prod-corp"`
+3. Add slug: `"st-prod-corp"`
+4. Add name: `"st-prod-corp-myapp"`
+5. Add suffixes (forward order): `"st-prod-corp-myapp-web-001"`
+6. Add random: `"st-prod-corp-myapp-web-001-abc"`
+
+**Final result:** `"stprodcorpmyappweb001abc"` (after separator processing and lowercase conversion)
+
+## Length Constraints and Truncation
+
+### Maximum Length Enforcement
+
+Each Azure resource type has specific length constraints defined in the provider. When the composed name exceeds the maximum length, the provider applies intelligent truncation.
+
+### Truncation Algorithm
+
+The provider uses a **priority-based truncation** system that respects the name precedence order:
+
+1. **Calculate space**: Determine available space within the maximum length
+2. **Add components by precedence**: Add each component only if it fits within remaining space
+3. **Skip if no space**: If a component doesn't fit, it's skipped entirely
+4. **Final trim**: Apply final length trimming if necessary
+
+### Truncation Priority
+
+Components are added in this priority order (higher priority = added first):
+
+1. **`name`** (highest priority)
+2. **`slug`** 
+3. **`random`**
+4. **`suffixes`**
+5. **`prefixes`** (lowest priority)
+
+This means if space is limited:
+- The core `name` is always preserved
+- `prefixes` are the first to be dropped
+- `suffixes` are dropped before `random` or `slug`
+
+### Truncation Examples
+
+#### Example 1: Prefix Truncation
+```hcl
+# Storage account max length: 24 characters
+resource "azurecaf_name" "example" {
+  name          = "verylongapplicationname"  # 23 chars
+  resource_type = "azurerm_storage_account"
+  prefixes      = ["corporate"]              # 9 chars + separator
+  use_slug      = true                       # "st" = 2 chars
+}
+```
+
+**Process:**
+- Available space: 24 characters
+- Core name: "verylongapplicationname" (23 chars) - **added**
+- Slug: "st" (2 chars) - would exceed limit, **skipped**
+- Prefix: "corporate" - would exceed limit, **skipped**
+
+**Result:** `"verylongapplicationname"` (23 chars)
+
+#### Example 2: Suffix Truncation
+```hcl
+resource "azurecaf_name" "example" {
+  name          = "myapp"                    # 5 chars
+  resource_type = "azurerm_storage_account"
+  suffixes      = ["production", "web", "001"] # Multiple suffixes
+  random_length = 8                          # 8 chars
+  use_slug      = true                       # "st" = 2 chars
+}
+```
+
+**Process:**
+- Available space: 24 characters
+- Name: "myapp" (5 chars) - **added** (total: 5)
+- Slug: "st" (2 chars) - **added** (total: 7)
+- Random: 8 chars - **added** (total: 15)
+- Suffix "production" (10 chars) - **added** (total: 25) - exceeds limit, **skipped**
+- Suffix "web" (3 chars) - **added** (total: 18)
+- Suffix "001" (3 chars) - **added** (total: 21)
+
+**Result:** `"stmyappweb001abcdefgh"` (21 chars)
+
+## Component Processing Rules
+
+### Separator Handling
+
+- Separators are only added between components when both components are present
+- No leading or trailing separators
+- Separator length is included in total length calculations
+
+### Case Conversion
+
+Many Azure resource types require lowercase names:
+
+```hcl
+# Input with mixed case
+resource "azurecaf_name" "example" {
+  name          = "MyApp"
+  resource_type = "azurerm_storage_account"  # Requires lowercase
+}
+# Result: "stmyapp" (converted to lowercase)
+```
+
+### Input Cleaning
+
+When `clean_input = true`, the provider sanitizes inputs:
+
+- Removes invalid characters for the specific resource type
+- Applies character restrictions (e.g., alphanumeric only)
+- Removes characters that don't match the resource's validation pattern
+
+### Passthrough Mode
+
+When `passthrough = true`:
+
+- **Composition is bypassed** - only the `name` parameter is used
+- Prefixes, suffixes, slug, and random components are ignored
+- Length trimming and validation still apply
+- Useful for using pre-composed names while still getting validation
+
+```hcl
+resource "azurecaf_name" "example" {
+  name          = "mycustomstorageaccount"
+  resource_type = "azurerm_storage_account"
+  passthrough   = true
+  # prefixes, suffixes, etc. are ignored
+}
+# Result: "mycustomstorageaccount"
+```
+
+## Validation and Error Handling
+
+### Length Validation
+
+- Names that exceed maximum length after truncation will cause errors
+- Random length is validated against resource type constraints
+- Minimum length requirements are enforced
+
+### Pattern Validation
+
+After composition and truncation, names must match the resource type's validation pattern:
+
+```hcl
+# This might fail validation if the pattern doesn't allow certain characters
+resource "azurecaf_name" "example" {
+  name          = "my-app_name"
+  resource_type = "azurerm_storage_account"  # Only allows alphanumeric
+  clean_input   = false  # Won't clean invalid characters
+}
+# Error: Pattern validation failed
+```
+
+### Best Practices for Avoiding Truncation
+
+1. **Keep base names short** - The `name` parameter should be concise
+2. **Limit prefixes/suffixes** - Use only essential prefixes and suffixes
+3. **Consider resource constraints** - Check maximum lengths for your resource types
+4. **Use abbreviations** - Consider shorter alternatives for common terms
+5. **Test composition** - Use the data source version to preview names during planning
+
+```hcl
+# Good: Short, descriptive components
+resource "azurecaf_name" "example" {
+  name          = "api"
+  resource_type = "azurerm_storage_account"
+  prefixes      = ["prod"]
+  suffixes      = ["001"]
+  random_length = 3
+}
+# Result: "stprodapi001abc" (15 chars - well within 24 char limit)
+```
+
+This systematic approach ensures that generated names are always valid, predictable, and comply with Azure resource naming requirements while maximizing the use of available character space.
 
 ## Attributes Reference
 
 The following attributes are exported:
 
-* **id** - The id of the naming convention object
-* **result** - The generated named for an Azure Resource based on the input parameter and the selected naming convention
-* **results** - The generated name for the Azure resources based in the resource_types list
+* `id` - Unique identifier for the naming configuration
+* `result` - The generated Azure-compliant name for the primary resource type
+* `results` - Map of generated names for all resource types specified in `resource_types` (includes the primary `resource_type`)
 
-## Resource types
+## Naming Pattern
 
-We define resource types as per [naming-and-tagging](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging)
+The generated name follows this pattern (when using default settings):
 
-Current supported resource types:
+```
+[prefix]-[prefix]...-[resource-slug]-[name]-[suffix]-[suffix]...-[random]
+```
 
-| Resource type           | Resource type code (short)  | minimum length  |  maximum length | lowercase only | validation regex                          |
-| ------------------------| ----------------------------|-----------------|-----------------|----------------|-------------------------------------------|
-| azurerm_analysis_services_server| as| 3| 63| true| "^[a-z][a-z0-9]{2,62}$"|
-| azurerm_api_management_service| apim| 1| 50| false| "^[a-z][a-zA-Z0-9-][a-zA-Z0-9]{0,48}$"|
-| azurerm_app_configuration| appcg| 5| 50| false| "^[a-zA-Z0-9_-]{5,50}$"|
-| azurerm_role_assignment| ra| 1| 64| false| "^[^%]{0,63}[^ %.]$"|
-| azurerm_role_definition| rd| 1| 64| false| "^[^%]{0,63}[^ %.]$"|
-| azurerm_automation_account| aa| 6| 50| false| "^[a-zA-Z][a-zA-Z0-9-]{4,48}[a-zA-Z0-9]$"|
-| azurerm_automation_certificate| aacert| 1| 128| false| "^[^<>*%:.?\\+\\/]{0,127}[^<>*%:.?\\+\\/ ]$"|
-| azurerm_automation_credential| aacred| 1| 128| false| "^[^<>*%:.?\\+\\/]{0,127}[^<>*%:.?\\+\\/ ]$"|
-| azurerm_automation_job_schedule| aajs| 1| 128| false| "^[^<>*%:.?\\+\\/]{0,127}[^<>*%:.?\\+\\/ ]$"|
-| azurerm_automation_runbook| aarun| 1| 63| false| "^[a-zA-Z][a-zA-Z0-9-]{0,62}$"|
-| azurerm_automation_schedule| aasched| 1| 128| false| "^[^<>*%:.?\\+\\/]{0,127}[^<>*%:.?\\+\\/ ]$"|
-| azurerm_automation_variable| aavar| 1| 128| false| "^[^<>*%:.?\\+\\/]{0,127}[^<>*%:.?\\+\\/ ]$"|
-| azurerm_batch_account| ba| 3| 24| true| "^[a-z0-9]{3,24}$"|
-| azurerm_batch_application| baapp| 1| 64| false| "^[a-zA-Z0-9_-]{1,64}$"|
-| azurerm_batch_certificate| bacert| 5| 45| false| "^[a-zA-Z0-9_-]{5,45}$"|
-| azurerm_batch_pool| bapool| 3| 24| false| "^[a-zA-Z0-9_-]{1,24}$"|
-| azurerm_bot_web_app| bot| 2| 64| false| "^[a-zA-Z0-9][a-zA-Z0-9-_.]{1,63}$"|
-| azurerm_bot_channel_Email| botmail| 2| 64| false| "^[a-zA-Z0-9][a-zA-Z0-9-_.]{1,63}$"|
-| azurerm_bot_channel_ms_teams| botteams| 2| 64| false| "^[a-zA-Z0-9][a-zA-Z0-9-_.]{1,63}$"|
-| azurerm_bot_channel_slack| botslack| 2| 64| false| "^[a-zA-Z0-9][a-zA-Z0-9-_.]{1,63}$"|
-| azurerm_bot_channel_directline| botline| 2| 64| false| "^[a-zA-Z0-9][a-zA-Z0-9-_.]{1,63}$"|
-| azurerm_bot_channels_registration| botchan| 2| 64| false| "^[a-zA-Z0-9][a-zA-Z0-9-_.]{1,63}$"|
-| azurerm_bot_connection| botcon| 2| 64| false| "^[a-zA-Z0-9][a-zA-Z0-9-_.]{1,63}$"|
-| azurerm_bot_service_azure_bot| botaz| 2| 64| false| "^[a-zA-Z0-9][a-zA-Z0-9-_.]{1,63}$"|
-| azurerm_redis_cache| redis| 1| 63| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]$"|
-| azurerm_redis_firewall_rule| redisfw| 1| 256| false| "^[a-zA-Z0-9]{1,256}$"|
-| azurerm_cdn_profile| cdnprof| 1| 260| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{0,258}[a-zA-Z0-9]$"|
-| azurerm_cdn_endpoint| cdn| 1| 50| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{0,48}[a-zA-Z0-9]$"|
-| azurerm_cognitive_account| cog| 2| 64| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{0,63}$"|
-| azurerm_availability_set| avail| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_disk_encryption_set| des| 1| 80| false| "^[a-zA-Z0-9_]{1,80}$"|
-| azurerm_image| img| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_linux_virtual_machine| vm| 1| 64| false| "^[^\\/\"\\[\\]:|<>+=;,?*@&_][^\\/\"\\[\\]:|<>+=;,?*@&]{0,62}[^\\/\"\\[\\]:|<>+=;,?*@&.-]$"|
-| azurerm_linux_virtual_machine_scale_set| vmss| 1| 64| false| "^[^\\/\"\\[\\]:|<>+=;,?*@&_][^\\/\"\\[\\]:|<>+=;,?*@&]{0,62}[^\\/\"\\[\\]:|<>+=;,?*@&.-]$"|
-| azurerm_managed_disk| dsk| 1| 80| false| "^[a-zA-Z0-9_]{1,80}$"|
-| azurerm_virtual_machine| vm| 1| 15| false| "^[^\\/\"\\[\\]:|<>+=;,?*@&_][^\\/\"\\[\\]:|<>+=;,?*@&]{0,13}[^\\/\"\\[\\]:|<>+=;,?*@&.-]$"|
-| azurerm_virtual_machine_scale_set| vmss| 1| 15| false| "^[^\\/\"\\[\\]:|<>+=;,?*@&_][^\\/\"\\[\\]:|<>+=;,?*@&]{0,13}[^\\/\"\\[\\]:|<>+=;,?*@&.-]$"|
-| azurerm_windows_virtual_machine| vm| 1| 15| false| "^[^\\/\"\\[\\]:|<>+=;,?*@&_][^\\/\"\\[\\]:|<>+=;,?*@&]{0,13}[^\\/\"\\[\\]:|<>+=;,?*@&.-]$"|
-| azurerm_windows_virtual_machine_scale_set| vmss| 1| 15| false| "^[^\\/\"\\[\\]:|<>+=;,?*@&_][^\\/\"\\[\\]:|<>+=;,?*@&]{0,13}[^\\/\"\\[\\]:|<>+=;,?*@&.-]$"|
-| azurerm_containerGroups| cg| 1| 63| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]$"|
-| azurerm_container_app| ca| 1| 32| true| "^[a-z0-9][a-z0-9-]{0,30}[a-z0-9]$"|
-| azurerm_container_app_environment| cae| 1| 60| false| "^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$"|
-| azurerm_container_registry| cr| 1| 63| true| "^[a-zA-Z0-9]{1,63}$"|
-| azurerm_container_registry_webhook| crwh| 1| 50| false| "^[a-zA-Z0-9]{1,50}$"|
-| azurerm_kubernetes_cluster| aks| 1| 63| false| "^[a-zA-Z0-9][a-zA-Z0-9-_]{0,61}[a-zA-Z0-9]$"|
-| azurerm_cosmosdb_account| cosmos| 1| 63| false| "^[a-z0-9][a-zA-Z0-9-_.]{0,61}[a-zA-Z0-9]$"|
-| azurerm_custom_provider| prov| 3| 64| false| "^[^&%?\\/]{2,63}[^&%.?\\/ ]$"|
-| azurerm_mariadb_server| maria| 3| 63| false| "^[a-z0-9][a-zA-Z0-9-]{1,61}[a-z0-9]$"|
-| azurerm_mariadb_firewall_rule| mariafw| 1| 128| false| "^[a-zA-Z0-9-_]{1,128}$"|
-| azurerm_mariadb_database| mariadb| 1| 63| false| "^[a-zA-Z0-9-_]{1,63}$"|
-| azurerm_mariadb_virtual_network_rule| mariavn| 1| 128| false| "^[a-zA-Z0-9-_]{1,128}$"|
-| azurerm_mysql_server| mysql| 3| 63| false| "^[a-z0-9][a-zA-Z0-9-]{1,61}[a-z0-9]$"|
-| azurerm_mysql_firewall_rule| mysqlfw| 1| 128| false| "^[a-zA-Z0-9-_]{1,128}$"|
-| azurerm_mysql_database| mysqldb| 1| 63| false| "^[a-zA-Z0-9-_]{1,63}$"|
-| azurerm_mysql_virtual_network_rule| mysqlvn| 1| 128| false| "^[a-zA-Z0-9-_]{1,128}$"|
-| azurerm_postgresql_server| psql| 3| 63| false| "^[a-z0-9][a-zA-Z0-9-]{1,61}[a-z0-9]$"|
-| azurerm_postgresql_firewall_rule| psqlfw| 1| 128| false| "^[a-zA-Z0-9-_]{1,128}$"|
-| azurerm_postgresql_database| psqldb| 1| 63| false| "^[a-zA-Z0-9-_]{1,63}$"|
-| azurerm_postgresql_virtual_network_rule| psqlvn| 1| 128| false| "^[a-zA-Z0-9-_]{1,128}$"|
-| azurerm_database_migration_project| migr| 2| 57| false| "^[a-zA-Z0-9][a-zA-Z0-9-_.]{1,56}$"|
-| azurerm_database_migration_service| dms| 2| 62| false| "^[a-zA-Z0-9][a-zA-Z0-9-_.]{1,61}$"|
-| azurerm_databricks_workspace| dbw| 3| 30| false| "^[a-zA-Z0-9-_]{3,30}$"|
-| azurerm_kusto_cluster| kc| 4| 22| false| "^[a-z][a-z0-9]{3,21}$"|
-| azurerm_kusto_database| kdb| 1| 260| false| "^[a-zA-Z0-9- .]{1,260}$"|
-| azurerm_kusto_eventhub_data_connection| kehc| 1| 40| false| "^[a-zA-Z0-9- .]{1,40}$"|
-| azurerm_data_factory| adf| 3| 63| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$"|
-| azurerm_data_factory_dataset_mysql| adfmysql| 1| 260| false| "^[a-zA-Z0-9][^<>*%:.?\\+\\/]{0,258}[a-zA-Z0-9]$"|
-| azurerm_data_factory_dataset_postgresql| adfpsql| 1| 260| false| "^[a-zA-Z0-9][^<>*%:.?\\+\\/]{0,258}[a-zA-Z0-9]$"|
-| azurerm_data_factory_dataset_sql_server_table| adfmssql| 1| 260| false| "^[a-zA-Z0-9][^<>*%:.?\\+\\/]{0,258}[a-zA-Z0-9]$"|
-| azurerm_data_factory_integration_runtime_managed| adfir| 3| 63| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$"|
-| azurerm_data_factory_pipeline| adfpl| 1| 260| false| "^[a-zA-Z0-9][^<>*%:.?\\+\\/]{0,258}[a-zA-Z0-9]$"|
-| azurerm_data_factory_linked_service_data_lake_storage_gen2| adfsvst| 1| 260| false| "^[a-zA-Z0-9][^<>*%:.?\\+\\/]{0,259}$"|
-| azurerm_data_factory_linked_service_key_vault| adfsvkv| 1| 260| false| "^[a-zA-Z0-9][^<>*%:.?\\+\\/]{0,259}$"|
-| azurerm_recovery_services_vault| rsv| 2| 50| false| "^[a-zA-Z][a-zA-Z0-9\\-]{1,49}$"|
-| azurerm_recovery_services_vault_backup_police| rsvbp| 3| 150| false| "^[a-zA-Z][a-zA-Z0-9\\-]{1,148}[a-zA-Z0-9]$"|
-| azurerm_data_factory_linked_service_mysql| adfsvmysql| 1| 260| false| "^[a-zA-Z0-9][^<>*%:.?\\+\\/]{0,259}$"|
-| azurerm_data_factory_linked_service_postgresql| adfsvpsql| 1| 260| false| "^[a-zA-Z0-9][^<>*%:.?\\+\\/]{0,259}$"|
-| azurerm_data_factory_linked_service_sql_server| adfsvmssql| 1| 260| false| "^[a-zA-Z0-9][^<>*%:.?\\+\\/]{0,259}$"|
-| azurerm_data_factory_trigger_schedule| adftg| 1| 260| false| "^[a-zA-Z0-9][^<>*%:.?\\+\\/]{0,259}$"|
-| azurerm_data_lake_analytics_account| dla| 3| 24| false| "^[a-z0-9]{3,24}$"|
-| azurerm_data_lake_analytics_firewall_rule| dlfw| 3| 50| false| "^[a-z0-9-_]{3,50}$"|
-| azurerm_data_lake_store| dls| 3| 24| false| "^[a-z0-9]{3,24}$"|
-| azurerm_data_lake_store_firewall_rule| dlsfw| 3| 50| false| "^[a-zA-Z0-9-_]{3,50}$"|
-| azurerm_dev_test_lab| lab| 1| 50| false| "^[a-zA-Z0-9-_]{1,50}$"|
-| azurerm_dev_test_linux_virtual_machine| labvm| 1| 64| false| "^[a-zA-Z0-9-]{1,64}$"|
-| azurerm_dev_test_windows_virtual_machine| labvm| 1| 15| false| "^[a-zA-Z0-9-]{1,15}$"|
-| azurerm_frontdoor| fd| 5| 64| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{3,62}[a-zA-Z0-9]$"|
-| azurerm_frontdoor_firewall_policy| fdfw| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_hdinsight_hadoop_cluster| hadoop| 3| 59| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{1,57}[a-zA-Z0-9]$"|
-| azurerm_hdinsight_hbase_cluster| hbase| 3| 59| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{1,57}[a-zA-Z0-9]$"|
-| azurerm_hdinsight_kafka_cluster| kafka| 3| 59| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{1,57}[a-zA-Z0-9]$"|
-| azurerm_hdinsight_interactive_query_cluster| iqr| 3| 59| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{1,57}[a-zA-Z0-9]$"|
-| azurerm_hdinsight_ml_services_cluster| mls| 3| 59| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{1,57}[a-zA-Z0-9]$"|
-| azurerm_hdinsight_rserver_cluster| rser| 3| 59| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{1,57}[a-zA-Z0-9]$"|
-| azurerm_hdinsight_spark_cluster| spark| 3| 59| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{1,57}[a-zA-Z0-9]$"|
-| azurerm_hdinsight_storm_cluster| storm| 3| 59| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{1,57}[a-zA-Z0-9]$"|
-| azurerm_iotcentral_application| iotapp| 2| 63| true| "^[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$"|
-| azurerm_iothub| iot| 3| 50| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{1,48}[a-z0-9]$"|
-| azurerm_iothub_consumer_group| iotcg| 1| 50| false| "^[a-zA-Z0-9-._]{1,50}$"|
-| azurerm_iothub_dps| dps| 3| 64| false| "^[a-zA-Z0-9-]{1,63}[a-zA-Z0-9]$"|
-| azurerm_iothub_dps_certificate| dpscert| 1| 64| false| "^[a-zA-Z0-9-._]{1,64}$"|
-| azurerm_key_vault| kv| 3| 24| false| "^[a-zA-Z][a-zA-Z0-9-]{1,22}[a-zA-Z0-9]$"|
-| azurerm_key_vault_key| kvk| 1| 127| false| "^[a-zA-Z0-9-]{1,127}$"|
-| azurerm_key_vault_secret| kvs| 1| 127| false| "^[a-zA-Z0-9-]{1,127}$"|
-| azurerm_key_vault_certificate| kvc| 1| 127| false| "^[a-zA-Z0-9-]{1,127}$"|
-| azurerm_lb| lb| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_lb_nat_rule| lbnatrl| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_public_ip| pip| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_public_ip_prefix| pippf| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_route| rt| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_route_table| route| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_subnet| snet| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_traffic_manager_profile| traf| 1| 63| false| "^[a-zA-Z0-9][a-zA-Z0-9-.]{0,61}[a-zA-Z0-9_]$"|
-| azurerm_virtual_wan| vwan| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_virtual_network| vnet| 2| 64| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,62}[a-zA-Z0-9_]$"|
-| azurerm_virtual_network_gateway| vgw| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_virtual_network_peering| vpeer| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_network_interface| nic| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_firewall| fw| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_eventhub| evh| 1| 50| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,48}[a-zA-Z0-9]$"|
-| azurerm_eventhub_namespace| ehn| 1| 50| false| "^[a-zA-Z][a-zA-Z0-9-]{0,48}[a-zA-Z0-9]$"|
-| azurerm_eventhub_authorization_rule| ehar| 1| 50| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,48}[a-zA-Z0-9]$"|
-| azurerm_eventhub_namespace_authorization_rule| ehnar| 1| 50| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,48}[a-zA-Z0-9]$"|
-| azurerm_eventhub_namespace_disaster_recovery_config| ehdr| 1| 50| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,48}[a-zA-Z0-9]$"|
-| azurerm_eventhub_consumer_group| ehcg| 1| 50| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,48}[a-zA-Z0-9]$"|
-| azurerm_stream_analytics_job| asa| 3| 63| false| "^[a-zA-Z0-9-_]{3,63}$"|
-| azurerm_stream_analytics_function_javascript_udf| asafunc| 3| 63| false| "^[a-zA-Z0-9-_]{3,63}$"|
-| azurerm_stream_analytics_output_blob| asaoblob| 3| 63| false| "^[a-zA-Z0-9-_]{3,63}$"|
-| azurerm_stream_analytics_output_mssql| asaomssql| 3| 63| false| "^[a-zA-Z0-9-_]{3,63}$"|
-| azurerm_stream_analytics_output_eventhub| asaoeh| 3| 63| false| "^[a-zA-Z0-9-_]{3,63}$"|
-| azurerm_stream_analytics_output_servicebus_queue| asaosbq| 3| 63| false| "^[a-zA-Z0-9-_]{3,63}$"|
-| azurerm_stream_analytics_output_servicebus_topic| asaosbt| 3| 63| false| "^[a-zA-Z0-9-_]{3,63}$"|
-| azurerm_stream_analytics_reference_input_blob| asarblob| 3| 63| false| "^[a-zA-Z0-9-_]{3,63}$"|
-| azurerm_stream_analytics_stream_input_blob| asaiblob| 3| 63| false| "^[a-zA-Z0-9-_]{3,63}$"|
-| azurerm_stream_analytics_stream_input_eventhub| asaieh| 3| 63| false| "^[a-zA-Z0-9-_]{3,63}$"|
-| azurerm_stream_analytics_stream_input_iothub| asaiiot| 3| 63| false| "^[a-zA-Z0-9-_]{3,63}$"|
-| azurerm_shared_image_gallery| sig| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9.]{0,78}[a-zA-Z0-9]$"|
-| azurerm_shared_image| si| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9]$"|
-| azurerm_snapshots| snap| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_storage_account| st| 3| 24| true| "^[a-z0-9]{3,24}$"|
-| azurerm_storage_container| stct| 3| 63| false| "^[a-z0-9][a-z0-9-]{2,62}$"|
-| azurerm_storage_data_lake_gen2_filesystem| stdl| 3| 63| false| "^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$"|
-| azurerm_storage_queue| stq| 3| 63| false| "^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$"|
-| azurerm_storage_table| stt| 3| 63| false| "^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$"|
-| azurerm_storage_share| sts| 3| 63| false| "^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$"|
-| azurerm_storage_share_directory| sts| 3| 63| false| "^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$"|
-| azurerm_machine_learning_workspace| mlw| 1| 260| false| "^[^<>*%:.?\\+\\/]{0,259}[^<>*%:.?\\+\\/ ]$"|
-| azurerm_storage_blob| blob| 1| 1024| false| "^[^\\s\\/$#&]{1,1000}[^\\s\\/$#&]{0,24}$"|
-| azurerm_bastion_host| bast| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_local_network_gateway| lgw| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_application_gateway| agw| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_express_route_gateway| ergw| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_express_route_circuit| erc| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_point_to_site_vpn_gateway| vpngw| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_template_deployment| deploy| 1| 64| false| "^[a-zA-Z0-9-._\\(\\)]{1,64}$"|
-| azurerm_sql_server| sql| 1| 63| true| "^[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$"|
-| azurerm_mssql_server| sql| 1| 63| true| "^[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$"|
-| azurerm_mssql_database| sqldb| 1| 128| false| "^[^<>*%:.?\\+\\/]{1,127}[^<>*%:.?\\+\\/ ]$"|
-| azurerm_sql_elasticpool| sqlep| 1| 128| false| "^[^<>*%:.?\\+\\/]{1,127}[^<>*%:.?\\+\\/ ]$"|
-| azurerm_mssql_elasticpool| sqlep| 1| 128| false| "^[^<>*%:.?\\+\\/]{1,127}[^<>*%:.?\\+\\/ ]$"|
-| azurerm_sql_failover_group| sqlfg| 1| 63| true| "^[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$"|
-| azurerm_sql_firewall_rule| sqlfw| 1| 128| false| "^[^<>*%:?\\+\\/]{1,127}[^<>*%:.?\\+\\/]$"|
-| azurerm_log_analytics_workspace| log| 4| 63| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{2,61}[a-zA-Z0-9]$"|
-| azurerm_service_fabric_cluster| sf| 4| 23| true| "^[a-z][a-z0-9-]{2,21}[a-z0-9]$"|
-| azurerm_maps_account| map| 1| 98| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,97}$"|
-| azurerm_network_watcher| nw| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_resource_group| rg| 1| 90| false| "^[a-zA-Z0-9-._\\(\\)]{0,89}[a-zA-Z0-9-_\\(\\)]$"|
-| azurerm_network_security_group| nsg| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_network_security_group_rule| nsgr| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_network_security_rule| nsgr| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_application_security_group| asg| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_dns_zone| dns| 1| 63| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,61}[a-zA-Z0-9_]$"|
-| azurerm_private_dns_zone| pdns| 1| 63| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,61}[a-zA-Z0-9_]$"|
-| azurerm_notification_hub| nh| 1| 260| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,259}$"|
-| azurerm_notification_hub_namespace| dnsrec| 6| 50| false| "^[a-zA-Z][a-zA-Z0-9-]{4,48}[a-zA-Z0-9]$"|
-| azurerm_notification_hub_authorization_rule| dnsrec| 1| 256| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,255}$"|
-| azurerm_servicebus_namespace| sb| 6| 50| false| "^[a-zA-Z][a-zA-Z0-9-]{4,48}[a-zA-Z0-9]$"|
-| azurerm_servicebus_namespace_authorization_rule| sbar| 1| 50| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,48}[a-zA-Z0-9]$"|
-| azurerm_servicebus_queue| sbq| 1| 260| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,258}[a-zA-Z0-9_]$"|
-| azurerm_servicebus_queue_authorization_rule| sbqar| 1| 50| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,48}[a-zA-Z0-9]$"|
-| azurerm_servicebus_subscription| sbs| 1| 50| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,48}[a-zA-Z0-9]$"|
-| azurerm_servicebus_subscription_rule| sbsr| 1| 50| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,48}[a-zA-Z0-9]$"|
-| azurerm_servicebus_topic| sbt| 1| 260| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,258}[a-zA-Z0-9]$"|
-| azurerm_servicebus_topic_authorization_rule| dnsrec| 1| 50| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,48}[a-zA-Z0-9]$"|
-| azurerm_powerbi_embedded| pbi| 3| 63| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{2,62}$"|
-| azurerm_dashboard| dsb| 3| 160| false| "^[a-zA-Z0-9-]{3,160}$"|
-| azurerm_signalr_service| sgnlr| 3| 63| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$"|
-| azurerm_eventgrid_domain| egd| 3| 50| false| "^[a-zA-Z0-9-]{3,50}$"|
-| azurerm_eventgrid_domain_topic| egdt| 3| 50| false| "^[a-zA-Z0-9-]{3,50}$"|
-| azurerm_eventgrid_event_subscription| egs| 3| 64| false| "^[a-zA-Z0-9-]{3,64}$"|
-| azurerm_eventgrid_topic| egt| 3| 50| false| "^[a-zA-Z0-9-]{3,50}$"|
-| azurerm_relay_namespace| rln| 6| 50| false| "^[a-zA-Z][a-zA-Z0-9-]{4,48}[a-zA-Z0-9]$"|
-| azurerm_relay_hybrid_connection| rlhc| 1| 260| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,258}[a-zA-Z0-9]$"|
-| azurerm_app_service| app| 2| 60| false| "^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$"|
-| azurerm_app_service_plan| plan| 1| 40| false| "^[0-9A-Za-z-]{1,40}$"|
-| azurerm_service_plan| plan| 1| 40| false| "^[0-9A-Za-z-]{1,40}$"|
-| azurerm_app_service_environment| ase| 2| 36| false| "^[0-9A-Za-z-]{2,36}$"|
-| azurerm_application_insights| appi| 1| 260| false| "^[^%&\\?/. ][^%&\\?/]{0,258}[^%&\\?/. ]$"|
-| aks_node_pool_linux| npl| 1| 12| false| "^[a-z][0-9a-z]{0,11}$"|
-| aks_node_pool_windows| npw| 1| 6| false| "^[a-z][0-9a-z]{0,5}$"|
-| azurerm_synapse_workspace| syws| 1| 45| true| "^[0-9a-z]{1,45}$"|
-| azurerm_synapse_spark_pool| sysp| 1| 15| true| "^[0-9a-zA-Z]{1,15}$"|
-| azurerm_synapse_firewall_rule| syfw| 1| 128| false| "^[^<>*%:?\\+\\/]{1,127}[^<>*%:.?\\+\\/]$"|
-cat resourceDefinition_out_of_docs.json | jq -r '.[] | "| \(.name)| \(.slug)| \(.min_length)| \(.max_length)| \(.lowercase)| \(.validation_regex)|"'
-| azurerm_private_endpoint| pe| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_private_service_connection| psc| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_firewall_ip_configuration| fwipconf| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_firewall_application_rule_collection| fwapp| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_firewall_nat_rule_collection| fwnatrc| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_firewall_network_rule_collection| fwnetrc| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_dns_a_record| dnsrec| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_dns_aaaa_record| dnsrec| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_dns_caa_record| dnsrec| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_dns_cname_record| dnsrec| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_dns_mx_record| dnsrec| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_dns_ns_record| dnsrec| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_dns_ptr_record| dnsrec| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_dns_txt_record| dnsrec| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_private_dns_a_record| pdnsrec| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_private_dns_aaaa_record| pdnsrec| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_private_dns_cname_record| pdnsrec| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_private_dns_mx_record| pdnsrec| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_private_dns_ptr_record| pdnsrec| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_private_dns_srv_record| pdnsrec| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_private_dns_txt_record| pdnsrec| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_virtual_machine_extension| vmx| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_virtual_machine_scale_set_extension| vmssx| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_network_ddos_protection_plan| ddospp| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_private_dns_zone_group| pdnszg| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_proximity_placement_group| ppg| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| azurerm_private_link_service| pls| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
-| databricks_cluster| dbc| 3| 30| false| "^[a-zA-Z0-9-_]{3,30}$"|
-| databricks_standard_cluster| dbsc| 3| 30| false| "^[a-zA-Z0-9-_]{3,30}$"|
-| databricks_high_concurrency_cluster| dbhcc| 3| 30| false| "^[a-zA-Z0-9-_]{3,30}$"|
-| general| | 1| 250| false| "^[a-zA-Z0-9-_]{1,250}$"|
-| general_safe| | 1| 250| true| "^[a-z]{1,250}$"|
+**Examples:**
+- Standard: `rg-prod-myapp-001-abc12`
+- Without slug: `prod-myapp-001-abc12` 
+- Passthrough: `validated-input-name`
+- Multi-separator: `corp_prod_rg_myapp_db_001_abc12`
+
+## Multi-Resource Usage
+
+When using `resource_types`, the resource generates names for multiple resource types:
+
+```hcl
+resource "azurecaf_name" "multi" {
+  name           = "webapp"
+  resource_type  = "azurerm_app_service"        # Primary type
+  resource_types = [
+    "azurerm_app_service_plan",                 # Additional types
+    "azurerm_application_insights"
+  ]
+  prefixes       = ["prod"]
+  random_length  = 3
+}
+
+# Access the names:
+output "app_service_name" {
+  value = azurecaf_name.multi.result  # Primary resource type
+}
+
+output "all_names" {
+  value = azurecaf_name.multi.results  # Map of all names
+}
+```
+
+## Migration from azurecaf_naming_convention
+
+```hcl
+# Legacy approach (deprecated)
+resource "azurecaf_naming_convention" "old" {
+  name         = "myapp"
+  resource_type = "rg"
+  convention   = "cafrandom"
+  prefix       = "prod"
+  postfix      = "001"
+}
+
+# New approach (recommended)
+resource "azurecaf_name" "new" {
+  name          = "myapp"
+  resource_type = "azurerm_resource_group"
+  prefixes      = ["prod"]
+  suffixes      = ["001"]
+  random_length = 5
+}
+```
+
+## Supported Resource Types
+
+This resource supports **300+ Azure resource types** with accurate naming validation rules. 
+
+For the complete list of supported resource types, validation rules, and examples, see the [main provider documentation](../index.md#supported-azure-resource-types).
+
+## Notes
+
+### Data Source vs Resource
+
+**Recommendation**: Use the [`azurecaf_name` data source](../data-sources/azurecaf_name.md) instead of this resource when possible, as data sources:
+- Evaluate at plan time, showing generated names before resource creation
+- Provide better visibility in Terraform plans
+- Are generally preferred for name generation workflows
+
+### State Management
+
+Resource names are stored in Terraform state. Changes to naming parameters will trigger resource recreation, which may affect dependent resources.
+
+### Validation
+
+All generated names are automatically validated against:
+- Azure naming requirements per resource type
+- Length constraints (minimum and maximum)
+- Character restrictions and allowed patterns
+- Case sensitivity requirements
+
+### Performance
+
+The resource supports generating multiple names simultaneously using the `resource_types` argument, which is more efficient than creating multiple separate `azurecaf_name` resources.
+
+## Related Resources
+
+- [`azurecaf_name` data source](../data-sources/azurecaf_name.md) - Recommended approach for name generation
+- [`azurecaf_environment_variable` data source](../data-sources/azurecaf_environment_variable.md) - Read environment variables for dynamic naming
+
+For a complete list of supported resource types with their constraints and validation rules, see the [Provider Index](../index.md#supported-azure_resource_types) documentation.

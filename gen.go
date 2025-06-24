@@ -1,11 +1,22 @@
-// The following directive is necessary to make the package coherent:
+// Code Generation Tool for Azure CAF Provider
+//
+// This tool generates Go code from JSON resource definitions to ensure the provider
+// stays current with Azure resource naming requirements and Cloud Adoption Framework
+// guidelines.
+//
+// The generator reads resourceDefinition.json and creates models_generated.go with:
+//   - Resource type constants and mappings
+//   - Validation rules and constraints
+//   - Naming convention logic
+//   - Resource slug mappings
+//
+// Usage: go generate (automatically runs this file via go:generate directive in main.go)
 
 //go:build ignore
 // +build ignore
 
 // This program generates models_generated.go. It can be invoked by running
-// go generate
-
+// go generate from the project root.
 package main
 
 import (
@@ -21,52 +32,84 @@ import (
 	"time"
 )
 
-// ResourceStructure resource definition structure
+// ResourceStructure defines the schema for Azure resource naming requirements
+// as specified in the resourceDefinition.json file.
+//
+// Each resource type has specific constraints that must be enforced when
+// generating compliant names for Azure resources.
 type ResourceStructure struct {
-	// Resource type name
+	// ResourceTypeName is the full Terraform resource type name (e.g., "azurerm_storage_account")
 	ResourceTypeName string `json:"name"`
-	// Resource prefix as defined in the Azure Cloud Adoption Framework
+
+	// CafPrefix is the Cloud Adoption Framework abbreviation for this resource type (e.g., "st" for storage account)
+	// This slug is used as a prefix in generated names to indicate resource type
 	CafPrefix string `json:"slug,omitempty"`
-	// MaxLength attribute define the maximum length of the name
+
+	// MinLength defines the minimum allowed length for the resource name
 	MinLength int `json:"min_length"`
-	// MaxLength attribute define the maximum length of the name
+
+	// MaxLength defines the maximum allowed length for the resource name
 	MaxLength int `json:"max_length"`
-	// enforce lowercase
+
+	// LowerCase indicates whether the resource name must be entirely lowercase
 	LowerCase bool `json:"lowercase,omitempty"`
-	// Regular expression to apply to the resource type
+
+	// RegEx is the cleaning regex pattern used to remove invalid characters from input names
+	// Characters matching this pattern will be stripped from the name
 	RegEx string `json:"regex,omitempty"`
-	// the Regular expression to validate the generated string
+
+	// ValidationRegExp is the validation regex that the final generated name must match
+	// This ensures the generated name complies with Azure's naming requirements
 	ValidationRegExp string `json:"validation_regex,omitempty"`
-	// can the resource include dashes
+
+	// Dashes indicates whether the resource type allows dash characters in names
 	Dashes bool `json:"dashes"`
-	// The scope of this name where it needs to be unique
+
+	// Scope defines where the resource name must be unique (e.g., "global", "resourceGroup", "parent")
 	Scope string `json:"scope,omitempty"`
 }
 
+// templateData holds the data structure passed to the Go template for code generation
 type templateData struct {
-	ResourceStructures []ResourceStructure
-	GeneratedTime      time.Time
-	SlugMap            map[string]string
+	GeneratedTime      time.Time           // Timestamp when the code was generated
+	ResourceStructures []ResourceStructure // All resource definitions from JSON
+	SlugMap            map[string]string   // Mapping of CAF prefixes to resource types
 }
 
+// main is the entry point for the code generator.
+// It performs the following steps:
+//  1. Reads resource definitions from resourceDefinition.json
+//  2. Loads and parses Go templates from the templates/ directory
+//  3. Processes the resource data to create mappings and deduplicate entries
+//  4. Generates models_generated.go with all resource definitions and validation logic
 func main() {
+	// Get the current working directory to locate input files
 	wd, err := os.Getwd()
 	if err != nil {
 		log.Panicln("No directory found")
 	}
-	fmt.Println()
+
+	fmt.Println() // Add spacing for readability
+
+	// Load all template files from the templates directory
 	files, err := ioutil.ReadDir(path.Join(wd, "templates"))
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// Build list of template file paths
 	var fileNames = make([]string, len(files))
 	for i, file := range files {
 		fileNames[i] = path.Join(wd, "templates", file.Name())
 	}
+
+	// Parse all templates and register custom functions
 	parsedTemplate, err := template.New("templates").Funcs(template.FuncMap{
-		// Terraform not yet support lookahead in their regex function
+		// Terraform does not yet support lookahead in their regex function,
+		// so we need to clean regex patterns for compatibility
 		"cleanRegex": func(dirtyString string) string {
-			var re = regexp.MustCompile(`(?m)\(\?=.{\d+,\d+}\$\)|\(\?!\.\*--\)`)
+			// Remove lookahead patterns that Terraform cannot handle
+			var re = regexp.MustCompile(`(?m)\(\?\=.{\d+,\d+}\$\)|\(\?\!\..*--\)`)
 			return re.ReplaceAllString(dirtyString, "")
 		},
 	}).ParseFiles(fileNames...)
@@ -74,18 +117,20 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Read the resource definitions from JSON file
 	sourceDefinitions, err := ioutil.ReadFile(path.Join(wd, "resourceDefinition.json"))
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// Parse JSON resource definitions into Go structs
 	var data []ResourceStructure
 	err = json.Unmarshal(sourceDefinitions, &data)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Undocumented resource definitions
+	// Load additional undocumented resource definitions that are not yet in official docs
 	sourceDefinitionsUndocumented, err := ioutil.ReadFile(path.Join(wd, "resourceDefinition_out_of_docs.json"))
 	if err != nil {
 		log.Fatal(err)
@@ -95,9 +140,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// Combine documented and undocumented resource definitions
 	data = append(data, dataUndocumented...)
 
-	// Deduplicate by ResourceTypeName (keep the first occurrence)
+	// Remove duplicates to ensure each resource type appears only once
+	// This is important when merging multiple definition sources
 	uniqueData := make([]ResourceStructure, 0, len(data))
 	seen := make(map[string]bool)
 	for _, res := range data {
@@ -107,10 +155,13 @@ func main() {
 		}
 	}
 
+	// Sort by resource type name for consistent output
 	sort.SliceStable(uniqueData, func(i, j int) bool {
 		return uniqueData[i].ResourceTypeName < uniqueData[j].ResourceTypeName
 	})
 
+	// Build a mapping of CAF prefixes (slugs) to resource types
+	// This allows reverse lookup from slug to resource type name
 	slugMap := make(map[string]string)
 	for _, res := range uniqueData {
 		if _, exists := slugMap[res.CafPrefix]; !exists {
@@ -118,10 +169,14 @@ func main() {
 		}
 	}
 
+	// Generate the Go source file using the parsed template
 	modelsFile, err := os.OpenFile(path.Join(wd, "azurecaf/models_generated.go"), os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer modelsFile.Close()
+
+	// Execute the template with our processed data
 	err = parsedTemplate.ExecuteTemplate(modelsFile, "model.tmpl", templateData{
 		GeneratedTime:      time.Now(),
 		ResourceStructures: uniqueData,
