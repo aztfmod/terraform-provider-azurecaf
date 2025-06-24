@@ -248,16 +248,11 @@ resource "azurecaf_name" "imported_kv" {
 `
 }
 
-// testAccResourceNameImportBlockSubmoduleConfig provides configuration for testing import {} blocks at submodule level
-func testAccResourceNameImportBlockSubmoduleConfig() string {
+// testAccResourceNameImportBlockSubmoduleInternalNamesConfig provides configuration for testing import {} blocks 
+// where azurecaf_name resources are declared within the submodule
+func testAccResourceNameImportBlockSubmoduleInternalNamesConfig() string {
 	return `
 # Root level configuration that calls the module
-module "naming" {
-  source = "./modules/naming"
-}
-
-# Module configuration with import blocks
-# File: modules/naming/main.tf
 module "naming" {
   source = "./modules/naming"
 }
@@ -277,9 +272,73 @@ output "key_vault_name" {
 `
 }
 
-// testAccResourceNameImportBlockSubmoduleInternalConfig provides the internal module configuration
-// This would be placed in modules/naming/main.tf
-func testAccResourceNameImportBlockSubmoduleInternalConfig() string {
+// testAccResourceNameImportBlockSubmodulePassedNamesConfig provides configuration for testing import {} blocks
+// where azurecaf_name resources are declared at root level and passed to submodule
+func testAccResourceNameImportBlockSubmodulePassedNamesConfig() string {
+	return `
+# Root level import blocks and resource definitions
+import {
+  to = azurecaf_name.root_storage
+  id = "azurerm_storage_account:rootstorageaccount123"
+}
+
+import {
+  to = azurecaf_name.root_rg
+  id = "azurerm_resource_group:root-production-rg"
+}
+
+import {
+  to = azurecaf_name.root_kv
+  id = "azurerm_key_vault:rootcompanykeyvault01"
+}
+
+# Root level azurecaf_name resources
+resource "azurecaf_name" "root_storage" {
+  name          = "rootstorageaccount123"
+  resource_type = "azurerm_storage_account"
+  passthrough   = true
+}
+
+resource "azurecaf_name" "root_rg" {
+  name          = "root-production-rg"
+  resource_type = "azurerm_resource_group"
+  passthrough   = true
+}
+
+resource "azurecaf_name" "root_kv" {
+  name          = "rootcompanykeyvault01"
+  resource_type = "azurerm_key_vault"
+  passthrough   = true
+}
+
+# Module that receives the names from root
+module "infrastructure" {
+  source = "./modules/infrastructure"
+  
+  # Pass the imported names to the submodule
+  storage_account_name  = azurecaf_name.root_storage.result
+  resource_group_name   = azurecaf_name.root_rg.result
+  key_vault_name        = azurecaf_name.root_kv.result
+}
+
+# Outputs from root level
+output "final_storage_name" {
+  value = module.infrastructure.used_storage_name
+}
+
+output "final_resource_group_name" {
+  value = module.infrastructure.used_resource_group_name
+}
+
+output "final_key_vault_name" {
+  value = module.infrastructure.used_key_vault_name
+}
+`
+}
+
+// File: modules/naming/main.tf
+// Configuration where azurecaf_name resources are declared within the submodule
+func testAccResourceNameImportBlockSubmoduleInternalNamesInternalConfig() string {
 	return `
 # Import blocks within submodule
 import {
@@ -334,6 +393,73 @@ output "key_vault_name" {
 `
 }
 
+// File: modules/infrastructure/variables.tf 
+// Configuration for submodule that receives names from root level
+func testAccResourceNameImportBlockSubmodulePassedNamesVariablesConfig() string {
+	return `
+variable "storage_account_name" {
+  description = "Storage account name passed from root"
+  type        = string
+}
+
+variable "resource_group_name" {
+  description = "Resource group name passed from root"
+  type        = string
+}
+
+variable "key_vault_name" {
+  description = "Key vault name passed from root"
+  type        = string
+}
+`
+}
+
+// File: modules/infrastructure/main.tf
+// Configuration for submodule that uses names passed from root level
+func testAccResourceNameImportBlockSubmodulePassedNamesInternalConfig() string {
+	return `
+# Use the names passed from root level in actual Azure resources
+resource "azurerm_resource_group" "main" {
+  name     = var.resource_group_name
+  location = "East US"
+}
+
+resource "azurerm_storage_account" "main" {
+  name                     = var.storage_account_name
+  resource_group_name      = azurerm_resource_group.main.name
+  location                 = azurerm_resource_group.main.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
+
+resource "azurerm_key_vault" "main" {
+  name                = var.key_vault_name
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  tenant_id           = data.azurerm_client_config.current.tenant_id
+  sku_name            = "standard"
+}
+
+data "azurerm_client_config" "current" {}
+
+# Outputs showing which names were actually used
+output "used_storage_name" {
+  description = "Storage account name that was used"
+  value       = azurerm_storage_account.main.name
+}
+
+output "used_resource_group_name" {
+  description = "Resource group name that was used"
+  value       = azurerm_resource_group.main.name
+}
+
+output "used_key_vault_name" {
+  description = "Key vault name that was used"
+  value       = azurerm_key_vault.main.name
+}
+`
+}
+
 // testAccResourceNameImportBlockDocumentation provides documentation and examples for import {} blocks
 func testAccResourceNameImportBlockDocumentation() string {
 	return `
@@ -378,6 +504,7 @@ resource "azurecaf_name" "my_rg" {
 # Submodule Level Examples:
 # =========================
 #
+# Pattern 1: Import and define azurecaf_name within submodule
 # In modules/naming/main.tf:
 import {
   to = azurecaf_name.module_storage
@@ -402,6 +529,37 @@ module "naming" {
 # Access the imported name through module output
 output "final_storage_name" {
   value = module.naming.storage_name
+}
+
+# Pattern 2: Import and define azurecaf_name at root, pass to submodule
+# In root main.tf:
+import {
+  to = azurecaf_name.root_storage
+  id = "azurerm_storage_account:rootstorageaccount"
+}
+
+resource "azurecaf_name" "root_storage" {
+  name          = "rootstorageaccount"
+  resource_type = "azurerm_storage_account"
+  passthrough   = true
+}
+
+# Pass the imported name to submodule
+module "infrastructure" {
+  source = "./modules/infrastructure"
+  storage_account_name = azurecaf_name.root_storage.result
+}
+
+# In modules/infrastructure/variables.tf:
+variable "storage_account_name" {
+  description = "Storage account name from root"
+  type        = string
+}
+
+# In modules/infrastructure/main.tf:
+resource "azurerm_storage_account" "main" {
+  name = var.storage_account_name
+  # ... other configuration
 }
 
 # Key Benefits:
@@ -573,16 +731,34 @@ func TestResourceNameImport_AcceptanceStyleImportBlocks(t *testing.T) {
 		t.Error("Root level import block configuration is empty")
 	}
 	
-	// Test configuration structure for submodule level import blocks
-	submoduleLevelConfig := testAccResourceNameImportBlockSubmoduleConfig()
-	if submoduleLevelConfig == "" {
-		t.Error("Submodule level import block configuration is empty")
+	// Test configuration structure for submodule level import blocks - names declared within submodule
+	submoduleLevelInternalConfig := testAccResourceNameImportBlockSubmoduleInternalNamesConfig()
+	if submoduleLevelInternalConfig == "" {
+		t.Error("Submodule level internal names import block configuration is empty")
 	}
 	
-	// Test configuration structure for submodule internal config
-	submoduleInternalConfig := testAccResourceNameImportBlockSubmoduleInternalConfig()
-	if submoduleInternalConfig == "" {
-		t.Error("Submodule internal import block configuration is empty")
+	// Test configuration structure for submodule level import blocks - names passed from root
+	submoduleLevelPassedConfig := testAccResourceNameImportBlockSubmodulePassedNamesConfig()
+	if submoduleLevelPassedConfig == "" {
+		t.Error("Submodule level passed names import block configuration is empty")
+	}
+	
+	// Test configuration structure for submodule internal config - names declared within submodule
+	submoduleInternalNamesConfig := testAccResourceNameImportBlockSubmoduleInternalNamesInternalConfig()
+	if submoduleInternalNamesConfig == "" {
+		t.Error("Submodule internal names import block configuration is empty")
+	}
+	
+	// Test configuration structure for submodule internal config - names passed from root
+	submodulePassedNamesConfig := testAccResourceNameImportBlockSubmodulePassedNamesInternalConfig()
+	if submodulePassedNamesConfig == "" {
+		t.Error("Submodule passed names internal configuration is empty")
+	}
+	
+	// Test configuration structure for submodule variables
+	submoduleVariablesConfig := testAccResourceNameImportBlockSubmodulePassedNamesVariablesConfig()
+	if submoduleVariablesConfig == "" {
+		t.Error("Submodule variables configuration is empty")
 	}
 	
 	// Test that documentation is available
@@ -616,19 +792,32 @@ func TestResourceNameImport_AcceptanceStyleImportBlocks(t *testing.T) {
 		},
 	})
 	
-	// Test submodule level import blocks
+	// Test submodule level import blocks - both patterns
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckResourceDestroy,
 		Steps: []resource.TestStep{
+			// Pattern 1: Names declared within submodule
 			{
-				Config: testAccResourceNameImportBlockSubmoduleConfig(),
+				Config: testAccResourceNameImportBlockSubmoduleInternalNamesConfig(),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("module.naming.azurecaf_name.imported_rg", "name", "my-production-rg"),
 					resource.TestCheckResourceAttr("module.naming.azurecaf_name.imported_rg", "resource_type", "azurerm_resource_group"),
 					resource.TestCheckResourceAttr("module.naming.azurecaf_name.imported_rg", "passthrough", "true"),
 					resource.TestCheckResourceAttr("module.naming.azurecaf_name.imported_rg", "result", "my-production-rg"),
+				),
+			},
+			// Pattern 2: Names declared at root and passed to submodule
+			{
+				Config: testAccResourceNameImportBlockSubmodulePassedNamesConfig(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("azurecaf_name.root_storage", "name", "rootstorageaccount123"),
+					resource.TestCheckResourceAttr("azurecaf_name.root_storage", "resource_type", "azurerm_storage_account"),
+					resource.TestCheckResourceAttr("azurecaf_name.root_storage", "passthrough", "true"),
+					resource.TestCheckResourceAttr("azurecaf_name.root_storage", "result", "rootstorageaccount123"),
+					// Verify the name is properly passed to and used by the submodule
+					resource.TestCheckResourceAttr("module.infrastructure.azurerm_storage_account.main", "name", "rootstorageaccount123"),
 				),
 			},
 		},
@@ -680,9 +869,9 @@ func TestResourceNameImport_ImportBlockValidationSimulation(t *testing.T) {
 			},
 			description: "Simulates root level import {} block for key vault",
 		},
-		// Submodule-style scenarios (behavior would be identical to root level)
+		// Submodule-style scenarios - Pattern 1: names declared within submodule
 		{
-			name:        "submodule_level_virtual_network_import_simulation",
+			name:        "submodule_internal_virtual_network_import_simulation",
 			importID:    "azurerm_virtual_network:my-production-vnet",
 			expectError: false,
 			expectedAttrs: map[string]interface{}{
@@ -691,10 +880,10 @@ func TestResourceNameImport_ImportBlockValidationSimulation(t *testing.T) {
 				"passthrough":   true,
 				"result":        "my-production-vnet",
 			},
-			description: "Simulates submodule level import {} block for virtual network",
+			description: "Simulates submodule level import {} block for virtual network - internal pattern",
 		},
 		{
-			name:        "submodule_level_subnet_import_simulation",
+			name:        "submodule_internal_subnet_import_simulation",
 			importID:    "azurerm_subnet:my-web-subnet",
 			expectError: false,
 			expectedAttrs: map[string]interface{}{
@@ -703,10 +892,10 @@ func TestResourceNameImport_ImportBlockValidationSimulation(t *testing.T) {
 				"passthrough":   true,
 				"result":        "my-web-subnet",
 			},
-			description: "Simulates submodule level import {} block for subnet",
+			description: "Simulates submodule level import {} block for subnet - internal pattern",
 		},
 		{
-			name:        "submodule_level_vm_import_simulation",
+			name:        "submodule_internal_vm_import_simulation",
 			importID:    "azurerm_linux_virtual_machine:my-production-vm01",
 			expectError: false,
 			expectedAttrs: map[string]interface{}{
@@ -715,7 +904,44 @@ func TestResourceNameImport_ImportBlockValidationSimulation(t *testing.T) {
 				"passthrough":   true,
 				"result":        "my-production-vm01",
 			},
-			description: "Simulates submodule level import {} block for Linux VM",
+			description: "Simulates submodule level import {} block for Linux VM - internal pattern",
+		},
+		// Submodule-style scenarios - Pattern 2: names declared at root and passed to submodule
+		{
+			name:        "root_to_submodule_storage_import_simulation",
+			importID:    "azurerm_storage_account:rootpassedstorageaccount",
+			expectError: false,
+			expectedAttrs: map[string]interface{}{
+				"name":          "rootpassedstorageaccount",
+				"resource_type": "azurerm_storage_account",
+				"passthrough":   true,
+				"result":        "rootpassedstorageaccount",
+			},
+			description: "Simulates root level import {} block for storage account passed to submodule",
+		},
+		{
+			name:        "root_to_submodule_rg_import_simulation",
+			importID:    "azurerm_resource_group:root-passed-rg",
+			expectError: false,
+			expectedAttrs: map[string]interface{}{
+				"name":          "root-passed-rg",
+				"resource_type": "azurerm_resource_group",
+				"passthrough":   true,
+				"result":        "root-passed-rg",
+			},
+			description: "Simulates root level import {} block for resource group passed to submodule",
+		},
+		{
+			name:        "root_to_submodule_keyvault_import_simulation",
+			importID:    "azurerm_key_vault:rootpassedkeyvault01",
+			expectError: false,
+			expectedAttrs: map[string]interface{}{
+				"name":          "rootpassedkeyvault01",
+				"resource_type": "azurerm_key_vault",
+				"passthrough":   true,
+				"result":        "rootpassedkeyvault01",
+			},
+			description: "Simulates root level import {} block for key vault passed to submodule",
 		},
 		// Complex naming patterns that might be used with import {} blocks
 		{
@@ -738,4 +964,88 @@ func TestResourceNameImport_ImportBlockValidationSimulation(t *testing.T) {
 	
 	t.Log("Import {} block simulation tests completed successfully")
 	t.Log("These tests validate the same provider functionality that import {} blocks would use")
+	t.Log("Both patterns tested: internal submodule names and root-to-submodule passed names")
+}
+
+// TestResourceNameImport_SubmodulePatternValidation tests both patterns for submodule import usage
+// Pattern 1: azurecaf_name declared within submodule with import {} block
+// Pattern 2: azurecaf_name declared at root with import {} block, then passed to submodule  
+func TestResourceNameImport_SubmodulePatternValidation(t *testing.T) {
+	helper := newIntegrationTestHelper(t)
+	
+	// Test cases for Pattern 1: Names declared within submodule
+	submoduleInternalPatternTests := []testCase{
+		{
+			name:        "submodule_internal_pattern_storage",
+			importID:    "azurerm_storage_account:submodulestorage123",
+			expectError: false,
+			expectedAttrs: map[string]interface{}{
+				"name":          "submodulestorage123",
+				"resource_type": "azurerm_storage_account",
+				"passthrough":   true,
+				"result":        "submodulestorage123",
+			},
+			description: "Pattern 1: azurecaf_name declared within submodule - storage account",
+		},
+		{
+			name:        "submodule_internal_pattern_rg",
+			importID:    "azurerm_resource_group:submodule-rg-prod",
+			expectError: false,
+			expectedAttrs: map[string]interface{}{
+				"name":          "submodule-rg-prod",
+				"resource_type": "azurerm_resource_group",
+				"passthrough":   true,
+				"result":        "submodule-rg-prod",
+			},
+			description: "Pattern 1: azurecaf_name declared within submodule - resource group",
+		},
+	}
+	
+	// Test cases for Pattern 2: Names declared at root and passed to submodule
+	rootToSubmodulePatternTests := []testCase{
+		{
+			name:        "root_to_submodule_pattern_storage",
+			importID:    "azurerm_storage_account:rootstorageformodule",
+			expectError: false,
+			expectedAttrs: map[string]interface{}{
+				"name":          "rootstorageformodule",
+				"resource_type": "azurerm_storage_account",
+				"passthrough":   true,
+				"result":        "rootstorageformodule",
+			},
+			description: "Pattern 2: azurecaf_name declared at root, passed to submodule - storage account",
+		},
+		{
+			name:        "root_to_submodule_pattern_rg",
+			importID:    "azurerm_resource_group:root-rg-for-module",
+			expectError: false,
+			expectedAttrs: map[string]interface{}{
+				"name":          "root-rg-for-module",
+				"resource_type": "azurerm_resource_group",
+				"passthrough":   true,
+				"result":        "root-rg-for-module",
+			},
+			description: "Pattern 2: azurecaf_name declared at root, passed to submodule - resource group",
+		},
+	}
+	
+	// Execute Pattern 1 tests
+	t.Run("Pattern1_SubmoduleInternal", func(t *testing.T) {
+		for _, tc := range submoduleInternalPatternTests {
+			helper.runImportTest(tc)
+		}
+		t.Log("Pattern 1 tests completed: azurecaf_name declared within submodule")
+	})
+	
+	// Execute Pattern 2 tests
+	t.Run("Pattern2_RootToSubmodule", func(t *testing.T) {
+		for _, tc := range rootToSubmodulePatternTests {
+			helper.runImportTest(tc)
+		}
+		t.Log("Pattern 2 tests completed: azurecaf_name declared at root, passed to submodule")
+	})
+	
+	t.Log("Both submodule patterns validated successfully")
+	t.Log("Pattern 1: Import and define azurecaf_name within submodule")
+	t.Log("Pattern 2: Import and define azurecaf_name at root, pass to submodule via variables")
 }
