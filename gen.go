@@ -32,6 +32,18 @@ import (
 	"time"
 )
 
+// OfficialData defines the official Azure CAF documentation attributes for a resource
+type OfficialData struct {
+	// Slug is the official CAF abbreviation for this resource type
+	Slug string `json:"slug"`
+
+	// Resource is the official resource name from Azure CAF documentation
+	Resource string `json:"resource"`
+
+	// ResourceProviderNamespace is the Azure resource provider namespace from official documentation  
+	ResourceProviderNamespace string `json:"resource_provider_namespace"`
+}
+
 // ResourceStructure defines the schema for Azure resource naming requirements
 // as specified in the resourceDefinition.json file.
 //
@@ -71,11 +83,8 @@ type ResourceStructure struct {
 	// OutOfDoc indicates whether this resource is not present in the official Azure CAF documentation
 	OutOfDoc bool `json:"out_of_doc,omitempty"`
 
-	// Resource is the official resource name from Azure CAF documentation
-	Resource string `json:"resource,omitempty"`
-
-	// ResourceProviderNamespace is the Azure resource provider namespace from official documentation
-	ResourceProviderNamespace string `json:"resource_provider_namespace,omitempty"`
+	// Official contains the official Azure CAF documentation attributes for this resource
+	Official OfficialData `json:"official"`
 }
 
 // templateData holds the data structure passed to the Go template for code generation
