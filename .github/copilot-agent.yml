@@ -1,0 +1,7 @@
+# GitHub Copilot Agent Configuration
+# This configuration allows specific domains through the firewall for Copilot coding agent
+# See: https://docs.github.com/en/copilot/customizing-copilot/customizing-or-disabling-the-firewall-for-copilot-coding-agent
+
+firewall:
+  allow_list_additions:
+    - "checkpoint-api.hashicorp.com"
