@@ -22,7 +22,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -112,7 +111,7 @@ func main() {
 	fmt.Println() // Add spacing for readability
 
 	// Load all template files from the templates directory
-	files, err := ioutil.ReadDir(path.Join(wd, "templates"))
+	files, err := os.ReadDir(path.Join(wd, "templates"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -139,7 +138,7 @@ func main() {
 
 	// Read the combined resource definitions from JSON file
 	// This file now contains both documented and undocumented resources
-	sourceDefinitions, err := ioutil.ReadFile(path.Join(wd, "resourceDefinition.json"))
+	sourceDefinitions, err := os.ReadFile(path.Join(wd, "resourceDefinition.json"))
 	if err != nil {
 		log.Fatal(err)
 	}
