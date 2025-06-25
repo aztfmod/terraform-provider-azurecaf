@@ -35,13 +35,15 @@ import (
 // OfficialData defines the official Azure CAF documentation attributes for a resource
 type OfficialData struct {
 	// Slug is the official CAF abbreviation for this resource type
-	Slug string `json:"slug"`
+	// Only present for resources that are in the official Azure CAF documentation
+	Slug string `json:"slug,omitempty"`
 
 	// Resource is the official resource name from Azure CAF documentation
 	Resource string `json:"resource"`
 
-	// ResourceProviderNamespace is the Azure resource provider namespace from official documentation  
-	ResourceProviderNamespace string `json:"resource_provider_namespace"`
+	// ResourceProviderNamespace is the Azure resource provider namespace from official documentation
+	// Only present for resources that are in the official Azure CAF documentation  
+	ResourceProviderNamespace string `json:"resource_provider_namespace,omitempty"`
 }
 
 // ResourceStructure defines the schema for Azure resource naming requirements

@@ -10,9 +10,7 @@
         "lowercase": false,
         "regex": "\"[^0-9a-z]\"",
         "official": {
-            "slug": "npl",
-            "resource": "Azure Aks Node Pool Linux",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Aks Node Pool Linux"
         }
     },
     {
@@ -26,9 +24,7 @@
         "lowercase": false,
         "regex": "\"[^0-9a-z]\"",
         "official": {
-            "slug": "npw",
-            "resource": "Azure Aks Node Pool Windows",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Aks Node Pool Windows"
         }
     },
     {
@@ -58,9 +54,7 @@
         "lowercase": true,
         "regex": "\"[^0-9a-z]\"",
         "official": {
-            "slug": "as",
-            "resource": "Azure Analysis Services Server",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Analysis Services Server"
         }
     },
     {
@@ -90,9 +84,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9-]\"",
         "official": {
-            "slug": "apimapi",
-            "resource": "Azure Api Management Api",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Api Management Api"
         }
     },
     {
@@ -106,9 +98,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9-]\"",
         "official": {
-            "slug": "apimapiopt",
-            "resource": "Azure Api Management Api Operation Tag",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Api Management Api Operation Tag"
         }
     },
     {
@@ -122,9 +112,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9-]\"",
         "official": {
-            "slug": "apimbe",
-            "resource": "Azure Api Management Backend",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Api Management Backend"
         }
     },
     {
@@ -138,9 +126,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9-]\"",
         "official": {
-            "slug": "apimcer",
-            "resource": "Azure Api Management Certificate",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Api Management Certificate"
         }
     },
     {
@@ -154,9 +140,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9-]\"",
         "official": {
-            "slug": "apimgw",
-            "resource": "Azure Api Management Gateway",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Api Management Gateway"
         }
     },
     {
@@ -170,9 +154,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9-]\"",
         "official": {
-            "slug": "apimgr",
-            "resource": "Azure Api Management Group",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Api Management Group"
         }
     },
     {
@@ -186,9 +168,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9-]\"",
         "official": {
-            "slug": "apimlg",
-            "resource": "Azure Api Management Logger",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Api Management Logger"
         }
     },
     {
@@ -218,9 +198,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "appcg",
-            "resource": "Azure App Configuration",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure App Configuration"
         }
     },
     {
@@ -314,9 +292,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z- ]\"",
         "official": {
-            "slug": "appiwt",
-            "resource": "Azure Application Insights Web Test",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Application Insights Web Test"
         }
     },
     {
@@ -362,9 +338,7 @@
         "lowercase": false,
         "regex": "`[^-\\w\\._\\(\\)]`",
         "official": {
-            "slug": "aacert",
-            "resource": "Azure Automation Certificate",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Automation Certificate"
         }
     },
     {
@@ -378,9 +352,7 @@
         "lowercase": false,
         "regex": "`[^-\\w\\._\\(\\)]`",
         "official": {
-            "slug": "aacred",
-            "resource": "Azure Automation Credential",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Automation Credential"
         }
     },
     {
@@ -394,9 +366,7 @@
         "lowercase": false,
         "regex": "\"[<>*%&:\\\\?.+/#]\"",
         "official": {
-            "slug": "aahwg",
-            "resource": "Azure Automation Hybrid Runbook Worker Group",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Automation Hybrid Runbook Worker Group"
         }
     },
     {
@@ -410,9 +380,7 @@
         "lowercase": false,
         "regex": "`[^-\\w\\._\\(\\)]`",
         "official": {
-            "slug": "aajs",
-            "resource": "Azure Automation Job Schedule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Automation Job Schedule"
         }
     },
     {
@@ -426,9 +394,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_]\"",
         "official": {
-            "slug": "aarun",
-            "resource": "Azure Automation Runbook",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Automation Runbook"
         }
     },
     {
@@ -442,9 +408,7 @@
         "lowercase": false,
         "regex": "`[^-\\w\\._\\(\\)]`",
         "official": {
-            "slug": "aasched",
-            "resource": "Azure Automation Schedule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Automation Schedule"
         }
     },
     {
@@ -458,9 +422,7 @@
         "lowercase": false,
         "regex": "`[^-\\w\\._\\(\\)]`",
         "official": {
-            "slug": "aavar",
-            "resource": "Azure Automation Variable",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Automation Variable"
         }
     },
     {
@@ -474,9 +436,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "avail",
-            "resource": "Azure Availability Set",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Availability Set"
         }
     },
     {
@@ -490,9 +450,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "bast",
-            "resource": "Azure Bastion Host",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Bastion Host"
         }
     },
     {
@@ -506,9 +464,7 @@
         "lowercase": true,
         "regex": "\"[^0-9a-z]\"",
         "official": {
-            "slug": "ba",
-            "resource": "Azure Batch Account",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Batch Account"
         }
     },
     {
@@ -522,9 +478,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "baapp",
-            "resource": "Azure Batch Application",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Batch Application"
         }
     },
     {
@@ -538,9 +492,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "bacert",
-            "resource": "Azure Batch Certificate",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Batch Certificate"
         }
     },
     {
@@ -554,9 +506,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "bapool",
-            "resource": "Azure Batch Pool",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Batch Pool"
         }
     },
     {
@@ -570,9 +520,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "botmail",
-            "resource": "Azure Bot Channel Email",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Bot Channel Email"
         }
     },
     {
@@ -586,9 +534,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "botline",
-            "resource": "Azure Bot Channel Directline",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Bot Channel Directline"
         }
     },
     {
@@ -602,9 +548,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "botteams",
-            "resource": "Azure Bot Channel Ms Teams",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Bot Channel Ms Teams"
         }
     },
     {
@@ -618,9 +562,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "botslack",
-            "resource": "Azure Bot Channel Slack",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Bot Channel Slack"
         }
     },
     {
@@ -634,9 +576,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "botchan",
-            "resource": "Azure Bot Channels Registration",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Bot Channels Registration"
         }
     },
     {
@@ -650,9 +590,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "botcon",
-            "resource": "Azure Bot Connection",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Bot Connection"
         }
     },
     {
@@ -666,9 +604,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "botaz",
-            "resource": "Azure Bot Service Azure Bot",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Bot Service Azure Bot"
         }
     },
     {
@@ -682,9 +618,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "bot",
-            "resource": "Azure Bot Web App",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Bot Web App"
         }
     },
     {
@@ -698,9 +632,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "cdn",
-            "resource": "Azure Cdn Endpoint",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Cdn Endpoint"
         }
     },
     {
@@ -714,9 +646,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "cfdcd",
-            "resource": "Azure Cdn Frontdoor Custom Domain",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Cdn Frontdoor Custom Domain"
         }
     },
     {
@@ -730,9 +660,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "cfde",
-            "resource": "Azure Cdn Frontdoor Endpoint",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Cdn Frontdoor Endpoint"
         }
     },
     {
@@ -746,9 +674,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z]\"",
         "official": {
-            "slug": "cfdfp",
-            "resource": "Azure Cdn Frontdoor Firewall Policy",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Cdn Frontdoor Firewall Policy"
         }
     },
     {
@@ -762,9 +688,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "cfdo",
-            "resource": "Azure Cdn Frontdoor Origin",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Cdn Frontdoor Origin"
         }
     },
     {
@@ -778,9 +702,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "cfdog",
-            "resource": "Azure Cdn Frontdoor Origin Group",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Cdn Frontdoor Origin Group"
         }
     },
     {
@@ -794,9 +716,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "cfdp",
-            "resource": "Azure Cdn Frontdoor Profile",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Cdn Frontdoor Profile"
         }
     },
     {
@@ -810,9 +730,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "cfdroute",
-            "resource": "Azure Cdn Frontdoor Route",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Cdn Frontdoor Route"
         }
     },
     {
@@ -826,9 +744,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z]\"",
         "official": {
-            "slug": "cfdr",
-            "resource": "Azure Cdn Frontdoor Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Cdn Frontdoor Rule"
         }
     },
     {
@@ -842,9 +758,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z]\"",
         "official": {
-            "slug": "cfdrs",
-            "resource": "Azure Cdn Frontdoor Rule Set",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Cdn Frontdoor Rule Set"
         }
     },
     {
@@ -858,9 +772,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "cfds",
-            "resource": "Azure Cdn Frontdoor Secret",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Cdn Frontdoor Secret"
         }
     },
     {
@@ -874,9 +786,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "cfdsp",
-            "resource": "Azure Cdn Frontdoor Security Policy",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Cdn Frontdoor Security Policy"
         }
     },
     {
@@ -890,9 +800,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "cdnprof",
-            "resource": "Azure Cdn Profile",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Cdn Profile"
         }
     },
     {
@@ -906,9 +814,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "cog",
-            "resource": "Azure Cognitive Account",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Cognitive Account"
         }
     },
     {
@@ -922,9 +828,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "cog",
-            "resource": "Azure Cognitive Deployment",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Cognitive Deployment"
         }
     },
     {
@@ -938,9 +842,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "acs",
-            "resource": "Azure Communication Service",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Communication Service"
         }
     },
     {
@@ -954,9 +856,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9-_]\"",
         "official": {
-            "slug": "acbrg",
-            "resource": "Azure Consumption Budget Resource Group",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Consumption Budget Resource Group"
         }
     },
     {
@@ -970,9 +870,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9-_]\"",
         "official": {
-            "slug": "acbs",
-            "resource": "Azure Consumption Budget Subscription",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Consumption Budget Subscription"
         }
     },
     {
@@ -987,9 +885,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "cg",
-            "resource": "Azure Containergroups",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Containergroups"
         }
     },
     {
@@ -1035,9 +931,7 @@
         "lowercase": true,
         "regex": "\"[^0-9A-Za-z]\"",
         "official": {
-            "slug": "cr",
-            "resource": "Azure Container Registry",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Container Registry"
         }
     },
     {
@@ -1051,9 +945,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z]\"",
         "official": {
-            "slug": "crwh",
-            "resource": "Azure Container Registry Webhook",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Container Registry Webhook"
         }
     },
     {
@@ -1083,9 +975,7 @@
         "lowercase": false,
         "regex": "\"[&%.?\\\\/]\"",
         "official": {
-            "slug": "prov",
-            "resource": "Azure Custom Provider",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Custom Provider"
         }
     },
     {
@@ -1099,9 +989,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "dsb",
-            "resource": "Azure Dashboard",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Dashboard"
         }
     },
     {
@@ -1131,9 +1019,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "adfblob",
-            "resource": "Azure Data Factory Dataset Azure Blob",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Factory Dataset Azure Blob"
         }
     },
     {
@@ -1147,9 +1033,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "adfsqlapi",
-            "resource": "Azure Data Factory Dataset Cosmosdb Sqlapi",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Factory Dataset Cosmosdb Sqlapi"
         }
     },
     {
@@ -1163,9 +1047,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "adfdtext",
-            "resource": "Azure Data Factory Dataset Delimited Text",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Factory Dataset Delimited Text"
         }
     },
     {
@@ -1179,9 +1061,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "adfhttp",
-            "resource": "Azure Data Factory Dataset Http",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Factory Dataset Http"
         }
     },
     {
@@ -1195,9 +1075,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "adfjson",
-            "resource": "Azure Data Factory Dataset Json",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Factory Dataset Json"
         }
     },
     {
@@ -1211,9 +1089,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "adfmysql",
-            "resource": "Azure Data Factory Dataset Mysql",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Factory Dataset Mysql"
         }
     },
     {
@@ -1227,9 +1103,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "adfpsql",
-            "resource": "Azure Data Factory Dataset Postgresql",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Factory Dataset Postgresql"
         }
     },
     {
@@ -1243,9 +1117,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "adfmssql",
-            "resource": "Azure Data Factory Dataset Sql Server Table",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Factory Dataset Sql Server Table"
         }
     },
     {
@@ -1259,9 +1131,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "adfir",
-            "resource": "Azure Data Factory Integration Runtime Managed",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Factory Integration Runtime Managed"
         }
     },
     {
@@ -1275,9 +1145,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "adflsabs",
-            "resource": "Azure Data Factory Linked Service Azure Blob Storage",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Factory Linked Service Azure Blob Storage"
         }
     },
     {
@@ -1291,9 +1159,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "adflsadb",
-            "resource": "Azure Data Factory Linked Service Azure Databricks",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Factory Linked Service Azure Databricks"
         }
     },
     {
@@ -1307,9 +1173,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "adflsaf",
-            "resource": "Azure Data Factory Linked Service Azure Function",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Factory Linked Service Azure Function"
         }
     },
     {
@@ -1323,9 +1187,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "adflsasdb",
-            "resource": "Azure Data Factory Linked Service Azure Sql Database",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Factory Linked Service Azure Sql Database"
         }
     },
     {
@@ -1339,9 +1201,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "adflsacdb",
-            "resource": "Azure Data Factory Linked Service Cosmosdb",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Factory Linked Service Cosmosdb"
         }
     },
     {
@@ -1355,9 +1215,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "adfsvst",
-            "resource": "Azure Data Factory Linked Service Data Lake Storage Gen2",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Factory Linked Service Data Lake Storage Gen2"
         }
     },
     {
@@ -1371,9 +1229,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "adfsvkv",
-            "resource": "Azure Data Factory Linked Service Key Vault",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Factory Linked Service Key Vault"
         }
     },
     {
@@ -1387,9 +1243,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "adfsvmysql",
-            "resource": "Azure Data Factory Linked Service Mysql",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Factory Linked Service Mysql"
         }
     },
     {
@@ -1403,9 +1257,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "adfsvpsql",
-            "resource": "Azure Data Factory Linked Service Postgresql",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Factory Linked Service Postgresql"
         }
     },
     {
@@ -1419,9 +1271,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "adflsaftp",
-            "resource": "Azure Data Factory Linked Service Sftp",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Factory Linked Service Sftp"
         }
     },
     {
@@ -1435,9 +1285,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "adfsvmssql",
-            "resource": "Azure Data Factory Linked Service Sql Server",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Factory Linked Service Sql Server"
         }
     },
     {
@@ -1451,9 +1299,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "adfsvweb",
-            "resource": "Azure Data Factory Linked Service Web",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Factory Linked Service Web"
         }
     },
     {
@@ -1467,9 +1313,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "adfpl",
-            "resource": "Azure Data Factory Pipeline",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Factory Pipeline"
         }
     },
     {
@@ -1483,9 +1327,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "adftg",
-            "resource": "Azure Data Factory Trigger Schedule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Factory Trigger Schedule"
         }
     },
     {
@@ -1499,9 +1341,7 @@
         "lowercase": false,
         "regex": "\"[^0-9a-z]\"",
         "official": {
-            "slug": "dla",
-            "resource": "Azure Data Lake Analytics Account",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Lake Analytics Account"
         }
     },
     {
@@ -1515,9 +1355,7 @@
         "lowercase": false,
         "regex": "\"[^0-9a-z_-]\"",
         "official": {
-            "slug": "dlfw",
-            "resource": "Azure Data Lake Analytics Firewall Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Lake Analytics Firewall Rule"
         }
     },
     {
@@ -1547,9 +1385,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "dlsfw",
-            "resource": "Azure Data Lake Store Firewall Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Lake Store Firewall Rule"
         }
     },
     {
@@ -1563,9 +1399,7 @@
         "lowercase": false,
         "regex": "`[^a-zA-Z0-9-]`",
         "official": {
-            "slug": "dpbpb",
-            "resource": "Azure Data Protection Backup Policy Blob Storage",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Protection Backup Policy Blob Storage"
         }
     },
     {
@@ -1579,9 +1413,7 @@
         "lowercase": false,
         "regex": "`[^a-zA-Z0-9-]`",
         "official": {
-            "slug": "dpbpd",
-            "resource": "Azure Data Protection Backup Policy Disk",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Protection Backup Policy Disk"
         }
     },
     {
@@ -1595,9 +1427,7 @@
         "lowercase": false,
         "regex": "`[^a-zA-Z0-9-]`",
         "official": {
-            "slug": "dpbpp",
-            "resource": "Azure Data Protection Backup Policy Postgresql",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Protection Backup Policy Postgresql"
         }
     },
     {
@@ -1611,9 +1441,7 @@
         "lowercase": false,
         "regex": "`[^a-zA-Z0-9-]`",
         "official": {
-            "slug": "dpbppf",
-            "resource": "Azure Data Protection Backup Policy Postgresql Flexible Server",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Protection Backup Policy Postgresql Flexible Server"
         }
     },
     {
@@ -1627,9 +1455,7 @@
         "lowercase": false,
         "regex": "`[^a-zA-Z0-9-]`",
         "official": {
-            "slug": "dpbv",
-            "resource": "Azure Data Protection Backup Vault",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Data Protection Backup Vault"
         }
     },
     {
@@ -1643,9 +1469,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "migr",
-            "resource": "Azure Database Migration Project",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Database Migration Project"
         }
     },
     {
@@ -1675,9 +1499,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "dbw",
-            "resource": "Azure Databricks Workspace",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Databricks Workspace"
         }
     },
     {
@@ -1691,9 +1513,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "dh",
-            "resource": "Azure Dedicated Host",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Dedicated Host"
         }
     },
     {
@@ -1707,9 +1527,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "dhg",
-            "resource": "Azure Dedicated Host Group",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Dedicated Host Group"
         }
     },
     {
@@ -1723,9 +1541,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "dc",
-            "resource": "Azure Dev Center",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Dev Center"
         }
     },
     {
@@ -1739,9 +1555,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "dcc",
-            "resource": "Azure Dev Center Catalog",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Dev Center Catalog"
         }
     },
     {
@@ -1755,9 +1569,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "dcdb",
-            "resource": "Azure Dev Center Dev Box Definition",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Dev Center Dev Box Definition"
         }
     },
     {
@@ -1771,9 +1583,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "dcet",
-            "resource": "Azure Dev Center Environment Type",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Dev Center Environment Type"
         }
     },
     {
@@ -1787,9 +1597,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.]\"",
         "official": {
-            "slug": "dcg",
-            "resource": "Azure Dev Center Gallery",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Dev Center Gallery"
         }
     },
     {
@@ -1803,9 +1611,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "dcnc",
-            "resource": "Azure Dev Center Network Connection",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Dev Center Network Connection"
         }
     },
     {
@@ -1819,9 +1625,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "dcp",
-            "resource": "Azure Dev Center Project",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Dev Center Project"
         }
     },
     {
@@ -1835,9 +1639,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "dcpet",
-            "resource": "Azure Dev Center Project Environment Type",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Dev Center Project Environment Type"
         }
     },
     {
@@ -1851,9 +1653,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "lab",
-            "resource": "Azure Dev Test Lab",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Dev Test Lab"
         }
     },
     {
@@ -1867,9 +1667,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "labvm",
-            "resource": "Azure Dev Test Linux Virtual Machine",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Dev Test Linux Virtual Machine"
         }
     },
     {
@@ -1883,9 +1681,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "labvm",
-            "resource": "Azure Dev Test Windows Virtual Machine",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Dev Test Windows Virtual Machine"
         }
     },
     {
@@ -1899,9 +1695,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "adteg",
-            "resource": "Azure Digital Twins Endpoint Eventgrid",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Digital Twins Endpoint Eventgrid"
         }
     },
     {
@@ -1915,9 +1709,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "adteh",
-            "resource": "Azure Digital Twins Endpoint Eventhub",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Digital Twins Endpoint Eventhub"
         }
     },
     {
@@ -1931,9 +1723,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "adtsb",
-            "resource": "Azure Digital Twins Endpoint Servicebus",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Digital Twins Endpoint Servicebus"
         }
     },
     {
@@ -1963,9 +1753,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "des",
-            "resource": "Azure Disk Encryption Set",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Disk Encryption Set"
         }
     },
     {
@@ -1979,9 +1767,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "dnsrec",
-            "resource": "Azure Dns A Record",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Dns A Record"
         },
         "out_of_doc": true
     },
@@ -1996,9 +1782,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "dnsrec",
-            "resource": "Azure Dns Aaaa Record",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Dns Aaaa Record"
         },
         "out_of_doc": true
     },
@@ -2013,9 +1797,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "dnsrec",
-            "resource": "Azure Dns Caa Record",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Dns Caa Record"
         },
         "out_of_doc": true
     },
@@ -2030,9 +1812,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "dnsrec",
-            "resource": "Azure Dns Cname Record",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Dns Cname Record"
         },
         "out_of_doc": true
     },
@@ -2047,9 +1827,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "dnsrec",
-            "resource": "Azure Dns Mx Record",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Dns Mx Record"
         },
         "out_of_doc": true
     },
@@ -2064,9 +1842,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "dnsrec",
-            "resource": "Azure Dns Ns Record",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Dns Ns Record"
         },
         "out_of_doc": true
     },
@@ -2081,9 +1857,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "dnsrec",
-            "resource": "Azure Dns Ptr Record",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Dns Ptr Record"
         },
         "out_of_doc": true
     },
@@ -2098,9 +1872,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "dnsrec",
-            "resource": "Azure Dns Txt Record",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Dns Txt Record"
         },
         "out_of_doc": true
     },
@@ -2131,9 +1903,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "egd",
-            "resource": "Azure Eventgrid Domain",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Eventgrid Domain"
         }
     },
     {
@@ -2147,9 +1917,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "egdt",
-            "resource": "Azure Eventgrid Domain Topic",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Eventgrid Domain Topic"
         }
     },
     {
@@ -2163,9 +1931,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "egs",
-            "resource": "Azure Eventgrid Event Subscription",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Eventgrid Event Subscription"
         }
     },
     {
@@ -2179,9 +1945,7 @@
         "lowercase": false,
         "regex": "`[^0-9A-Za-z-]`",
         "official": {
-            "slug": "egt",
-            "resource": "Azure Eventgrid Topic",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Eventgrid Topic"
         }
     },
     {
@@ -2195,9 +1959,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "evh",
-            "resource": "Azure Eventhub",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Eventhub"
         }
     },
     {
@@ -2211,9 +1973,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "ehar",
-            "resource": "Azure Eventhub Authorization Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Eventhub Authorization Rule"
         }
     },
     {
@@ -2227,9 +1987,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "ehcg",
-            "resource": "Azure Eventhub Consumer Group",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Eventhub Consumer Group"
         }
     },
     {
@@ -2259,9 +2017,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "ehnar",
-            "resource": "Azure Eventhub Namespace Authorization Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Eventhub Namespace Authorization Rule"
         }
     },
     {
@@ -2275,9 +2031,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "ehdr",
-            "resource": "Azure Eventhub Namespace Disaster Recovery Config",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Eventhub Namespace Disaster Recovery Config"
         }
     },
     {
@@ -2291,9 +2045,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "erc",
-            "resource": "Azure Express Route Circuit",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Express Route Circuit"
         }
     },
     {
@@ -2307,9 +2059,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "ergw",
-            "resource": "Azure Express Route Gateway",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Express Route Gateway"
         }
     },
     {
@@ -2323,9 +2073,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "fedcred",
-            "resource": "Azure Federated Identity Credential",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Federated Identity Credential"
         }
     },
     {
@@ -2355,9 +2103,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "fwapp",
-            "resource": "Azure Firewall Application Rule Collection",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Firewall Application Rule Collection"
         },
         "out_of_doc": true
     },
@@ -2372,9 +2118,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "fwipconf",
-            "resource": "Azure Firewall Ip Configuration",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Firewall Ip Configuration"
         },
         "out_of_doc": true
     },
@@ -2389,9 +2133,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "fwnatrc",
-            "resource": "Azure Firewall Nat Rule Collection",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Firewall Nat Rule Collection"
         },
         "out_of_doc": true
     },
@@ -2406,9 +2148,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "fwnetrc",
-            "resource": "Azure Firewall Network Rule Collection",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Firewall Network Rule Collection"
         },
         "out_of_doc": true
     },
@@ -2423,9 +2163,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "afwp",
-            "resource": "Azure Firewall Policy",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Firewall Policy"
         }
     },
     {
@@ -2455,9 +2193,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z]\"",
         "official": {
-            "slug": "fdfw",
-            "resource": "Azure Frontdoor Firewall Policy",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Frontdoor Firewall Policy"
         }
     },
     {
@@ -2471,9 +2207,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "fa",
-            "resource": "Azure Function App",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Function App"
         }
     },
     {
@@ -2487,9 +2221,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "fas",
-            "resource": "Azure Function App Slot",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Function App Slot"
         }
     },
     {
@@ -2503,9 +2235,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "hadoop",
-            "resource": "Azure Hdinsight Hadoop Cluster",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Hdinsight Hadoop Cluster"
         }
     },
     {
@@ -2519,9 +2249,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "hbase",
-            "resource": "Azure Hdinsight Hbase Cluster",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Hdinsight Hbase Cluster"
         }
     },
     {
@@ -2535,9 +2263,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "iqr",
-            "resource": "Azure Hdinsight Interactive Query Cluster",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Hdinsight Interactive Query Cluster"
         }
     },
     {
@@ -2551,9 +2277,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "kafka",
-            "resource": "Azure Hdinsight Kafka Cluster",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Hdinsight Kafka Cluster"
         }
     },
     {
@@ -2567,9 +2291,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "mls",
-            "resource": "Azure Hdinsight Ml Services Cluster",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Hdinsight Ml Services Cluster"
         }
     },
     {
@@ -2583,9 +2305,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "rser",
-            "resource": "Azure Hdinsight Rserver Cluster",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Hdinsight Rserver Cluster"
         }
     },
     {
@@ -2599,9 +2319,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "spark",
-            "resource": "Azure Hdinsight Spark Cluster",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Hdinsight Spark Cluster"
         }
     },
     {
@@ -2615,9 +2333,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "storm",
-            "resource": "Azure Hdinsight Storm Cluster",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Hdinsight Storm Cluster"
         }
     },
     {
@@ -2631,9 +2347,7 @@
         "lowercase": true,
         "regex": "\"[^0-9a-z-]\"",
         "official": {
-            "slug": "dicom",
-            "resource": "Azure Healthcare Dicom Service",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Healthcare Dicom Service"
         }
     },
     {
@@ -2647,9 +2361,7 @@
         "lowercase": true,
         "regex": "\"[^0-9a-z-]\"",
         "official": {
-            "slug": "fhir",
-            "resource": "Azure Healthcare Fhir Service",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Healthcare Fhir Service"
         }
     },
     {
@@ -2663,9 +2375,7 @@
         "lowercase": true,
         "regex": "\"[^0-9a-z-]\"",
         "official": {
-            "slug": "medtech",
-            "resource": "Azure Healthcare Medtech Service",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Healthcare Medtech Service"
         }
     },
     {
@@ -2679,9 +2389,7 @@
         "lowercase": true,
         "regex": "\"[^0-9a-z-]\"",
         "official": {
-            "slug": "hcasvc",
-            "resource": "Azure Healthcare Service",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Healthcare Service"
         }
     },
     {
@@ -2695,9 +2403,7 @@
         "lowercase": true,
         "regex": "\"[^0-9a-z]\"",
         "official": {
-            "slug": "hcw",
-            "resource": "Azure Healthcare Workspace",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Healthcare Workspace"
         }
     },
     {
@@ -2711,9 +2417,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "img",
-            "resource": "Azure Image",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Image"
         }
     },
     {
@@ -2727,9 +2431,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z\\\\-\\\\_\\\\.]\"",
         "official": {
-            "slug": "lappise",
-            "resource": "Azure Integration Service Environment",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Integration Service Environment"
         }
     },
     {
@@ -2743,9 +2445,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-._]\"",
         "official": {
-            "slug": "iotdg",
-            "resource": "Azure Iot Security Device Group",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Iot Security Device Group"
         }
     },
     {
@@ -2759,9 +2459,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-_]\"",
         "official": {
-            "slug": "iotss",
-            "resource": "Azure Iot Security Solution",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Iot Security Solution"
         }
     },
     {
@@ -2775,9 +2473,7 @@
         "lowercase": true,
         "regex": "\"[^0-9a-z-]\"",
         "official": {
-            "slug": "iotapp",
-            "resource": "Azure Iotcentral Application",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Iotcentral Application"
         }
     },
     {
@@ -2807,9 +2503,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-._]\"",
         "official": {
-            "slug": "iotcert",
-            "resource": "Azure Iothub Certificate",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Iothub Certificate"
         }
     },
     {
@@ -2823,9 +2517,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "iotcg",
-            "resource": "Azure Iothub Consumer Group",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Iothub Consumer Group"
         }
     },
     {
@@ -2855,9 +2547,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "dpscert",
-            "resource": "Azure Iothub Dps Certificate",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Iothub Dps Certificate"
         }
     },
     {
@@ -2871,9 +2561,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-._]\"",
         "official": {
-            "slug": "dpssap",
-            "resource": "Azure Iothub Dps Shared Access Policy",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Iothub Dps Shared Access Policy"
         }
     },
     {
@@ -2887,9 +2575,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-._]\"",
         "official": {
-            "slug": "iotsap",
-            "resource": "Azure Iothub Shared Access Policy",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Iothub Shared Access Policy"
         }
     },
     {
@@ -2903,9 +2589,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "ipgr",
-            "resource": "Azure Ip Group",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Ip Group"
         }
     },
     {
@@ -2936,9 +2620,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "kvc",
-            "resource": "Azure Key Vault Certificate",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Key Vault Certificate"
         }
     },
     {
@@ -2952,9 +2634,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "kvk",
-            "resource": "Azure Key Vault Key",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Key Vault Key"
         }
     },
     {
@@ -2968,9 +2648,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "kvs",
-            "resource": "Azure Key Vault Secret",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Key Vault Secret"
         }
     },
     {
@@ -3000,9 +2678,7 @@
         "lowercase": true,
         "regex": "\"[^0-9a-z-]\"",
         "official": {
-            "slug": "fleet",
-            "resource": "Azure Kubernetes Fleet Manager",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Kubernetes Fleet Manager"
         }
     },
     {
@@ -3016,9 +2692,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z]\"",
         "official": {
-            "slug": "kc",
-            "resource": "Azure Kusto Cluster",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Kusto Cluster"
         }
     },
     {
@@ -3032,9 +2706,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z- .]\"",
         "official": {
-            "slug": "kdb",
-            "resource": "Azure Kusto Database",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Kusto Database"
         }
     },
     {
@@ -3048,9 +2720,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z- .]\"",
         "official": {
-            "slug": "kehc",
-            "resource": "Azure Kusto Eventhub Data Connection",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Kusto Eventhub Data Connection"
         }
     },
     {
@@ -3128,9 +2798,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "lbnatrl",
-            "resource": "Azure Lb Nat Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Lb Nat Rule"
         }
     },
     {
@@ -3224,9 +2892,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "lwapp",
-            "resource": "Azure Linux Web App",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Linux Web App"
         }
     },
     {
@@ -3240,9 +2906,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-_]\"",
         "official": {
-            "slug": "load",
-            "resource": "Azure Load Test",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Load Test"
         }
     },
     {
@@ -3272,9 +2936,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "logc",
-            "resource": "Azure Log Analytics Cluster",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Log Analytics Cluster"
         }
     },
     {
@@ -3288,9 +2950,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "laqp",
-            "resource": "Azure Log Analytics Query Pack",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Log Analytics Query Pack"
         }
     },
     {
@@ -3304,9 +2964,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "las",
-            "resource": "Azure Log Analytics Solution",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Log Analytics Solution"
         }
     },
     {
@@ -3320,9 +2978,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "lasi",
-            "resource": "Azure Log Analytics Storage Insights",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Log Analytics Storage Insights"
         }
     },
     {
@@ -3352,9 +3008,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]\"",
         "official": {
-            "slug": "lappac",
-            "resource": "Azure Logic App Action Custom",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Logic App Action Custom"
         }
     },
     {
@@ -3368,9 +3022,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]\"",
         "official": {
-            "slug": "lappah",
-            "resource": "Azure Logic App Action Http",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Logic App Action Http"
         }
     },
     {
@@ -3384,9 +3036,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]\"",
         "official": {
-            "slug": "lappia",
-            "resource": "Azure Logic App Integration Account",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Logic App Integration Account"
         }
     },
     {
@@ -3400,9 +3050,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]\"",
         "official": {
-            "slug": "lapptc",
-            "resource": "Azure Logic App Trigger Custom",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Logic App Trigger Custom"
         }
     },
     {
@@ -3416,9 +3064,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]\"",
         "official": {
-            "slug": "lappth",
-            "resource": "Azure Logic App Trigger Http Request",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Logic App Trigger Http Request"
         }
     },
     {
@@ -3432,9 +3078,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]\"",
         "official": {
-            "slug": "lapptc",
-            "resource": "Azure Logic App Trigger Recurrence",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Logic App Trigger Recurrence"
         }
     },
     {
@@ -3448,9 +3092,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]\"",
         "official": {
-            "slug": "lapp",
-            "resource": "Azure Logic App Workflow",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Logic App Workflow"
         }
     },
     {
@@ -3464,9 +3106,7 @@
         "lowercase": false,
         "regex": "\"[^0-9a-z-]\"",
         "official": {
-            "slug": "amlci",
-            "resource": "Azure Machine Learning Compute Instance",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Machine Learning Compute Instance"
         }
     },
     {
@@ -3480,9 +3120,7 @@
         "lowercase": false,
         "regex": "\"[<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "mlw",
-            "resource": "Azure Machine Learning Workspace",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Machine Learning Workspace"
         }
     },
     {
@@ -3496,9 +3134,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "mcf",
-            "resource": "Azure Maintenance Configuration",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Maintenance Configuration"
         }
     },
     {
@@ -3528,9 +3164,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "map",
-            "resource": "Azure Maps Account",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Maps Account"
         }
     },
     {
@@ -3544,9 +3178,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "mariadb",
-            "resource": "Azure Mariadb Database",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Mariadb Database"
         }
     },
     {
@@ -3560,9 +3192,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "mariafw",
-            "resource": "Azure Mariadb Firewall Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Mariadb Firewall Rule"
         }
     },
     {
@@ -3576,9 +3206,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "maria",
-            "resource": "Azure Mariadb Server",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Mariadb Server"
         }
     },
     {
@@ -3592,9 +3220,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "mariavn",
-            "resource": "Azure Mariadb Virtual Network Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Mariadb Virtual Network Rule"
         }
     },
     {
@@ -3608,9 +3234,7 @@
         "lowercase": false,
         "regex": "`[^~!@$^*()\\[\\]\\{\\}_\\-=\"';,0-9A-Za-z _.-]`",
         "official": {
-            "slug": "amag",
-            "resource": "Azure Monitor Action Group",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Monitor Action Group"
         }
     },
     {
@@ -3624,9 +3248,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:&?#\\\\+\\\\/]\"",
         "official": {
-            "slug": "adfmysql",
-            "resource": "Azure Monitor Activity Log Alert",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Monitor Activity Log Alert"
         }
     },
     {
@@ -3640,9 +3262,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z _.-]\"",
         "official": {
-            "slug": "amas",
-            "resource": "Azure Monitor Autoscale Setting",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Monitor Autoscale Setting"
         }
     },
     {
@@ -3656,9 +3276,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "dce",
-            "resource": "Azure Monitor Data Collection Endpoint",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Monitor Data Collection Endpoint"
         }
     },
     {
@@ -3672,9 +3290,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "dcr",
-            "resource": "Azure Monitor Data Collection Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Monitor Data Collection Rule"
         }
     },
     {
@@ -3688,9 +3304,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z _.-]\"",
         "official": {
-            "slug": "amds",
-            "resource": "Azure Monitor Diagnostic Setting",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Monitor Diagnostic Setting"
         }
     },
     {
@@ -3704,9 +3318,7 @@
         "lowercase": false,
         "regex": "\"[<>*%&:\\\\?+/#@{}]\"",
         "official": {
-            "slug": "ma",
-            "resource": "Azure Monitor Metric Alert",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Monitor Metric Alert"
         }
     },
     {
@@ -3720,9 +3332,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-._()]\"",
         "official": {
-            "slug": "ampls",
-            "resource": "Azure Monitor Private Link Scope",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Monitor Private Link Scope"
         }
     },
     {
@@ -3736,9 +3346,7 @@
         "lowercase": false,
         "regex": "\"[<>*%&:\\\\?/#{}]\"",
         "official": {
-            "slug": "schqra",
-            "resource": "Azure Monitor Scheduled Query Rules Alert",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Monitor Scheduled Query Rules Alert"
         }
     },
     {
@@ -3768,9 +3376,7 @@
         "lowercase": false,
         "regex": "\"[<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "sqlep",
-            "resource": "Azure Mssql Elasticpool",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Mssql Elasticpool"
         }
     },
     {
@@ -3784,9 +3390,7 @@
         "lowercase": true,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "sqlmi",
-            "resource": "Azure Mssql Mi",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Mssql Mi"
         }
     },
     {
@@ -3816,9 +3420,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "mysqldb",
-            "resource": "Azure Mysql Database",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Mysql Database"
         }
     },
     {
@@ -3832,9 +3434,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "mysqlfw",
-            "resource": "Azure Mysql Firewall Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Mysql Firewall Rule"
         }
     },
     {
@@ -3848,9 +3448,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "mysqlf",
-            "resource": "Azure Mysql Flexible Server",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Mysql Flexible Server"
         }
     },
     {
@@ -3864,9 +3462,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "mysqlfdb",
-            "resource": "Azure Mysql Flexible Server Database",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Mysql Flexible Server Database"
         }
     },
     {
@@ -3880,9 +3476,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "mysqlffw",
-            "resource": "Azure Mysql Flexible Server Firewall Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Mysql Flexible Server Firewall Rule"
         }
     },
     {
@@ -3912,9 +3506,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "mysqlvn",
-            "resource": "Azure Mysql Virtual Network Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Mysql Virtual Network Rule"
         }
     },
     {
@@ -3928,9 +3520,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "ana",
-            "resource": "Azure Netapp Account",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Netapp Account"
         }
     },
     {
@@ -3944,9 +3534,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "anp",
-            "resource": "Azure Netapp Pool",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Netapp Pool"
         }
     },
     {
@@ -3960,9 +3548,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "ans",
-            "resource": "Azure Netapp Snapshot",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Netapp Snapshot"
         }
     },
     {
@@ -3976,9 +3562,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "anv",
-            "resource": "Azure Netapp Volume",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Netapp Volume"
         }
     },
     {
@@ -3992,9 +3576,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "ddospp",
-            "resource": "Azure Network Ddos Protection Plan",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Network Ddos Protection Plan"
         },
         "out_of_doc": true
     },
@@ -4041,9 +3623,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "nsgr",
-            "resource": "Azure Network Security Group Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Network Security Group Rule"
         }
     },
     {
@@ -4057,9 +3637,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "nsgr",
-            "resource": "Azure Network Security Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Network Security Rule"
         }
     },
     {
@@ -4073,9 +3651,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "nw",
-            "resource": "Azure Network Watcher",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Network Watcher"
         }
     },
     {
@@ -4089,9 +3665,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "nginx",
-            "resource": "Azure Nginx Deployment",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Nginx Deployment"
         }
     },
     {
@@ -4105,9 +3679,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "nh",
-            "resource": "Azure Notification Hub",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Notification Hub"
         }
     },
     {
@@ -4121,9 +3693,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "dnsrec",
-            "resource": "Azure Notification Hub Authorization Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Notification Hub Authorization Rule"
         }
     },
     {
@@ -4137,9 +3707,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "dnsrec",
-            "resource": "Azure Notification Hub Namespace",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Notification Hub Namespace"
         }
     },
     {
@@ -4153,9 +3721,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "vpngw",
-            "resource": "Azure Point To Site Vpn Gateway",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Point To Site Vpn Gateway"
         }
     },
     {
@@ -4169,9 +3735,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "dsb",
-            "resource": "Azure Portal Dashboard",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Portal Dashboard"
         }
     },
     {
@@ -4185,9 +3749,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "psqldb",
-            "resource": "Azure Postgresql Database",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Postgresql Database"
         }
     },
     {
@@ -4201,9 +3763,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "psqlfw",
-            "resource": "Azure Postgresql Firewall Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Postgresql Firewall Rule"
         }
     },
     {
@@ -4217,9 +3777,7 @@
         "lowercase": true,
         "regex": "\"[^0-9a-z-]\"",
         "official": {
-            "slug": "psqlf",
-            "resource": "Azure Postgresql Flexible Server",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Postgresql Flexible Server"
         }
     },
     {
@@ -4233,9 +3791,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "psqlfdb",
-            "resource": "Azure Postgresql Flexible Server Database",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Postgresql Flexible Server Database"
         }
     },
     {
@@ -4249,9 +3805,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "psqlffw",
-            "resource": "Azure Postgresql Flexible Server Firewall Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Postgresql Flexible Server Firewall Rule"
         }
     },
     {
@@ -4281,9 +3835,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "psqlvn",
-            "resource": "Azure Postgresql Virtual Network Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Postgresql Virtual Network Rule"
         }
     },
     {
@@ -4298,9 +3850,7 @@
         "lowercase": false,
         "regex": "\"[^0-9a-z]\"",
         "official": {
-            "slug": "pbi",
-            "resource": "Azure Powerbi Embedded",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Powerbi Embedded"
         }
     },
     {
@@ -4314,9 +3864,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "pdnsrec",
-            "resource": "Azure Private Dns A Record",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Private Dns A Record"
         },
         "out_of_doc": true
     },
@@ -4331,9 +3879,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "pdnsrec",
-            "resource": "Azure Private Dns Aaaa Record",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Private Dns Aaaa Record"
         },
         "out_of_doc": true
     },
@@ -4348,9 +3894,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "pdnsrec",
-            "resource": "Azure Private Dns Cname Record",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Private Dns Cname Record"
         },
         "out_of_doc": true
     },
@@ -4365,9 +3909,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "pdnsrec",
-            "resource": "Azure Private Dns Mx Record",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Private Dns Mx Record"
         },
         "out_of_doc": true
     },
@@ -4382,9 +3924,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "pdnsrec",
-            "resource": "Azure Private Dns Ptr Record",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Private Dns Ptr Record"
         },
         "out_of_doc": true
     },
@@ -4399,9 +3939,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "dnspr",
-            "resource": "Azure Private Dns Resolver",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Private Dns Resolver"
         }
     },
     {
@@ -4415,9 +3953,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "dnsfwrs",
-            "resource": "Azure Private Dns Resolver Dns Forwarding Ruleset",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Private Dns Resolver Dns Forwarding Ruleset"
         }
     },
     {
@@ -4431,9 +3967,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "dnsfwr",
-            "resource": "Azure Private Dns Resolver Forwarding Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Private Dns Resolver Forwarding Rule"
         }
     },
     {
@@ -4447,9 +3981,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "dnsprie",
-            "resource": "Azure Private Dns Resolver Inbound Endpoint",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Private Dns Resolver Inbound Endpoint"
         }
     },
     {
@@ -4463,9 +3995,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "dnsproe",
-            "resource": "Azure Private Dns Resolver Outbound Endpoint",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Private Dns Resolver Outbound Endpoint"
         }
     },
     {
@@ -4479,9 +4009,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "dnsfwrsvnetl",
-            "resource": "Azure Private Dns Resolver Virtual Network Link",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Private Dns Resolver Virtual Network Link"
         }
     },
     {
@@ -4495,9 +4023,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "pdnsrec",
-            "resource": "Azure Private Dns Srv Record",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Private Dns Srv Record"
         },
         "out_of_doc": true
     },
@@ -4512,9 +4038,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "pdnsrec",
-            "resource": "Azure Private Dns Txt Record",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Private Dns Txt Record"
         },
         "out_of_doc": true
     },
@@ -4529,9 +4053,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "pdns",
-            "resource": "Azure Private Dns Zone",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Private Dns Zone"
         }
     },
     {
@@ -4545,9 +4067,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "pdnszg",
-            "resource": "Azure Private Dns Zone Group",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Private Dns Zone Group"
         },
         "out_of_doc": true
     },
@@ -4562,9 +4082,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "pnetlk",
-            "resource": "Azure Private Dns Zone Virtual Network Link",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Private Dns Zone Virtual Network Link"
         }
     },
     {
@@ -4578,9 +4096,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "pe",
-            "resource": "Azure Private Endpoint",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Private Endpoint"
         }
     },
     {
@@ -4594,9 +4110,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "pls",
-            "resource": "Azure Private Link Service",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Private Link Service"
         },
         "out_of_doc": true
     },
@@ -4611,9 +4125,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "psc",
-            "resource": "Azure Private Service Connection",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Private Service Connection"
         },
         "out_of_doc": true
     },
@@ -4628,9 +4140,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "ppg",
-            "resource": "Azure Proximity Placement Group",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Proximity Placement Group"
         },
         "out_of_doc": true
     },
@@ -4661,9 +4171,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "pippf",
-            "resource": "Azure Public Ip Prefix",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Public Ip Prefix"
         }
     },
     {
@@ -4677,9 +4185,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "purv",
-            "resource": "Azure Purview Account",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Purview Account"
         }
     },
     {
@@ -4693,9 +4199,7 @@
         "lowercase": false,
         "regex": "`[^a-zA-Z0-9-]`",
         "official": {
-            "slug": "rsv",
-            "resource": "Azure Recovery Services Vault",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Recovery Services Vault"
         }
     },
     {
@@ -4709,9 +4213,7 @@
         "lowercase": false,
         "regex": "`[^a-zA-Z0-9-]`",
         "official": {
-            "slug": "rsvbp",
-            "resource": "Azure Recovery Services Vault Backup Police",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Recovery Services Vault Backup Police"
         }
     },
     {
@@ -4725,9 +4227,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z]\"",
         "official": {
-            "slug": "aroc",
-            "resource": "Azure Redhat Openshift Cluster",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Redhat Openshift Cluster"
         }
     },
     {
@@ -4741,9 +4241,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z]\"",
         "official": {
-            "slug": "arod",
-            "resource": "Azure Redhat Openshift Domain",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Redhat Openshift Domain"
         }
     },
     {
@@ -4774,9 +4272,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z]\"",
         "official": {
-            "slug": "redisfw",
-            "resource": "Azure Redis Firewall Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Redis Firewall Rule"
         }
     },
     {
@@ -4790,9 +4286,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "rlhc",
-            "resource": "Azure Relay Hybrid Connection",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Relay Hybrid Connection"
         }
     },
     {
@@ -4806,9 +4300,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "rln",
-            "resource": "Azure Relay Namespace",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Relay Namespace"
         }
     },
     {
@@ -4838,9 +4330,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "argpa",
-            "resource": "Azure Resource Group Policy Assignment",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Resource Group Policy Assignment"
         }
     },
     {
@@ -4854,9 +4344,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "ra",
-            "resource": "Azure Role Assignment",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Role Assignment"
         }
     },
     {
@@ -4870,9 +4358,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "rd",
-            "resource": "Azure Role Definition",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Role Definition"
         }
     },
     {
@@ -4902,9 +4388,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "rts",
-            "resource": "Azure Route Server",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Route Server"
         }
     },
     {
@@ -4918,9 +4402,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "route",
-            "resource": "Azure Route Table",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Route Table"
         }
     },
     {
@@ -4982,9 +4464,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "sbar",
-            "resource": "Azure Servicebus Namespace Authorization Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Servicebus Namespace Authorization Rule"
         }
     },
     {
@@ -4998,9 +4478,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "sbdr",
-            "resource": "Azure Servicebus Namespace Disaster Recovery Config",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Servicebus Namespace Disaster Recovery Config"
         }
     },
     {
@@ -5030,9 +4508,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "sbqar",
-            "resource": "Azure Servicebus Queue Authorization Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Servicebus Queue Authorization Rule"
         }
     },
     {
@@ -5046,9 +4522,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "sbs",
-            "resource": "Azure Servicebus Subscription",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Servicebus Subscription"
         }
     },
     {
@@ -5062,9 +4536,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "sbsr",
-            "resource": "Azure Servicebus Subscription Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Servicebus Subscription Rule"
         }
     },
     {
@@ -5094,9 +4566,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "sbtar",
-            "resource": "Azure Servicebus Topic Authorization Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Servicebus Topic Authorization Rule"
         }
     },
     {
@@ -5110,9 +4580,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "si",
-            "resource": "Azure Shared Image",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Shared Image"
         }
     },
     {
@@ -5126,9 +4594,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.]\"",
         "official": {
-            "slug": "sig",
-            "resource": "Azure Shared Image Gallery",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Shared Image Gallery"
         }
     },
     {
@@ -5142,9 +4608,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "sgnlr",
-            "resource": "Azure Signalr Service",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Signalr Service"
         }
     },
     {
@@ -5174,9 +4638,7 @@
         "lowercase": false,
         "regex": "\"[<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "sqlep",
-            "resource": "Azure Sql Elasticpool",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Sql Elasticpool"
         }
     },
     {
@@ -5190,9 +4652,7 @@
         "lowercase": true,
         "regex": "\"[^0-9a-z-]\"",
         "official": {
-            "slug": "sqlfg",
-            "resource": "Azure Sql Failover Group",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Sql Failover Group"
         }
     },
     {
@@ -5206,9 +4666,7 @@
         "lowercase": false,
         "regex": "`[<>*%:?\\\\+\\\\/]`",
         "official": {
-            "slug": "sqlfw",
-            "resource": "Azure Sql Firewall Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Sql Firewall Rule"
         }
     },
     {
@@ -5238,9 +4696,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "stapp",
-            "resource": "Azure Static Site",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Static Site"
         }
     },
     {
@@ -5270,9 +4726,7 @@
         "lowercase": false,
         "regex": "\"[\\\\s\\\\/$#&]\"",
         "official": {
-            "slug": "blob",
-            "resource": "Azure Storage Blob",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Storage Blob"
         }
     },
     {
@@ -5287,9 +4741,7 @@
         "lowercase": false,
         "regex": "\"[^0-9a-z-]\"",
         "official": {
-            "slug": "stct",
-            "resource": "Azure Storage Container",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Storage Container"
         }
     },
     {
@@ -5304,9 +4756,7 @@
         "lowercase": false,
         "regex": "\"[^0-9a-z-]\"",
         "official": {
-            "slug": "stdl",
-            "resource": "Azure Storage Data Lake Gen2 Filesystem",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Storage Data Lake Gen2 Filesystem"
         }
     },
     {
@@ -5321,9 +4771,7 @@
         "lowercase": false,
         "regex": "\"[^0-9a-z-]\"",
         "official": {
-            "slug": "stq",
-            "resource": "Azure Storage Queue",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Storage Queue"
         }
     },
     {
@@ -5338,9 +4786,7 @@
         "lowercase": false,
         "regex": "\"[^0-9a-z-]\"",
         "official": {
-            "slug": "sts",
-            "resource": "Azure Storage Share",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Storage Share"
         }
     },
     {
@@ -5355,9 +4801,7 @@
         "lowercase": false,
         "regex": "\"[^0-9a-z-]\"",
         "official": {
-            "slug": "sts",
-            "resource": "Azure Storage Share Directory",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Storage Share Directory"
         }
     },
     {
@@ -5372,9 +4816,7 @@
         "lowercase": false,
         "regex": "\"[<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "stsy",
-            "resource": "Azure Storage Sync",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Storage Sync"
         }
     },
     {
@@ -5389,9 +4831,7 @@
         "lowercase": false,
         "regex": "\"[<>*%:.?\\\\+\\\\/]\"",
         "official": {
-            "slug": "stsg",
-            "resource": "Azure Storage Sync Group",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Storage Sync Group"
         }
     },
     {
@@ -5406,9 +4846,7 @@
         "lowercase": false,
         "regex": "\"[^0-9a-z-]\"",
         "official": {
-            "slug": "stt",
-            "resource": "Azure Storage Table",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Storage Table"
         }
     },
     {
@@ -5422,9 +4860,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "asafunc",
-            "resource": "Azure Stream Analytics Function Javascript Udf",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Stream Analytics Function Javascript Udf"
         }
     },
     {
@@ -5454,9 +4890,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "asaoblob",
-            "resource": "Azure Stream Analytics Output Blob",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Stream Analytics Output Blob"
         }
     },
     {
@@ -5470,9 +4904,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "asaoeh",
-            "resource": "Azure Stream Analytics Output Eventhub",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Stream Analytics Output Eventhub"
         }
     },
     {
@@ -5486,9 +4918,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "asaomssql",
-            "resource": "Azure Stream Analytics Output Mssql",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Stream Analytics Output Mssql"
         }
     },
     {
@@ -5502,9 +4932,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "asaosbq",
-            "resource": "Azure Stream Analytics Output Servicebus Queue",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Stream Analytics Output Servicebus Queue"
         }
     },
     {
@@ -5518,9 +4946,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "asaosbt",
-            "resource": "Azure Stream Analytics Output Servicebus Topic",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Stream Analytics Output Servicebus Topic"
         }
     },
     {
@@ -5534,9 +4960,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "asarblob",
-            "resource": "Azure Stream Analytics Reference Input Blob",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Stream Analytics Reference Input Blob"
         }
     },
     {
@@ -5550,9 +4974,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "asaiblob",
-            "resource": "Azure Stream Analytics Stream Input Blob",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Stream Analytics Stream Input Blob"
         }
     },
     {
@@ -5566,9 +4988,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "asaieh",
-            "resource": "Azure Stream Analytics Stream Input Eventhub",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Stream Analytics Stream Input Eventhub"
         }
     },
     {
@@ -5582,9 +5002,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "asaiiot",
-            "resource": "Azure Stream Analytics Stream Input Iothub",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Stream Analytics Stream Input Iothub"
         }
     },
     {
@@ -5614,9 +5032,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "aspa",
-            "resource": "Azure Subscription Policy Assignment",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Subscription Policy Assignment"
         }
     },
     {
@@ -5630,9 +5046,7 @@
         "lowercase": false,
         "regex": "`[<>*%:?\\\\+\\\\/]`",
         "official": {
-            "slug": "syfw",
-            "resource": "Azure Synapse Firewall Rule",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Synapse Firewall Rule"
         }
     },
     {
@@ -5646,9 +5060,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "synira",
-            "resource": "Azure Synapse Integration Runtime Azure",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Synapse Integration Runtime Azure"
         }
     },
     {
@@ -5662,9 +5074,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "synirsh",
-            "resource": "Azure Synapse Integration Runtime Self Hosted",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Synapse Integration Runtime Self Hosted"
         }
     },
     {
@@ -5678,9 +5088,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_]\"",
         "official": {
-            "slug": "synls",
-            "resource": "Azure Synapse Linked Service",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Synapse Linked Service"
         }
     },
     {
@@ -5694,9 +5102,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "synmpe",
-            "resource": "Azure Synapse Managed Private Endpoint",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Synapse Managed Private Endpoint"
         }
     },
     {
@@ -5710,9 +5116,7 @@
         "lowercase": true,
         "regex": "\"[^0-9a-z]\"",
         "official": {
-            "slug": "synplh",
-            "resource": "Azure Synapse Private Link Hub",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Synapse Private Link Hub"
         }
     },
     {
@@ -5726,9 +5130,7 @@
         "lowercase": true,
         "regex": "\"[^0-9a-zA-Z]\"",
         "official": {
-            "slug": "sysp",
-            "resource": "Azure Synapse Spark Pool",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Synapse Spark Pool"
         }
     },
     {
@@ -5742,9 +5144,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_]\"",
         "official": {
-            "slug": "synsp",
-            "resource": "Azure Synapse Sql Pool",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Synapse Sql Pool"
         }
     },
     {
@@ -5758,9 +5158,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z]\"",
         "official": {
-            "slug": "synspvab",
-            "resource": "Azure Synapse Sql Pool Vulnerability Assessment Baseline",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Synapse Sql Pool Vulnerability Assessment Baseline"
         }
     },
     {
@@ -5774,9 +5172,7 @@
         "lowercase": false,
         "regex": "`[^-\\w\\._\\(\\)]`",
         "official": {
-            "slug": "synspwc",
-            "resource": "Azure Synapse Sql Pool Workload Classifier",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Synapse Sql Pool Workload Classifier"
         }
     },
     {
@@ -5790,9 +5186,7 @@
         "lowercase": false,
         "regex": "`[^-\\w\\._\\(\\)]`",
         "official": {
-            "slug": "synspwg",
-            "resource": "Azure Synapse Sql Pool Workload Group",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Synapse Sql Pool Workload Group"
         }
     },
     {
@@ -5806,9 +5200,7 @@
         "lowercase": true,
         "regex": "\"[^0-9a-z]\"",
         "official": {
-            "slug": "syws",
-            "resource": "Azure Synapse Workspace",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Synapse Workspace"
         }
     },
     {
@@ -5822,9 +5214,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-._\\\\(\\\\)]\"",
         "official": {
-            "slug": "deploy",
-            "resource": "Azure Template Deployment",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Template Deployment"
         }
     },
     {
@@ -5838,9 +5228,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "traf",
-            "resource": "Azure Traffic Manager Profile",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Traffic Manager Profile"
         }
     },
     {
@@ -5854,9 +5242,7 @@
         "lowercase": true,
         "regex": "\"[^0-9a-zA-Z-_]\"",
         "official": {
-            "slug": "msi",
-            "resource": "Azure User Assigned Identity",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure User Assigned Identity"
         }
     },
     {
@@ -5870,9 +5256,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z _.-]\"",
         "official": {
-            "slug": "dag",
-            "resource": "Azure Virtual Desktop Application Group",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Virtual Desktop Application Group"
         }
     },
     {
@@ -5886,9 +5270,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z _.-]\"",
         "official": {
-            "slug": "hpool",
-            "resource": "Azure Virtual Desktop Host Pool",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Virtual Desktop Host Pool"
         }
     },
     {
@@ -5902,9 +5284,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z _.-]\"",
         "official": {
-            "slug": "wvdws",
-            "resource": "Azure Virtual Desktop Workspace",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Virtual Desktop Workspace"
         }
     },
     {
@@ -5918,9 +5298,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "vhub",
-            "resource": "Azure Virtual Hub",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Virtual Hub"
         }
     },
     {
@@ -5934,9 +5312,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "vhcon",
-            "resource": "Azure Virtual Hub Connection",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Virtual Hub Connection"
         }
     },
     {
@@ -5966,9 +5342,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "vmx",
-            "resource": "Azure Virtual Machine Extension",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Virtual Machine Extension"
         },
         "out_of_doc": true
     },
@@ -6015,9 +5389,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9\\\\-\\\\._]\"",
         "official": {
-            "slug": "vmssx",
-            "resource": "Azure Virtual Machine Scale Set Extension",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Virtual Machine Scale Set Extension"
         },
         "out_of_doc": true
     },
@@ -6064,9 +5436,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "vpeer",
-            "resource": "Azure Virtual Network Peering",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Virtual Network Peering"
         }
     },
     {
@@ -6080,9 +5450,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "vwan",
-            "resource": "Azure Virtual Wan",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Virtual Wan"
         }
     },
     {
@@ -6112,9 +5480,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "vwc",
-            "resource": "Azure Vmware Cluster",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Vmware Cluster"
         }
     },
     {
@@ -6128,9 +5494,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "vwera",
-            "resource": "Azure Vmware Express Route Authorization",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Vmware Express Route Authorization"
         }
     },
     {
@@ -6144,9 +5508,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "vwpc",
-            "resource": "Azure Vmware Private Cloud",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Vmware Private Cloud"
         }
     },
     {
@@ -6160,9 +5522,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "vcn",
-            "resource": "Azure Vpn Gateway Connection",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Vpn Gateway Connection"
         }
     },
     {
@@ -6176,9 +5536,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
-            "slug": "vst",
-            "resource": "Azure Vpn Site",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Vpn Site"
         }
     },
     {
@@ -6192,9 +5550,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z]\"",
         "official": {
-            "slug": "wafw",
-            "resource": "Azure Web Application Firewall Policy",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Web Application Firewall Policy"
         }
     },
     {
@@ -6208,9 +5564,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "ps",
-            "resource": "Azure Web Pubsub",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Web Pubsub"
         }
     },
     {
@@ -6224,9 +5578,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_`,.\\\\[\\\\]]\"",
         "official": {
-            "slug": "pshub",
-            "resource": "Azure Web Pubsub Hub",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Web Pubsub Hub"
         }
     },
     {
@@ -6272,9 +5624,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "slug": "wwapp",
-            "resource": "Azure Windows Web App",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Windows Web App"
         }
     },
     {
@@ -6288,9 +5638,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9-_]\"",
         "official": {
-            "slug": "dbc",
-            "resource": "Azure Databricks Cluster",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Databricks Cluster"
         },
         "out_of_doc": true
     },
@@ -6305,9 +5653,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "dbhcc",
-            "resource": "Azure Databricks High Concurrency Cluster",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Databricks High Concurrency Cluster"
         },
         "out_of_doc": true
     },
@@ -6322,9 +5668,7 @@
         "lowercase": false,
         "regex": "\"[^a-zA-Z0-9-_]\"",
         "official": {
-            "slug": "dbsc",
-            "resource": "Azure Databricks Standard Cluster",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure Databricks Standard Cluster"
         },
         "out_of_doc": true
     },
@@ -6339,9 +5683,7 @@
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
-            "slug": "",
-            "resource": "Azure General",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure General"
         },
         "out_of_doc": true
     },
@@ -6356,9 +5698,7 @@
         "lowercase": true,
         "regex": "\"[^a-z]\"",
         "official": {
-            "slug": "",
-            "resource": "Azure General Safe",
-            "resource_provider_namespace": "Unknown"
+            "resource": "Azure General Safe"
         },
         "out_of_doc": true
     }
