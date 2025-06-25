@@ -67,6 +67,15 @@ type ResourceStructure struct {
 
 	// Scope defines where the resource name must be unique (e.g., "global", "resourceGroup", "parent")
 	Scope string `json:"scope,omitempty"`
+
+	// OutOfDoc indicates whether this resource is not present in the official Azure CAF documentation
+	OutOfDoc bool `json:"out_of_doc,omitempty"`
+
+	// Resource is the official resource name from Azure CAF documentation
+	Resource string `json:"resource,omitempty"`
+
+	// ResourceProviderNamespace is the Azure resource provider namespace from official documentation
+	ResourceProviderNamespace string `json:"resource_provider_namespace,omitempty"`
 }
 
 // templateData holds the data structure passed to the Go template for code generation
@@ -117,42 +126,18 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Read the resource definitions from JSON file
+	// Read the combined resource definitions from JSON file
+	// This file now contains both documented and undocumented resources
 	sourceDefinitions, err := ioutil.ReadFile(path.Join(wd, "resourceDefinition.json"))
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Parse JSON resource definitions into Go structs
-	var data []ResourceStructure
-	err = json.Unmarshal(sourceDefinitions, &data)
+	var uniqueData []ResourceStructure
+	err = json.Unmarshal(sourceDefinitions, &uniqueData)
 	if err != nil {
 		log.Fatal(err)
-	}
-
-	// Load additional undocumented resource definitions that are not yet in official docs
-	sourceDefinitionsUndocumented, err := ioutil.ReadFile(path.Join(wd, "resourceDefinition_out_of_docs.json"))
-	if err != nil {
-		log.Fatal(err)
-	}
-	var dataUndocumented []ResourceStructure
-	err = json.Unmarshal(sourceDefinitionsUndocumented, &dataUndocumented)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Combine documented and undocumented resource definitions
-	data = append(data, dataUndocumented...)
-
-	// Remove duplicates to ensure each resource type appears only once
-	// This is important when merging multiple definition sources
-	uniqueData := make([]ResourceStructure, 0, len(data))
-	seen := make(map[string]bool)
-	for _, res := range data {
-		if !seen[res.ResourceTypeName] {
-			uniqueData = append(uniqueData, res)
-			seen[res.ResourceTypeName] = true
-		}
 	}
 
 	// Sort by resource type name for consistent output
