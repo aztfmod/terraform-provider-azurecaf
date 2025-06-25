@@ -34,30 +34,66 @@ jobs:
 
       - name: Unit Tests
         run: make unittest
+        env:
+          CHECKPOINT_DISABLE: 1
+          TF_IN_AUTOMATION: 1
+          TF_CLI_ARGS_init: "-upgrade=false"
 
       - name: Test Coverage
         run: make test_coverage
+        env:
+          CHECKPOINT_DISABLE: 1
+          TF_IN_AUTOMATION: 1
+          TF_CLI_ARGS_init: "-upgrade=false"
 
       - name: Test Coverage HTML
         run: make test_coverage_html
+        env:
+          CHECKPOINT_DISABLE: 1
+          TF_IN_AUTOMATION: 1
+          TF_CLI_ARGS_init: "-upgrade=false"
 
       - name: Test Integration
         run: make test_integration
+        env:
+          CHECKPOINT_DISABLE: 1
+          TF_IN_AUTOMATION: 1
+          TF_CLI_ARGS_init: "-upgrade=false"
 
       - name: Test Data Sources
         run: make test_data_sources
+        env:
+          CHECKPOINT_DISABLE: 1
+          TF_IN_AUTOMATION: 1
+          TF_CLI_ARGS_init: "-upgrade=false"
 
       - name: Test Error Handling
         run: make test_error_handling
+        env:
+          CHECKPOINT_DISABLE: 1
+          TF_IN_AUTOMATION: 1
+          TF_CLI_ARGS_init: "-upgrade=false"
 
       - name: Test Resource Naming
         run: make test_resource_naming
+        env:
+          CHECKPOINT_DISABLE: 1
+          TF_IN_AUTOMATION: 1
+          TF_CLI_ARGS_init: "-upgrade=false"
 
       - name: Test All
         run: make test_all
+        env:
+          CHECKPOINT_DISABLE: 1
+          TF_IN_AUTOMATION: 1
+          TF_CLI_ARGS_init: "-upgrade=false"
 
       - name: Test CI
         run: make test_ci
+        env:
+          CHECKPOINT_DISABLE: 1
+          TF_IN_AUTOMATION: 1
+          TF_CLI_ARGS_init: "-upgrade=false"
 
 
       - name: Import GPG key
