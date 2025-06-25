@@ -126,7 +126,13 @@ Add your resource definition to the JSON file:
   "validation_regex": "^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$",
   "dashes": true,
   "scope": "resourceGroup",
-  "regex": "[^a-zA-Z0-9-]"
+  "regex": "[^a-zA-Z0-9-]",
+  "out_of_doc": true,
+  "official": {
+    "slug": "example",
+    "resource": "Example Resource",
+    "resource_provider_namespace": "Microsoft.Example/resources"
+  }
 }
 ```
 
@@ -139,6 +145,11 @@ Add your resource definition to the JSON file:
 - `dashes`: Whether dashes are allowed
 - `scope`: Uniqueness scope (`global`, `resourceGroup`, `parent`)
 - `regex`: Pattern to remove invalid characters (cleaning regex)
+- `out_of_doc`: (Optional) Set to `true` if the resource is not in the official Azure CAF documentation
+- `official`: Official Azure CAF documentation attributes
+  - `slug`: Official CAF abbreviation (usually same as root level slug)
+  - `resource`: Official resource name from Azure CAF documentation
+  - `resource_provider_namespace`: Azure resource provider namespace
 
 ### Step 6: Generate and Test
 

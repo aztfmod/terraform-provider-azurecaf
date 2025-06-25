@@ -155,6 +155,24 @@ go tool cover -html=coverage.out -o coverage.html
 | `TF_ACC` | Enable Terraform acceptance tests | `""` (disabled) |
 | `TF_LOG` | Terraform logging level | `""` |
 | `TF_LOG_PATH` | Terraform log file path | `""` |
+| `CHECKPOINT_DISABLE` | Disable Terraform update checks | `""` (enabled) |
+| `TF_IN_AUTOMATION` | Disable interactive prompts | `""` (disabled) |
+| `TF_CLI_ARGS_init` | Additional arguments for terraform init | `""` |
+
+### Firewall and Connectivity Issues
+
+The tests may encounter connectivity issues when trying to access external services like `checkpoint-api.hashicorp.com`. This typically manifests as DNS block errors during test execution. To resolve this:
+
+1. **Automatic Resolution**: The Makefile and GitHub Actions have been configured to automatically set the required environment variables to disable these checks.
+
+2. **Manual Resolution**: If running tests manually, use these environment variables:
+   ```bash
+   export CHECKPOINT_DISABLE=1
+   export TF_IN_AUTOMATION=1
+   export TF_CLI_ARGS_init="-upgrade=false"
+   ```
+
+3. **Integration Tests**: For tests that require Terraform CLI (prefixed with `TestAcc`), ensure all three variables are set to prevent external connectivity requirements.
 
 ## 📁 Understanding Test Files
 

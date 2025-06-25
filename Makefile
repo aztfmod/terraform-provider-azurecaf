@@ -15,34 +15,34 @@ build:	## Build the project and run unit tests
 	go generate
 	go fmt ./...
 	go build -o ./terraform-provider-azurecaf
-	go test -cover ./...
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -cover ./...
 
 unittest: 	## Run unit tests without coverage
-	go test ./...
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test ./...
 	tfproviderlint ./...
 
 test_coverage: 	## Run tests with coverage reporting
-	go test -cover ./...
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -cover ./...
 
 test_coverage_html: 	## Generate HTML coverage report
-	go test -coverprofile=coverage.out ./...
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -coverprofile=coverage.out ./...
 	go tool cover -html=coverage.out -o coverage.html
 	@echo "Coverage report generated at: coverage.html"
 
 test_coverage_specific: ## Run coverage-focused tests specifically
-	go test -v ./azurecaf/... -run="Test.*" -coverprofile=coverage.out
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v ./azurecaf/... -run="Test.*" -coverprofile=coverage.out
 
 test_integration: 	## Run integration tests
-	TF_ACC=1 go test -v ./azurecaf/... -run="TestAcc"
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" TF_ACC=1 go test -v ./azurecaf/... -run="TestAcc"
 
 test_data_sources: 	## Run data source integration tests
-	TF_ACC=1 go test -v ./azurecaf/... -run="TestAccDataSourcesIntegration"
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" TF_ACC=1 go test -v ./azurecaf/... -run="TestAccDataSourcesIntegration"
 
 test_error_handling: 	## Run error handling integration tests
-	TF_ACC=1 go test -v ./azurecaf/... -run="TestAccErrorHandling"
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" TF_ACC=1 go test -v ./azurecaf/... -run="TestAccErrorHandling"
 
 test_resource_naming: ## Run naming convention tests
-	go test -v ./azurecaf/... -run="TestAcc.*NamingConvention" -coverprofile=naming_coverage.out ./...
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v ./azurecaf/... -run="TestAcc.*NamingConvention" -coverprofile=naming_coverage.out ./...
 	go tool cover -html=naming_coverage.out -o naming_coverage.html
 	@echo "Naming coverage report generated at: naming_coverage.html"
 
@@ -87,5 +87,4 @@ test: ## Run terraform examples with local provider
 
 generate_resource_table:  	## Generate resource table (output only)
 	cat resourceDefinition.json | jq -r '.[] | "| \(.name)| \(.slug)| \(.min_length)| \(.max_length)| \(.lowercase)| \(.validation_regex)|"'
-	cat resourceDefinition_out_of_docs.json | jq -r '.[] | "| \(.name)| \(.slug)| \(.min_length)| \(.max_length)| \(.lowercase)| \(.validation_regex)|"'
 
