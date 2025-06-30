@@ -1,11 +1,11 @@
 package azurecaf
 
 import (
+	"context"
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 // Constants to control testing batches
@@ -14,19 +14,16 @@ const (
 	batchToRun           = 1  // Which batch to run (1-indexed)
 )
 
-// TestAccResourceTypeBatch tests a batch of Azure resource types defined in the provider
-// using both the azurecaf_name resource and data source
+// TestAcc_ResourceTypeBatch tests a batch of Azure resource types defined in the provider
+// This test uses direct provider schema testing to avoid Terraform CLI dependency
 func TestAcc_ResourceTypeBatch(t *testing.T) {
 	// Skip this test in short mode as it tests many resource types
 	if testing.Short() {
 		t.Skip("Skipping integration test in short mode")
 	}
-	
-	// Skip this test if we can't access external network resources
-	// This test requires Terraform CLI which needs to connect to checkpoint-api.hashicorp.com
-	t.Skip("Skipping acceptance test - requires network access to Terraform CLI")
 
-	resourceBatch, batchConfig := generateResourceBatchConfig(batchToRun)
+	provider := Provider()
+	resourceBatch := generateResourceBatch(batchToRun)
 
 	if len(resourceBatch) == 0 {
 		t.Skipf("No resources in batch %d", batchToRun)
@@ -34,73 +31,109 @@ func TestAcc_ResourceTypeBatch(t *testing.T) {
 
 	t.Logf("Testing batch %d with %d resource types", batchToRun, len(resourceBatch))
 
-	resource.UnitTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckResourceDestroy,
-		Steps: []resource.TestStep{
-			{
-				Config: batchConfig,
-				Check: resource.ComposeTestCheckFunc(
-					// Check that all resources and data sources in this batch have been created and have results
-					testCheckResourceTypeBatch(resourceBatch),
-				),
-			},
-		},
-	})
-}
-
-// testCheckResourceTypeBatch returns a TestCheckFunc that validates the resources and data sources in a specific batch
-func testCheckResourceTypeBatch(resourceBatch []string) resource.TestCheckFunc {
-	return func(s *terraform.State) error {
-		// Validate each resource type in this batch has a resource and data source result
-		for _, resourceType := range resourceBatch {
-			sanitizedType := sanitizeResourceType(resourceType)
-
-			// Check resource result
-			resourcePath := fmt.Sprintf("azurecaf_name.%s", sanitizedType)
-			rs, ok := s.RootModule().Resources[resourcePath]
-			if !ok {
-				return fmt.Errorf("Not found: %s", resourcePath)
-			}
-			if rs.Primary.ID == "" {
-				return fmt.Errorf("No ID is set for %s", resourcePath)
-			}
-			if rs.Primary.Attributes["result"] == "" {
-				return fmt.Errorf("No result attribute for %s", resourcePath)
-			}
-
-			// Check data source result
-			dataPath := fmt.Sprintf("data.azurecaf_name.%s_data", sanitizedType)
-			ds, ok := s.RootModule().Resources[dataPath]
-			if !ok {
-				return fmt.Errorf("Not found: %s", dataPath)
-			}
-			if ds.Primary.ID == "" {
-				return fmt.Errorf("No ID is set for %s", dataPath)
-			}
-			if ds.Primary.Attributes["result"] == "" {
-				return fmt.Errorf("No result attribute for %s", dataPath)
-			}
+	// Test azurecaf_name resource for each resource type in the batch
+	t.Run("NameResourceBatch", func(t *testing.T) {
+		nameResource := provider.ResourcesMap["azurecaf_name"]
+		if nameResource == nil {
+			t.Fatal("azurecaf_name resource not found")
 		}
-		return nil
-	}
+
+		for _, resourceType := range resourceBatch {
+			t.Run(fmt.Sprintf("Name_%s", sanitizeResourceType(resourceType)), func(t *testing.T) {
+				// Create ResourceData for the azurecaf_name resource
+				resourceData := schema.TestResourceDataRaw(t, nameResource.Schema, map[string]interface{}{
+					"name":          "testname",
+					"resource_type": resourceType,
+					"prefixes":      []interface{}{"dev"},
+					"suffixes":      []interface{}{"001"},
+					"random_length": 5,
+					"clean_input":   true,
+				})
+
+				// Execute create function
+				err := nameResource.Create(resourceData, nil)
+				if err != nil {
+					t.Errorf("Failed to create name resource for %s: %v", resourceType, err)
+					return
+				}
+
+				// Check that result is set
+				result := resourceData.Get("result").(string)
+				if result == "" {
+					t.Errorf("Expected non-empty result for %s", resourceType)
+				}
+
+				// Check that ID is set
+				if resourceData.Id() == "" {
+					t.Errorf("Expected non-empty ID for %s", resourceType)
+				}
+
+				t.Logf("Successfully tested %s with result: %s", resourceType, result)
+			})
+		}
+	})
+
+	// Test azurecaf_name data source for each resource type in the batch
+	t.Run("NameDataSourceBatch", func(t *testing.T) {
+		nameDataSource := provider.DataSourcesMap["azurecaf_name"]
+		if nameDataSource == nil {
+			t.Fatal("azurecaf_name data source not found")
+		}
+
+		for _, resourceType := range resourceBatch {
+			t.Run(fmt.Sprintf("DataSource_%s", sanitizeResourceType(resourceType)), func(t *testing.T) {
+				// Create ResourceData for the azurecaf_name data source
+				dataSourceData := schema.TestResourceDataRaw(t, nameDataSource.Schema, map[string]interface{}{
+					"name":          "testname",
+					"resource_type": resourceType,
+					"prefixes":      []interface{}{"dev"},
+					"suffixes":      []interface{}{"001"},
+					"random_length": 5,
+					"clean_input":   true,
+				})
+
+				// Execute read function
+				diags := nameDataSource.ReadContext(context.Background(), dataSourceData, nil)
+				if diags.HasError() {
+					t.Errorf("Failed to read name data source for %s: %v", resourceType, diags)
+					return
+				}
+
+				// Check that result is set
+				result := dataSourceData.Get("result").(string)
+				if result == "" {
+					t.Errorf("Expected non-empty result for %s data source", resourceType)
+				}
+
+				// Check that ID is set
+				if dataSourceData.Id() == "" {
+					t.Errorf("Expected non-empty ID for %s data source", resourceType)
+				}
+
+				t.Logf("Successfully tested data source %s with result: %s", resourceType, result)
+			})
+		}
+	})
+
+	t.Logf("Batch %d testing completed successfully", batchToRun)
 }
 
-// sanitizeResourceType makes a resource type name suitable for use as a Terraform identifier
+// sanitizeResourceType makes a resource type name suitable for use as a test identifier
 func sanitizeResourceType(resourceType string) string {
-	// You could replace special characters, but for now we'll use the resource type as is
-	// This function can be enhanced if needed
-	return resourceType
+	// Replace dots and other special characters with underscores for test names
+	result := ""
+	for _, char := range resourceType {
+		if (char >= 'a' && char <= 'z') || (char >= 'A' && char <= 'Z') || (char >= '0' && char <= '9') {
+			result += string(char)
+		} else {
+			result += "_"
+		}
+	}
+	return result
 }
 
-// Generate the Terraform configuration header
-const testAccResourceTypesHeader = `
-# Test Azure resource types with both azurecaf_name resource and data source
-`
-
-// generateResourceBatchConfig creates a config for a specific batch of resource types
-func generateResourceBatchConfig(batchNumber int) ([]string, string) {
+// generateResourceBatch creates a batch of resource types for testing
+func generateResourceBatch(batchNumber int) []string {
 	// Get all resource types
 	allResourceTypes := make([]string, 0, len(ResourceDefinitions))
 	for resourceType := range ResourceDefinitions {
@@ -114,7 +147,7 @@ func generateResourceBatchConfig(batchNumber int) ([]string, string) {
 
 	// Check if this batch exists
 	if startIdx >= totalResources {
-		return []string{}, ""
+		return []string{}
 	}
 
 	// Adjust endIdx if it exceeds the length
@@ -123,39 +156,5 @@ func generateResourceBatchConfig(batchNumber int) ([]string, string) {
 	}
 
 	// Get the batch of resource types to test
-	resourceBatch := allResourceTypes[startIdx:endIdx]
-
-	// Generate the config for this batch
-	config := testAccResourceTypesHeader
-	for _, resourceType := range resourceBatch {
-		sanitizedType := sanitizeResourceType(resourceType)
-
-		// Add resource configuration
-		config += fmt.Sprintf(`
-# Resource for %s
-resource "azurecaf_name" "%s" {
-  name          = "testname"
-  resource_type = "%s"
-  prefixes      = ["dev"]
-  suffixes      = ["001"]
-  random_length = 5
-  clean_input   = true
-}
-`, resourceType, sanitizedType, resourceType)
-
-		// Add data source configuration
-		config += fmt.Sprintf(`
-# Data source for %s
-data "azurecaf_name" "%s_data" {
-  name          = "testname"
-  resource_type = "%s"
-  prefixes      = ["dev"]
-  suffixes      = ["001"]
-  random_length = 5
-  clean_input   = true
-}
-`, resourceType, sanitizedType, resourceType)
-	}
-
-	return resourceBatch, config
+	return allResourceTypes[startIdx:endIdx]
 }
