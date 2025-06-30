@@ -107,46 +107,28 @@ func (h *integrationTestHelper) runImportTest(tc testCase) {
 	})
 }
 
-// createTestCasesFromRegistry creates test cases from the resource type registry
-func createTestCasesFromRegistry(pattern string) []testCase {
-	registry := getResourceTypeRegistry()
-	var testCases []testCase
-	
-	for _, rt := range registry {
-		if rt.Pattern == pattern || pattern == "all" {
-			testCases = append(testCases, testCase{
-				name:        fmt.Sprintf("%s_%s", rt.ResourceType, rt.Name),
-				importID:    fmt.Sprintf("%s:%s", rt.ResourceType, rt.Name),
-				expectError: false,
-				expectedAttrs: map[string]interface{}{
-					"name":          rt.Name,
-					"resource_type": rt.ResourceType,
-					"passthrough":   true,
-					"result":        rt.Name,
-				},
-				description: rt.Description,
-			})
-		}
-	}
-	
-	return testCases
-}
-
-// createTestCaseWithDefaults creates a test case with default expected attributes
-func createTestCaseWithDefaults(name, importID string, expectError bool, extraAttrs map[string]interface{}) testCase {
-	parts := strings.Split(importID, ":")
-	expectedAttrs := map[string]interface{}{
+// getDefaultExpectedAttrs returns the standard expected attributes for import tests
+func getDefaultExpectedAttrs() map[string]interface{} {
+	return map[string]interface{}{
 		"passthrough":    true,
 		"clean_input":    true,
 		"use_slug":       true,
 		"separator":      "-",
 		"random_length":  0,
 	}
+}
+
+// createTestCaseFromImportID creates a test case from an import ID with standard attributes
+func createTestCaseFromImportID(name, importID string, expectError bool, extraAttrs map[string]interface{}) testCase {
+	expectedAttrs := getDefaultExpectedAttrs()
 	
-	if len(parts) == 2 && !expectError {
-		expectedAttrs["name"] = parts[1]
-		expectedAttrs["resource_type"] = parts[0]
-		expectedAttrs["result"] = parts[1]
+	if !expectError {
+		parts := strings.Split(importID, ":")
+		if len(parts) == 2 {
+			expectedAttrs["name"] = parts[1]
+			expectedAttrs["resource_type"] = parts[0]
+			expectedAttrs["result"] = parts[1]
+		}
 	}
 	
 	// Override with extra attributes
@@ -160,6 +142,25 @@ func createTestCaseWithDefaults(name, importID string, expectError bool, extraAt
 		expectError: expectError,
 		expectedAttrs: expectedAttrs,
 	}
+}
+
+// createTestCasesFromRegistry creates test cases from the resource type registry
+func createTestCasesFromRegistry(pattern string) []testCase {
+	registry := getResourceTypeRegistry()
+	var testCases []testCase
+	
+	for _, rt := range registry {
+		if rt.Pattern == pattern || pattern == "all" {
+			testCases = append(testCases, createTestCaseFromImportID(
+				fmt.Sprintf("%s_%s", rt.ResourceType, rt.Name),
+				fmt.Sprintf("%s:%s", rt.ResourceType, rt.Name),
+				false,
+				nil, // Don't include description as it's not a schema field
+			))
+		}
+	}
+	
+	return testCases
 }
 
 // runTestGroup executes a group of test cases with a common description
@@ -176,28 +177,8 @@ func TestResourceNameImport_IntegrationBasic(t *testing.T) {
 	
 	// Basic integration test cases
 	testCases := []testCase{
-		{
-			name:        "valid_storage_account_import",
-			importID:    "azurerm_storage_account:mystorageaccount123",
-			expectError: false,
-			expectedAttrs: map[string]interface{}{
-				"name":          "mystorageaccount123",
-				"resource_type": "azurerm_storage_account",
-				"passthrough":   true,
-				"result":        "mystorageaccount123",
-			},
-		},
-		{
-			name:        "valid_resource_group_import",
-			importID:    "azurerm_resource_group:my-production-rg",
-			expectError: false,
-			expectedAttrs: map[string]interface{}{
-				"name":          "my-production-rg",
-				"resource_type": "azurerm_resource_group",
-				"passthrough":   true,
-				"result":        "my-production-rg",
-			},
-		},
+		createTestCaseFromImportID("valid_storage_account_import", "azurerm_storage_account:mystorageaccount123", false, nil),
+		createTestCaseFromImportID("valid_resource_group_import", "azurerm_resource_group:my-production-rg", false, nil),
 		{
 			name:           "invalid_format",
 			importID:       "invalid-format-no-colon",
@@ -282,63 +263,20 @@ func getResourceTypeRegistry() []resourceTypeDefinition {
 	}
 }
 
-// generateTerraformConfigForPattern generates Terraform configuration for specific patterns
-func generateTerraformConfigForPattern(pattern string, resourceType, name string) string {
-	switch pattern {
-	case "basic":
-		return fmt.Sprintf(`resource "azurecaf_name" "test" {
+// getMinimalTerraformConfig provides basic configuration template for documentation
+func getMinimalTerraformConfig(resourceType, name string) string {
+	return fmt.Sprintf(`resource "azurecaf_name" "test" {
   name          = "%s"
   resource_type = "%s"
   passthrough   = true
 }`, name, resourceType)
-	case "root_level":
-		return fmt.Sprintf(`import {
-  to = azurecaf_name.imported
-  id = "%s:%s"
-}
-
-resource "azurecaf_name" "imported" {
-  name          = "%s"
-  resource_type = "%s"
-  passthrough   = true
-}`, resourceType, name, name, resourceType)
-	case "submodule_internal":
-		return fmt.Sprintf(`import {
-  to = module.naming.azurecaf_name.module_resource
-  id = "%s:%s"
-}
-
-module "naming" {
-  source = "./modules/naming"
-}`, resourceType, name)
-	default:
-		return ""
-	}
-}
-
-// testAccResourceNameImportBasicConfig provides configuration for acceptance tests
-func testAccResourceNameImportBasicConfig() string {
-	return generateTerraformConfigForPattern("basic", "azurerm_storage_account", "mystorageaccount123")
-}
-
-// testAccResourceNameImportBlockDocumentation provides documentation for import {} blocks
-func testAccResourceNameImportBlockDocumentation() string {
-	return `# Import {} Block Usage Documentation
-# Basic syntax: import { to = <resource_address>; id = "<resource_type>:<existing_name>" }
-# Key Benefits: Declarative imports, version control friendly, repeatable
-# Requires Terraform 1.5+, passthrough = true is automatically set during import`
 }
 
 // TestResourceNameImport_IntegrationMultipleResourceTypes tests importing various Azure resource types
 func TestResourceNameImport_IntegrationMultipleResourceTypes(t *testing.T) {
 	helper := newIntegrationTestHelper(t)
-	
-	// Use registry to get test cases
 	testCases := createTestCasesFromRegistry("basic")
-	
-	for _, tc := range testCases {
-		helper.runImportTest(tc)
-	}
+	helper.runTestGroup(t, "MultipleResourceTypes", testCases)
 }
 
 // TestResourceNameImport_IntegrationPassthroughBehavior verifies that imported resources automatically use passthrough mode
@@ -355,20 +293,19 @@ func TestResourceNameImport_IntegrationPassthroughBehavior(t *testing.T) {
 	}
 	
 	for _, pt := range passthroughTests {
-		tc := testCase{
-			name:        pt.importID,
-			importID:    pt.importID,
-			expectError: false,
-			expectedAttrs: map[string]interface{}{
-				"passthrough":    true,
-				"result":         pt.expectedName,
-				"clean_input":    true,
-				"use_slug":       true,
-				"separator":      "-",
-				"random_length":  0,
-			},
-		}
+		tc := createTestCaseFromImportID(pt.importID, pt.importID, false, nil)
 		helper.runImportTest(tc)
+	}
+}
+
+// createErrorTestCase creates a test case for error scenarios
+func createErrorTestCase(name, importID, errorSubstring, description string) testCase {
+	return testCase{
+		name:           name,
+		importID:       importID,
+		expectError:    true,
+		errorSubstring: errorSubstring,
+		description:    description,
 	}
 }
 
@@ -377,53 +314,13 @@ func TestResourceNameImport_IntegrationEdgeCases(t *testing.T) {
 	helper := newIntegrationTestHelper(t)
 	
 	edgeCases := []testCase{
-		{
-			name:           "empty_import_id",
-			importID:       "",
-			expectError:    true,
-			errorSubstring: "invalid import ID format",
-			description:    "Empty import ID should be rejected",
-		},
-		{
-			name:           "only_colon",
-			importID:       ":",
-			expectError:    true,
-			errorSubstring: "does not comply with Azure naming requirements",
-			description:    "Import ID with only colon should be rejected",
-		},
-		{
-			name:           "multiple_colons",
-			importID:       "azurerm_storage_account:my:storage:account",
-			expectError:    true,
-			errorSubstring: "invalid import ID format",
-			description:    "Import ID with multiple colons should be rejected",
-		},
-		{
-			name:        "empty_resource_type",
-			importID:    ":mystorageaccount123",
-			expectError: false, // Empty resource type maps to "general" resource type
-			description: "Empty resource type maps to general resource type",
-		},
-		{
-			name:           "empty_name",
-			importID:       "azurerm_storage_account:",
-			expectError:    true,
-			errorSubstring: "does not comply with Azure naming requirements",
-			description:    "Empty name should be rejected",
-		},
-		{
-			name:        "valid_minimum_length_name",
-			importID:    "azurerm_storage_account:abc",
-			expectError: false,
-			description: "Minimum length valid name should be accepted",
-		},
-		{
-			name:           "case_sensitive_resource_type",
-			importID:       "AZURERM_STORAGE_ACCOUNT:mystorageaccount123",
-			expectError:    true,
-			errorSubstring: "unsupported resource type",
-			description:    "Incorrect case resource type should be rejected",
-		},
+		createErrorTestCase("empty_import_id", "", "invalid import ID format", "Empty import ID should be rejected"),
+		createErrorTestCase("only_colon", ":", "does not comply with Azure naming requirements", "Import ID with only colon should be rejected"),
+		createErrorTestCase("multiple_colons", "azurerm_storage_account:my:storage:account", "invalid import ID format", "Import ID with multiple colons should be rejected"),
+		createTestCaseFromImportID("empty_resource_type", ":mystorageaccount123", false, nil),
+		createErrorTestCase("empty_name", "azurerm_storage_account:", "does not comply with Azure naming requirements", "Empty name should be rejected"),
+		createTestCaseFromImportID("valid_minimum_length_name", "azurerm_storage_account:abc", false, nil),
+		createErrorTestCase("case_sensitive_resource_type", "AZURERM_STORAGE_ACCOUNT:mystorageaccount123", "unsupported resource type", "Incorrect case resource type should be rejected"),
 	}
 	
 	for _, tc := range edgeCases {
@@ -437,16 +334,10 @@ func TestResourceNameImport_AcceptanceStyleImportBlocks(t *testing.T) {
 		t.Skip("Skipping import {} block acceptance tests in short mode - requires Terraform CLI")
 	}
 	
-	// Validate configurations are properly structured
-	configs := []struct{ name, config string }{
-		{"Basic", testAccResourceNameImportBasicConfig()},
-		{"Documentation", testAccResourceNameImportBlockDocumentation()},
-	}
-	
-	for _, cfg := range configs {
-		if cfg.config == "" {
-			t.Errorf("%s configuration is empty", cfg.name)
-		}
+	// Validate basic configuration generation
+	config := getMinimalTerraformConfig("azurerm_storage_account", "mystorageaccount123")
+	if config == "" {
+		t.Error("Configuration generation failed")
 	}
 	
 	t.Log("Import {} block configurations are properly structured")
@@ -455,18 +346,9 @@ func TestResourceNameImport_AcceptanceStyleImportBlocks(t *testing.T) {
 // TestResourceNameImport_ImportBlockValidationSimulation tests import {} block scenarios using schema validation
 func TestResourceNameImport_ImportBlockValidationSimulation(t *testing.T) {
 	helper := newIntegrationTestHelper(t)
-	
-	// Use registry for comprehensive test cases
 	testCases := createTestCasesFromRegistry("all")
-	
-	for _, tc := range testCases {
-		tc.name = fmt.Sprintf("import_simulation_%s", tc.name)
-		tc.description = fmt.Sprintf("Simulates import {} block for %s", tc.name)
-		helper.runImportTest(tc)
-	}
-	
+	helper.runTestGroup(t, "ImportBlockSimulation", testCases)
 	t.Log("Import {} block simulation tests completed successfully")
-	t.Log("These tests validate the same provider functionality that import {} blocks would use")
 }
 
 // TestResourceNameImport_SubmodulePatternValidation tests both patterns for submodule import usage
