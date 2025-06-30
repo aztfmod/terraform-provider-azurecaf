@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+- **CRITICAL**: Fixed security vulnerabilities in Go dependencies:
+  - Updated `golang.org/x/net` from v0.23.0 to v0.38.0 to resolve:
+    - GO-2025-3595: Cross-site Scripting vulnerability in html package
+    - GO-2025-3503: HTTP Proxy bypass using IPv6 Zone IDs
+    - GO-2024-3333: Non-linear parsing vulnerability in html package
+  - Updated `golang.org/x/crypto` from v0.21.0 to v0.36.0
+  - Updated `golang.org/x/sys` from v0.18.0 to v0.31.0
+  - Updated `golang.org/x/text` from v0.14.0 to v0.23.0
+- Updated Go toolchain from 1.20 to 1.23.0 with Go 1.24.4 for enhanced security
+
 ### Added
 - Official Azure Cloud Adoption Framework documentation mapping for 55 resources
 - New nested `official` object structure containing Azure CAF documentation attributes
