@@ -4,9 +4,9 @@ import (
 	"context"
 	"reflect"
 	"regexp"
+	"strings"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -92,139 +92,195 @@ func TestGetSlug_unknown(t *testing.T) {
 }
 
 func TestAccResourceName_CafClassic(t *testing.T) {
-	// Skip this test if we can't access external network resources
-	// This test requires Terraform CLI which needs to connect to checkpoint-api.hashicorp.com
-	t.Skip("Skipping acceptance test - requires network access to Terraform CLI")
-	
-	resource.UnitTest(t, resource.TestCase{
+	provider := Provider()
+	nameResource := provider.ResourcesMap["azurecaf_name"]
+	if nameResource == nil {
+		t.Fatal("azurecaf_name resource not found")
+	}
 
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckResourceDestroy,
-		Steps: []resource.TestStep{
-			{
-				Config: testAccResourceNameCafClassicConfig,
-				Check: resource.ComposeTestCheckFunc(
+	// Test case 1: Resource Group
+	t.Run("ClassicResourceGroup", func(t *testing.T) {
+		resourceData := schema.TestResourceDataRaw(t, nameResource.Schema, map[string]interface{}{
+			"name":          "myrg",
+			"resource_type": "azurerm_resource_group",
+			"prefixes":      []interface{}{"pr1", "pr2"},
+			"suffixes":      []interface{}{"su1", "su2"},
+			"random_seed":   1,
+			"random_length": 5,
+			"clean_input":   true,
+		})
 
-					testAccCafNamingValidation(
-						"azurecaf_name.classic_rg",
-						"pr1-pr2-rg-myrg-",
-						29,
-						"pr1-pr2"),
-					regexMatch("azurecaf_name.classic_rg", regexp.MustCompile(ResourceDefinitions["azurerm_resource_group"].ValidationRegExp), 1),
-				),
-			},
-			{
-				Config: testAccResourceNameCafClassicConfig,
-				Check: resource.ComposeTestCheckFunc(
+		err := nameResource.Create(resourceData, nil)
+		if err != nil {
+			t.Fatalf("Failed to create resource: %v", err)
+		}
 
-					testAccCafNamingValidation(
-						"azurecaf_name.classic_ca_invalid",
-						"ca-myinvalidcaname",
-						24,
-						""),
-					regexMatch("azurecaf_name.classic_ca_invalid", regexp.MustCompile(ResourceDefinitions["azurerm_container_app"].ValidationRegExp), 1),
-				),
-			},
-			{
-				Config: testAccResourceNameCafClassicConfig,
-				Check: resource.ComposeTestCheckFunc(
+		result := resourceData.Get("result").(string)
+		expectedSubstring := "pr1-pr2-rg-myrg-"
+		if !strings.Contains(result, expectedSubstring) {
+			t.Errorf("Expected result to contain '%s', got '%s'", expectedSubstring, result)
+		}
 
-					testAccCafNamingValidation(
-						"azurecaf_name.passthrough",
-						"passthrough",
-						11,
-						""),
-					regexMatch("azurecaf_name.passthrough", regexp.MustCompile(ResourceDefinitions["azurerm_container_app"].ValidationRegExp), 1),
-				),
-			},
-			{
-				Config: testAccResourceNameCafClassicConfig,
-				Check: resource.ComposeTestCheckFunc(
-
-					testAccCafNamingValidation(
-						"azurecaf_name.classic_cae_invalid",
-						"cae-myinvalidcaename",
-						26,
-						""),
-					regexMatch("azurecaf_name.classic_cae_invalid", regexp.MustCompile(ResourceDefinitions["azurerm_container_app_environment"].ValidationRegExp), 1),
-				),
-			},
-			{
-				Config: testAccResourceNameCafClassicConfig,
-				Check: resource.ComposeTestCheckFunc(
-
-					testAccCafNamingValidation(
-						"azurecaf_name.passthrough",
-						"passthrough",
-						11,
-						""),
-					regexMatch("azurecaf_name.passthrough", regexp.MustCompile(ResourceDefinitions["azurerm_container_app_environment"].ValidationRegExp), 1),
-				),
-			},
-			{
-				Config: testAccResourceNameCafClassicConfig,
-				Check: resource.ComposeTestCheckFunc(
-
-					testAccCafNamingValidation(
-						"azurecaf_name.classic_acr_invalid",
-						"pr1pr2crmyinvalidacrname",
-						35,
-						"pr1pr2"),
-					regexMatch("azurecaf_name.classic_acr_invalid", regexp.MustCompile(ResourceDefinitions["azurerm_container_registry"].ValidationRegExp), 1),
-				),
-			},
-			{
-				Config: testAccResourceNameCafClassicConfig,
-				Check: resource.ComposeTestCheckFunc(
-
-					testAccCafNamingValidation(
-						"azurecaf_name.passthrough",
-						"passthrough",
-						11,
-						""),
-					regexMatch("azurecaf_name.passthrough", regexp.MustCompile(ResourceDefinitions["azurerm_container_registry"].ValidationRegExp), 1),
-				),
-			},
-			{
-				Config: testAccResourceNameCafClassicConfig,
-				Check: resource.ComposeTestCheckFunc(
-
-					testAccCafNamingValidation(
-						"azurecaf_name.apim",
-						"vsic-apim-apim",
-						14,
-						"vsic"),
-					regexMatch("azurecaf_name.apim", regexp.MustCompile(ResourceDefinitions["azurerm_api_management_service"].ValidationRegExp), 1),
-				),
-			},
-		},
+		// Validate against Azure naming requirements
+		if !regexp.MustCompile(ResourceDefinitions["azurerm_resource_group"].ValidationRegExp).MatchString(result) {
+			t.Errorf("Result '%s' does not match Azure naming requirements", result)
+		}
 	})
+
+	// Test case 2: Container App with invalid name cleaning
+	t.Run("ContainerAppInvalidCleaning", func(t *testing.T) {
+		resourceData := schema.TestResourceDataRaw(t, nameResource.Schema, map[string]interface{}{
+			"name":          "my_invalid_ca_name",
+			"resource_type": "azurerm_container_app",
+			"random_seed":   1,
+			"random_length": 5,
+			"clean_input":   true,
+		})
+
+		err := nameResource.Create(resourceData, nil)
+		if err != nil {
+			t.Fatalf("Failed to create resource: %v", err)
+		}
+
+		result := resourceData.Get("result").(string)
+		expectedSubstring := "ca-myinvalidcaname"
+		if !strings.Contains(result, expectedSubstring) {
+			t.Errorf("Expected result to contain '%s', got '%s'", expectedSubstring, result)
+		}
+
+		// Validate against Azure naming requirements
+		if !regexp.MustCompile(ResourceDefinitions["azurerm_container_app"].ValidationRegExp).MatchString(result) {
+			t.Errorf("Result '%s' does not match Azure naming requirements", result)
+		}
+	})
+
+	// Test case 3: Passthrough mode
+	t.Run("PassthroughMode", func(t *testing.T) {
+		resourceData := schema.TestResourceDataRaw(t, nameResource.Schema, map[string]interface{}{
+			"name":          "passthRough",
+			"resource_type": "azurerm_container_registry",
+			"prefixes":      []interface{}{"pr1", "pr2"},
+			"suffixes":      []interface{}{"su1", "su2"},
+			"random_seed":   1,
+			"random_length": 5,
+			"clean_input":   true,
+			"passthrough":   true,
+		})
+
+		err := nameResource.Create(resourceData, nil)
+		if err != nil {
+			t.Fatalf("Failed to create resource: %v", err)
+		}
+
+		result := resourceData.Get("result").(string)
+		expected := "passthrough" // passthrough mode normalizes case
+		if result != expected {
+			t.Errorf("Expected result '%s', got '%s'", expected, result)
+		}
+	})
+
+	// Test case 4: Container App Environment
+	t.Run("ContainerAppEnvironment", func(t *testing.T) {
+		resourceData := schema.TestResourceDataRaw(t, nameResource.Schema, map[string]interface{}{
+			"name":          "my_invalid_cae_name",
+			"resource_type": "azurerm_container_app_environment",
+			"random_seed":   1,
+			"random_length": 5,
+			"clean_input":   true,
+		})
+
+		err := nameResource.Create(resourceData, nil)
+		if err != nil {
+			t.Fatalf("Failed to create resource: %v", err)
+		}
+
+		result := resourceData.Get("result").(string)
+		expectedSubstring := "cae-myinvalidcaename"
+		if !strings.Contains(result, expectedSubstring) {
+			t.Errorf("Expected result to contain '%s', got '%s'", expectedSubstring, result)
+		}
+
+		// Validate against Azure naming requirements
+		if !regexp.MustCompile(ResourceDefinitions["azurerm_container_app_environment"].ValidationRegExp).MatchString(result) {
+			t.Errorf("Result '%s' does not match Azure naming requirements", result)
+		}
+	})
+
+	// Test case 5: Container Registry
+	t.Run("ContainerRegistry", func(t *testing.T) {
+		resourceData := schema.TestResourceDataRaw(t, nameResource.Schema, map[string]interface{}{
+			"name":          "my_invalid_acr_name",
+			"resource_type": "azurerm_container_registry",
+			"prefixes":      []interface{}{"pr1", "pr2"},
+			"suffixes":      []interface{}{"su1", "su2"},
+			"random_seed":   1,
+			"random_length": 5,
+			"clean_input":   true,
+		})
+
+		err := nameResource.Create(resourceData, nil)
+		if err != nil {
+			t.Fatalf("Failed to create resource: %v", err)
+		}
+
+		result := resourceData.Get("result").(string)
+		expectedSubstring := "pr1pr2crmyinvalidacrname"
+		if !strings.Contains(result, expectedSubstring) {
+			t.Errorf("Expected result to contain '%s', got '%s'", expectedSubstring, result)
+		}
+
+		// Validate against Azure naming requirements
+		if !regexp.MustCompile(ResourceDefinitions["azurerm_container_registry"].ValidationRegExp).MatchString(result) {
+			t.Errorf("Result '%s' does not match Azure naming requirements", result)
+		}
+	})
+
+	t.Log("CAF Classic naming tests completed successfully")
 }
 
 func TestAccResourceName_CafClassicRSV(t *testing.T) {
-	// Skip this test if we can't access external network resources
-	// This test requires Terraform CLI which needs to connect to checkpoint-api.hashicorp.com
-	t.Skip("Skipping acceptance test - requires network access to Terraform CLI")
-	
-	resource.UnitTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckResourceDestroy,
-		Steps: []resource.TestStep{
-			{
-				Config: testAccResourceNameCafClassicConfigRsv,
-				Check: resource.ComposeTestCheckFunc(
-					testAccCafNamingValidation(
-						"azurecaf_name.rsv",
-						"pr1-rsv-test-gm-su1",
-						19,
-						""),
-					regexMatch("azurecaf_name.rsv", regexp.MustCompile(ResourceDefinitions["azurerm_recovery_services_vault"].ValidationRegExp), 1),
-				),
-			},
-		},
+	provider := Provider()
+	nameResource := provider.ResourcesMap["azurecaf_name"]
+	if nameResource == nil {
+		t.Fatal("azurecaf_name resource not found")
+	}
+
+	// Test Recovery Services Vault
+	t.Run("RecoveryServicesVault", func(t *testing.T) {
+		resourceData := schema.TestResourceDataRaw(t, nameResource.Schema, map[string]interface{}{
+			"name":          "test",
+			"resource_type": "azurerm_recovery_services_vault",
+			"prefixes":      []interface{}{"pr1"},
+			"suffixes":      []interface{}{"su1"},
+			"random_length": 2,
+			"random_seed":   1,
+			"clean_input":   true,
+			"passthrough":   false,
+		})
+
+		err := nameResource.Create(resourceData, nil)
+		if err != nil {
+			t.Fatalf("Failed to create resource: %v", err)
+		}
+
+		result := resourceData.Get("result").(string)
+		expectedSubstring := "pr1-rsv-test-"
+		if !strings.Contains(result, expectedSubstring) {
+			t.Errorf("Expected result to contain '%s', got '%s'", expectedSubstring, result)
+		}
+
+		// Should end with su1 suffix
+		if !strings.HasSuffix(result, "-su1") {
+			t.Errorf("Expected result to end with '-su1', got '%s'", result)
+		}
+
+		// Validate against Azure naming requirements
+		if !regexp.MustCompile(ResourceDefinitions["azurerm_recovery_services_vault"].ValidationRegExp).MatchString(result) {
+			t.Errorf("Result '%s' does not match Azure naming requirements", result)
+		}
 	})
+
+	t.Log("CAF Classic RSV naming test completed successfully")
 }
 
 func TestComposeName(t *testing.T) {

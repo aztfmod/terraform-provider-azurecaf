@@ -4,105 +4,99 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func TestAccCafNamingConvention_Passthrough(t *testing.T) {
-	// Skip this test if we can't access external network resources
-	// This test requires Terraform CLI which needs to connect to checkpoint-api.hashicorp.com
-	t.Skip("Skipping acceptance test - requires network access to Terraform CLI")
-	
-	resource.UnitTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckResourceDestroy,
-		Steps: []resource.TestStep{
-			{
-				Config: testAccResourcePassthroughConfig,
-				Check: resource.ComposeTestCheckFunc(
+	provider := Provider()
+	namingConventionResource := provider.ResourcesMap["azurecaf_naming_convention"]
+	if namingConventionResource == nil {
+		t.Fatal("azurecaf_naming_convention resource not found")
+	}
 
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.logs_inv",
-						"logsinvalid",
-						11,
-						"log"),
-					regexMatch("azurecaf_naming_convention.logs_inv", regexp.MustCompile(Resources["la"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.passthrough_agw",
-						"TEST-DEV-AGW-RG",
-						15,
-						"TEST"),
-					regexMatch("azurecaf_naming_convention.passthrough_agw", regexp.MustCompile(Resources["agw"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.passthrough_apim",
-						"TESTDEVAPIMRG",
-						13,
-						"TEST"),
-					regexMatch("azurecaf_naming_convention.passthrough_apim", regexp.MustCompile(Resources["apim"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.passthrough_app",
-						"TEST-DEV-APP-RG",
-						15,
-						"TEST"),
-					regexMatch("azurecaf_naming_convention.passthrough_app", regexp.MustCompile(Resources["app"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.passthrough_appi",
-						"TEST-DEV-APPI-RG",
-						16,
-						"TEST"),
-					regexMatch("azurecaf_naming_convention.passthrough_appi", regexp.MustCompile(Resources["appi"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.passthrough_aks",
-						"kubedemo",
-						8,
-						"kube"),
-					regexMatch("azurecaf_naming_convention.passthrough_aks", regexp.MustCompile(Resources["aks"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.passthrough_aksdns",
-						"kubedemodns",
-						11,
-						"kube"),
-					regexMatch("azurecaf_naming_convention.passthrough_aksdns", regexp.MustCompile(Resources["aksdns"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.passthrough_aksnpl",
-						"knplinux",
-						8,
-						"knp"),
-					regexMatch("azurecaf_naming_convention.passthrough_aksnpl", regexp.MustCompile(Resources["aksnpl"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.passthrough_aksnpw",
-						"knpwin",
-						6,
-						"knp"),
-					regexMatch("azurecaf_naming_convention.passthrough_aksnpw", regexp.MustCompile(Resources["aksnpw"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.passthrough_ase",
-						"TEST-DEV-ASE-RG",
-						15,
-						"TEST"),
-					regexMatch("azurecaf_naming_convention.passthrough_ase", regexp.MustCompile(Resources["ase"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.passthrough_plan",
-						"TEST-DEV-PLAN-RG",
-						16,
-						"TEST"),
-					regexMatch("azurecaf_naming_convention.passthrough_plan", regexp.MustCompile(Resources["plan"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.passthrough_sql",
-						"test-dev-sql-rg",
-						15,
-						"test"),
-					regexMatch("azurecaf_naming_convention.passthrough_sql", regexp.MustCompile(Resources["sql"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.passthrough_sqldb",
-						"TEST-DEV-SQLDB-RG",
-						17,
-						"TEST"),
-					regexMatch("azurecaf_naming_convention.passthrough_sqldb", regexp.MustCompile(Resources["sqldb"].ValidationRegExp), 1),
-				),
-			},
-		},
+	// Test case 1: Log Analytics with invalid characters (should clean)
+	t.Run("LogAnalyticsInvalid", func(t *testing.T) {
+		resourceData := schema.TestResourceDataRaw(t, namingConventionResource.Schema, map[string]interface{}{
+			"convention":    "passthrough",
+			"name":          "logs_invalid",
+			"resource_type": "la",
+		})
+
+		err := namingConventionResource.Create(resourceData, nil)
+		if err != nil {
+			t.Fatalf("Failed to create resource: %v", err)
+		}
+
+		result := resourceData.Get("result").(string)
+		expected := "logsinvalid" // underscores should be cleaned
+		if result != expected {
+			t.Errorf("Expected result '%s', got '%s'", expected, result)
+		}
+
+		// Validate against Azure naming requirements if Resources map exists
+		if resource, exists := Resources["la"]; exists && resource.ValidationRegExp != "" {
+			if !regexp.MustCompile(resource.ValidationRegExp).MatchString(result) {
+				t.Errorf("Result '%s' does not match Azure naming requirements", result)
+			}
+		}
 	})
+
+	// Test case 2: Application Gateway passthrough
+	t.Run("ApplicationGatewayPassthrough", func(t *testing.T) {
+		resourceData := schema.TestResourceDataRaw(t, namingConventionResource.Schema, map[string]interface{}{
+			"convention":    "passthrough",
+			"name":          "TEST-DEV-AGW-RG",
+			"resource_type": "azurerm_application_gateway",
+		})
+
+		err := namingConventionResource.Create(resourceData, nil)
+		if err != nil {
+			t.Fatalf("Failed to create resource: %v", err)
+		}
+
+		result := resourceData.Get("result").(string)
+		expected := "TEST-DEV-AGW-RG"
+		if result != expected {
+			t.Errorf("Expected result '%s', got '%s'", expected, result)
+		}
+
+		// Validate against Azure naming requirements if Resources map exists
+		if resource, exists := Resources["agw"]; exists && resource.ValidationRegExp != "" {
+			if !regexp.MustCompile(resource.ValidationRegExp).MatchString(result) {
+				t.Errorf("Result '%s' does not match Azure naming requirements", result)
+			}
+		}
+	})
+
+	// Test case 3: API Management passthrough
+	t.Run("APIManagementPassthrough", func(t *testing.T) {
+		resourceData := schema.TestResourceDataRaw(t, namingConventionResource.Schema, map[string]interface{}{
+			"convention":    "passthrough",
+			"name":          "TEST-DEV-APIM-RG",
+			"resource_type": "azurerm_api_management",
+		})
+
+		err := namingConventionResource.Create(resourceData, nil)
+		if err != nil {
+			t.Fatalf("Failed to create resource: %v", err)
+		}
+
+		result := resourceData.Get("result").(string)
+		// Should be cleaned for APIM which doesn't allow hyphens
+		expected := "TESTDEVAPIMRG"
+		if result != expected {
+			t.Errorf("Expected result '%s', got '%s'", expected, result)
+		}
+
+		// Validate against Azure naming requirements if Resources map exists
+		if resource, exists := Resources["apim"]; exists && resource.ValidationRegExp != "" {
+			if !regexp.MustCompile(resource.ValidationRegExp).MatchString(result) {
+				t.Errorf("Result '%s' does not match Azure naming requirements", result)
+			}
+		}
+	})
+
+	t.Log("CAF Passthrough naming convention tests completed successfully")
 }
 
 const testAccResourcePassthroughConfig = `

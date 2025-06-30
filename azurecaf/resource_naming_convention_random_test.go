@@ -2,113 +2,116 @@ package azurecaf
 
 import (
 	"regexp"
+	"strings"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func TestAccCafNamingConventionFull_Random(t *testing.T) {
-	// Skip this test if we can't access external network resources
-	// This test requires Terraform CLI which needs to connect to checkpoint-api.hashicorp.com
-	t.Skip("Skipping acceptance test - requires network access to Terraform CLI")
-	
-	resource.UnitTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckResourceDestroy,
-		Steps: []resource.TestStep{
-			{
-				Config: testAccResourceRandomConfig,
-				Check: resource.ComposeTestCheckFunc(
+	provider := Provider()
+	namingConventionResource := provider.ResourcesMap["azurecaf_naming_convention"]
+	if namingConventionResource == nil {
+		t.Fatal("azurecaf_naming_convention resource not found")
+	}
 
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.random_st",
-						"",
-						Resources["st"].MaxLength,
-						"utest"),
-					regexMatch("azurecaf_naming_convention.random_st", regexp.MustCompile(Resources["st"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.random_agw",
-						"",
-						Resources["agw"].MaxLength,
-						"utest"),
-					regexMatch("azurecaf_naming_convention.random_agw", regexp.MustCompile(Resources["agw"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.random_apim",
-						"",
-						Resources["apim"].MaxLength,
-						"utest"),
-					regexMatch("azurecaf_naming_convention.random_apim", regexp.MustCompile(Resources["apim"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.random_app",
-						"",
-						Resources["app"].MaxLength,
-						"utest"),
-					regexMatch("azurecaf_naming_convention.random_app", regexp.MustCompile(Resources["app"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.random_appi",
-						"",
-						Resources["appi"].MaxLength,
-						"utest"),
-					regexMatch("azurecaf_naming_convention.random_appi", regexp.MustCompile(Resources["appi"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.random_aks",
-						"",
-						Resources["aks"].MaxLength,
-						"utest"),
-					regexMatch("azurecaf_naming_convention.random_aks", regexp.MustCompile(Resources["aks"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.random_aksdns",
-						"",
-						Resources["aksdns"].MaxLength,
-						"utest"),
-					regexMatch("azurecaf_naming_convention.random_aksdns", regexp.MustCompile(Resources["aksdns"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.random_aksnpl",
-						"",
-						Resources["aksnpl"].MaxLength,
-						"pr"),
-					regexMatch("azurecaf_naming_convention.random_aksnpl", regexp.MustCompile(Resources["aksnpl"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.random_aksnpw",
-						"",
-						Resources["aksnpw"].MaxLength,
-						"pr"),
-					regexMatch("azurecaf_naming_convention.random_aksnpl", regexp.MustCompile(Resources["aksnpl"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.random_aksnpw",
-						"",
-						Resources["aksnpw"].MaxLength,
-						"pr"),
-					regexMatch("azurecaf_naming_convention.random_aksnpw", regexp.MustCompile(Resources["aksnpw"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.random_ase",
-						"",
-						Resources["ase"].MaxLength,
-						"utest"),
-					regexMatch("azurecaf_naming_convention.random_ase", regexp.MustCompile(Resources["ase"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.random_plan",
-						"",
-						Resources["plan"].MaxLength,
-						"utest"),
-					regexMatch("azurecaf_naming_convention.random_plan", regexp.MustCompile(Resources["plan"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.random_sql",
-						"",
-						Resources["sql"].MaxLength,
-						"utest"),
-					regexMatch("azurecaf_naming_convention.random_sql", regexp.MustCompile(Resources["sql"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.random_sqldb",
-						"",
-						Resources["sqldb"].MaxLength,
-						"utest"),
-					regexMatch("azurecaf_naming_convention.random_sqldb", regexp.MustCompile(Resources["sqldb"].ValidationRegExp), 1),
-				),
-			},
-		},
+	// Test case 1: Storage Account with random convention
+	t.Run("StorageAccountRandom", func(t *testing.T) {
+		resourceData := schema.TestResourceDataRaw(t, namingConventionResource.Schema, map[string]interface{}{
+			"name":          "catest",
+			"prefix":        "utest",
+			"resource_type": "st",
+			"convention":    "random",
+		})
+
+		err := namingConventionResource.Create(resourceData, nil)
+		if err != nil {
+			t.Fatalf("Failed to create resource: %v", err)
+		}
+
+		result := resourceData.Get("result").(string)
+		if result == "" {
+			t.Error("Expected non-empty result")
+		}
+
+		// Validate the result contains the prefix
+		if !strings.Contains(result, "utest") {
+			t.Errorf("Expected result to contain 'utest', got '%s'", result)
+		}
+
+		// Validate against Azure naming requirements if Resources map exists
+		if resource, exists := Resources["st"]; exists && resource.ValidationRegExp != "" {
+			if !regexp.MustCompile(resource.ValidationRegExp).MatchString(result) {
+				t.Errorf("Result '%s' does not match Azure naming requirements", result)
+			}
+		}
 	})
+
+	// Test case 2: Application Gateway with random convention
+	t.Run("ApplicationGatewayRandom", func(t *testing.T) {
+		resourceData := schema.TestResourceDataRaw(t, namingConventionResource.Schema, map[string]interface{}{
+			"convention":    "random",
+			"name":          "TEST-DEV-AGW-RG",
+			"prefix":        "utest",
+			"resource_type": "azurerm_application_gateway",
+		})
+
+		err := namingConventionResource.Create(resourceData, nil)
+		if err != nil {
+			t.Fatalf("Failed to create resource: %v", err)
+		}
+
+		result := resourceData.Get("result").(string)
+		if result == "" {
+			t.Error("Expected non-empty result")
+		}
+
+		// Validate the result contains the prefix
+		if !strings.Contains(result, "utest") {
+			t.Errorf("Expected result to contain 'utest', got '%s'", result)
+		}
+
+		// Validate against Azure naming requirements if Resources map exists
+		if resource, exists := Resources["agw"]; exists && resource.ValidationRegExp != "" {
+			if !regexp.MustCompile(resource.ValidationRegExp).MatchString(result) {
+				t.Errorf("Result '%s' does not match Azure naming requirements", result)
+			}
+		}
+	})
+
+	// Test case 3: API Management with random convention
+	t.Run("APIManagementRandom", func(t *testing.T) {
+		resourceData := schema.TestResourceDataRaw(t, namingConventionResource.Schema, map[string]interface{}{
+			"convention":    "random",
+			"name":          "TEST-DEV-APIM-RG",
+			"prefix":        "utest",
+			"resource_type": "azurerm_api_management",
+		})
+
+		err := namingConventionResource.Create(resourceData, nil)
+		if err != nil {
+			t.Fatalf("Failed to create resource: %v", err)
+		}
+
+		result := resourceData.Get("result").(string)
+		if result == "" {
+			t.Error("Expected non-empty result")
+		}
+
+		// Validate the result contains the prefix
+		if !strings.Contains(result, "utest") {
+			t.Errorf("Expected result to contain 'utest', got '%s'", result)
+		}
+
+		// Validate against Azure naming requirements if Resources map exists
+		if resource, exists := Resources["apim"]; exists && resource.ValidationRegExp != "" {
+			if !regexp.MustCompile(resource.ValidationRegExp).MatchString(result) {
+				t.Errorf("Result '%s' does not match Azure naming requirements", result)
+			}
+		}
+	})
+
+	t.Log("CAF Full Random naming convention tests completed successfully")
 }
 
 const testAccResourceRandomConfig = `

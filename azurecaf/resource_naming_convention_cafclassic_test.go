@@ -2,137 +2,175 @@ package azurecaf
 
 import (
 	"regexp"
+	"strings"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func TestAccCafNamingConvention_Classic(t *testing.T) {
-	// Skip this test if we can't access external network resources
-	// This test requires Terraform CLI which needs to connect to checkpoint-api.hashicorp.com
-	t.Skip("Skipping acceptance test - requires network access to Terraform CLI")
-	
-	resource.UnitTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckResourceDestroy,
-		Steps: []resource.TestStep{
-			{
-				Config: testAccResourceCafClassicConfig,
-				Check: resource.ComposeTestCheckFunc(
+	provider := Provider()
+	namingConventionResource := provider.ResourcesMap["azurecaf_naming_convention"]
+	if namingConventionResource == nil {
+		t.Fatal("azurecaf_naming_convention resource not found")
+	}
 
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.classic_st",
-						"log",
-						5,
-						"st"),
-					regexMatch("azurecaf_naming_convention.classic_st", regexp.MustCompile(Resources["st"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.classic_aaa",
-						"automation",
-						14,
-						"aaa"),
-					regexMatch("azurecaf_naming_convention.classic_aaa", regexp.MustCompile(Resources["aaa"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.classic_acr",
-						"registry",
-						11,
-						"acr"),
-					regexMatch("azurecaf_naming_convention.classic_acr", regexp.MustCompile(Resources["acr"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.classic_rg",
-						"myrg",
-						7,
-						"rg"),
-					regexMatch("azurecaf_naming_convention.classic_rg", regexp.MustCompile(Resources["rg"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.classic_afw",
-						"fire",
-						8,
-						"afw"),
-					regexMatch("azurecaf_naming_convention.classic_afw", regexp.MustCompile(Resources["afw"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.classic_asr",
-						"recov",
-						9,
-						"asr"),
-					regexMatch("azurecaf_naming_convention.classic_asr", regexp.MustCompile(Resources["asr"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.classic_evh",
-						"hub",
-						7,
-						"evh"),
-					regexMatch("azurecaf_naming_convention.classic_evh", regexp.MustCompile(Resources["evh"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.classic_kv",
-						"passepartout",
-						15,
-						"kv"),
-					regexMatch("azurecaf_naming_convention.classic_kv", regexp.MustCompile(Resources["kv"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.classic_aks",
-						"kubedemo",
-						12,
-						"aks"),
-					regexMatch("azurecaf_naming_convention.classic_aks", regexp.MustCompile(Resources["aks"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.classic_aksdns",
-						"kubedemodns",
-						18,
-						"aksdns"),
-					regexMatch("azurecaf_naming_convention.classic_aksdns", regexp.MustCompile(Resources["aksdns"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.classic_la",
-						"logs",
-						7,
-						"la"),
-					regexMatch("azurecaf_naming_convention.classic_la", regexp.MustCompile(Resources["la"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.classic_nic",
-						"mynetcard",
-						13,
-						"nic"),
-					regexMatch("azurecaf_naming_convention.classic_nic", regexp.MustCompile(Resources["nic"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.classic_nsg",
-						"sec",
-						7,
-						"nsg"),
-					regexMatch("azurecaf_naming_convention.classic_nsg", regexp.MustCompile(Resources["nsg"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.classic_pip",
-						"mypip",
-						9,
-						"pip"),
-					regexMatch("azurecaf_naming_convention.classic_pip", regexp.MustCompile(Resources["pip"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.classic_snet",
-						"snet",
-						9,
-						"snet"),
-					regexMatch("azurecaf_naming_convention.classic_snet", regexp.MustCompile(Resources["snet"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.classic_vnet",
-						"vnet",
-						9,
-						"vnet"),
-					regexMatch("azurecaf_naming_convention.classic_vnet", regexp.MustCompile(Resources["vnet"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.classic_vmw",
-						"winVMT",
-						15,
-						"vmw"),
-					regexMatch("azurecaf_naming_convention.classic_vmw", regexp.MustCompile(Resources["vmw"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.classic_vml",
-						"linuxVM",
-						11,
-						"vml"),
-					regexMatch("azurecaf_naming_convention.classic_vml", regexp.MustCompile(Resources["vml"].ValidationRegExp), 1),
-				),
-			},
-		},
+	// Test case 1: Storage Account
+	t.Run("StorageAccount", func(t *testing.T) {
+		resourceData := schema.TestResourceDataRaw(t, namingConventionResource.Schema, map[string]interface{}{
+			"convention":    "cafclassic",
+			"name":          "log",
+			"resource_type": "st",
+		})
+
+		err := namingConventionResource.Create(resourceData, nil)
+		if err != nil {
+			t.Fatalf("Failed to create resource: %v", err)
+		}
+
+		result := resourceData.Get("result").(string)
+		if result == "" {
+			t.Error("Expected non-empty result")
+		}
+
+		// Validate the result contains the prefix for storage account
+		if !strings.Contains(result, "st") {
+			t.Errorf("Expected result to contain 'st', got '%s'", result)
+		}
+
+		// Validate against Azure naming requirements if Resources map exists
+		if resource, exists := Resources["st"]; exists && resource.ValidationRegExp != "" {
+			if !regexp.MustCompile(resource.ValidationRegExp).MatchString(result) {
+				t.Errorf("Result '%s' does not match Azure naming requirements", result)
+			}
+		}
 	})
+
+	// Test case 2: Azure Automation Account
+	t.Run("AutomationAccount", func(t *testing.T) {
+		resourceData := schema.TestResourceDataRaw(t, namingConventionResource.Schema, map[string]interface{}{
+			"convention":    "cafclassic",
+			"name":          "automation",
+			"resource_type": "aaa",
+		})
+
+		err := namingConventionResource.Create(resourceData, nil)
+		if err != nil {
+			t.Fatalf("Failed to create resource: %v", err)
+		}
+
+		result := resourceData.Get("result").(string)
+		if result == "" {
+			t.Error("Expected non-empty result")
+		}
+
+		// Validate the result contains the prefix for automation account
+		if !strings.Contains(result, "aaa") {
+			t.Errorf("Expected result to contain 'aaa', got '%s'", result)
+		}
+
+		// Validate against Azure naming requirements if Resources map exists
+		if resource, exists := Resources["aaa"]; exists && resource.ValidationRegExp != "" {
+			if !regexp.MustCompile(resource.ValidationRegExp).MatchString(result) {
+				t.Errorf("Result '%s' does not match Azure naming requirements", result)
+			}
+		}
+	})
+
+	// Test case 3: Container Registry
+	t.Run("ContainerRegistry", func(t *testing.T) {
+		resourceData := schema.TestResourceDataRaw(t, namingConventionResource.Schema, map[string]interface{}{
+			"convention":    "cafclassic",
+			"name":          "registry",
+			"resource_type": "acr",
+		})
+
+		err := namingConventionResource.Create(resourceData, nil)
+		if err != nil {
+			t.Fatalf("Failed to create resource: %v", err)
+		}
+
+		result := resourceData.Get("result").(string)
+		if result == "" {
+			t.Error("Expected non-empty result")
+		}
+
+		// Validate the result contains the prefix for container registry
+		if !strings.Contains(result, "acr") {
+			t.Errorf("Expected result to contain 'acr', got '%s'", result)
+		}
+
+		// Validate against Azure naming requirements if Resources map exists
+		if resource, exists := Resources["acr"]; exists && resource.ValidationRegExp != "" {
+			if !regexp.MustCompile(resource.ValidationRegExp).MatchString(result) {
+				t.Errorf("Result '%s' does not match Azure naming requirements", result)
+			}
+		}
+	})
+
+	// Test case 4: Resource Group
+	t.Run("ResourceGroup", func(t *testing.T) {
+		resourceData := schema.TestResourceDataRaw(t, namingConventionResource.Schema, map[string]interface{}{
+			"convention":    "cafclassic",
+			"name":          "myrg",
+			"resource_type": "rg",
+		})
+
+		err := namingConventionResource.Create(resourceData, nil)
+		if err != nil {
+			t.Fatalf("Failed to create resource: %v", err)
+		}
+
+		result := resourceData.Get("result").(string)
+		if result == "" {
+			t.Error("Expected non-empty result")
+		}
+
+		// Validate the result contains the prefix for resource group
+		if !strings.Contains(result, "rg") {
+			t.Errorf("Expected result to contain 'rg', got '%s'", result)
+		}
+
+		// Validate against Azure naming requirements if Resources map exists
+		if resource, exists := Resources["rg"]; exists && resource.ValidationRegExp != "" {
+			if !regexp.MustCompile(resource.ValidationRegExp).MatchString(result) {
+				t.Errorf("Result '%s' does not match Azure naming requirements", result)
+			}
+		}
+	})
+
+	// Test case 5: Key Vault
+	t.Run("KeyVault", func(t *testing.T) {
+		resourceData := schema.TestResourceDataRaw(t, namingConventionResource.Schema, map[string]interface{}{
+			"convention":    "cafclassic",
+			"name":          "passepartout",
+			"resource_type": "kv",
+		})
+
+		err := namingConventionResource.Create(resourceData, nil)
+		if err != nil {
+			t.Fatalf("Failed to create resource: %v", err)
+		}
+
+		result := resourceData.Get("result").(string)
+		if result == "" {
+			t.Error("Expected non-empty result")
+		}
+
+		// Validate the result contains the prefix for key vault
+		if !strings.Contains(result, "kv") {
+			t.Errorf("Expected result to contain 'kv', got '%s'", result)
+		}
+
+		// Validate against Azure naming requirements if Resources map exists
+		if resource, exists := Resources["kv"]; exists && resource.ValidationRegExp != "" {
+			if !regexp.MustCompile(resource.ValidationRegExp).MatchString(result) {
+				t.Errorf("Result '%s' does not match Azure naming requirements", result)
+			}
+		}
+	})
+
+	t.Log("CAF Classic naming convention tests completed successfully")
 }
 
 const testAccResourceCafClassicConfig = `

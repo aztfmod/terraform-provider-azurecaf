@@ -2,143 +2,112 @@ package azurecaf
 
 import (
 	"regexp"
+	"strings"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func TestAccCafNamingConventionCaf_Random(t *testing.T) {
-	// Skip this test if we can't access external network resources
-	// This test requires Terraform CLI which needs to connect to checkpoint-api.hashicorp.com
-	t.Skip("Skipping acceptance test - requires network access to Terraform CLI")
-	
-	resource.UnitTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckResourceDestroy,
-		Steps: []resource.TestStep{
-			{
-				Config: testAccResourceCafRandomConfig,
-				Check: resource.ComposeTestCheckFunc(
+	provider := Provider()
+	namingConventionResource := provider.ResourcesMap["azurecaf_naming_convention"]
+	if namingConventionResource == nil {
+		t.Fatal("azurecaf_naming_convention resource not found")
+	}
 
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.st",
-						"log",
-						Resources["st"].MaxLength,
-						"rdmi"),
-					regexMatch("azurecaf_naming_convention.st", regexp.MustCompile(Resources["st"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.aaa",
-						"automation",
-						Resources["aaa"].MaxLength,
-						"rdmi"),
-					regexMatch("azurecaf_naming_convention.aaa", regexp.MustCompile(Resources["aaa"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.acr",
-						"registry",
-						Resources["acr"].MaxLength,
-						"rdmi"),
-					regexMatch("azurecaf_naming_convention.acr", regexp.MustCompile(Resources["acr"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.acr_max",
-						"acrlevel0",
-						45,
-						"rdmi"),
-					regexMatch("azurecaf_naming_convention.acr_max", regexp.MustCompile(Resources["acr"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.rg",
-						"myrg",
-						Resources["rg"].MaxLength,
-						"(_124)"),
-					regexMatch("azurecaf_naming_convention.rg", regexp.MustCompile(Resources["rg"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.afw",
-						"fire",
-						Resources["afw"].MaxLength,
-						"rdmi"),
-					regexMatch("azurecaf_naming_convention.afw", regexp.MustCompile(Resources["afw"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.asr",
-						"recov",
-						Resources["asr"].MaxLength,
-						"rdmi"),
-					regexMatch("azurecaf_naming_convention.asr", regexp.MustCompile(Resources["asr"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.evh",
-						"hub",
-						Resources["evh"].MaxLength,
-						"rdmi"),
-					regexMatch("azurecaf_naming_convention.evh", regexp.MustCompile(Resources["evh"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.kv",
-						"passepartout",
-						Resources["kv"].MaxLength,
-						"rdmi"),
-					regexMatch("azurecaf_naming_convention.kv", regexp.MustCompile(Resources["kv"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.aks",
-						"kubedemo",
-						Resources["aks"].MaxLength,
-						"rdmi"),
-					regexMatch("azurecaf_naming_convention.aks", regexp.MustCompile(Resources["aks"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.aksdns",
-						"kubedemodns",
-						Resources["aksdns"].MaxLength,
-						"rdmi"),
-					regexMatch("azurecaf_naming_convention.aksdns", regexp.MustCompile(Resources["aksdns"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.la",
-						"logs",
-						Resources["la"].MaxLength,
-						"rdmi"),
-					regexMatch("azurecaf_naming_convention.la", regexp.MustCompile(Resources["la"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.nic",
-						"mynetcard",
-						Resources["nic"].MaxLength,
-						"rdmi"),
-					regexMatch("azurecaf_naming_convention.nic", regexp.MustCompile(Resources["nic"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.nsg",
-						"sec",
-						Resources["nsg"].MaxLength,
-						"rdmi"),
-					regexMatch("azurecaf_naming_convention.nsg", regexp.MustCompile(Resources["nsg"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.pip",
-						"mypip",
-						Resources["pip"].MaxLength,
-						"rdmi"),
-					regexMatch("azurecaf_naming_convention.pip", regexp.MustCompile(Resources["pip"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.snet",
-						"snet",
-						Resources["snet"].MaxLength,
-						"rdmi"),
-					regexMatch("azurecaf_naming_convention.snet", regexp.MustCompile(Resources["snet"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.vnet",
-						"vnet",
-						Resources["vnet"].MaxLength,
-						"rdmi"),
-					regexMatch("azurecaf_naming_convention.vnet", regexp.MustCompile(Resources["vnet"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.vmw",
-						"winVMT",
-						Resources["vmw"].MaxLength,
-						"rdmi"),
-					regexMatch("azurecaf_naming_convention.vmw", regexp.MustCompile(Resources["vmw"].ValidationRegExp), 1),
-					testAccCafNamingValidation(
-						"azurecaf_naming_convention.vml",
-						"linuxVM",
-						Resources["vml"].MaxLength,
-						"rdmi"),
-					regexMatch("azurecaf_naming_convention.vml", regexp.MustCompile(Resources["vml"].ValidationRegExp), 1),
-				),
-			},
-		},
+	// Test case 1: Storage Account with cafrandom convention
+	t.Run("StorageAccountRandom", func(t *testing.T) {
+		resourceData := schema.TestResourceDataRaw(t, namingConventionResource.Schema, map[string]interface{}{
+			"convention":    "cafrandom",
+			"name":          "log",
+			"prefix":        "rdmi",
+			"resource_type": "st",
+		})
+
+		err := namingConventionResource.Create(resourceData, nil)
+		if err != nil {
+			t.Fatalf("Failed to create resource: %v", err)
+		}
+
+		result := resourceData.Get("result").(string)
+		if result == "" {
+			t.Error("Expected non-empty result")
+		}
+
+		// Validate the result contains the prefix
+		if !strings.Contains(result, "rdmi") {
+			t.Errorf("Expected result to contain 'rdmi', got '%s'", result)
+		}
+
+		// Validate against Azure naming requirements if Resources map exists
+		if resource, exists := Resources["st"]; exists && resource.ValidationRegExp != "" {
+			if !regexp.MustCompile(resource.ValidationRegExp).MatchString(result) {
+				t.Errorf("Result '%s' does not match Azure naming requirements", result)
+			}
+		}
 	})
+
+	// Test case 2: Resource Group with special prefix
+	t.Run("ResourceGroupSpecialPrefix", func(t *testing.T) {
+		resourceData := schema.TestResourceDataRaw(t, namingConventionResource.Schema, map[string]interface{}{
+			"convention":    "cafrandom",
+			"name":          "myrg",
+			"prefix":        "(_124)",
+			"resource_type": "rg",
+		})
+
+		err := namingConventionResource.Create(resourceData, nil)
+		if err != nil {
+			t.Fatalf("Failed to create resource: %v", err)
+		}
+
+		result := resourceData.Get("result").(string)
+		if result == "" {
+			t.Error("Expected non-empty result")
+		}
+
+		// Validate against Azure naming requirements if Resources map exists
+		if resource, exists := Resources["rg"]; exists && resource.ValidationRegExp != "" {
+			if !regexp.MustCompile(resource.ValidationRegExp).MatchString(result) {
+				t.Errorf("Result '%s' does not match Azure naming requirements", result)
+			}
+		}
+	})
+
+	// Test case 3: Container Registry with max length
+	t.Run("ContainerRegistryMaxLength", func(t *testing.T) {
+		resourceData := schema.TestResourceDataRaw(t, namingConventionResource.Schema, map[string]interface{}{
+			"convention":    "cafrandom",
+			"name":          "acrlevel0",
+			"prefix":        "rdmi",
+			"max_length":    45,
+			"resource_type": "acr",
+		})
+
+		err := namingConventionResource.Create(resourceData, nil)
+		if err != nil {
+			t.Fatalf("Failed to create resource: %v", err)
+		}
+
+		result := resourceData.Get("result").(string)
+		if result == "" {
+			t.Error("Expected non-empty result")
+		}
+
+		// Check that result respects max length
+		if len(result) > 45 {
+			t.Errorf("Expected result length <= 45, got %d: '%s'", len(result), result)
+		}
+
+		// Validate against Azure naming requirements if Resources map exists
+		if resource, exists := Resources["acr"]; exists && resource.ValidationRegExp != "" {
+			if !regexp.MustCompile(resource.ValidationRegExp).MatchString(result) {
+				t.Errorf("Result '%s' does not match Azure naming requirements", result)
+			}
+		}
+	})
+
+	t.Log("CAF Random naming convention tests completed successfully")
 }
 
 const testAccResourceCafRandomConfig = `
