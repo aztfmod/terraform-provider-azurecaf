@@ -1,176 +1,74 @@
 package azurecaf
 
 import (
-	"regexp"
-	"strings"
 	"testing"
-
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func TestAccCafNamingConvention_Classic(t *testing.T) {
-	provider := Provider()
-	namingConventionResource := provider.ResourcesMap["azurecaf_naming_convention"]
-	if namingConventionResource == nil {
-		t.Fatal("azurecaf_naming_convention resource not found")
+	testCases := []NamingConventionTestCase{
+		{
+			Name:             "log",
+			Convention:       "cafclassic",
+			ResourceType:     "st",
+			ExpectedContains: []string{"st"},
+		},
+		{
+			Name:             "automation",
+			Convention:       "cafclassic",
+			ResourceType:     "aaa",
+			ExpectedContains: []string{"aaa"},
+		},
+		{
+			Name:             "registry",
+			Convention:       "cafclassic",
+			ResourceType:     "acr",
+			ExpectedContains: []string{"acr"},
+		},
+		{
+			Name:             "myrg",
+			Convention:       "cafclassic",
+			ResourceType:     "rg",
+			ExpectedContains: []string{"rg"},
+		},
+		{
+			Name:             "passepartout",
+			Convention:       "cafclassic",
+			ResourceType:     "kv",
+			ExpectedContains: []string{"kv"},
+		},
+		{
+			Name:             "fire",
+			Convention:       "cafclassic",
+			ResourceType:     "afw",
+			ExpectedContains: []string{"afw"},
+		},
+		{
+			Name:             "recov",
+			Convention:       "cafclassic",
+			ResourceType:     "asr",
+			ExpectedContains: []string{"asr"},
+		},
+		{
+			Name:             "hub",
+			Convention:       "cafclassic",
+			ResourceType:     "evh",
+			ExpectedContains: []string{"evh"},
+		},
+		{
+			Name:             "kubedemo",
+			Convention:       "cafclassic",
+			ResourceType:     "aks",
+			ExpectedContains: []string{"aks"},
+		},
+		{
+			Name:             "kubedemodns",
+			Convention:       "cafclassic",
+			ResourceType:     "aksdns",
+			ExpectedContains: []string{"aksdns"},
+		},
 	}
 
-	// Test case 1: Storage Account
-	t.Run("StorageAccount", func(t *testing.T) {
-		resourceData := schema.TestResourceDataRaw(t, namingConventionResource.Schema, map[string]interface{}{
-			"convention":    "cafclassic",
-			"name":          "log",
-			"resource_type": "st",
-		})
-
-		err := namingConventionResource.Create(resourceData, nil)
-		if err != nil {
-			t.Fatalf("Failed to create resource: %v", err)
-		}
-
-		result := resourceData.Get("result").(string)
-		if result == "" {
-			t.Error("Expected non-empty result")
-		}
-
-		// Validate the result contains the prefix for storage account
-		if !strings.Contains(result, "st") {
-			t.Errorf("Expected result to contain 'st', got '%s'", result)
-		}
-
-		// Validate against Azure naming requirements if Resources map exists
-		if resource, exists := Resources["st"]; exists && resource.ValidationRegExp != "" {
-			if !regexp.MustCompile(resource.ValidationRegExp).MatchString(result) {
-				t.Errorf("Result '%s' does not match Azure naming requirements", result)
-			}
-		}
-	})
-
-	// Test case 2: Azure Automation Account
-	t.Run("AutomationAccount", func(t *testing.T) {
-		resourceData := schema.TestResourceDataRaw(t, namingConventionResource.Schema, map[string]interface{}{
-			"convention":    "cafclassic",
-			"name":          "automation",
-			"resource_type": "aaa",
-		})
-
-		err := namingConventionResource.Create(resourceData, nil)
-		if err != nil {
-			t.Fatalf("Failed to create resource: %v", err)
-		}
-
-		result := resourceData.Get("result").(string)
-		if result == "" {
-			t.Error("Expected non-empty result")
-		}
-
-		// Validate the result contains the prefix for automation account
-		if !strings.Contains(result, "aaa") {
-			t.Errorf("Expected result to contain 'aaa', got '%s'", result)
-		}
-
-		// Validate against Azure naming requirements if Resources map exists
-		if resource, exists := Resources["aaa"]; exists && resource.ValidationRegExp != "" {
-			if !regexp.MustCompile(resource.ValidationRegExp).MatchString(result) {
-				t.Errorf("Result '%s' does not match Azure naming requirements", result)
-			}
-		}
-	})
-
-	// Test case 3: Container Registry
-	t.Run("ContainerRegistry", func(t *testing.T) {
-		resourceData := schema.TestResourceDataRaw(t, namingConventionResource.Schema, map[string]interface{}{
-			"convention":    "cafclassic",
-			"name":          "registry",
-			"resource_type": "acr",
-		})
-
-		err := namingConventionResource.Create(resourceData, nil)
-		if err != nil {
-			t.Fatalf("Failed to create resource: %v", err)
-		}
-
-		result := resourceData.Get("result").(string)
-		if result == "" {
-			t.Error("Expected non-empty result")
-		}
-
-		// Validate the result contains the prefix for container registry
-		if !strings.Contains(result, "acr") {
-			t.Errorf("Expected result to contain 'acr', got '%s'", result)
-		}
-
-		// Validate against Azure naming requirements if Resources map exists
-		if resource, exists := Resources["acr"]; exists && resource.ValidationRegExp != "" {
-			if !regexp.MustCompile(resource.ValidationRegExp).MatchString(result) {
-				t.Errorf("Result '%s' does not match Azure naming requirements", result)
-			}
-		}
-	})
-
-	// Test case 4: Resource Group
-	t.Run("ResourceGroup", func(t *testing.T) {
-		resourceData := schema.TestResourceDataRaw(t, namingConventionResource.Schema, map[string]interface{}{
-			"convention":    "cafclassic",
-			"name":          "myrg",
-			"resource_type": "rg",
-		})
-
-		err := namingConventionResource.Create(resourceData, nil)
-		if err != nil {
-			t.Fatalf("Failed to create resource: %v", err)
-		}
-
-		result := resourceData.Get("result").(string)
-		if result == "" {
-			t.Error("Expected non-empty result")
-		}
-
-		// Validate the result contains the prefix for resource group
-		if !strings.Contains(result, "rg") {
-			t.Errorf("Expected result to contain 'rg', got '%s'", result)
-		}
-
-		// Validate against Azure naming requirements if Resources map exists
-		if resource, exists := Resources["rg"]; exists && resource.ValidationRegExp != "" {
-			if !regexp.MustCompile(resource.ValidationRegExp).MatchString(result) {
-				t.Errorf("Result '%s' does not match Azure naming requirements", result)
-			}
-		}
-	})
-
-	// Test case 5: Key Vault
-	t.Run("KeyVault", func(t *testing.T) {
-		resourceData := schema.TestResourceDataRaw(t, namingConventionResource.Schema, map[string]interface{}{
-			"convention":    "cafclassic",
-			"name":          "passepartout",
-			"resource_type": "kv",
-		})
-
-		err := namingConventionResource.Create(resourceData, nil)
-		if err != nil {
-			t.Fatalf("Failed to create resource: %v", err)
-		}
-
-		result := resourceData.Get("result").(string)
-		if result == "" {
-			t.Error("Expected non-empty result")
-		}
-
-		// Validate the result contains the prefix for key vault
-		if !strings.Contains(result, "kv") {
-			t.Errorf("Expected result to contain 'kv', got '%s'", result)
-		}
-
-		// Validate against Azure naming requirements if Resources map exists
-		if resource, exists := Resources["kv"]; exists && resource.ValidationRegExp != "" {
-			if !regexp.MustCompile(resource.ValidationRegExp).MatchString(result) {
-				t.Errorf("Result '%s' does not match Azure naming requirements", result)
-			}
-		}
-	})
-
-	t.Log("CAF Classic naming convention tests completed successfully")
+	runMultipleNamingConventionTests(t, testCases)
 }
 
 const testAccResourceCafClassicConfig = `

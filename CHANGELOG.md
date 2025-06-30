@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced resource validation and testing framework
 - Comprehensive CI testing pipeline with resource validation, matrix testing, and coverage analysis
 - Advanced Makefile targets for comprehensive testing (`test_ci`, `test_ci_fast`, `test_ci_complete`)
+- Shared testing utilities to reduce code duplication (SonarQube compliance)
+- Refactored naming convention tests to use centralized test helpers
 
 ### Changed
 - **BREAKING**: Consolidated `resourceDefinition.json` and `resourceDefinition_out_of_docs.json` into single unified file
