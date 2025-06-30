@@ -9,14 +9,20 @@ on:
     branches: [main]
   repository_dispatch:
 
+# Restrict permissions for all jobs by default
+permissions:
+  contents: read
+
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Required for creating releases
+      id-token: write  # Required for keyless signing
     steps:
       - name: Check out code into the Go module directory
-        uses: actions/checkout@v3
-
+        uses: actions/checkout@v4
 
       - name: Install tfproviderlint
         run: |
@@ -24,10 +30,9 @@ jobs:
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
 
       - name: Set up Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
           go-version-file: './go.mod'
-        id: go
 
       - name: Build
         run: go build -v ./...
@@ -98,18 +103,18 @@ jobs:
 
       - name: Import GPG key
         id: import_gpg
-        uses: crazy-max/ghaction-import-gpg@v5.1.0
+        uses: crazy-max/ghaction-import-gpg@v6
         if: startsWith(github.ref, 'refs/tags/')
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
 
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v4
+        uses: goreleaser/goreleaser-action@v6
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          version: v1.10.3
-          args: release --rm-dist
+          version: '~> v2'
+          args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
