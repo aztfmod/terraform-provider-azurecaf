@@ -22,7 +22,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -31,6 +30,20 @@ import (
 	"text/template"
 	"time"
 )
+
+// OfficialData defines the official Azure CAF documentation attributes for a resource
+type OfficialData struct {
+	// Slug is the official CAF abbreviation for this resource type
+	// Only present for resources that are in the official Azure CAF documentation
+	Slug string `json:"slug,omitempty"`
+
+	// Resource is the official resource name from Azure CAF documentation
+	Resource string `json:"resource"`
+
+	// ResourceProviderNamespace is the Azure resource provider namespace from official documentation
+	// Only present for resources that are in the official Azure CAF documentation  
+	ResourceProviderNamespace string `json:"resource_provider_namespace,omitempty"`
+}
 
 // ResourceStructure defines the schema for Azure resource naming requirements
 // as specified in the resourceDefinition.json file.
@@ -67,6 +80,12 @@ type ResourceStructure struct {
 
 	// Scope defines where the resource name must be unique (e.g., "global", "resourceGroup", "parent")
 	Scope string `json:"scope,omitempty"`
+
+	// OutOfDoc indicates whether this resource is not present in the official Azure CAF documentation
+	OutOfDoc bool `json:"out_of_doc,omitempty"`
+
+	// Official contains the official Azure CAF documentation attributes for this resource
+	Official OfficialData `json:"official"`
 }
 
 // templateData holds the data structure passed to the Go template for code generation
@@ -92,7 +111,7 @@ func main() {
 	fmt.Println() // Add spacing for readability
 
 	// Load all template files from the templates directory
-	files, err := ioutil.ReadDir(path.Join(wd, "templates"))
+	files, err := os.ReadDir(path.Join(wd, "templates"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -117,42 +136,18 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Read the resource definitions from JSON file
-	sourceDefinitions, err := ioutil.ReadFile(path.Join(wd, "resourceDefinition.json"))
+	// Read the combined resource definitions from JSON file
+	// This file now contains both documented and undocumented resources
+	sourceDefinitions, err := os.ReadFile(path.Join(wd, "resourceDefinition.json"))
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Parse JSON resource definitions into Go structs
-	var data []ResourceStructure
-	err = json.Unmarshal(sourceDefinitions, &data)
+	var uniqueData []ResourceStructure
+	err = json.Unmarshal(sourceDefinitions, &uniqueData)
 	if err != nil {
 		log.Fatal(err)
-	}
-
-	// Load additional undocumented resource definitions that are not yet in official docs
-	sourceDefinitionsUndocumented, err := ioutil.ReadFile(path.Join(wd, "resourceDefinition_out_of_docs.json"))
-	if err != nil {
-		log.Fatal(err)
-	}
-	var dataUndocumented []ResourceStructure
-	err = json.Unmarshal(sourceDefinitionsUndocumented, &dataUndocumented)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Combine documented and undocumented resource definitions
-	data = append(data, dataUndocumented...)
-
-	// Remove duplicates to ensure each resource type appears only once
-	// This is important when merging multiple definition sources
-	uniqueData := make([]ResourceStructure, 0, len(data))
-	seen := make(map[string]bool)
-	for _, res := range data {
-		if !seen[res.ResourceTypeName] {
-			uniqueData = append(uniqueData, res)
-			seen[res.ResourceTypeName] = true
-		}
 	}
 
 	// Sort by resource type name for consistent output
