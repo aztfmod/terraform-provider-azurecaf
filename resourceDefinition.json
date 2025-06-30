@@ -2525,7 +2525,7 @@
         "min_length": 3,
         "max_length": 64,
         "validation_regex": "\"^[a-zA-Z0-9-]{1,63}[a-zA-Z0-9]$\"",
-        "scope": "resoureceGroup",
+        "scope": "resourceGroup",
         "slug": "dps",
         "dashes": true,
         "lowercase": false,

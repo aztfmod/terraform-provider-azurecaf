@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive official resource provider namespace mappings
 - GitHub Copilot Agent firewall configuration for improved CI/CD testing
 - Enhanced resource validation and testing framework
+- Comprehensive CI testing pipeline with resource validation, matrix testing, and coverage analysis
+- Advanced Makefile targets for comprehensive testing (`test_ci`, `test_ci_fast`, `test_ci_complete`)
 
 ### Changed
 - **BREAKING**: Consolidated `resourceDefinition.json` and `resourceDefinition_out_of_docs.json` into single unified file

@@ -46,9 +46,29 @@ test_resource_naming: ## Run naming convention tests
 	go tool cover -html=naming_coverage.out -o naming_coverage.html
 	@echo "Naming coverage report generated at: naming_coverage.html"
 
+test_all_resources: 	## Test ALL resource types (comprehensive integration test)
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v ./azurecaf/... -run="TestAcc_AllResourceTypes" -timeout=30m
+
+test_resource_coverage: 	## Analyze test coverage for all resource types
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v ./azurecaf/... -run="TestResourceCoverage" -timeout=10m
+
+test_resource_definition_completeness: 	## Validate all resource definitions are complete
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v ./azurecaf/... -run="TestResourceDefinitionCompleteness"
+
 test_all: unittest test_integration	## Run all tests (unit and integration)
 
-test_ci: unittest test_coverage	## Run CI tests (unit tests with coverage, no integration tests)
+test_ci: unittest test_coverage test_resource_definitions test_resource_matrix test_resource_coverage	## Run comprehensive CI tests (unit, coverage, resource validation, matrix testing)
+
+test_ci_fast: unittest test_coverage test_resource_definitions	## Run fast CI tests (unit, coverage, resource validation only)
+
+test_ci_complete: test_ci test_integration test_all_resources	## Run complete CI tests including integration tests
+
+test_resource_definitions: test_resource_definition_completeness	## Validate all resource definitions are complete
+
+test_resource_matrix: 	## Test resources by category and validate constraints
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v ./azurecaf/... -run="TestResourceMatrix|TestResourceConstraints"
+
+test_complete: test_all test_all_resources test_resource_coverage	## Complete test suite including all resource types
 
 clean:	## Clean up build artifacts and test results
 	rm -f coverage.out coverage.html terraform-provider-azurecaf
