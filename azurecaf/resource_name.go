@@ -287,10 +287,6 @@ func resourceNameImport(d *schema.ResourceData, meta interface{}) ([]*schema.Res
 	d.Set("name", existingName)
 	d.Set("resource_type", resourceType)
 	d.Set("passthrough", true)
-	d.Set("clean_input", true)
-	d.Set("use_slug", true)
-	d.Set("separator", "-")
-	d.Set("random_length", 0)
 	
 	// Set empty slices for prefixes and suffixes since we can't reverse-engineer them
 	d.Set("prefixes", []string{})
