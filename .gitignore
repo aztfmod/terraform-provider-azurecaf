@@ -23,3 +23,6 @@ naming_coverage.html
 
 # Build artifacts  
 run_examples.sh
+
+# Terraform configuration files
+**/terraform.rc
