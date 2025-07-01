@@ -173,7 +173,9 @@ func main() {
 
 	// Execute the template with our processed data
 	err = parsedTemplate.ExecuteTemplate(modelsFile, "model.tmpl", templateData{
-		GeneratedTime:      time.Now(),
+		// Use day-level timestamp precision to ensure stable output across different environments
+		// This prevents CI/CD dirty state issues while maintaining meaningful generation tracking
+		GeneratedTime:      time.Now().Truncate(time.Hour * 24),
 		ResourceStructures: uniqueData,
 		SlugMap:            slugMap,
 	})
