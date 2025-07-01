@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated documentation and contribution guidelines to reflect new structure
 
 ### Fixed
+- CAF naming values now display computed names during `terraform plan` instead of "(known after apply)" for the `azurecaf_name` resource
 - DNS blocking issues with `checkpoint-api.hashicorp.com` during integration tests
 - Resource provider namespace accuracy for officially documented Azure resources
 - Resource generation and validation processes for unified file structure

@@ -2,18 +2,49 @@
 
 The `azurecaf_name` resource generates Azure-compliant resource names following the Cloud Adoption Framework guidelines. This resource provides more flexibility and comprehensive resource type support compared to the legacy `azurecaf_naming_convention` resource.
 
-> **Note**: For most use cases, the [`azurecaf_name` data source](../data-sources/azurecaf_name.md) is recommended as it evaluates names at plan time, making them visible before resource creation.
+> **Note**: Both the [`azurecaf_name` data source](../data-sources/azurecaf_name.md) and this resource now evaluate names at plan time, making them visible before resource creation. Choose based on your Terraform workflow preferences.
 
 ## Key Features
 
 - **300+ Resource Types** - Comprehensive coverage of Azure services with accurate validation
 - **CAF Compliance** - Follows Microsoft Cloud Adoption Framework recommendations
+- **Plan-Time Visibility** - Generated names are visible during `terraform plan` (no more "known after apply")
 - **Multi-Resource Support** - Generate names for multiple related resource types simultaneously
 - **Flexible Configuration** - Supports prefixes, suffixes, random generation, and custom patterns
 - **Input Sanitization** - Automatically cleans inputs to ensure Azure compliance
 - **Validation Rules** - Enforces length, character, and pattern requirements per resource type
 
 ## Example Usage
+
+### Plan-Time Visibility
+
+The `azurecaf_name` resource now shows computed names during `terraform plan`, making it easy to preview and validate resource names before applying changes:
+
+```hcl
+resource "azurecaf_name" "example" {
+  name          = "myapp"
+  resource_type = "azurerm_storage_account"
+  prefixes      = ["prod"]
+  suffixes      = ["001"]
+  random_length = 3
+  clean_input   = true
+}
+
+# During terraform plan, you'll see:
+# + azurecaf_name.example will be created
+#   + resource "azurecaf_name" "example" {
+#     + id            = (known after apply)
+#     + result        = "stprodmyapp001abc"
+#     + results       = {
+#         + "azurerm_storage_account" = "stprodmyapp001abc"
+#       }
+#     + name          = "myapp"
+#     + resource_type = "azurerm_storage_account"
+#     + prefixes      = ["prod"]
+#     + suffixes      = ["001"]
+#     + random_length = 3
+#   }
+```
 
 ### Basic Resource Naming
 
@@ -450,10 +481,14 @@ For the complete list of supported resource types, validation rules, and example
 
 ### Data Source vs Resource
 
-**Recommendation**: Use the [`azurecaf_name` data source](../data-sources/azurecaf_name.md) instead of this resource when possible, as data sources:
+Both the [`azurecaf_name` data source](../data-sources/azurecaf_name.md) and this resource now:
 - Evaluate at plan time, showing generated names before resource creation
-- Provide better visibility in Terraform plans
-- Are generally preferred for name generation workflows
+- Provide excellent visibility in Terraform plans
+- Support identical naming configuration options
+
+**Choose based on your workflow:**
+- **Resource**: When you need to store naming configuration in Terraform state and manage it as a resource lifecycle
+- **Data Source**: When you prefer stateless name generation for simpler workflows
 
 ### State Management
 
