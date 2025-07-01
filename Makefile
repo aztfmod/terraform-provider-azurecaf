@@ -46,7 +46,13 @@ test_resource_naming: ## Run naming convention tests
 	go tool cover -html=naming_coverage.out -o naming_coverage.html
 	@echo "Naming coverage report generated at: naming_coverage.html"
 
-test_all: unittest test_integration	## Run all tests (unit and integration)
+test_e2e: build	## Run end-to-end tests (requires built provider)
+	go test -v ./e2e/...
+
+test_e2e_ci: build	## Run E2E tests in CI mode
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 go test -v ./e2e/...
+
+test_all: unittest test_integration test_e2e	## Run all tests (unit, integration, and e2e)
 
 test_ci: unittest test_coverage	## Run CI tests (unit tests with coverage, no integration tests)
 

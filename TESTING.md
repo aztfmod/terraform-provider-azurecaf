@@ -82,6 +82,14 @@ The project includes a comprehensive test suite designed to ensure the proper fu
    - `remaining_coverage_test.go` - Remaining untested code paths
    - `enhanced_tests_test.go` - Enhanced test cases with structured test data
 
+### 8. **End-to-End (E2E) Tests**
+   - `e2e/e2e_test.go` - Comprehensive end-to-end tests that validate the complete workflow:
+     - Provider build from source
+     - Terraform integration with built provider
+     - Azure CAF name validation
+     - Mock azurerm provider integration
+     - Deployment scenario validation
+
 ## 🏃‍♂️ Running Tests
 
 ### Available Test Commands
@@ -99,8 +107,12 @@ make test_integration        # Run all integration tests
 make test_data_sources       # Run data source integration tests  
 make test_error_handling     # Run error handling integration tests
 
+# End-to-End Tests (Comprehensive - Requires Terraform CLI)
+make test_e2e               # Run full end-to-end tests
+make test_e2e_ci            # Run E2E tests in CI mode
+
 # Comprehensive Testing
-make test_all               # Run both unit and integration tests
+make test_all               # Run unit, integration, and e2e tests
 make test_ci                # Run CI tests (unit + coverage, no integration)
 
 # Specialized Tests
@@ -134,6 +146,18 @@ TF_ACC=1 go test -v ./azurecaf/... -run="TestAcc"
 # Specific integration test categories
 TF_ACC=1 go test -v ./azurecaf/... -run="TestAccDataSourcesIntegration"
 TF_ACC=1 go test -v ./azurecaf/... -run="TestAccErrorHandling"
+```
+
+**End-to-End Tests:**
+```bash
+# Full E2E workflow (requires Terraform CLI)
+go test -v ./e2e/...
+
+# E2E tests in CI mode
+CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 go test -v ./e2e/...
+
+# Skip E2E tests in fast testing
+go test -short ./...  # E2E tests are automatically skipped
 ```
 
 **Coverage Analysis:**

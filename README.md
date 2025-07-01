@@ -378,6 +378,28 @@ TF_ACC=1 go test -v ./azurecaf/... -run="TestAccErrorHandling"
 
 Note: Integration tests take longer to run than unit tests.
 
+### Running End-to-End Tests
+
+End-to-end tests validate the complete workflow from building the provider to using it with Terraform:
+
+```bash
+# Run all E2E tests (requires Terraform CLI)
+go test -v ./e2e/...
+
+# Run E2E tests via Makefile
+make test_e2e
+
+# Run E2E tests in CI mode
+make test_e2e_ci
+```
+
+E2E tests validate:
+- Provider compilation from source
+- Terraform integration with local provider build
+- Azure CAF name generation compliance
+- Mock azurerm provider integration
+- Real deployment scenarios
+
 ### Test Coverage
 
 The project maintains high test coverage (99.3% of statements) to ensure code quality and reliability. Tests are designed to cover:
@@ -396,6 +418,7 @@ The test files are organized as follows:
 - **Unit Tests**: Basic test files like `resource_name_test.go`
 - **Enhanced Tests**: More comprehensive tests in files like `enhanced_tests_test.go`
 - **Integration Tests**: Tests with the prefix `TestAcc` that interact with Terraform directly
+- **End-to-End Tests**: Comprehensive tests in `e2e/` that validate the complete provider workflow
 - **Error Handling Tests**: Tests that verify proper error reporting in edge cases
 - **Complete Coverage Tests**: Tests designed specifically to achieve maximum code coverage
 
@@ -405,9 +428,10 @@ When writing new tests, consider the following guidelines:
 
 1. **Unit Tests**: Test individual functions and components in isolation
 2. **Integration Tests**: Test full resources with actual Terraform configurations
-3. **Error Cases**: Include tests for edge cases and error conditions
-4. **Resource Types**: Test with various Azure resource types to ensure naming compatibility
-5. **Validation**: Test validation rules for different resource constraints
+3. **End-to-End Tests**: Test complete workflows from provider build to deployment
+4. **Error Cases**: Include tests for edge cases and error conditions
+5. **Resource Types**: Test with various Azure resource types to ensure naming compatibility
+6. **Validation**: Test validation rules for different resource constraints
 
 ### Makefile Targets
 
@@ -432,7 +456,13 @@ make test_data_sources
 # Run error handling integration tests
 make test_error_handling
 
-# Run all tests (unit and integration)
+# Run end-to-end tests
+make test_e2e
+
+# Run E2E tests in CI mode
+make test_e2e_ci
+
+# Run all tests (unit, integration, and e2e)
 make test_all
 
 # Run CI tests (unit tests with coverage, no integration tests)

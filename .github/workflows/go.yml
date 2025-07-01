@@ -100,6 +100,12 @@ jobs:
           TF_IN_AUTOMATION: 1
           TF_CLI_ARGS_init: "-upgrade=false"
 
+      - name: Test E2E
+        run: make test_e2e_ci
+        env:
+          CHECKPOINT_DISABLE: 1
+          TF_IN_AUTOMATION: 1
+
 
       - name: Import GPG key
         id: import_gpg

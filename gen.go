@@ -41,7 +41,7 @@ type OfficialData struct {
 	Resource string `json:"resource"`
 
 	// ResourceProviderNamespace is the Azure resource provider namespace from official documentation
-	// Only present for resources that are in the official Azure CAF documentation  
+	// Only present for resources that are in the official Azure CAF documentation
 	ResourceProviderNamespace string `json:"resource_provider_namespace,omitempty"`
 }
 
