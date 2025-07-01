@@ -10,12 +10,12 @@ import (
 
 // NamingConventionTestCase represents a test case for naming conventions
 type NamingConventionTestCase struct {
-	Name         string
-	Convention   string
-	ResourceType string
-	Prefix       string
-	Suffix       string
-	ExpectedContains []string
+	Name                string
+	Convention          string
+	ResourceType        string
+	Prefix              string
+	Suffix              string
+	ExpectedContains    []string
 	ExpectedNotContains []string
 }
 
@@ -91,9 +91,9 @@ func runMultipleNamingConventionTests(t *testing.T, testCases []NamingConvention
 // createBasicTestCase creates a basic test case with common defaults
 func createBasicTestCase(resourceType, convention, name string) NamingConventionTestCase {
 	return NamingConventionTestCase{
-		Name:         name,
-		Convention:   convention,
-		ResourceType: resourceType,
+		Name:             name,
+		Convention:       convention,
+		ResourceType:     resourceType,
 		ExpectedContains: []string{}, // Will be populated by specific tests
 	}
 }

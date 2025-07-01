@@ -11,7 +11,7 @@ import (
 // This test uses direct provider schema testing to avoid Terraform CLI dependency
 func TestAcc_ErrorHandling(t *testing.T) {
 	provider := Provider()
-	
+
 	// Test handling of invalid resource type
 	t.Run("InvalidResourceType", func(t *testing.T) {
 		namingConventionResource := provider.ResourcesMap["azurecaf_naming_convention"]
@@ -65,7 +65,7 @@ func TestAcc_ErrorHandling(t *testing.T) {
 	// Test handling of negative random length
 	t.Run("NegativeRandomLength", func(t *testing.T) {
 		nameResource := provider.ResourcesMap["azurecaf_name"]
-		
+
 		// Test at schema validation level
 		schema := nameResource.Schema["random_length"]
 		if schema == nil {
@@ -77,7 +77,7 @@ func TestAcc_ErrorHandling(t *testing.T) {
 		if len(errors) == 0 {
 			t.Error("Expected schema validation error for negative random_length")
 		}
-		
+
 		found := false
 		for _, err := range errors {
 			if strings.Contains(err.Error(), "expected random_length to be at least") {
@@ -93,7 +93,7 @@ func TestAcc_ErrorHandling(t *testing.T) {
 	// Test handling of invalid convention type
 	t.Run("InvalidConvention", func(t *testing.T) {
 		namingConventionResource := provider.ResourcesMap["azurecaf_naming_convention"]
-		
+
 		// Test at schema validation level first
 		conventionSchema := namingConventionResource.Schema["convention"]
 		if conventionSchema == nil {

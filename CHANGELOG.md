@@ -19,6 +19,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated Go toolchain from 1.20 to 1.23.0 with Go 1.24.4 for enhanced security
 
 ### Added
+- **E2E Testing Infrastructure**: Complete end-to-end testing framework
+  - Comprehensive test suite covering all provider functionality
+  - Import functionality testing with real Terraform state management
+  - Data source validation with cross-platform compatibility
+  - Naming convention testing across multiple resource types
+  - Multi-resource type testing for complex scenarios
+- **CI/CD Integration**: Full GitHub Actions integration for automated testing
+  - Quick E2E tests on every push (~10-15 seconds)
+  - Full E2E tests on pull requests (~25-30 seconds) 
+  - Manual workflow dispatch with selective test execution
+  - Smart triggering based on file changes
+- **Local CI Simulation**: Act integration for local CI environment testing
+  - Complete workflow validation before pushing to GitHub
+  - Docker-based CI environment simulation
+  - Cross-platform testing (macOS M-series compatibility)
+  - Comprehensive testing scripts for development workflow
+- **Testing Scripts**: Production-ready testing automation
+  - `scripts/complete-e2e-validation.sh` - Full validation pipeline
+  - `scripts/quick-ci-test.sh` - Quick CI environment validation
+  - `scripts/test-ci-with-act.sh` - Interactive CI simulation
+  - `scripts/validate-ci-e2e.sh` - Enhanced local + CI testing
+- **Documentation**: Complete testing and CI/CD documentation
+  - `E2E_IMPLEMENTATION_SUMMARY.md` - Implementation overview
+  - `ACT_TESTING_GUIDE.md` - Local CI testing guide
+  - `CI_E2E_INTEGRATION.md` - CI/CD integration documentation
+  - `e2e/README.md` - E2E testing framework documentation
+- **MAJOR**: Comprehensive end-to-end (E2E) testing framework for real-world validation
+  - Complete E2E test suite covering provider build → Terraform usage → Azure integration
+  - Mock Azure RM provider integration for testing without actual Azure API calls
+  - Automated provider compilation and local installation testing
+  - Azure resource naming compliance validation for all supported resource types
+  - Support for all naming conventions (cafclassic, cafrandom, random, passthrough)
+  - Edge case testing including length limits, special characters, and error conditions
+  - Integration testing with azurerm provider using mock scenarios
+  - Test runner CLI with flexible execution options and debugging support
+  - Comprehensive documentation and troubleshooting guides
+- New Makefile targets for E2E testing:
+  - `test_e2e` - Complete E2E test suite
+  - `test_e2e_quick` - Fast E2E tests for CI/CD
+  - `test_e2e_integration` - AzureRM integration tests
+  - `test_e2e_naming` - Naming convention validation
+  - `test_e2e_edge_cases` - Edge case scenarios
+  - `test_e2e_verbose` - Verbose output for debugging
+  - `test_complete_with_e2e` - Complete testing including E2E
 - Official Azure Cloud Adoption Framework documentation mapping for 55 resources
 - New nested `official` object structure containing Azure CAF documentation attributes
 - Comprehensive official resource provider namespace mappings

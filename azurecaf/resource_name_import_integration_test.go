@@ -1,5 +1,5 @@
 // Package azurecaf provides comprehensive integration tests for the import functionality
-// of the azurecaf_name resource. These tests validate the import behavior using the 
+// of the azurecaf_name resource. These tests validate the import behavior using the
 // provider's resource schema directly without requiring a full Terraform execution environment.
 //
 // The integration tests cover:
@@ -10,7 +10,7 @@
 // - Edge cases and boundary conditions
 //
 // Note: These tests use schema.TestResourceDataRaw to simulate the import process
-// directly with the provider's import function, making them more suitable for 
+// directly with the provider's import function, making them more suitable for
 // environments where Terraform CLI is not available or network access is restricted.
 package azurecaf
 
@@ -44,15 +44,15 @@ type integrationTestHelper struct {
 func newIntegrationTestHelper(t *testing.T) *integrationTestHelper {
 	provider := Provider()
 	resourceDefinition := provider.ResourcesMap["azurecaf_name"]
-	
+
 	if resourceDefinition == nil {
 		t.Fatal("azurecaf_name resource not found in provider")
 	}
-	
+
 	if resourceDefinition.Importer == nil || resourceDefinition.Importer.State == nil {
 		t.Fatal("azurecaf_name resource does not have importer configured properly")
 	}
-	
+
 	return &integrationTestHelper{
 		provider:           provider,
 		resourceDefinition: resourceDefinition,
@@ -66,10 +66,10 @@ func (h *integrationTestHelper) runImportTest(tc testCase) {
 		// Create ResourceData instance
 		resourceData := schema.TestResourceDataRaw(t, h.resourceDefinition.Schema, map[string]interface{}{})
 		resourceData.SetId(tc.importID)
-		
+
 		// Execute import
 		result, err := h.resourceDefinition.Importer.State(resourceData, nil)
-		
+
 		// Handle error cases
 		if tc.expectError {
 			if err == nil {
@@ -82,18 +82,18 @@ func (h *integrationTestHelper) runImportTest(tc testCase) {
 			t.Logf("Got expected error: %s", err.Error())
 			return
 		}
-		
+
 		// Handle success cases
 		if err != nil {
 			t.Errorf("Unexpected error: %v", err)
 			return
 		}
-		
+
 		if len(result) != 1 {
 			t.Errorf("Expected 1 resource data object, got %d", len(result))
 			return
 		}
-		
+
 		// Validate attributes
 		importedData := result[0]
 		for attrName, expectedValue := range tc.expectedAttrs {
@@ -102,7 +102,7 @@ func (h *integrationTestHelper) runImportTest(tc testCase) {
 				t.Errorf("Expected %s to be %v, got %v", attrName, expectedValue, actualValue)
 			}
 		}
-		
+
 		t.Logf("Successfully imported %s with result: %s", tc.importID, importedData.Get("result"))
 	})
 }
@@ -110,18 +110,18 @@ func (h *integrationTestHelper) runImportTest(tc testCase) {
 // getDefaultExpectedAttrs returns the standard expected attributes for import tests
 func getDefaultExpectedAttrs() map[string]interface{} {
 	return map[string]interface{}{
-		"passthrough":    true,
-		"clean_input":    true,
-		"use_slug":       true,
-		"separator":      "-",
-		"random_length":  0,
+		"passthrough":   true,
+		"clean_input":   true,
+		"use_slug":      true,
+		"separator":     "-",
+		"random_length": 0,
 	}
 }
 
 // createTestCaseFromImportID creates a test case from an import ID with standard attributes
 func createTestCaseFromImportID(name, importID string, expectError bool, extraAttrs map[string]interface{}) testCase {
 	expectedAttrs := getDefaultExpectedAttrs()
-	
+
 	if !expectError {
 		parts := strings.Split(importID, ":")
 		if len(parts) == 2 {
@@ -130,16 +130,16 @@ func createTestCaseFromImportID(name, importID string, expectError bool, extraAt
 			expectedAttrs["result"] = parts[1]
 		}
 	}
-	
+
 	// Override with extra attributes
 	for k, v := range extraAttrs {
 		expectedAttrs[k] = v
 	}
-	
+
 	return testCase{
-		name:        name,
-		importID:    importID,
-		expectError: expectError,
+		name:          name,
+		importID:      importID,
+		expectError:   expectError,
 		expectedAttrs: expectedAttrs,
 	}
 }
@@ -148,7 +148,7 @@ func createTestCaseFromImportID(name, importID string, expectError bool, extraAt
 func createTestCasesFromRegistry(pattern string) []testCase {
 	registry := getResourceTypeRegistry()
 	var testCases []testCase
-	
+
 	for _, rt := range registry {
 		if rt.Pattern == pattern || pattern == "all" {
 			testCases = append(testCases, createTestCaseFromImportID(
@@ -159,7 +159,7 @@ func createTestCasesFromRegistry(pattern string) []testCase {
 			))
 		}
 	}
-	
+
 	return testCases
 }
 
@@ -174,7 +174,7 @@ func (h *integrationTestHelper) runTestGroup(t *testing.T, groupName string, tes
 func TestResourceNameImport_IntegrationBasic(t *testing.T) {
 	helper := newIntegrationTestHelper(t)
 	t.Log("Import functionality is properly configured in the provider")
-	
+
 	// Basic integration test cases
 	testCases := []testCase{
 		createTestCaseFromImportID("valid_storage_account_import", "azurerm_storage_account:mystorageaccount123", false, nil),
@@ -192,7 +192,7 @@ func TestResourceNameImport_IntegrationBasic(t *testing.T) {
 			errorSubstring: "unsupported resource type",
 		},
 	}
-	
+
 	for _, tc := range testCases {
 		helper.runImportTest(tc)
 	}
@@ -205,37 +205,37 @@ func TestResourceNameImport_AcceptanceStyleBasic(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Skipping acceptance-style test in short mode")
 	}
-	
+
 	// This is how the test would be structured for full acceptance testing
 	// but it's commented out since we can't run it in this environment
 	/*
-	resourceName := "azurecaf_name.test"
-	
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckResourceDestroy,
-		Steps: []resource.TestStep{
-			{
-				Config: testAccResourceNameImportBasicConfig(),
-				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr(resourceName, "name", "mystorageaccount123"),
-					resource.TestCheckResourceAttr(resourceName, "resource_type", "azurerm_storage_account"),
-					resource.TestCheckResourceAttr(resourceName, "passthrough", "true"),
-					resource.TestCheckResourceAttr(resourceName, "result", "mystorageaccount123"),
-				),
+		resourceName := "azurecaf_name.test"
+
+		resource.Test(t, resource.TestCase{
+			PreCheck:     func() { testAccPreCheck(t) },
+			Providers:    testAccProviders,
+			CheckDestroy: testAccCheckResourceDestroy,
+			Steps: []resource.TestStep{
+				{
+					Config: testAccResourceNameImportBasicConfig(),
+					Check: resource.ComposeTestCheckFunc(
+						resource.TestCheckResourceAttr(resourceName, "name", "mystorageaccount123"),
+						resource.TestCheckResourceAttr(resourceName, "resource_type", "azurerm_storage_account"),
+						resource.TestCheckResourceAttr(resourceName, "passthrough", "true"),
+						resource.TestCheckResourceAttr(resourceName, "result", "mystorageaccount123"),
+					),
+				},
+				{
+					ResourceName:      resourceName,
+					ImportState:       true,
+					ImportStateId:     "azurerm_storage_account:mystorageaccount123",
+					ImportStateVerify: true,
+					ImportStateVerifyIgnore: []string{"prefixes", "suffixes", "resource_types", "results"},
+				},
 			},
-			{
-				ResourceName:      resourceName,
-				ImportState:       true,
-				ImportStateId:     "azurerm_storage_account:mystorageaccount123",
-				ImportStateVerify: true,
-				ImportStateVerifyIgnore: []string{"prefixes", "suffixes", "resource_types", "results"},
-			},
-		},
-	})
+		})
 	*/
-	
+
 	t.Log("Acceptance-style test configuration is properly structured")
 }
 
@@ -282,7 +282,7 @@ func TestResourceNameImport_IntegrationMultipleResourceTypes(t *testing.T) {
 // TestResourceNameImport_IntegrationPassthroughBehavior verifies that imported resources automatically use passthrough mode
 func TestResourceNameImport_IntegrationPassthroughBehavior(t *testing.T) {
 	helper := newIntegrationTestHelper(t)
-	
+
 	passthroughTests := []struct {
 		importID     string
 		expectedName string
@@ -291,7 +291,7 @@ func TestResourceNameImport_IntegrationPassthroughBehavior(t *testing.T) {
 		{"azurerm_resource_group:very-long-resource-group-name", "very-long-resource-group-name"},
 		{"azurerm_key_vault:SpecialCharactersKV", "SpecialCharactersKV"},
 	}
-	
+
 	for _, pt := range passthroughTests {
 		tc := createTestCaseFromImportID(pt.importID, pt.importID, false, nil)
 		helper.runImportTest(tc)
@@ -312,7 +312,7 @@ func createErrorTestCase(name, importID, errorSubstring, description string) tes
 // TestResourceNameImport_IntegrationEdgeCases tests edge cases in import functionality
 func TestResourceNameImport_IntegrationEdgeCases(t *testing.T) {
 	helper := newIntegrationTestHelper(t)
-	
+
 	edgeCases := []testCase{
 		createErrorTestCase("empty_import_id", "", "invalid import ID format", "Empty import ID should be rejected"),
 		createErrorTestCase("only_colon", ":", "does not comply with Azure naming requirements", "Import ID with only colon should be rejected"),
@@ -322,7 +322,7 @@ func TestResourceNameImport_IntegrationEdgeCases(t *testing.T) {
 		createTestCaseFromImportID("valid_minimum_length_name", "azurerm_storage_account:abc", false, nil),
 		createErrorTestCase("case_sensitive_resource_type", "AZURERM_STORAGE_ACCOUNT:mystorageaccount123", "unsupported resource type", "Incorrect case resource type should be rejected"),
 	}
-	
+
 	for _, tc := range edgeCases {
 		helper.runImportTest(tc)
 	}
@@ -333,13 +333,13 @@ func TestResourceNameImport_AcceptanceStyleImportBlocks(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Skipping import {} block acceptance tests in short mode - requires Terraform CLI")
 	}
-	
+
 	// Validate basic configuration generation
 	config := getMinimalTerraformConfig("azurerm_storage_account", "mystorageaccount123")
 	if config == "" {
 		t.Error("Configuration generation failed")
 	}
-	
+
 	t.Log("Import {} block configurations are properly structured")
 }
 
@@ -354,16 +354,16 @@ func TestResourceNameImport_ImportBlockValidationSimulation(t *testing.T) {
 // TestResourceNameImport_SubmodulePatternValidation tests both patterns for submodule import usage
 func TestResourceNameImport_SubmodulePatternValidation(t *testing.T) {
 	helper := newIntegrationTestHelper(t)
-	
+
 	// Test Pattern 1: SubmoduleInternal
 	submoduleInternalCases := createTestCasesFromRegistry("submodule_internal")
 	helper.runTestGroup(t, "Pattern1_SubmoduleInternal", submoduleInternalCases)
 	t.Log("Pattern1_SubmoduleInternal tests completed: azurecaf_name declared within submodule")
-	
-	// Test Pattern 2: RootToSubmodule  
+
+	// Test Pattern 2: RootToSubmodule
 	rootToSubmoduleCases := createTestCasesFromRegistry("root_to_submodule")
 	helper.runTestGroup(t, "Pattern2_RootToSubmodule", rootToSubmoduleCases)
 	t.Log("Pattern2_RootToSubmodule tests completed: azurecaf_name declared at root, passed to submodule")
-	
+
 	t.Log("Both submodule patterns validated successfully")
 }

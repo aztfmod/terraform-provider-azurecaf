@@ -34,6 +34,11 @@ jobs:
         with:
           go-version-file: './go.mod'
 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~> 1.0"
+
       - name: Build
         run: go build -v ./...
 
@@ -109,6 +114,21 @@ jobs:
 
       - name: Comprehensive CI Tests
         run: make test_ci
+        env:
+          CHECKPOINT_DISABLE: 1
+          TF_IN_AUTOMATION: 1
+          TF_CLI_ARGS_init: "-upgrade=false"
+
+      - name: E2E Tests (Quick)
+        run: make test_e2e_quick
+        env:
+          CHECKPOINT_DISABLE: 1
+          TF_IN_AUTOMATION: 1
+          TF_CLI_ARGS_init: "-upgrade=false"
+
+      - name: E2E Tests (Full) - Pull Requests Only
+        if: github.event_name == 'pull_request'
+        run: make test_e2e
         env:
           CHECKPOINT_DISABLE: 1
           TF_IN_AUTOMATION: 1

@@ -17,7 +17,7 @@ func TestAcc_AllResourceTypes(t *testing.T) {
 
 	provider := Provider()
 	totalBatches := calculateTotalBatches()
-	
+
 	t.Logf("Testing ALL %d resource types across %d batches", len(ResourceDefinitions), totalBatches)
 
 	for batchNum := 1; batchNum <= totalBatches; batchNum++ {
@@ -36,7 +36,7 @@ func calculateTotalBatches() int {
 // testResourceBatch tests a specific batch of resources
 func testResourceBatch(t *testing.T, provider *schema.Provider, batchNumber int) {
 	resourceBatch := generateResourceBatch(batchNumber)
-	
+
 	if len(resourceBatch) == 0 {
 		t.Skipf("No resources in batch %d", batchNumber)
 		return
@@ -88,14 +88,14 @@ func testNameResource(t *testing.T, nameResource *schema.Resource, resourceType 
 		},
 		// Configuration with separators
 		{
-			"name":           "testname",
-			"resource_type":  resourceType,
-			"prefixes":       []interface{}{"prod", "web"},
-			"suffixes":       []interface{}{"001", "east"},
-			"separator":      "-",
-			"random_length":  3,
-			"clean_input":    true,
-			"use_slug":       true,
+			"name":          "testname",
+			"resource_type": resourceType,
+			"prefixes":      []interface{}{"prod", "web"},
+			"suffixes":      []interface{}{"001", "east"},
+			"separator":     "-",
+			"random_length": 3,
+			"clean_input":   true,
+			"use_slug":      true,
 		},
 		// Configuration without random
 		{

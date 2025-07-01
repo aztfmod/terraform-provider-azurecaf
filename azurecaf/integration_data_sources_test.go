@@ -13,7 +13,7 @@ import (
 // This test uses direct provider schema testing to avoid Terraform CLI dependency
 func TestAcc_DataSourcesIntegration(t *testing.T) {
 	provider := Provider()
-	
+
 	// Set environment variable for testing
 	os.Setenv("TEST_ENV_VAR", "test-env-value")
 	defer os.Unsetenv("TEST_ENV_VAR")
@@ -76,7 +76,7 @@ func TestAcc_DataSourcesIntegration(t *testing.T) {
 	// Test name data source with prefixes
 	t.Run("NameDataSourceWithPrefixes", func(t *testing.T) {
 		nameDataSource := provider.DataSourcesMap["azurecaf_name"]
-		
+
 		nameData := schema.TestResourceDataRaw(t, nameDataSource.Schema, map[string]interface{}{
 			"name":          "storage-data",
 			"prefixes":      []interface{}{"dev"},
@@ -103,30 +103,30 @@ func TestAcc_DataSourcesIntegration(t *testing.T) {
 	t.Run("IntegrationEnvVarAndName", func(t *testing.T) {
 		envVarDataSource := provider.DataSourcesMap["azurecaf_environment_variable"]
 		nameDataSource := provider.DataSourcesMap["azurecaf_name"]
-		
+
 		// First get the environment variable
 		envVarData := schema.TestResourceDataRaw(t, envVarDataSource.Schema, map[string]interface{}{
 			"name": "TEST_ENV_VAR",
 		})
-		
+
 		diags := envVarDataSource.ReadContext(context.Background(), envVarData, nil)
 		if diags.HasError() {
 			t.Fatalf("Failed to read environment variable: %v", diags)
 		}
-		
+
 		envValue := envVarData.Get("value").(string)
-		
+
 		// Use the environment variable value in the name data source
 		nameData := schema.TestResourceDataRaw(t, nameDataSource.Schema, map[string]interface{}{
 			"name":          envValue + "-resource",
 			"resource_type": "azurerm_resource_group",
 		})
-		
+
 		diags = nameDataSource.ReadContext(context.Background(), nameData, nil)
 		if diags.HasError() {
 			t.Fatalf("Failed to read name data source with env var: %v", diags)
 		}
-		
+
 		result := nameData.Get("result").(string)
 		if result == "" {
 			t.Error("Expected non-empty result from integrated test")

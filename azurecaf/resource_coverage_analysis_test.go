@@ -61,12 +61,12 @@ func TestResourceCoverage(t *testing.T) {
 
 	// Generate coverage report
 	coverageReport := map[string]interface{}{
-		"total_resources":     len(allResourceTypes),
+		"total_resources":      len(allResourceTypes),
 		"successful_resources": len(successfulResources),
-		"failed_resources":    len(failedResources),
-		"coverage_percentage": float64(len(successfulResources)) / float64(len(allResourceTypes)) * 100,
-		"successful_list":     successfulResources,
-		"failed_list":         failedResources,
+		"failed_resources":     len(failedResources),
+		"coverage_percentage":  float64(len(successfulResources)) / float64(len(allResourceTypes)) * 100,
+		"successful_list":      successfulResources,
+		"failed_list":          failedResources,
 	}
 
 	// Write coverage report to file
@@ -78,7 +78,7 @@ func TestResourceCoverage(t *testing.T) {
 	t.Logf("  Successful: %d", len(successfulResources))
 	t.Logf("  Failed: %d", len(failedResources))
 	t.Logf("  Coverage: %.2f%%", float64(len(successfulResources))/float64(len(allResourceTypes))*100)
-	
+
 	if len(failedResources) > 0 {
 		t.Logf("  Failed resources: %v", failedResources)
 	}

@@ -14,16 +14,16 @@ import (
 func TestResourceMatrix(t *testing.T) {
 	// Group resources by category
 	categories := map[string][]string{
-		"Storage":       {},
-		"Compute":       {},
-		"Networking":    {},
-		"Database":      {},
-		"Security":      {},
-		"Monitoring":    {},
-		"Web":          {},
-		"AI_ML":        {},
-		"Integration":   {},
-		"Other":        {},
+		"Storage":     {},
+		"Compute":     {},
+		"Networking":  {},
+		"Database":    {},
+		"Security":    {},
+		"Monitoring":  {},
+		"Web":         {},
+		"AI_ML":       {},
+		"Integration": {},
+		"Other":       {},
 	}
 
 	// Categorize resources based on their names
@@ -72,7 +72,7 @@ func TestResourceMatrix(t *testing.T) {
 
 		t.Run(fmt.Sprintf("Category_%s", category), func(t *testing.T) {
 			t.Logf("Testing %s category with %d resources", category, len(resources))
-			
+
 			categorySuccesses := 0
 			for _, resourceType := range resources {
 				t.Run(sanitizeResourceType(resourceType), func(t *testing.T) {
@@ -81,7 +81,7 @@ func TestResourceMatrix(t *testing.T) {
 					if categoryPrefix == "ai_ml" {
 						categoryPrefix = "ai" // Simplify for compatibility
 					}
-					
+
 					resourceData := schema.TestResourceDataRaw(t, nameResource.Schema, map[string]interface{}{
 						"name":          "test",
 						"resource_type": resourceType,
@@ -105,11 +105,11 @@ func TestResourceMatrix(t *testing.T) {
 					t.Logf("✓ %s: %s", resourceType, result)
 				})
 			}
-			
+
 			successRate := float64(categorySuccesses) / float64(len(resources)) * 100
 			t.Logf("Category %s: %d/%d successful (%.1f%%)", category, categorySuccesses, len(resources), successRate)
 		})
-		
+
 		totalTested += len(resources)
 	}
 
@@ -180,7 +180,7 @@ func TestResourceConstraints(t *testing.T) {
 					violations = append(violations, resourceType)
 				}
 			}
-			
+
 			if len(violations) > 0 {
 				t.Errorf("Constraint %s violated by %d resources: %v", constraintName, len(violations), violations[:min(10, len(violations))])
 			} else {

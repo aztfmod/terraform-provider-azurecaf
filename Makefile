@@ -108,3 +108,39 @@ test: ## Run terraform examples with local provider
 generate_resource_table:  	## Generate resource table (output only)
 	cat resourceDefinition.json | jq -r '.[] | "| \(.name)| \(.slug)| \(.min_length)| \(.max_length)| \(.lowercase)| \(.validation_regex)|"'
 
+# End-to-End Testing Targets
+
+test_e2e: 	## Run complete end-to-end test suite
+	@echo "Running complete e2e test suite..."
+	cd e2e && CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v
+
+test_e2e_quick: 	## Run quick e2e tests (basic scenarios only)
+	@echo "Running quick e2e tests..."
+	cd e2e && CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v -run TestE2EBasic
+
+test_e2e_data_source: 	## Run e2e data source tests
+	@echo "Running e2e data source tests..."
+	cd e2e && CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v -run TestE2EDataSource
+
+test_e2e_naming: 	## Run e2e naming convention tests
+	@echo "Running e2e naming convention tests..."
+	cd e2e && CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v -run TestE2ENamingConventions
+
+test_e2e_multiple_types: 	## Run e2e multiple resource types tests
+	@echo "Running e2e multiple resource types tests..."
+	cd e2e && CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v -run TestE2EMultipleResourceTypes
+
+test_e2e_import: 	## Run e2e import functionality tests
+	@echo "Running e2e import functionality tests..."
+	cd e2e && CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v -run TestE2EImportFunctionality
+
+test_e2e_verbose: 	## Run e2e tests with verbose output
+	@echo "Running e2e tests with verbose output..."
+	cd e2e && CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v
+
+# Enhanced testing targets that include e2e tests
+
+test_complete_with_e2e: test_complete test_e2e	## Run complete test suite including e2e tests
+
+test_ci_with_e2e: test_ci test_e2e_quick	## Run CI tests including quick e2e tests
+
