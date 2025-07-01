@@ -5,14 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [v1.2.30]
 
 ### Fixed
-- **CI/CD Pipeline**: Fixed GoReleaser failure due to dirty git state
-  - Added step to ensure generated files are up-to-date before release
-  - Resolves issue where `go generate` during build process creates uncommitted changes to `azurecaf/models_generated.go`
-  - Prevents GoReleaser from failing with "git is in a dirty state" error
-  - Impact: Medium - Fixes release automation for tags
+- **CI/CD Pipeline**: Fixed GoReleaser failure due to git tag mismatch and dirty state
+  - Removed problematic auto-commit step that was creating commits during release process
+  - Fixed generated file timestamp stability to prevent dirty git state in CI
+  - Added `fetch-depth: 0` to GitHub Actions checkout for full git history
+  - Stabilized `models_generated.go` timestamp format to be environment-independent
+  - Resolves GoReleaser errors: "git tag was not made against commit" and "git is in a dirty state"
+  - Impact: High - Fixes release automation and ensures reliable tag-based releases
 - **GoReleaser Configuration**: Updated GoReleaser configuration to v2 format
   - Added `version: 2` to support GoReleaser v2.x
   - Changed `changelog.skip: true` to `changelog.disable: true`
