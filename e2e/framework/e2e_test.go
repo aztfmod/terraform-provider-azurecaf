@@ -28,7 +28,7 @@ import (
 // Setup prepares the e2e test environment
 func (suite *E2ETestSuite) Setup(t *testing.T) error {
 	// Create working directory
-	if err := os.MkdirAll(suite.WorkingDir, 0755); err != nil {
+	if err := os.MkdirAll(suite.WorkingDir, 0750); err != nil {
 		return fmt.Errorf("failed to create working directory: %w", err)
 	}
 
@@ -121,7 +121,7 @@ func (suite *E2ETestSuite) installProviderLocally(t *testing.T) error {
 	}
 	
 	pluginDir := filepath.Join(homeDir, ".terraform.d", "plugins", suite.ProviderSource, "1.0.0", fmt.Sprintf("%s_%s", goos, goarch))
-	if err := os.MkdirAll(pluginDir, 0755); err != nil {
+	if err := os.MkdirAll(pluginDir, 0750); err != nil {
 		return fmt.Errorf("failed to create plugin directory: %w", err)
 	}
 
@@ -132,7 +132,7 @@ func (suite *E2ETestSuite) installProviderLocally(t *testing.T) error {
 	}
 
 	// Make executable
-	if err := os.Chmod(destPath, 0755); err != nil {
+	if err := os.Chmod(destPath, 0750); err != nil {
 		return fmt.Errorf("failed to make provider executable: %w", err)
 	}
 
@@ -150,7 +150,7 @@ func (suite *E2ETestSuite) createProviderOverride(t *testing.T) error {
 	
 	// Create the provider directory structure
 	providerDir := filepath.Join(mirrorDir, "aztfmod.com", "test", "azurecaf", "1.0.0", fmt.Sprintf("%s_%s", goos, goarch))
-	if err := os.MkdirAll(providerDir, 0755); err != nil {
+	if err := os.MkdirAll(providerDir, 0750); err != nil {
 		return fmt.Errorf("failed to create provider directory: %w", err)
 	}
 	
@@ -161,7 +161,7 @@ func (suite *E2ETestSuite) createProviderOverride(t *testing.T) error {
 	}
 	
 	// Make the binary executable
-	if err := os.Chmod(providerBinary, 0755); err != nil {
+	if err := os.Chmod(providerBinary, 0750); err != nil {
 		return fmt.Errorf("failed to make provider binary executable: %w", err)
 	}
 	
@@ -211,7 +211,7 @@ func (suite *E2ETestSuite) RunScenario(t *testing.T, scenario TestScenario) erro
 	
 	// Create scenario directory
 	scenarioDir := filepath.Join(suite.WorkingDir, "scenarios", scenario.Name)
-	if err := os.MkdirAll(scenarioDir, 0755); err != nil {
+	if err := os.MkdirAll(scenarioDir, 0750); err != nil {
 		return fmt.Errorf("failed to create scenario directory: %w", err)
 	}
 

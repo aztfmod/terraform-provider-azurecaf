@@ -67,7 +67,7 @@ func NewE2ETestSuite(t *testing.T) *E2ETestSuite {
 // Setup prepares the e2e test environment
 func (suite *E2ETestSuite) Setup(t *testing.T) error {
 	// Create working directory
-	if err := os.MkdirAll(suite.WorkingDir, 0755); err != nil {
+	if err := os.MkdirAll(suite.WorkingDir, 0750); err != nil {
 		return fmt.Errorf("failed to create working directory: %w", err)
 	}
 
@@ -104,7 +104,7 @@ func (suite *E2ETestSuite) RunScenario(t *testing.T, scenario TestScenario) erro
 	
 	// Create scenario directory
 	scenarioDir := filepath.Join(suite.WorkingDir, scenario.Name)
-	if err := os.MkdirAll(scenarioDir, 0755); err != nil {
+	if err := os.MkdirAll(scenarioDir, 0750); err != nil {
 		return fmt.Errorf("failed to create scenario directory: %w", err)
 	}
 

@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated `golang.org/x/sys` from v0.18.0 to v0.31.0
   - Updated `golang.org/x/text` from v0.14.0 to v0.23.0
 - Updated Go toolchain from 1.20 to 1.23.0 with Go 1.24.4 for enhanced security
+- **SECURITY**: Fixed loose POSIX file permissions in E2E testing framework:
+  - Changed directory permissions from 0755 to 0750 (removed world access)
+  - Changed executable file permissions from 0755 to 0750 (removed world access)
+  - Affected files: `e2e/framework/e2e_test.go`, `e2e/framework/framework.go`
 
 ### Added
 - **E2E Testing Infrastructure**: Complete end-to-end testing framework
