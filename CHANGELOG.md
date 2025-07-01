@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **CI/CD Pipeline**: Fixed GoReleaser failure due to dirty git state
+  - Added step to ensure generated files are up-to-date before release
+  - Resolves issue where `go generate` during build process creates uncommitted changes to `azurecaf/models_generated.go`
+  - Prevents GoReleaser from failing with "git is in a dirty state" error
+  - Impact: Medium - Fixes release automation for tags
 - **GoReleaser Configuration**: Updated GoReleaser configuration to v2 format
   - Added `version: 2` to support GoReleaser v2.x
   - Changed `changelog.skip: true` to `changelog.disable: true`

@@ -134,6 +134,22 @@ jobs:
           TF_IN_AUTOMATION: 1
           TF_CLI_ARGS_init: "-upgrade=false"
 
+      - name: Ensure generated files are up to date
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          # Run go generate to ensure all generated files are current
+          go generate ./...
+          
+          # Check if there are any changes to generated files
+          if ! git diff --exit-code; then
+            echo "Generated files were out of date. Updating them..."
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git add .
+            git commit -m "Update generated files for release" || echo "No changes to commit"
+          else
+            echo "Generated files are already up to date"
+          fi
 
       - name: Import GPG key
         id: import_gpg
