@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **GoReleaser Configuration**: Updated GoReleaser configuration to v2 format
+  - Added `version: 2` to support GoReleaser v2.x
+  - Changed `changelog.skip: true` to `changelog.disable: true`
+  - Removed deprecated `archives.format` property to use automatic format selection
+  - Fixes release pipeline compatibility with goreleaser-action@v6
+- **GitHub Workflow**: Fixed workflow step ordering and improved GPG key import
+  - Moved "Set up Go" step before "Install tfproviderlint" to resolve dependency issues
+  - Enhanced GPG key import with additional configuration options
+  - Added `continue-on-error: true` for GPG import to handle missing secrets gracefully
+  - Improved Git signing configuration with proper trust levels
 - **README Display**: Fixed GitHub repository homepage README display issue
   - Converted README.md line endings from Windows-style (CRLF) to Unix-style (LF)
   - Renamed .github/README.md to .github/README-workflows.md to prevent GitHub display conflict

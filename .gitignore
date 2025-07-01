@@ -23,6 +23,7 @@ naming_coverage.html
 
 # Build artifacts  
 run_examples.sh
+dist/
 
 # E2E test artifacts
 e2e/go.sum
