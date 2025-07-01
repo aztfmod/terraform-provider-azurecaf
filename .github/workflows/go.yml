@@ -34,8 +34,34 @@ jobs:
         with:
           go-version-file: './go.mod'
 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~> 1.0"
+
       - name: Build
         run: go build -v ./...
+
+      - name: Resource Definition Validation
+        run: make test_resource_definitions
+        env:
+          CHECKPOINT_DISABLE: 1
+          TF_IN_AUTOMATION: 1
+          TF_CLI_ARGS_init: "-upgrade=false"
+
+      - name: Resource Matrix Testing
+        run: make test_resource_matrix
+        env:
+          CHECKPOINT_DISABLE: 1
+          TF_IN_AUTOMATION: 1
+          TF_CLI_ARGS_init: "-upgrade=false"
+
+      - name: Resource Coverage Analysis
+        run: make test_resource_coverage
+        env:
+          CHECKPOINT_DISABLE: 1
+          TF_IN_AUTOMATION: 1
+          TF_CLI_ARGS_init: "-upgrade=false"
 
       - name: Unit Tests
         run: make unittest
@@ -86,15 +112,23 @@ jobs:
           TF_IN_AUTOMATION: 1
           TF_CLI_ARGS_init: "-upgrade=false"
 
-      - name: Test All
-        run: make test_all
+      - name: Comprehensive CI Tests
+        run: make test_ci
         env:
           CHECKPOINT_DISABLE: 1
           TF_IN_AUTOMATION: 1
           TF_CLI_ARGS_init: "-upgrade=false"
 
-      - name: Test CI
-        run: make test_ci
+      - name: E2E Tests (Quick)
+        run: make test_e2e_quick
+        env:
+          CHECKPOINT_DISABLE: 1
+          TF_IN_AUTOMATION: 1
+          TF_CLI_ARGS_init: "-upgrade=false"
+
+      - name: E2E Tests (Full) - Pull Requests Only
+        if: github.event_name == 'pull_request'
+        run: make test_e2e
         env:
           CHECKPOINT_DISABLE: 1
           TF_IN_AUTOMATION: 1

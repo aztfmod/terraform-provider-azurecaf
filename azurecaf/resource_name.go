@@ -143,6 +143,9 @@ func resourceName() *schema.Resource {
 				Version: 2,
 			},
 		},
+		Importer: &schema.ResourceImporter{
+			State: resourceNameImport,
+		},
 
 		Schema: map[string]*schema.Schema{
 			"name": {
@@ -245,6 +248,59 @@ func resourceNameRead(d *schema.ResourceData, meta interface{}) error {
 
 func resourceNameDelete(d *schema.ResourceData, meta interface{}) error {
 	return nil
+}
+
+// resourceNameImport handles importing existing resource names.
+// Import ID format: <resource_type>:<existing_name>
+// Example: azurerm_storage_account:mystorageaccount123
+func resourceNameImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
+	importID := d.Id()
+
+	// Parse the import ID
+	parts := strings.Split(importID, ":")
+	if len(parts) != 2 {
+		return nil, fmt.Errorf("invalid import ID format, expected '<resource_type>:<existing_name>', got: %s", importID)
+	}
+
+	resourceType := parts[0]
+	existingName := parts[1]
+
+	// Validate the resource type exists
+	resource, err := getResource(resourceType)
+	if err != nil {
+		return nil, fmt.Errorf("unsupported resource type '%s': %w", resourceType, err)
+	}
+
+	// Validate the existing name against Azure naming rules for this resource type
+	validationRegEx, err := regexp.Compile(resource.ValidationRegExp)
+	if err != nil {
+		return nil, fmt.Errorf("invalid validation regex for resource type '%s': %w", resourceType, err)
+	}
+
+	if !validationRegEx.MatchString(existingName) {
+		return nil, fmt.Errorf("existing name '%s' does not comply with Azure naming requirements for resource type '%s'. Expected pattern: %s",
+			existingName, resourceType, resource.ValidationRegExp)
+	}
+
+	// Set the resource data for the imported resource
+	// We use passthrough mode to preserve the existing name as-is
+	d.Set("name", existingName)
+	d.Set("resource_type", resourceType)
+	d.Set("passthrough", true)
+
+	// Set empty slices for prefixes and suffixes since we can't reverse-engineer them
+	d.Set("prefixes", []string{})
+	d.Set("suffixes", []string{})
+	d.Set("resource_types", []string{})
+
+	// Set the result to match the imported name
+	d.Set("result", existingName)
+	d.Set("results", map[string]string{})
+
+	// Use the existing name as the Terraform resource ID
+	d.SetId(existingName)
+
+	return []*schema.ResourceData{d}, nil
 }
 
 func cleanSlice(names []string, resourceDefinition *ResourceStructure) []string {

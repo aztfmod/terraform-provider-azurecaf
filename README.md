@@ -17,7 +17,7 @@ The Azure CAF provider allows you to:
 - **🏷️ Handle prefixes and suffixes** (either manual or as per Azure CAF resource conventions)
 - **✅ Validate existing names** using passthrough mode
 - **🔄 Support multiple naming conventions** (CAF classic, CAF random, passthrough, etc.)
-- **📋 Generate names for 300+ Azure resource types** with accurate validation rules
+- **📋 Generate names for 395 Azure resource types** with accurate validation rules
 
 ## 📦 Quick Start
 
@@ -206,7 +206,7 @@ data "azurecaf_name" "custom_vm" {
 
 ## 🔧 Supported Azure Resources
 
-This provider supports **300+ Azure resource types** with accurate naming validation rules. Each resource type has specific constraints for:
+This provider supports **395 Azure resource types** with accurate naming validation rules. Each resource type has specific constraints for:
 
 - **Minimum and maximum length**
 - **Allowed characters and patterns** 
@@ -228,7 +228,7 @@ This provider supports **300+ Azure resource types** with accurate naming valida
 <details>
 <summary>📋 View Full Resource Type List</summary>
 
-For the complete list of 300+ supported resource types, see the [Resource Types Documentation](docs/index.md#resource-types).
+For the complete list of 395 supported resource types, see the [Resource Types Documentation](docs/index.md#resource-types).
 
 </details>
 
@@ -380,7 +380,7 @@ Note: Integration tests take longer to run than unit tests.
 
 ### Test Coverage
 
-The project maintains high test coverage (99.3% of statements) to ensure code quality and reliability. Tests are designed to cover:
+The project maintains high test coverage (99.0% of statements) to ensure code quality and reliability. Tests are designed to cover:
 
 - Basic functionality for all resources and data sources
 - Edge cases and error handling
@@ -398,6 +398,32 @@ The test files are organized as follows:
 - **Integration Tests**: Tests with the prefix `TestAcc` that interact with Terraform directly
 - **Error Handling Tests**: Tests that verify proper error reporting in edge cases
 - **Complete Coverage Tests**: Tests designed specifically to achieve maximum code coverage
+- **Resource Matrix Tests**: Comprehensive validation of all 395 resource types
+- **Constraint Tests**: Validation of resource naming constraints and limitations
+
+### Comprehensive Testing Framework
+
+The provider includes a comprehensive testing framework that validates all 395 Azure resource types:
+
+```bash
+# Run comprehensive tests for all resource types
+make test_all_resources
+
+# Run resource matrix validation (category-based testing)
+make test_resource_matrix
+
+# Run resource constraint validation
+make test_resource_constraints
+
+# Test resource definition completeness
+make test_resource_definitions
+```
+
+This framework ensures:
+- **100% Resource Coverage**: All 395 resource types are tested
+- **Naming Validation**: Each resource type's naming constraints are verified
+- **Category Organization**: Resources are tested by logical categories (Compute, Networking, etc.)
+- **Edge Case Testing**: Complex naming scenarios and error conditions are validated
 
 ### Writing New Tests
 
@@ -432,11 +458,20 @@ make test_data_sources
 # Run error handling integration tests
 make test_error_handling
 
+# Run resource naming convention tests
+make test_resource_naming
+
 # Run all tests (unit and integration)
 make test_all
 
 # Run CI tests (unit tests with coverage, no integration tests)
 make test_ci
+
+# Comprehensive testing framework
+make test_all_resources          # Test all 395 resource types
+make test_resource_matrix        # Category-based resource testing
+make test_resource_constraints   # Validation constraint testing
+make test_resource_definitions   # Resource definition completeness
 
 # Build the project and run unit tests
 make build
@@ -506,7 +541,7 @@ For detailed contribution guidelines, see [CONTRIBUTING.md](.github/CONTRIBUTING
 
 ## 📊 Resource Status
 
-This provider supports 300+ Azure resource types. Here's the implementation status compared to the azurerm provider:
+This provider supports 395 Azure resource types. Here's the implementation status compared to the azurerm provider:
 
 <details>
 <summary>🔍 View Detailed Resource Status Table</summary>

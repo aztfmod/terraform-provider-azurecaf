@@ -46,9 +46,29 @@ test_resource_naming: ## Run naming convention tests
 	go tool cover -html=naming_coverage.out -o naming_coverage.html
 	@echo "Naming coverage report generated at: naming_coverage.html"
 
+test_all_resources: 	## Test ALL resource types (comprehensive integration test)
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v ./azurecaf/... -run="TestAcc_AllResourceTypes" -timeout=30m
+
+test_resource_coverage: 	## Analyze test coverage for all resource types
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v ./azurecaf/... -run="TestResourceCoverage" -timeout=10m
+
+test_resource_definition_completeness: 	## Validate all resource definitions are complete
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v ./azurecaf/... -run="TestResourceDefinitionCompleteness"
+
 test_all: unittest test_integration	## Run all tests (unit and integration)
 
-test_ci: unittest test_coverage	## Run CI tests (unit tests with coverage, no integration tests)
+test_ci: unittest test_coverage test_resource_definitions test_resource_matrix test_resource_coverage	## Run comprehensive CI tests (unit, coverage, resource validation, matrix testing)
+
+test_ci_fast: unittest test_coverage test_resource_definitions	## Run fast CI tests (unit, coverage, resource validation only)
+
+test_ci_complete: test_ci test_integration test_all_resources	## Run complete CI tests including integration tests
+
+test_resource_definitions: test_resource_definition_completeness	## Validate all resource definitions are complete
+
+test_resource_matrix: 	## Test resources by category and validate constraints
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v ./azurecaf/... -run="TestResourceMatrix|TestResourceConstraints"
+
+test_complete: test_all test_all_resources test_resource_coverage	## Complete test suite including all resource types
 
 clean:	## Clean up build artifacts and test results
 	rm -f coverage.out coverage.html terraform-provider-azurecaf
@@ -87,4 +107,40 @@ test: ## Run terraform examples with local provider
 
 generate_resource_table:  	## Generate resource table (output only)
 	cat resourceDefinition.json | jq -r '.[] | "| \(.name)| \(.slug)| \(.min_length)| \(.max_length)| \(.lowercase)| \(.validation_regex)|"'
+
+# End-to-End Testing Targets
+
+test_e2e: 	## Run complete end-to-end test suite
+	@echo "Running complete e2e test suite..."
+	cd e2e && CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v
+
+test_e2e_quick: 	## Run quick e2e tests (basic scenarios only)
+	@echo "Running quick e2e tests..."
+	cd e2e && CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v -run TestE2EBasic
+
+test_e2e_data_source: 	## Run e2e data source tests
+	@echo "Running e2e data source tests..."
+	cd e2e && CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v -run TestE2EDataSource
+
+test_e2e_naming: 	## Run e2e naming convention tests
+	@echo "Running e2e naming convention tests..."
+	cd e2e && CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v -run TestE2ENamingConventions
+
+test_e2e_multiple_types: 	## Run e2e multiple resource types tests
+	@echo "Running e2e multiple resource types tests..."
+	cd e2e && CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v -run TestE2EMultipleResourceTypes
+
+test_e2e_import: 	## Run e2e import functionality tests
+	@echo "Running e2e import functionality tests..."
+	cd e2e && CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v -run TestE2EImportFunctionality
+
+test_e2e_verbose: 	## Run e2e tests with verbose output
+	@echo "Running e2e tests with verbose output..."
+	cd e2e && CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v
+
+# Enhanced testing targets that include e2e tests
+
+test_complete_with_e2e: test_complete test_e2e	## Run complete test suite including e2e tests
+
+test_ci_with_e2e: test_ci test_e2e_quick	## Run CI tests including quick e2e tests
 

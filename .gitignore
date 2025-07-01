@@ -23,3 +23,14 @@ naming_coverage.html
 
 # Build artifacts  
 run_examples.sh
+
+# E2E test artifacts
+e2e/go.sum
+**/azurecaf-e2e-*
+e2e/**/.terraform
+e2e/**/*.tfstate
+e2e/**/*.tfstate.backup
+e2e/**/terraform.rc
+
+# Terraform configuration files
+**/terraform.rc
