@@ -45,6 +45,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `ACT_TESTING_GUIDE.md` - Local CI testing guide
   - `CI_E2E_INTEGRATION.md` - CI/CD integration documentation
   - `e2e/README.md` - E2E testing framework documentation
+- **GitHub Copilot Integration**: Enhanced development workflow automation
+  - `copilot-setup-steps.yml` - GitHub Actions workflow for Copilot environment setup
+  - Automated Go and Terraform environment configuration for Copilot sessions
+  - Streamlined development environment preparation with proper versioning
 - **MAJOR**: Comprehensive end-to-end (E2E) testing framework for real-world validation
   - Complete E2E test suite covering provider build → Terraform usage → Azure integration
   - Mock Azure RM provider integration for testing without actual Azure API calls
