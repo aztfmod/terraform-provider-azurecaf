@@ -135,6 +135,7 @@ func resourceName() *schema.Resource {
 		Create:        resourceNameCreate,
 		Read:          schema.Noop,
 		Delete:        schema.RemoveFromState,
+		CustomizeDiff: resourceNameCustomizeDiff,
 		SchemaVersion: 3,
 		StateUpgraders: []schema.StateUpgrader{
 			{
@@ -241,6 +242,70 @@ func resourceNameCreate(d *schema.ResourceData, meta interface{}) error {
 
 func resourceNameRead(d *schema.ResourceData, meta interface{}) error {
 	return getNameResult(d, meta)
+}
+
+func resourceNameCustomizeDiff(ctx context.Context, d *schema.ResourceDiff, meta interface{}) error {
+	// Calculate naming values during plan time to make them visible in terraform plan
+	name := d.Get("name").(string)
+	prefixes := convertInterfaceToString(d.Get("prefixes").([]interface{}))
+	suffixes := convertInterfaceToString(d.Get("suffixes").([]interface{}))
+	separator := d.Get("separator").(string)
+	resourceType := d.Get("resource_type").(string)
+	resourceTypes := convertInterfaceToString(d.Get("resource_types").([]interface{}))
+	cleanInput := d.Get("clean_input").(bool)
+	passthrough := d.Get("passthrough").(bool)
+	useSlug := d.Get("use_slug").(bool)
+	randomLength := d.Get("random_length").(int)
+	randomSeed := int64(d.Get("random_seed").(int))
+
+	// Validate random_length parameter
+	if randomLength < 0 {
+		return fmt.Errorf("random_length must be non-negative, got: %d", randomLength)
+	}
+
+	// Validate against resource type constraints if resource_type is specified
+	if resourceType != "" {
+		if resource, exists := ResourceDefinitions[resourceType]; exists {
+			maxLen := resource.MaxLength
+			if randomLength > maxLen {
+				return fmt.Errorf("random_length (%d) exceeds maximum length for resource type %s (%d)", randomLength, resourceType, maxLen)
+			}
+		}
+	}
+
+	convention := ConventionCafClassic
+
+	randomSuffix := randSeq(int(randomLength), &randomSeed)
+	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+
+	isValid, err := validateResourceType(resourceType, resourceTypes)
+	if !isValid {
+		return err
+	}
+
+	// Set the primary result if resource_type is specified
+	if len(resourceType) > 0 {
+		resourceName, err := getResourceName(resourceType, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence)
+		if err != nil {
+			return err
+		}
+		d.SetNew("result", resourceName)
+	}
+
+	// Set the results map for resource_types
+	resourceNames := make(map[string]string, len(resourceTypes))
+	for _, resourceTypeName := range resourceTypes {
+		var err error
+		resourceNames[resourceTypeName], err = getResourceName(resourceTypeName, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence)
+		if err != nil {
+			return err
+		}
+	}
+	if len(resourceNames) > 0 {
+		d.SetNew("results", resourceNames)
+	}
+
+	return nil
 }
 
 func resourceNameDelete(d *schema.ResourceData, meta interface{}) error {
