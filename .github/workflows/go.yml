@@ -34,6 +34,12 @@ jobs:
         with:
           go-version-file: './go.mod'
 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.5.0"
+          terraform_wrapper: false
+
       - name: Build
         run: go build -v ./...
 

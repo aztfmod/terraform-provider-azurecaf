@@ -275,7 +275,22 @@ func resourceNameCustomizeDiff(ctx context.Context, d *schema.ResourceDiff, meta
 
 	convention := ConventionCafClassic
 
-	randomSuffix := randSeq(int(randomLength), &randomSeed)
+	// Ensure consistent random generation between plan and apply when random_seed is not set
+	effectiveRandomSeed := randomSeed
+	if randomSeed == 0 && randomLength > 0 {
+		// Generate a deterministic seed based on resource configuration to ensure
+		// the same random sequence is generated during both plan and apply phases
+		hash := fmt.Sprintf("%s-%s-%s-%t-%t-%t-%d", 
+			name, resourceType, separator, cleanInput, passthrough, useSlug, randomLength)
+		// Use a simple hash function to convert string to int64
+		var hashSum int64
+		for _, char := range hash {
+			hashSum = hashSum*31 + int64(char)
+		}
+		effectiveRandomSeed = hashSum
+	}
+
+	randomSuffix := randSeq(int(randomLength), &effectiveRandomSeed)
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 
 	isValid, err := validateResourceType(resourceType, resourceTypes)
@@ -301,9 +316,8 @@ func resourceNameCustomizeDiff(ctx context.Context, d *schema.ResourceDiff, meta
 			return err
 		}
 	}
-	if len(resourceNames) > 0 {
-		d.SetNew("results", resourceNames)
-	}
+	// Always set results map to match original behavior
+	d.SetNew("results", resourceNames)
 
 	return nil
 }
@@ -523,12 +537,30 @@ func getResourceName(resourceTypeName string, separator string,
 }
 
 func getNameResult(d *schema.ResourceData, meta interface{}) error {
+	// Get planned values to check if they were computed during CustomizeDiff
+	plannedResult := d.Get("result").(string)
+	plannedResults := d.Get("results").(map[string]interface{})
+	
+	// Get the resource configuration to determine what should be computed
+	resourceType := d.Get("resource_type").(string)
+	resourceTypes := convertInterfaceToString(d.Get("resource_types").([]interface{}))
+	
+	// If CustomizeDiff already computed the values, we should have them
+	// Only recompute if the expected values are missing
+	shouldComputeResult := len(resourceType) > 0 && plannedResult == ""
+	shouldComputeResults := len(plannedResults) == 0  // Always compute results to match original behavior
+	
+	if !shouldComputeResult && !shouldComputeResults {
+		// Values already computed during plan phase, just set the ID
+		d.SetId(randSeq(16, nil))
+		return nil
+	}
+
+	// If we need to compute values (fallback for resources created with older versions or missing values)
 	name := d.Get("name").(string)
 	prefixes := convertInterfaceToString(d.Get("prefixes").([]interface{}))
 	suffixes := convertInterfaceToString(d.Get("suffixes").([]interface{}))
 	separator := d.Get("separator").(string)
-	resourceType := d.Get("resource_type").(string)
-	resourceTypes := convertInterfaceToString(d.Get("resource_types").([]interface{}))
 	cleanInput := d.Get("clean_input").(bool)
 	passthrough := d.Get("passthrough").(bool)
 	useSlug := d.Get("use_slug").(bool)
@@ -552,7 +584,22 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 
 	convention := ConventionCafClassic
 
-	randomSuffix := randSeq(int(randomLength), &randomSeed)
+	// Ensure consistent random generation between plan and apply when random_seed is not set
+	effectiveRandomSeed := randomSeed
+	if randomSeed == 0 && randomLength > 0 {
+		// Generate a deterministic seed based on resource configuration to ensure
+		// the same random sequence is generated during both plan and apply phases
+		hash := fmt.Sprintf("%s-%s-%s-%t-%t-%t-%d", 
+			name, resourceType, separator, cleanInput, passthrough, useSlug, randomLength)
+		// Use a simple hash function to convert string to int64
+		var hashSum int64
+		for _, char := range hash {
+			hashSum = hashSum*31 + int64(char)
+		}
+		effectiveRandomSeed = hashSum
+	}
+
+	randomSuffix := randSeq(int(randomLength), &effectiveRandomSeed)
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 
 	isValid, err := validateResourceType(resourceType, resourceTypes)
@@ -560,22 +607,26 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	if len(resourceType) > 0 {
+	if shouldComputeResult {
 		resourceName, err := getResourceName(resourceType, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence)
 		if err != nil {
 			return err
 		}
 		d.Set("result", resourceName)
 	}
-	resourceNames := make(map[string]string, len(resourceTypes))
-	for _, resourceTypeName := range resourceTypes {
-		var err error
-		resourceNames[resourceTypeName], err = getResourceName(resourceTypeName, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence)
-		if err != nil {
-			return err
+	
+	if shouldComputeResults {
+		resourceNames := make(map[string]string, len(resourceTypes))
+		for _, resourceTypeName := range resourceTypes {
+			var err error
+			resourceNames[resourceTypeName], err = getResourceName(resourceTypeName, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence)
+			if err != nil {
+				return err
+			}
 		}
+		d.Set("results", resourceNames)
 	}
-	d.Set("results", resourceNames)
+	
 	d.SetId(randSeq(16, nil))
 	return nil
 }
