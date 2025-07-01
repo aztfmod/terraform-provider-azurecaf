@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - **README Display**: Fixed GitHub repository homepage README display issue
   - Converted README.md line endings from Windows-style (CRLF) to Unix-style (LF)
-  - Resolves issue where GitHub was showing .github/README.md instead of the main project README
+  - Renamed .github/README.md to .github/README-workflows.md to prevent GitHub display conflict
+  - Resolves issue where GitHub was showing workflows documentation instead of main project README
   - Ensures proper display of comprehensive project documentation on repository homepage
 
 ### Security
