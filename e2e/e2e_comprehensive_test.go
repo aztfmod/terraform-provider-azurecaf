@@ -160,7 +160,11 @@ output "imported_result" {
 func runE2ETest(t *testing.T, testName, tfConfig string, expectedStrings []string) {
 	// Build the provider first
 	fmt.Printf("Building terraform-provider-azurecaf for %s...\n", testName)
-	cmd := exec.Command("make", "build")
+	makePath, err := findMakeBinary()
+	if err != nil {
+		t.Fatalf("Failed to find make binary: %v", err)
+	}
+	cmd := exec.Command(makePath, "build")
 	cmd.Dir = ".."
 	if err := cmd.Run(); err != nil {
 		t.Fatalf("Failed to build provider: %v", err)
@@ -197,7 +201,11 @@ provider_installation {
 
 	// Run terraform plan
 	fmt.Printf("Running terraform plan for %s...\n", testName)
-	planCmd := exec.Command("terraform", "plan")
+	terraformPath, err := findTerraformBinary()
+	if err != nil {
+		t.Fatalf("Failed to find terraform binary: %v", err)
+	}
+	planCmd := exec.Command(terraformPath, "plan")
 	planCmd.Dir = testDir
 	planCmd.Env = append(os.Environ(), "TF_CLI_CONFIG_FILE="+rcPath)
 	output, err := planCmd.CombinedOutput()
@@ -223,7 +231,11 @@ provider_installation {
 func runE2EImportTest(t *testing.T, testName, tfConfig, importID string) {
 	// Build the provider first
 	fmt.Printf("Building terraform-provider-azurecaf for %s...\n", testName)
-	cmd := exec.Command("make", "build")
+	makePath, err := findMakeBinary()
+	if err != nil {
+		t.Fatalf("Failed to find make binary: %v", err)
+	}
+	cmd := exec.Command(makePath, "build")
 	cmd.Dir = ".."
 	if err := cmd.Run(); err != nil {
 		t.Fatalf("Failed to build provider: %v", err)
@@ -263,7 +275,11 @@ provider_installation {
 
 	// Run terraform init (required for import)
 	fmt.Printf("Running terraform init for %s...\n", testName)
-	initCmd := exec.Command("terraform", "init")
+	terraformPath, err := findTerraformBinary()
+	if err != nil {
+		t.Fatalf("Failed to find terraform binary: %v", err)
+	}
+	initCmd := exec.Command(terraformPath, "init")
 	initCmd.Dir = testDir
 	initCmd.Env = env
 	if output, err := initCmd.CombinedOutput(); err != nil {
@@ -276,7 +292,7 @@ provider_installation {
 
 	// Run terraform import
 	fmt.Printf("Running terraform import for %s with ID: %s...\n", testName, importID)
-	importCmd := exec.Command("terraform", "import", "azurecaf_name.imported_storage", importID)
+	importCmd := exec.Command(terraformPath, "import", "azurecaf_name.imported_storage", importID)
 	importCmd.Dir = testDir
 	importCmd.Env = env
 	importOutput, err := importCmd.CombinedOutput()
@@ -295,7 +311,7 @@ provider_installation {
 
 	// Run terraform plan to verify the imported resource
 	fmt.Printf("Running terraform plan after import for %s...\n", testName)
-	planCmd := exec.Command("terraform", "plan")
+	planCmd := exec.Command(terraformPath, "plan")
 	planCmd.Dir = testDir
 	planCmd.Env = env
 	planOutput, err := planCmd.CombinedOutput()
@@ -324,7 +340,7 @@ provider_installation {
 
 	// Run terraform apply to ensure the imported resource is properly managed
 	fmt.Printf("Running terraform apply for %s to finalize import...\n", testName)
-	applyCmd := exec.Command("terraform", "apply", "-auto-approve")
+	applyCmd := exec.Command(terraformPath, "apply", "-auto-approve")
 	applyCmd.Dir = testDir
 	applyCmd.Env = env
 	applyOutput, err := applyCmd.CombinedOutput()
@@ -343,7 +359,7 @@ provider_installation {
 
 	// Run terraform show to verify the imported state after apply
 	fmt.Printf("Running terraform show to verify imported state for %s...\n", testName)
-	showCmd := exec.Command("terraform", "show")
+	showCmd := exec.Command(terraformPath, "show")
 	showCmd.Dir = testDir
 	showCmd.Env = env
 	showOutput, err := showCmd.CombinedOutput()
@@ -381,7 +397,7 @@ provider_installation {
 
 	// Run terraform state list to verify the resource is tracked
 	fmt.Printf("Running terraform state list to verify resource tracking for %s...\n", testName)
-	stateListCmd := exec.Command("terraform", "state", "list")
+	stateListCmd := exec.Command(terraformPath, "state", "list")
 	stateListCmd.Dir = testDir
 	stateListCmd.Env = env
 	stateListOutput, err := stateListCmd.CombinedOutput()

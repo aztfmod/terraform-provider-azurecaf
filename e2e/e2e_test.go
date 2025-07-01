@@ -11,7 +11,11 @@ import (
 func TestE2EBasic(t *testing.T) {
 	// Build the provider first
 	fmt.Println("Building terraform-provider-azurecaf...")
-	cmd := exec.Command("make", "build")
+	makePath, err := findMakeBinary()
+	if err != nil {
+		t.Fatalf("Failed to find make binary: %v", err)
+	}
+	cmd := exec.Command(makePath, "build")
 	cmd.Dir = ".."
 	if err := cmd.Run(); err != nil {
 		t.Fatalf("Failed to build provider: %v", err)
@@ -71,7 +75,11 @@ provider_installation {
 
 	// Run terraform init
 	fmt.Println("Running terraform init...")
-	initCmd := exec.Command("terraform", "init")
+	terraformPath, err := findTerraformBinary()
+	if err != nil {
+		t.Fatalf("Failed to find terraform binary: %v", err)
+	}
+	initCmd := exec.Command(terraformPath, "init")
 	initCmd.Dir = testDir
 	initCmd.Env = append(os.Environ(), "TF_CLI_CONFIG_FILE="+rcPath)
 	if output, err := initCmd.CombinedOutput(); err != nil {
@@ -81,7 +89,7 @@ provider_installation {
 
 	// Run terraform plan
 	fmt.Println("Running terraform plan...")
-	planCmd := exec.Command("terraform", "plan")
+	planCmd := exec.Command(terraformPath, "plan")
 	planCmd.Dir = testDir
 	planCmd.Env = append(os.Environ(), "TF_CLI_CONFIG_FILE="+rcPath)
 	output, err := planCmd.CombinedOutput()
