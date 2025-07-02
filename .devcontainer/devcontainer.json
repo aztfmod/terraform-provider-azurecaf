@@ -28,7 +28,7 @@
         "ghcr.io/azure/azure-dev/azd:latest": {},
         "ghcr.io/devcontainers/features/azure-cli:1": {},
         "ghcr.io/devcontainers/features/go:1": {
-            "version": "1.23"
+            "version": "1.24.4"
         },
         "ghcr.io/devcontainers/features/github-cli:1": {},
         "ghcr.io/devcontainers/features/terraform:1": {},

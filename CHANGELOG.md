@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- **Go Version Alignment**: Resolved conflicting Go version declarations in go.mod
+  - Changed from conflicting `go 1.23.0` and `toolchain go1.24.4` to unified `go 1.24`
+  - Eliminates version mismatch errors during builds
+  - Ensures consistent Go toolchain usage across all environments
+  - Impact: Medium - Fixes build reliability and development environment consistency
+- **Linting Issues**: Fixed non-constant format string errors in logging and error handling
+  - Fixed `fmt.Errorf` call in `resource_name.go` to use proper format string
+  - Fixed `log.Printf` call in `resource_naming_convention.go` to use proper format string
+  - Resolves Go vet warnings and ensures build passes all checks
+  - Impact: Low - Improves code quality and eliminates build warnings
+
 ## [v1.2.30]
 
 ### Fixed
@@ -30,6 +44,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Renamed .github/README.md to .github/README-workflows.md to prevent GitHub display conflict
   - Resolves issue where GitHub was showing workflows documentation instead of main project README
   - Ensures proper display of comprehensive project documentation on repository homepage
+- **Code Generation**: Removed timestamp from generated `models_generated.go` file
+  - Eliminated dynamic timestamp that was causing git dirty state during CI/CD
+  - Removed `GeneratedTime` field from template data structure
+  - Updated template to exclude timestamp comment from generated code
+  - Impact: High - Prevents GoReleaser "git is in a dirty state" errors during releases
+  - Resolves: CI builds no longer modify tracked files during generation process
 
 ### Security
 - **CRITICAL**: Fixed security vulnerabilities in Go dependencies:

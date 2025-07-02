@@ -28,7 +28,6 @@ import (
 	"regexp"
 	"sort"
 	"text/template"
-	"time"
 )
 
 // OfficialData defines the official Azure CAF documentation attributes for a resource
@@ -90,7 +89,6 @@ type ResourceStructure struct {
 
 // templateData holds the data structure passed to the Go template for code generation
 type templateData struct {
-	GeneratedTime      time.Time           // Timestamp when the code was generated
 	ResourceStructures []ResourceStructure // All resource definitions from JSON
 	SlugMap            map[string]string   // Mapping of CAF prefixes to resource types
 }
@@ -173,9 +171,6 @@ func main() {
 
 	// Execute the template with our processed data
 	err = parsedTemplate.ExecuteTemplate(modelsFile, "model.tmpl", templateData{
-		// Use a fixed UTC date to ensure completely stable output across all environments
-		// This prevents CI/CD dirty state issues while maintaining meaningful generation tracking
-		GeneratedTime:      time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), 0, 0, 0, 0, time.UTC),
 		ResourceStructures: uniqueData,
 		SlugMap:            slugMap,
 	})
