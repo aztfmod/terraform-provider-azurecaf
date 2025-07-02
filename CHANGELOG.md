@@ -30,6 +30,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Renamed .github/README.md to .github/README-workflows.md to prevent GitHub display conflict
   - Resolves issue where GitHub was showing workflows documentation instead of main project README
   - Ensures proper display of comprehensive project documentation on repository homepage
+- **Code Generation**: Removed timestamp from generated `models_generated.go` file
+  - Eliminated dynamic timestamp that was causing git dirty state during CI/CD
+  - Removed `GeneratedTime` field from template data structure
+  - Updated template to exclude timestamp comment from generated code
+  - Impact: High - Prevents GoReleaser "git is in a dirty state" errors during releases
+  - Resolves: CI builds no longer modify tracked files during generation process
 
 ### Security
 - **CRITICAL**: Fixed security vulnerabilities in Go dependencies:
