@@ -1,6 +1,6 @@
 module github.com/aztfmod/terraform-provider-azurecaf/e2e
 
-go 1.23.0
+go 1.24.4
 
 require github.com/hashicorp/terraform-exec v0.23.0
 

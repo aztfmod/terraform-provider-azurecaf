@@ -136,7 +136,7 @@ func getResult(d *schema.ResourceData, meta interface{}) error {
 
 	regExFilter = string(resource.RegEx)
 	validationRegExPattern := string(resource.ValidationRegExp)
-	log.Printf(regExFilter)
+	log.Printf("%s", regExFilter)
 
 	var cafPrefix string
 	var randomSuffix string = randSeq(int(resource.MaxLength), nil)

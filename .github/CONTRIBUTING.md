@@ -207,7 +207,7 @@ Add your resource definition to the JSON file:
 
 ### Prerequisites
 
-- **Go 1.19+**: [Download Go](https://golang.org/dl/)
+- **Go 1.24.4+**: [Download Go](https://golang.org/dl/)
 - **Terraform 1.0+**: [Download Terraform](https://www.terraform.io/downloads.html)
 - **Make**: For running build commands
 - **Git**: For version control

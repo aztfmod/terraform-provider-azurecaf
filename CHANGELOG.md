@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- **Go Version Alignment**: Resolved conflicting Go version declarations in go.mod
+  - Changed from conflicting `go 1.23.0` and `toolchain go1.24.4` to unified `go 1.24`
+  - Eliminates version mismatch errors during builds
+  - Ensures consistent Go toolchain usage across all environments
+  - Impact: Medium - Fixes build reliability and development environment consistency
+- **Linting Issues**: Fixed non-constant format string errors in logging and error handling
+  - Fixed `fmt.Errorf` call in `resource_name.go` to use proper format string
+  - Fixed `log.Printf` call in `resource_naming_convention.go` to use proper format string
+  - Resolves Go vet warnings and ensures build passes all checks
+  - Impact: Low - Improves code quality and eliminates build warnings
+
 ## [v1.2.30]
 
 ### Fixed
