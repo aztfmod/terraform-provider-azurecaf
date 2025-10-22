@@ -12,8 +12,7 @@ run:
 # Output configuration
 output:
   # Output format: colored-line-number|line-number|json|tab|checkstyle|code-climate|junit-xml|github-actions
-  formats:
-    - format: colored-line-number
+  formats: colored-line-number
   
   # Print lines of code with issue
   print-issued-lines: true
