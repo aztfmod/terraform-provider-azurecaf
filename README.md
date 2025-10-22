@@ -435,11 +435,40 @@ When writing new tests, consider the following guidelines:
 4. **Resource Types**: Test with various Azure resource types to ensure naming compatibility
 5. **Validation**: Test validation rules for different resource constraints
 
-### Makefile Targets
+### Code Quality & Linting
 
-The project includes Makefile targets for common testing operations:
+The project uses `golangci-lint` for comprehensive code quality checks. The linting configuration includes 40+ linters covering:
+
+- **Security**: Detection of potential security issues (gosec)
+- **Code Quality**: Best practices, style consistency, and maintainability
+- **Performance**: Optimization opportunities and inefficiencies
+- **Bug Detection**: Potential bugs and error handling issues
+- **Terraform-specific**: Using tfproviderlint for provider best practices
+
+To run the linter:
 
 ```bash
+# Run all configured linters
+make lint
+
+# Run linters with automatic fixes where possible
+make lint-fix
+
+# Run directly with golangci-lint
+golangci-lint run ./...
+```
+
+The linting configuration is defined in `.golangci.yml` and is automatically run in CI/CD pipelines.
+
+### Makefile Targets
+
+The project includes Makefile targets for common testing and development operations:
+
+```bash
+# Code quality
+make lint                        # Run golangci-lint for code quality checks
+make lint-fix                    # Run golangci-lint with automatic fixes
+
 # Run unit tests without coverage
 make unittest
 

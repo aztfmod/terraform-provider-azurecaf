@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Comprehensive Linting Configuration**: Implemented golangci-lint for enhanced code quality
+  - Added `.golangci.yml` with 40+ linters configured for Go best practices
+  - Includes security linters (gosec), code quality checks, and performance optimizations
+  - Added `make lint` and `make lint-fix` targets for local development
+  - Integrated golangci-lint into GitHub Actions CI pipeline
+  - Configured appropriate exclusions for test files and generated code
+  - Complements existing tfproviderlint for Terraform-specific linting
+  - Impact: High - Significantly improves development environment quality and code maintainability
+
 ### Fixed
 - **Go Version Alignment**: Resolved conflicting Go version declarations in go.mod
   - Changed from conflicting `go 1.23.0` and `toolchain go1.24.4` to unified `go 1.24`

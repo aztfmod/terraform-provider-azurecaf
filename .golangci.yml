@@ -1,0 +1,271 @@
+# golangci-lint configuration for terraform-provider-azurecaf
+# This configuration provides comprehensive linting for Go code quality,
+# security, and best practices for Terraform provider development.
+
+run:
+  # Timeout for analysis
+  timeout: 5m
+  
+  # Include test files in analysis
+  tests: true
+
+# Output configuration
+output:
+  # Output format: colored-line-number|line-number|json|tab|checkstyle|code-climate|junit-xml|github-actions
+  formats:
+    - format: colored-line-number
+  
+  # Print lines of code with issue
+  print-issued-lines: true
+  
+  # Print linter name in the end of issue text
+  print-linter-name: true
+  
+  # Sort results by: filepath, line, and column
+  sort-results: true
+
+# Linters configuration
+linters:
+  # Disable all linters by default
+  disable-all: true
+  
+  # Enable specific linters
+  enable:
+    # Default linters
+    - errcheck      # Check for unchecked errors
+    - gosimple      # Simplify code suggestions
+    - govet         # Reports suspicious constructs
+    - ineffassign   # Detect ineffectual assignments
+    - staticcheck   # Advanced static analysis
+    - typecheck     # Type-check Go code
+    - unused        # Check for unused constants, variables, functions and types
+    
+    # Additional style and quality linters
+    - gofmt         # Check if code is gofmt-ed
+    - goimports     # Check import statements are formatted according to goimport
+    - misspell      # Find commonly misspelled English words
+    - revive        # Fast, configurable, extensible, flexible, and beautiful linter for Go
+    - unconvert     # Remove unnecessary type conversions
+    - unparam       # Report unused function parameters
+    - whitespace    # Detect leading and trailing whitespace
+    
+    # Code complexity and maintainability
+    - gocyclo       # Computes and checks cyclomatic complexity
+    - gocognit      # Computes and checks cognitive complexity
+    - nestif        # Reports deeply nested if statements
+    
+    # Security linters
+    - gosec         # Inspect source code for security problems
+    
+    # Bug detection linters
+    - bodyclose     # Check if HTTP response body is closed
+    - nilerr        # Find code that returns nil even if it checks that error is not nil
+    - noctx         # Find sending HTTP request without context.Context
+    - rowserrcheck  # Check whether Err of rows is checked
+    - sqlclosecheck # Check that sql.Rows and sql.Stmt are closed
+    
+    # Performance linters
+    - prealloc      # Find slice declarations that could potentially be pre-allocated
+    
+    # Error handling
+    - errname       # Check that sentinel errors are prefixed with Err and error types are suffixed with Error
+    - errorlint     # Find code that will cause problems with Go 1.13+ error wrapping
+    
+    # Code clarity
+    - goconst       # Find repeated strings that could be replaced by a constant
+    - gocritic      # Provides diagnostics that check for bugs, performance and style issues
+    - godot         # Check if comments end in a period
+    - gofumpt       # Stricter gofmt
+    - goprintffuncname # Check that printf-like functions are named with f at the end
+    - predeclared   # Find code that shadows one of Go's predeclared identifiers
+
+# Linters settings
+linters-settings:
+  errcheck:
+    # Report about not checking of errors in type assertions: `a := b.(MyStruct)`
+    check-type-assertions: true
+    # Report about assignment of errors to blank identifier: `num, _ := strconv.Atoi(numStr)`
+    check-blank: false
+    # Exclude functions - these are okay to not check errors
+    exclude-functions:
+      - (io.Closer).Close
+      - (io.WriteCloser).Close
+  
+  govet:
+    # Enable all checks
+    enable-all: true
+    # Disable specific checks
+    disable:
+      - shadow      # Too strict for this codebase
+  
+  gofmt:
+    # Simplify code: gofmt with `-s` option
+    simplify: true
+  
+  goimports:
+    # Put imports beginning with prefix after 3rd-party packages
+    local-prefixes: github.com/aztfmod/terraform-provider-azurecaf
+  
+  gocyclo:
+    # Minimal cyclomatic complexity to report
+    min-complexity: 15
+  
+  gocognit:
+    # Minimal cognitive complexity to report
+    min-complexity: 20
+  
+  nestif:
+    # Minimal complexity of if statements to report
+    min-complexity: 5
+  
+  misspell:
+    # Correct spellings using locale preferences
+    locale: US
+    # Ignore specific words
+    ignore-words:
+      - azurecaf
+      - terraform
+  
+  goconst:
+    # Minimal length of string constant
+    min-len: 3
+    # Minimal occurrences count to trigger
+    min-occurrences: 3
+    # Ignore test files
+    ignore-tests: true
+  
+  gocritic:
+    # Enable multiple checks by tags
+    enabled-tags:
+      - diagnostic
+      - style
+      - performance
+    disabled-checks:
+      - commentFormatting  # Too strict for existing comments
+      - whyNoLint         # We don't require explanations for nolint
+  
+  revive:
+    # Enable all available rules
+    rules:
+      # Code quality rules
+      - name: blank-imports
+      - name: context-as-argument
+      - name: context-keys-type
+      - name: dot-imports
+      - name: error-return
+      - name: error-strings
+      - name: error-naming
+      - name: exported
+      - name: increment-decrement
+      - name: var-naming
+      - name: var-declaration
+      - name: package-comments
+      - name: range
+      - name: receiver-naming
+      - name: time-naming
+      - name: unexported-return
+      - name: indent-error-flow
+      - name: errorf
+      - name: empty-block
+      - name: superfluous-else
+      - name: unused-parameter
+      - name: unreachable-code
+      - name: redefines-builtin-id
+  
+  gosec:
+    # To select a subset of rules to run
+    includes: []
+    # Exclude specific rules
+    excludes:
+      - G104  # Duplicates errcheck
+      - G304  # File path provided as taint input - common in CLI tools
+    # Configure rule severity
+    severity: medium
+    confidence: medium
+  
+  staticcheck:
+    # Select the Go version to target
+    checks: ["all"]
+
+# Issues configuration
+issues:
+  # Maximum issues count per one linter
+  max-issues-per-linter: 0
+  
+  # Maximum count of issues with the same text
+  max-same-issues: 0
+  
+  # Show only new issues created after git revision
+  new: false
+  
+  # Make issues output unique by line
+  uniq-by-line: true
+  
+  # Directories to exclude
+  exclude-dirs:
+    - vendor
+    - .github
+  
+  # Files to exclude
+  exclude-files:
+    - ".*_generated\\.go$"
+  
+  # Exclude specific issues
+  exclude-rules:
+    # Exclude some linters from running on tests files
+    - path: _test\.go
+      linters:
+        - gocyclo
+        - errcheck
+        - gosec
+        - goconst
+        - gocognit
+    
+    # Exclude certain revive rules for test files
+    - path: _test\.go
+      linters:
+        - revive
+      text: "exported (function|method|type|const|var)"
+    
+    # Ignore long lines in go:generate comments
+    - linters:
+        - revive
+      source: "^//go:generate "
+    
+    # Ignore package comments for main packages
+    - path: main\.go
+      linters:
+        - revive
+      text: "package-comments"
+    
+    # Allow dot imports in test files for testing packages like gomega
+    - path: _test\.go
+      text: "dot-imports"
+      linters:
+        - revive
+  
+  # Exclude known issues that are considered acceptable
+  exclude:
+    # EXC0001 errcheck: Almost all programs ignore errors on these functions
+    - Error return value of .((os\.)?std(out|err)\..*|.*Close|.*Flush|os\.Remove(All)?|.*print(f|ln)?|os\.(Un)?Setenv). is not checked
+    # EXC0002 golint: Too many false-positives on commonly used functions
+    - (comment on exported (method|function|type|const)|should have( a package)? comment|comment should be of the form)
+    # EXC0003 golint: Too many false-positives for common patterns
+    - func name will be used as test\.Test.* by other packages, and that stutters; consider calling this
+    # EXC0004 govet: Common false-positives
+    - (possible misuse of unsafe.Pointer|should have signature)
+    # EXC0005 staticcheck: Too many false-positives
+    - ineffective break statement. Did you mean to break out of the outer loop
+    # EXC0006 gosec: Too many false-positives on 'unsafe' usage
+    - Use of unsafe calls should be audited
+    # EXC0007 gosec: Too many false-positives on 'Errors unhandled'
+    - Errors unhandled
+    # EXC0008 gosec: Duplicates errcheck
+    - (G104|G307)
+    # EXC0009 gosec: Too many false-positives on 'Subprocess launched with variable'
+    - (G204|G104|G307)
+    # EXC0010 gosec: False-positive is triggered by 'src, err := ioutil.ReadFile(filename)'
+    - Potential file inclusion via variable
+
+  # Independently of option `exclude` we use default exclude patterns
+  exclude-use-default: false
