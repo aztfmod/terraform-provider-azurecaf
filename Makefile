@@ -11,6 +11,20 @@ dev_container:
 	go fmt
 	go build -o ~/.terraform.d/plugins/linux_amd64/terraform-provider-azurecaf
 
+lint:	## Run golangci-lint for code quality checks
+	@command -v golangci-lint >/dev/null 2>&1 || { \
+		echo "golangci-lint not found. Installing..."; \
+		go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest; \
+	}
+	golangci-lint run ./...
+
+lint-fix:	## Run golangci-lint and automatically fix issues where possible
+	@command -v golangci-lint >/dev/null 2>&1 || { \
+		echo "golangci-lint not found. Installing..."; \
+		go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest; \
+	}
+	golangci-lint run --fix ./...
+
 build:	## Build the project and run unit tests
 	go generate
 	go fmt ./...

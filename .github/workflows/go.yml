@@ -31,10 +31,14 @@ jobs:
         with:
           go-version-file: './go.mod'
 
-      - name: Install tfproviderlint
+      - name: Install linters
         run: |
           go install github.com/bflad/tfproviderlint/cmd/tfproviderlint@latest
+          go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+
+      - name: Run golangci-lint
+        run: golangci-lint run ./...
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
