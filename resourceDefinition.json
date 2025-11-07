@@ -5543,12 +5543,12 @@
         "name": "azurerm_web_application_firewall_policy",
         "min_length": 1,
         "max_length": 80,
-        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9]{0,78}[a-zA-Z0-9]$\"",
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$\"",
         "scope": "global",
-        "slug": "wafw",
-        "dashes": false,
+        "slug": "waf",
+        "dashes": true,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z]\"",
+        "regex": "\"[^0-9A-Za-z-._]\"",
         "official": {
             "resource": "Azure Web Application Firewall Policy"
         }

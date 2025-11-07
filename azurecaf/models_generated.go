@@ -390,7 +390,7 @@ var ResourceDefinitions = map[string]ResourceStructure{
     "azurerm_vmware_private_cloud": {"azurerm_vmware_private_cloud", "vwpc", 1, 80,  false, "[^0-9A-Za-z_.-]", "^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$", true, "resourceGroup" },
     "azurerm_vpn_gateway_connection": {"azurerm_vpn_gateway_connection", "vcn", 1, 80,  false, "[^0-9A-Za-z_.-]", "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$", true, "parent" },
     "azurerm_vpn_site": {"azurerm_vpn_site", "vst", 1, 80,  false, "[^0-9A-Za-z_.-]", "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$", true, "parent" },
-    "azurerm_web_application_firewall_policy": {"azurerm_web_application_firewall_policy", "wafw", 1, 80,  false, "[^0-9A-Za-z]", "^[a-zA-Z0-9][a-zA-Z0-9]{0,78}[a-zA-Z0-9]$", false, "global" },
+    "azurerm_web_application_firewall_policy": {"azurerm_web_application_firewall_policy", "waf", 1, 80,  false, "[^0-9A-Za-z-._]", "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$", true, "global" },
     "azurerm_web_pubsub": {"azurerm_web_pubsub", "ps", 3, 63,  false, "[^0-9A-Za-z-]", "^[a-zA-Z][-a-zA-Z0-9]{1,61}[a-zA-Z0-9]$", true, "resourceGroup" },
     "azurerm_web_pubsub_hub": {"azurerm_web_pubsub_hub", "pshub", 1, 128,  false, "[^0-9A-Za-z_`,.\\[\\]]", "^[a-zA-Z][a-zA-Z0-9_`,.\\[\\]]{0,127}$", false, "parent" },
     "azurerm_windows_virtual_machine": {"azurerm_windows_virtual_machine", "vm", 1, 15,  false, "[\\/\"\\[\\]:|<>+=;,?*@&_]", "^[^\\/\"\\[\\]:|<>+=;,?*@&_][^\\/\"\\[\\]:|<>+=;,?*@&]{0,13}[^\\/\"\\[\\]:|<>+=;,?*@&.-]$", true, "resourceGroup" },
@@ -760,7 +760,7 @@ var ResourceMaps = map[string]string {
         "vwc": "azurerm_vmware_cluster",
         "vwera": "azurerm_vmware_express_route_authorization",
         "vwpc": "azurerm_vmware_private_cloud",
-        "wafw": "azurerm_web_application_firewall_policy",
+        "waf": "azurerm_web_application_firewall_policy",
         "wvdws": "azurerm_virtual_desktop_workspace",
         "wwapp": "azurerm_windows_web_app",
 }

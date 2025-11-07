@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **azurerm_web_application_firewall_policy**: Corrected naming configuration to allow hyphens, periods, and underscores
+  - Fixed issue where hyphens were incorrectly removed from WAF policy names despite being valid characters
+  - Updated validation regex to: `^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$`
+  - Updated cleaning regex to: `[^0-9A-Za-z-._]` to preserve valid special characters
+  - Changed `dashes` property from `false` to `true` to enable hyphen support
+  - Updated slug from `wafw` to `waf` to align with Azure CAF best practices
+  - Impact: Medium - Fixes naming validation and aligns with Azure naming requirements and CAF guidelines
 - **Go Version Alignment**: Resolved conflicting Go version declarations in go.mod
   - Changed from conflicting `go 1.23.0` and `toolchain go1.24.4` to unified `go 1.24`
   - Eliminates version mismatch errors during builds
