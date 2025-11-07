@@ -1,9 +1,11 @@
 package azurecaf
 
 import (
-"regexp"
-"testing"
+	"regexp"
+	"strings"
+	"testing"
 )
+
 
 // TestWebApplicationFirewallPolicy_Hyphens validates that the WAF policy resource
 // correctly allows hyphens in names (issue fix)
@@ -107,10 +109,7 @@ t.Errorf("Minimum valid name '%s' should match validation regex", minValid)
 
 // Test maximum valid length (80 chars)
 // Pattern: alphanumeric start, 78 chars of allowed chars, alphanumeric or underscore end
-maxValid := "a" + string(make([]byte, 78)) + "1"
-for i := 1; i < 79; i++ {
-maxValid = maxValid[:i] + "b" + maxValid[i+1:]
-}
+maxValid := "a" + strings.Repeat("b", 78) + "1"
 if !validationRegex.MatchString(maxValid) {
 t.Errorf("Maximum valid name (80 chars) should match validation regex")
 }
