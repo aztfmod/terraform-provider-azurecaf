@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Configured appropriate exclusions for test files and generated code
   - Complements existing tfproviderlint for Terraform-specific linting
   - Impact: High - Significantly improves development environment quality and code maintainability
+    - Affects: Development workflow and CI pipeline only; no runtime impact on the provider itself
+    - Benefit: Catches potential bugs, security issues, and code quality problems during development
 
 ### Fixed
 - **Go Version Alignment**: Resolved conflicting Go version declarations in go.mod

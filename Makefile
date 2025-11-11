@@ -14,14 +14,14 @@ dev_container:
 lint:	## Run golangci-lint for code quality checks
 	@command -v golangci-lint >/dev/null 2>&1 || { \
 		echo "golangci-lint not found. Installing..."; \
-		go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest; \
+		go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.64.8; \
 	}
 	golangci-lint run ./...
 
 lint-fix:	## Run golangci-lint and automatically fix issues where possible
 	@command -v golangci-lint >/dev/null 2>&1 || { \
 		echo "golangci-lint not found. Installing..."; \
-		go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest; \
+		go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.64.8; \
 	}
 	golangci-lint run --fix ./...
 
