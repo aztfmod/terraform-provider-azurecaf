@@ -251,6 +251,7 @@
     "azurerm_netapp_pool",
     "azurerm_netapp_snapshot",
     "azurerm_netapp_volume",
+    "azurerm_network_connection_monitor",
     "azurerm_network_ddos_protection_plan",
     "azurerm_network_interface",
     "azurerm_network_security_group",
@@ -399,6 +400,6 @@
     "general",
     "general_safe"
   ],
-  "successful_resources": 395,
-  "total_resources": 395
+  "successful_resources": 396,
+  "total_resources": 396
 }
