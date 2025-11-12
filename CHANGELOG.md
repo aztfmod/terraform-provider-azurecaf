@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Network Connection Monitor Support**: Added support for `azurerm_network_connection_monitor` resource type
+  - Resource slug: `cm`
+  - Min length: 1, Max length: 80
+  - Scope: parent (child resource of Network Watcher)
+  - Allows alphanumerics, hyphens, periods, and underscores
+  - Follows Azure naming conventions for Network Connection Monitor resources
+  - Impact: Low - Adds new resource type support for Azure Network Watcher connection monitoring
+
 ### Fixed
 - **Go Version Alignment**: Resolved conflicting Go version declarations in go.mod
   - Changed from conflicting `go 1.23.0` and `toolchain go1.24.4` to unified `go 1.24`
