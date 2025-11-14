@@ -427,43 +427,43 @@ jobs:
         run: |
           echo "## Test Results Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ "${{ needs.unit-tests.result }}" == "success" ]; then
             echo "✅ Unit Tests: Passed" >> $GITHUB_STEP_SUMMARY
           else
             echo "❌ Unit Tests: Failed" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           if [ "${{ needs.coverage-tests.result }}" == "success" ]; then
             echo "✅ Coverage Tests: Passed" >> $GITHUB_STEP_SUMMARY
           else
             echo "❌ Coverage Tests: Failed" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           if [ "${{ needs.resource-validation.result }}" == "success" ]; then
             echo "✅ Resource Validation: Passed" >> $GITHUB_STEP_SUMMARY
           else
             echo "❌ Resource Validation: Failed" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           if [ "${{ needs.integration-tests.result }}" == "success" ]; then
             echo "✅ Integration Tests: Passed" >> $GITHUB_STEP_SUMMARY
           else
             echo "❌ Integration Tests: Failed" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           if [ "${{ needs.e2e-tests.result }}" == "success" ]; then
             echo "✅ E2E Tests: Passed" >> $GITHUB_STEP_SUMMARY
           else
             echo "❌ E2E Tests: Failed" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           if [ "${{ needs.ci-tests.result }}" == "success" ]; then
             echo "✅ Comprehensive CI Tests: Passed" >> $GITHUB_STEP_SUMMARY
           else
             echo "❌ Comprehensive CI Tests: Failed" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           # Check if all required tests passed
           if [ "${{ needs.unit-tests.result }}" == "success" ] && \
              [ "${{ needs.coverage-tests.result }}" == "success" ] && \
