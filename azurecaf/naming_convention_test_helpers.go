@@ -92,4 +92,3 @@ func runMultipleNamingConventionTests(t *testing.T, testCases []NamingConvention
 	}
 }
 
-// createBasicTestCase creates a basic test case with common defaults.
