@@ -115,6 +115,7 @@ func resourceNamingConventionDelete(_ *schema.ResourceData, _ interface{}) error
 	return nil
 }
 
+// nolint:gocognit,gocyclo // Complexity is acceptable for naming convention logic
 func getResult(d *schema.ResourceData, _ interface{}) error {
 	name, ok := d.Get("name").(string)
 	if !ok {

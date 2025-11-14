@@ -44,12 +44,16 @@ func runNamingConventionTest(t *testing.T, testCase NamingConventionTestCase) {
 
 	resourceData := schema.TestResourceDataRaw(t, namingConventionResource.Schema, testData)
 
+	// nolint:staticcheck // SA1019: deprecated function used in test
 	err := namingConventionResource.Create(resourceData, nil)
 	if err != nil {
 		t.Fatalf("Failed to create resource: %v", err)
 	}
 
-	result := resourceData.Get("result").(string)
+	result, ok := resourceData.Get("result").(string)
+	if !ok {
+		t.Fatal("Failed to get result as string")
+	}
 	if result == "" {
 		t.Error("Expected non-empty result")
 	}
@@ -89,35 +93,3 @@ func runMultipleNamingConventionTests(t *testing.T, testCases []NamingConvention
 }
 
 // createBasicTestCase creates a basic test case with common defaults.
-func createBasicTestCase(resourceType, convention, name string) NamingConventionTestCase {
-	return NamingConventionTestCase{
-		Name:             name,
-		Convention:       convention,
-		ResourceType:     resourceType,
-		ExpectedContains: []string{}, // Will be populated by specific tests
-	}
-}
-
-// validateNamingConventionResult performs common validation on naming convention results.
-func validateNamingConventionResult(t *testing.T, result, resourceType, convention string, shouldContain []string) {
-	if result == "" {
-		t.Error("Expected non-empty result")
-		return
-	}
-
-	// Validate expected content
-	for _, expected := range shouldContain {
-		if !strings.Contains(result, expected) {
-			t.Errorf("Expected result to contain '%s', got '%s'", expected, result)
-		}
-	}
-
-	// Validate against Azure naming requirements
-	if resource, exists := Resources[resourceType]; exists && resource.ValidationRegExp != "" {
-		if !regexp.MustCompile(resource.ValidationRegExp).MatchString(result) {
-			t.Errorf("Result '%s' does not match Azure naming requirements for %s", result, resourceType)
-		}
-	}
-
-	t.Logf("Convention '%s' for '%s' generated: %s", convention, resourceType, result)
-}
