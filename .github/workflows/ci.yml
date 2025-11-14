@@ -72,14 +72,6 @@ jobs:
           path: terraform-provider-azurecaf
           retention-days: 1
 
-      # Upload go modules cache for test jobs
-      - name: Upload Go Cache
-        uses: actions/upload-artifact@v4
-        with:
-          name: go-cache
-          path: ~/go/pkg/mod
-          retention-days: 1
-
       # Run GoReleaser on tags
       - name: Import GPG key
         id: import_gpg
