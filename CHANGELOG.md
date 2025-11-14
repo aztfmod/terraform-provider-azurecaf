@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Fuzz Testing**: Added native Go fuzz testing (Go 1.18+) for input validation
+  - New `FuzzCleanString` test validates cleanString function with malformed inputs
+  - New `FuzzGetResourceName` test validates name generation with various parameter combinations
+  - New `FuzzComposeName` test ensures composeName handles edge cases correctly
+  - New `FuzzRandSeq` test validates random string generation stability
+  - CI integration runs quick fuzz tests (30s each) on every build
+  - Weekly extended fuzzing workflow runs for 10 minutes to discover edge cases
+  - Fuzz corpus caching to improve test effectiveness over time
+  - Impact: Medium - Improves code robustness and prevents panics in production
+
 ### Fixed
 - **Go Version Alignment**: Resolved conflicting Go version declarations in go.mod
   - Changed from conflicting `go 1.23.0` and `toolchain go1.24.4` to unified `go 1.24`
