@@ -40,7 +40,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Fixed misspellings and superfluous-else issues
   - Simplified lambda function in `main.go` to direct function reference
   - Removed unused test functions and constants from test files
-  - Added nolint comments for acceptable cognitive/cyclomatic complexity in business logic
+  - Added nolint directives for acceptable cognitive/cyclomatic complexity in business logic
+    - Applied to `getResult()` function in `resource_naming_convention.go` (complexity: 28, threshold: 20)
+    - Rationale: Complex naming convention logic requires comprehensive validation and conditional processing
+    - Trade-off: Maintained readable, maintainable code over artificially splitting complex business logic
+    - Alternative considered: Function decomposition would reduce clarity without meaningful benefits
   - Impact: High - Provider now passes all critical linting checks in CI/CD pipeline
     - Affects: Code quality and CI/CD pipeline; no runtime behavior changes
     - Benefit: Ensures code maintainability and catches potential issues early
