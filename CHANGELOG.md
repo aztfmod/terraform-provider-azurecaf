@@ -19,6 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added comprehensive test summary job with detailed reporting
   - Impact: High - Significantly improves developer productivity and reduces GitHub Actions costs
 
+### Security
+- **GitHub Actions Security**: Updated artifact actions to patched versions
+  - Updated `actions/download-artifact` from v4 to v4.1.3 to fix CVE-2024-42471 (Arbitrary File Write vulnerability)
+  - Updated `actions/upload-artifact` to v4.4.3 for consistency and latest security patches
+  - Impact: High - Prevents potential arbitrary file write attacks via malicious artifacts
+
 ### Fixed
 - **Go Version Alignment**: Resolved conflicting Go version declarations in go.mod
   - Changed from conflicting `go 1.23.0` and `toolchain go1.24.4` to unified `go 1.24`
