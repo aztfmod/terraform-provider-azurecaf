@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-// Test getResourceName validation error path
+// Test getResourceName validation error path.
 func TestGetResourceNameValidationError(t *testing.T) {
 	// Save the original resources
 	original := ResourceDefinitions["azurerm_storage_account"]
@@ -31,7 +31,7 @@ func TestGetResourceNameValidationError(t *testing.T) {
 	}
 }
 
-// Test regex compilation error in getResult by handling panic (since there's a nil pointer issue)
+// Test regex compilation error in getResult by handling panic (since there's a nil pointer issue).
 func TestGetResultRegexError(t *testing.T) {
 	// Some code paths in getResult don't properly handle invalid regex and cause panics
 	// We can test this by using defer/recover
@@ -64,7 +64,7 @@ func TestGetResultRegexError(t *testing.T) {
 	_ = getResult(rd, nil)
 }
 
-// Test getResult with validation regex error
+// Test getResult with validation regex error.
 func TestGetResultValidationRegexError(t *testing.T) {
 	// Save the original resource
 	originalResource := Resources["st"]
@@ -94,7 +94,7 @@ func TestGetResultValidationRegexError(t *testing.T) {
 	_ = getResult(rd, nil)
 }
 
-// Test getResult error handling with validation match failure
+// Test getResult error handling with validation match failure.
 func TestGetResultValidationMatchError(t *testing.T) {
 	// Save the original resources
 	original := Resources["st"]

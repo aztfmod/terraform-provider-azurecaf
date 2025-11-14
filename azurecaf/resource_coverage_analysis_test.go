@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-// TestResourceCoverage analyzes which resources are tested and which are missing
+// TestResourceCoverage analyzes which resources are tested and which are missing.
 func TestResourceCoverage(t *testing.T) {
 	// Get all resource types from ResourceDefinitions
 	allResourceTypes := make([]string, 0, len(ResourceDefinitions))
@@ -71,7 +71,7 @@ func TestResourceCoverage(t *testing.T) {
 
 	// Write coverage report to file
 	reportData, _ := json.MarshalIndent(coverageReport, "", "  ")
-	os.WriteFile("resource_coverage_report.json", reportData, 0644)
+	os.WriteFile("resource_coverage_report.json", reportData, 0o644)
 
 	t.Logf("Coverage Report:")
 	t.Logf("  Total Resources: %d", len(allResourceTypes))
@@ -84,7 +84,7 @@ func TestResourceCoverage(t *testing.T) {
 	}
 }
 
-// TestResourceDefinitionCompleteness verifies all resource definitions are valid
+// TestResourceDefinitionCompleteness verifies all resource definitions are valid.
 func TestResourceDefinitionCompleteness(t *testing.T) {
 	var issues []string
 

@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-// Test the import functionality with specific unit tests
+// Test the import functionality with specific unit tests.
 func TestResourceNameImportUnit(t *testing.T) {
 	// Create a resource instance
 	r := resourceName()
@@ -12,9 +12,9 @@ func TestResourceNameImportUnit(t *testing.T) {
 	tests := []struct {
 		name                 string
 		importID             string
-		expectError          bool
 		expectedResourceType string
 		expectedName         string
+		expectError          bool
 	}{
 		{
 			name:                 "valid storage account import",

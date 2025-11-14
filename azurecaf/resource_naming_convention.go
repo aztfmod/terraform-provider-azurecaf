@@ -111,22 +111,40 @@ func resourceNamingConventionRead(d *schema.ResourceData, meta interface{}) erro
 	return getResult(d, meta)
 }
 
-func resourceNamingConventionDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceNamingConventionDelete(_ *schema.ResourceData, _ interface{}) error {
 	return nil
 }
 
-func getResult(d *schema.ResourceData, meta interface{}) error {
-	name := d.Get("name").(string)
-	prefix := d.Get("prefix").(string)
-	postfix := d.Get("postfix").(string)
-	resourceType := d.Get("resource_type").(string)
-	convention := d.Get("convention").(string)
-	desiredMaxLength := d.Get("max_length").(int)
+func getResult(d *schema.ResourceData, _ interface{}) error {
+	name, ok := d.Get("name").(string)
+	if !ok {
+		return fmt.Errorf("name is required")
+	}
+	prefix, ok := d.Get("prefix").(string)
+	if !ok {
+		return fmt.Errorf("prefix must be a string")
+	}
+	postfix, ok := d.Get("postfix").(string)
+	if !ok {
+		return fmt.Errorf("postfix must be a string")
+	}
+	resourceType, ok := d.Get("resource_type").(string)
+	if !ok {
+		return fmt.Errorf("resource_type is required")
+	}
+	convention, ok := d.Get("convention").(string)
+	if !ok {
+		return fmt.Errorf("convention must be a string")
+	}
+	desiredMaxLength, ok := d.Get("max_length").(int)
+	if !ok {
+		return fmt.Errorf("max_length must be an integer")
+	}
 
 	// Load the regular expression based on the resource type
 	var regExFilter string
 	var resource ResourceStructure
-	var resourceFound bool = false
+	resourceFound := false
 	if resource, resourceFound = Resources[resourceType]; !resourceFound {
 		resource, resourceFound = ResourcesMapping[resourceType]
 	}
@@ -134,19 +152,19 @@ func getResult(d *schema.ResourceData, meta interface{}) error {
 		return fmt.Errorf("Invalid resource type %s", resourceType)
 	}
 
-	regExFilter = string(resource.RegEx)
-	validationRegExPattern := string(resource.ValidationRegExp)
+	regExFilter = resource.RegEx
+	validationRegExPattern := resource.ValidationRegExp
 	log.Printf("%s", regExFilter)
 
 	var cafPrefix string
-	var randomSuffix string = randSeq(int(resource.MaxLength), nil)
+	randomSuffix := randSeq(resource.MaxLength, nil)
 
 	// configuring the prefix, cafprefix, name, postfix depending on the naming convention
 	switch convention {
 	case ConventionCafRandom, ConventionCafClassic:
 		cafPrefix = resource.CafPrefix
 	case ConventionRandom:
-		//clear all the field to generate a random
+		// Clear all the field to generate a random.
 		name = ""
 		postfix = ""
 	}
@@ -167,24 +185,24 @@ func getResult(d *schema.ResourceData, meta interface{}) error {
 	// Generate the temporary name based on the concatenation of the values - default case is caf classic
 	generatedName := userInputName
 
-	//calculate the max length
-	var maxLength int = int(resource.MaxLength)
+	// Calculate the max length.
+	maxLength := resource.MaxLength
 	if desiredMaxLength > 0 && desiredMaxLength < maxLength {
 		maxLength = desiredMaxLength
 	}
 
-	//does the generated string contains random chars?
-	var containsRandomChar = false
+	// Does the generated string contains random chars?
+	containsRandomChar := false
 	switch convention {
 	case ConventionPassThrough:
 		// the naming is already configured
 	case ConventionCafClassic:
 		// the naming is already configured
 	default:
-		if len(userInputName) != 0 {
+		if userInputName != "" {
 			if len(userInputName) < (maxLength - 1) { // prevent adding a suffix separator as the last character
 				containsRandomChar = true
-				generatedName = strings.Join([]string{userInputName, randomSuffix}, suffixSeparator)
+				generatedName = userInputName + suffixSeparator + randomSuffix
 			} else {
 				generatedName = userInputName
 			}
@@ -197,15 +215,16 @@ func getResult(d *schema.ResourceData, meta interface{}) error {
 	// Remove the characters that are not supported in the name based on the regular expression
 	filteredGeneratedName := myRegex.ReplaceAllString(generatedName, "")
 
-	var length int = len(filteredGeneratedName)
+	length := len(filteredGeneratedName)
 
 	if length > maxLength {
 		length = maxLength
 	}
 
-	result := string(filteredGeneratedName[0:length])
+	result := filteredGeneratedName[0:length]
 	// making sure the last char is alpha char if we included random string
 	if containsRandomChar && len(result) > len(userInputName) {
+		// nolint:gosec // G404: weak random number generator acceptable for naming
 		randomLastChar := alphagenerator[rand.Intn(len(alphagenerator)-1)]
 		resultRune := []rune(result)
 		resultRune[len(resultRune)-1] = randomLastChar
@@ -220,9 +239,10 @@ func getResult(d *schema.ResourceData, meta interface{}) error {
 		return fmt.Errorf("Invalid name for Random CAF naming %s %s Id:%s , the pattern %s doesn't match %s", resource.ResourceTypeName, name, d.Id(), validationRegExPattern, result)
 	}
 
-	d.Set("result", result)
-	// Set the attribute Id with the value
-	//d.SetId("none")
+	if err := d.Set("result", result); err != nil {
+		return fmt.Errorf("error setting result: %w", err)
+	}
+	// Set the attribute Id with the value.
 	d.SetId(randSeq(16, nil))
 	return nil
 }

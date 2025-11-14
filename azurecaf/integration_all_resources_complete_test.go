@@ -8,8 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-// TestAcc_AllResourceTypes tests ALL Azure resource types defined in the provider
-// This test systematically goes through all 395+ resource types in batches
+// This test systematically goes through all 395+ resource types in batches.
 func TestAcc_AllResourceTypes(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Skipping comprehensive integration test in short mode")
@@ -27,13 +26,13 @@ func TestAcc_AllResourceTypes(t *testing.T) {
 	}
 }
 
-// calculateTotalBatches returns the number of batches needed to test all resources
+// calculateTotalBatches returns the number of batches needed to test all resources.
 func calculateTotalBatches() int {
 	totalResources := len(ResourceDefinitions)
 	return (totalResources + maxResourcesPerBatch - 1) / maxResourcesPerBatch
 }
 
-// testResourceBatch tests a specific batch of resources
+// testResourceBatch tests a specific batch of resources.
 func testResourceBatch(t *testing.T, provider *schema.Provider, batchNumber int) {
 	resourceBatch := generateResourceBatch(batchNumber)
 
@@ -73,7 +72,7 @@ func testResourceBatch(t *testing.T, provider *schema.Provider, batchNumber int)
 	})
 }
 
-// testNameResource tests the azurecaf_name resource for a specific resource type
+// testNameResource tests the azurecaf_name resource for a specific resource type.
 func testNameResource(t *testing.T, nameResource *schema.Resource, resourceType string) {
 	// Test with various configurations
 	testCases := []map[string]interface{}{
@@ -144,7 +143,7 @@ func testNameResource(t *testing.T, nameResource *schema.Resource, resourceType 
 	}
 }
 
-// testNameDataSource tests the azurecaf_name data source for a specific resource type
+// testNameDataSource tests the azurecaf_name data source for a specific resource type.
 func testNameDataSource(t *testing.T, nameDataSource *schema.Resource, resourceType string) {
 	// Create ResourceData for the azurecaf_name data source
 	dataSourceData := schema.TestResourceDataRaw(t, nameDataSource.Schema, map[string]interface{}{

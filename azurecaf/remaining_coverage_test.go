@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-// Test for getNameReadResult error handling
+// Test for getNameReadResult error handling.
 func TestGetNameReadResultErrors(t *testing.T) {
 	t.Run("getResourceName_error_path", func(t *testing.T) {
 		// Setup with invalid resource type to trigger error in getResourceName
@@ -16,14 +16,14 @@ func TestGetNameReadResultErrors(t *testing.T) {
 			"random_length": 5,
 		})
 
-		err := getNameReadResult(rd, nil)
+		err := getNameReadResult(rd)
 		if err == nil {
 			t.Error("Expected error with invalid resource type but got none")
 		}
 	})
 }
 
-// Test validateResourceType corner cases
+// Test validateResourceType corner cases.
 func TestValidateResourceTypeEdgeCases(t *testing.T) {
 	t.Run("validate_empty_lists", func(t *testing.T) {
 		valid, err := validateResourceType("", []string{})
@@ -40,7 +40,7 @@ func TestValidateResourceTypeEdgeCases(t *testing.T) {
 	})
 }
 
-// Test getResourceName regex compilation error
+// Test getResourceName regex compilation error.
 func TestGetResourceNameRegexError(t *testing.T) {
 	// Save the original regex pattern
 	originalResource := ResourceDefinitions["azurerm_storage_account"]
@@ -61,7 +61,7 @@ func TestGetResourceNameRegexError(t *testing.T) {
 	}
 }
 
-// Test getNameResult with multiple resource types
+// Test getNameResult with multiple resource types.
 func TestGetNameResultMultipleResourceTypes(t *testing.T) {
 	rd := schema.TestResourceDataRaw(t, resourceName().Schema, map[string]interface{}{
 		"name":           "test",
@@ -87,7 +87,7 @@ func TestGetNameResultMultipleResourceTypes(t *testing.T) {
 	}
 }
 
-// Test getNameResult with only resource_types (no resource_type)
+// Test getNameResult with only resource_types (no resource_type).
 func TestGetNameResultOnlyResourceTypes(t *testing.T) {
 	rd := schema.TestResourceDataRaw(t, resourceName().Schema, map[string]interface{}{
 		"name":           "test",
@@ -102,7 +102,7 @@ func TestGetNameResultOnlyResourceTypes(t *testing.T) {
 	}
 }
 
-// Test getNameResult error handling
+// Test getNameResult error handling.
 func TestGetNameResultErrors(t *testing.T) {
 	t.Run("invalid_resource_types", func(t *testing.T) {
 		rd := schema.TestResourceDataRaw(t, resourceName().Schema, map[string]interface{}{
@@ -118,7 +118,7 @@ func TestGetNameResultErrors(t *testing.T) {
 	})
 }
 
-// Test getResult with an invalid resource type
+// Test getResult with an invalid resource type.
 func TestGetResultInvalidResource(t *testing.T) {
 	rd := schema.TestResourceDataRaw(t, resourceNamingConvention().Schema, map[string]interface{}{
 		"name":          "test",
@@ -132,7 +132,7 @@ func TestGetResultInvalidResource(t *testing.T) {
 	}
 }
 
-// Test getResult with an invalid resource mapping
+// Test getResult with an invalid resource mapping.
 func TestGetResultInvalidResourceMapping(t *testing.T) {
 	// Test with a non-existent key in ResourcesMapping
 	rd := schema.TestResourceDataRaw(t, resourceNamingConvention().Schema, map[string]interface{}{

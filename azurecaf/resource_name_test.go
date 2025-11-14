@@ -356,6 +356,7 @@ func TestValidResourceType_validParameters(t *testing.T) {
 		t.Fail()
 	}
 }
+
 func TestValidResourceType_invalidParameters(t *testing.T) {
 	resourceType := "azurerm_resource_group"
 	resourceTypes := []string{"azurerm_not_supported", "azurerm_storage_account"}

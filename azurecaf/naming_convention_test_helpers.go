@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-// NamingConventionTestCase represents a test case for naming conventions
+// NamingConventionTestCase represents a test case for naming conventions.
 type NamingConventionTestCase struct {
 	Name                string
 	Convention          string
@@ -19,7 +19,7 @@ type NamingConventionTestCase struct {
 	ExpectedNotContains []string
 }
 
-// runNamingConventionTest runs a single naming convention test case
+// runNamingConventionTest runs a single naming convention test case.
 func runNamingConventionTest(t *testing.T, testCase NamingConventionTestCase) {
 	provider := Provider()
 	namingConventionResource := provider.ResourcesMap["azurecaf_naming_convention"]
@@ -78,7 +78,7 @@ func runNamingConventionTest(t *testing.T, testCase NamingConventionTestCase) {
 	t.Logf("Test case '%s' generated: %s", testCase.ResourceType, result)
 }
 
-// runMultipleNamingConventionTests runs multiple test cases in parallel
+// runMultipleNamingConventionTests runs multiple test cases in parallel.
 func runMultipleNamingConventionTests(t *testing.T, testCases []NamingConventionTestCase) {
 	for _, testCase := range testCases {
 		testCase := testCase // capture loop variable
@@ -88,7 +88,7 @@ func runMultipleNamingConventionTests(t *testing.T, testCases []NamingConvention
 	}
 }
 
-// createBasicTestCase creates a basic test case with common defaults
+// createBasicTestCase creates a basic test case with common defaults.
 func createBasicTestCase(resourceType, convention, name string) NamingConventionTestCase {
 	return NamingConventionTestCase{
 		Name:             name,
@@ -98,7 +98,7 @@ func createBasicTestCase(resourceType, convention, name string) NamingConvention
 	}
 }
 
-// validateNamingConventionResult performs common validation on naming convention results
+// validateNamingConventionResult performs common validation on naming convention results.
 func validateNamingConventionResult(t *testing.T, result, resourceType, convention string, shouldContain []string) {
 	if result == "" {
 		t.Error("Expected non-empty result")

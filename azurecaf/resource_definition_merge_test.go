@@ -4,8 +4,7 @@ import (
 	"testing"
 )
 
-// TestResourceDefinitionMerge tests that the merged resource definition file
-// contains both documented and out-of-doc resources with proper attributes
+// contains both documented and out-of-doc resources with proper attributes.
 func TestResourceDefinitionMerge(t *testing.T) {
 	// Test that we have resources from both original files
 	totalResources := len(ResourceDefinitions)
@@ -55,7 +54,7 @@ func TestResourceDefinitionMerge(t *testing.T) {
 	t.Logf("Successfully validated merged resource definitions with %d total resources", totalResources)
 }
 
-// TestResourceTypesFromBothFiles verifies that resources from both original files are present
+// TestResourceTypesFromBothFiles verifies that resources from both original files are present.
 func TestResourceTypesFromBothFiles(t *testing.T) {
 	testCases := []struct {
 		name         string

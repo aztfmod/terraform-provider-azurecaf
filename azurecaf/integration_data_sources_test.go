@@ -9,8 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-// TestAcc_DataSourcesIntegration tests integration between data sources and resources
-// This test uses direct provider schema testing to avoid Terraform CLI dependency
+// This test uses direct provider schema testing to avoid Terraform CLI dependency.
 func TestAcc_DataSourcesIntegration(t *testing.T) {
 	provider := Provider()
 
@@ -140,7 +139,7 @@ func TestAcc_DataSourcesIntegration(t *testing.T) {
 	t.Log("Data sources integration tests completed successfully")
 }
 
-// Configuration for data sources integration test
+// Configuration for data sources integration test.
 const testAccDataSourcesIntegrationConfig = `
 # Test environment variable
 data "azurecaf_environment_variable" "test_env" {

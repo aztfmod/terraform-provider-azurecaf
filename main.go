@@ -13,14 +13,11 @@
 package main
 
 import (
-	"github.com/aztfmod/terraform-provider-azurecaf/azurecaf"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
+
+	"github.com/aztfmod/terraform-provider-azurecaf/azurecaf"
 )
 
-// go:generate directive runs the code generation tool to create resource definitions
-// from the resourceDefinition.json file. This ensures that all supported Azure
-// resource types and their naming constraints are up-to-date.
 //go:generate go run gen.go
 
 // main initializes and serves the Terraform provider using the Terraform plugin SDK.
@@ -28,8 +25,6 @@ import (
 // the available resources and data sources.
 func main() {
 	plugin.Serve(&plugin.ServeOpts{
-		ProviderFunc: func() *schema.Provider {
-			return azurecaf.Provider()
-		},
+		ProviderFunc: azurecaf.Provider,
 	})
 }
