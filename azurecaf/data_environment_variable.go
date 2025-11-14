@@ -46,10 +46,13 @@ func dataEnvironmentVariable() *schema.Resource {
 	}
 }
 
-func resourceAction(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceAction(_ context.Context, d *schema.ResourceData, _ interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	name := d.Get("name").(string)
+	name, ok := d.Get("name").(string)
+	if !ok {
+		return diag.Errorf("name must be a string")
+	}
 	value, ok := os.LookupEnv(name)
 
 	if !ok {

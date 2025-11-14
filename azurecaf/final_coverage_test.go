@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-// Test getNameResult resource_type constraint with excessive random_length
+// Test getNameResult resource_type constraint with excessive random_length.
 func TestGetNameResultExcessiveRandomLength(t *testing.T) {
 	rd := schema.TestResourceDataRaw(t, resourceName().Schema, map[string]interface{}{
 		"name":          "test",

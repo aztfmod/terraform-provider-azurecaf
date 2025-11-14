@@ -25,9 +25,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Eliminates version mismatch errors during builds
   - Ensures consistent Go toolchain usage across all environments
   - Impact: Medium - Fixes build reliability and development environment consistency
-- **Linting Issues**: Fixed non-constant format string errors in logging and error handling
+- **Linting Issues**: Comprehensive fixes to pass golangci-lint CI/CD checks
+  - Fixed non-constant format string errors in logging and error handling
   - Fixed `fmt.Errorf` call in `resource_name.go` to use proper format string
   - Fixed `log.Printf` call in `resource_naming_convention.go` to use proper format string
+  - Added missing `fmt` import to `data_name.go`
+  - Fixed unused parameter warnings by renaming to `_` where appropriate
+  - Added error checking for all `d.Set()` calls with proper error wrapping
+  - Replaced `len() > 0` checks with more idiomatic empty string comparisons
+  - Fixed unnecessary type conversions throughout codebase
+  - Added nolint comments for acceptable weak random usage in naming (not security-critical)
+  - Fixed comment formatting to end with periods as per godot linter
+  - Replaced deprecated `io/ioutil` with `os` and `io` packages
+  - Fixed misspellings and superfluous-else issues
+  - Simplified lambda function in `main.go` to direct function reference
+  - Removed unused test functions and constants from test files
+  - Added nolint directives for acceptable cognitive/cyclomatic complexity in business logic
+    - Applied to `getResult()` function in `resource_naming_convention.go` (complexity: 28, threshold: 20)
+    - Rationale: Complex naming convention logic requires comprehensive validation and conditional processing
+    - Trade-off: Maintained readable, maintainable code over artificially splitting complex business logic
+    - Alternative considered: Function decomposition would reduce clarity without meaningful benefits
+  - Impact: High - Provider now passes all critical linting checks in CI/CD pipeline
+    - Affects: Code quality and CI/CD pipeline; no runtime behavior changes
+    - Benefit: Ensures code maintainability and catches potential issues early
   - Resolves Go vet warnings and ensures build passes all checks
   - Impact: Low - Improves code quality and eliminates build warnings
 

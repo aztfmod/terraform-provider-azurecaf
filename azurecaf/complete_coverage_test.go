@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-// Test resourceAction function (data_environment_variable.go)
+// Test resourceAction function (data_environment_variable.go).
 func TestResourceAction(t *testing.T) {
 	// Test with existing environment variable
 	t.Run("existing_env_var", func(t *testing.T) {
@@ -57,7 +57,7 @@ func TestResourceAction(t *testing.T) {
 	})
 }
 
-// Test dataNameRead function (data_name.go)
+// Test dataNameRead function (data_name.go).
 func TestDataNameRead(t *testing.T) {
 	rd := schema.TestResourceDataRaw(t, dataName().Schema, map[string]interface{}{
 		"name":          "test",
@@ -76,11 +76,11 @@ func TestDataNameRead(t *testing.T) {
 	}
 }
 
-// Test getNameReadResult function (data_name.go)
+// Test getNameReadResult function (data_name.go).
 func TestGetNameReadResult(t *testing.T) {
 	testCases := []struct {
-		name         string
 		resourceData map[string]interface{}
+		name         string
 		expectedErr  bool
 	}{
 		{
@@ -152,7 +152,7 @@ func TestGetNameReadResult(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			rd := schema.TestResourceDataRaw(t, dataName().Schema, tc.resourceData)
-			err := getNameReadResult(rd, nil)
+			err := getNameReadResult(rd)
 
 			if tc.expectedErr && err == nil {
 				t.Error("Expected error but got none")
@@ -171,7 +171,7 @@ func TestGetNameReadResult(t *testing.T) {
 	}
 }
 
-// Test resourceNameDelete function (resource_name.go)
+// Test resourceNameDelete function (resource_name.go).
 func TestResourceNameDelete(t *testing.T) {
 	rd := schema.TestResourceDataRaw(t, resourceName().Schema, map[string]interface{}{
 		"name": "test",
@@ -183,7 +183,7 @@ func TestResourceNameDelete(t *testing.T) {
 	}
 }
 
-// Test resourceNamingConventionDelete function (resource_naming_convention.go)
+// Test resourceNamingConventionDelete function (resource_naming_convention.go).
 func TestResourceNamingConventionDelete(t *testing.T) {
 	rd := schema.TestResourceDataRaw(t, resourceNamingConvention().Schema, map[string]interface{}{
 		"name": "test",
@@ -195,7 +195,7 @@ func TestResourceNamingConventionDelete(t *testing.T) {
 	}
 }
 
-// Test getResource function edge cases
+// Test getResource function edge cases.
 func TestGetResourceEdgeCases(t *testing.T) {
 	// Test with ResourceMaps lookup (like "st" -> "azurerm_storage_account")
 	t.Run("resource_maps_lookup", func(t *testing.T) {
@@ -234,13 +234,13 @@ func TestGetResourceEdgeCases(t *testing.T) {
 	})
 }
 
-// Test trimResourceName function edge cases
+// Test trimResourceName function edge cases.
 func TestTrimResourceNameEdgeCases(t *testing.T) {
 	testCases := []struct {
 		name         string
 		resourceName string
-		maxLength    int
 		expected     string
+		maxLength    int
 	}{
 		{
 			name:         "name_shorter_than_max",
@@ -278,7 +278,7 @@ func TestTrimResourceNameEdgeCases(t *testing.T) {
 	}
 }
 
-// Test getSlug function with different conventions
+// Test getSlug function with different conventions.
 func TestGetSlugExtended(t *testing.T) {
 	testCases := []struct {
 		name         string

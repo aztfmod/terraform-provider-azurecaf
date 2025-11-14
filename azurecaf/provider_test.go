@@ -7,8 +7,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
-var testAccProviders map[string]*schema.Provider
-var testAccProvider *schema.Provider
+var (
+	testAccProviders map[string]*schema.Provider
+	testAccProvider  *schema.Provider
+)
 
 func init() {
 	testAccProvider = Provider()
@@ -30,7 +32,7 @@ func TestProvider_impl(t *testing.T) {
 func testAccPreCheck(t *testing.T) {
 }
 
-// Resource are locale and are no instrastructure is created in the test suite
+// Resource are locale and are no instrastructure is created in the test suite.
 func testAccCheckResourceDestroy(s *terraform.State) error {
 	return nil
 }

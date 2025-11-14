@@ -13,20 +13,16 @@ import (
 // Naming convention constants define the different methodologies supported by the provider
 // for generating Azure resource names that comply with CAF guidelines.
 const (
-	// ConventionCafClassic applies the CAF recommended naming convention
-	// Format: [prefix]-[resource-slug]-[name]-[suffix]
+	// Format: [prefix]-[resource-slug]-[name]-[suffix].
 	ConventionCafClassic string = "cafclassic"
 
-	// ConventionCafRandom defines the CAF random naming convention
-	// Fills remaining space with random characters up to maximum length
+	// Fills remaining space with random characters up to maximum length.
 	ConventionCafRandom string = "cafrandom"
 
-	// ConventionRandom applies a random naming convention based on the max length of the resource
-	// Generates completely random names within Azure resource constraints
+	// Generates completely random names within Azure resource constraints.
 	ConventionRandom string = "random"
 
-	// ConventionPassThrough validates existing names without modification
-	// Used for checking compliance of pre-existing resource names
+	// Used for checking compliance of pre-existing resource names.
 	ConventionPassThrough string = "passthrough"
 )
 
@@ -34,65 +30,59 @@ const (
 // with Azure naming requirements. These patterns define which characters to remove
 // from input names for different Azure resource types.
 const (
-	// alphanum removes all characters except alphanumeric (a-z, A-Z, 0-9)
+	// alphanum removes all characters except alphanumeric (a-z, A-Z, 0-9).
 	alphanum string = "[^0-9A-Za-z]"
 
-	// alphanumh allows alphanumeric characters and hyphens
+	// alphanumh allows alphanumeric characters and hyphens.
 	alphanumh string = "[^0-9A-Za-z-]"
 
-	// alphanumu allows alphanumeric characters and underscores
-	alphanumu string = "[^0-9A-Za-z_]"
-
-	// alphanumhu allows alphanumeric characters, hyphens, and underscores
+	// alphanumhu allows alphanumeric characters, hyphens, and underscores.
 	alphanumhu string = "[^0-9A-Za-z_-]"
 
-	// alphanumhup allows alphanumeric characters, hyphens, underscores, and periods
+	// alphanumhup allows alphanumeric characters, hyphens, underscores, and periods.
 	alphanumhup string = "[^0-9A-Za-z_.-]"
 
-	// unicode allows extended unicode characters, word characters, and common punctuation
+	// unicode allows extended unicode characters, word characters, and common punctuation.
 	unicode string = `[^-\w\._\(\)]`
 
-	// invappi defines invalid characters for Application Insights resources
+	// invappi defines invalid characters for Application Insights resources.
 	invappi string = "[%&\\?/]"
 
-	// invsqldb defines invalid characters for SQL Database resources
+	// invsqldb defines invalid characters for SQL Database resources.
 	invsqldb string = "[<>*%&:\\/?]"
 
-	//Need to find a way to filter beginning and end of string
-	//alphanumstartletter string = "\\A[^a-z][^0-9A-Za-z]"
+	// alphanumstartletter string = "\\A[^a-z][^0-9A-Za-z]".
 )
 
 const (
 	suffixSeparator string = "-"
 )
 
-// ResourceStructure stores the CafPrefix and the MaxLength of an azure resource
+// ResourceStructure stores the CafPrefix and the MaxLength of an azure resource.
 type ResourceStructure struct {
-	// Resource type name
+	// Resource type name.
 	ResourceTypeName string `json:"name"`
-	// Resource prefix as defined in the Azure Cloud Adoption Framework
+	// Resource prefix as defined in the Azure Cloud Adoption Framework.
 	CafPrefix string `json:"slug,omitempty"`
-	// MaxLength attribute define the maximum length of the name
+	// MinLength attribute defines the minimum length of the name.
 	MinLength int `json:"min_length"`
-	// MaxLength attribute define the maximum length of the name
+	// MaxLength attribute defines the maximum length of the name.
 	MaxLength int `json:"max_length"`
-	// enforce lowercase
+	// Enforce lowercase.
 	LowerCase bool `json:"lowercase,omitempty"`
-	// Regular expression to apply to the resource type
+	// Regular expression to apply to the resource type.
 	RegEx string `json:"regex,omitempty"`
-	// the Regular expression to validate the generated string
+	// The Regular expression to validate the generated string.
 	ValidationRegExp string `json:"validatation_regex,omitempty"`
-	// can the resource include dashes
+	// Can the resource include dashes.
 	Dashes bool `json:"dashes"`
-	// The scope of this name where it needs to be unique
+	// The scope of this name where it needs to be unique.
 	Scope string `json:"scope,omitempty"`
 }
 
-var (
-	alphagenerator = []rune("abcdefghijklmnopqrstuvwxyz")
-)
+var alphagenerator = []rune("abcdefghijklmnopqrstuvwxyz")
 
-// Generate a random value to add to the resource names
+// Generate a random value to add to the resource names.
 func randSeq(length int, seed *int64) string {
 	// Handle invalid input: negative or zero length
 	if length <= 0 {
@@ -103,17 +93,19 @@ func randSeq(length int, seed *int64) string {
 		value := time.Now().UnixNano()
 		seed = &value
 	}
+	// nolint:staticcheck // SA1019: rand.Seed deprecated but required for backward compatibility
 	rand.Seed(*seed)
 	// generate at least one random character
 	b := make([]rune, length)
 	for i := range b {
 		// We need the random generated string to start with a letter
+		// nolint:gosec // G404: weak random number generator acceptable for naming
 		b[i] = alphagenerator[rand.Intn(len(alphagenerator)-1)]
 	}
 	return string(b)
 }
 
-// Resources currently supported
+// Resources currently supported.
 var Resources = map[string]ResourceStructure{
 	"aaa":    {"azure automation account", "aaa", 6, 50, false, alphanumh, "^[a-zA-Z][0-9A-Za-z-]{5,49}$", true, "resourceGroup"},
 	"ac":     {"azure container app", "ac", 1, 32, true, alphanumh, "^[a-z0-9][a-z0-9-]{0,30}[a-z0-9]$", true, "resourceGroup"},
@@ -151,7 +143,7 @@ var Resources = map[string]ResourceStructure{
 	"vnet":   {"virtual network", "vnet", 2, 64, false, alphanumhup, "^[0-9a-zA-Z][0-9A-Za-z_.-]{0,62}[0-9a-zA-Z_]$", true, "resourceGroup"},
 }
 
-// ResourcesMapping enforcing new naming convention
+// ResourcesMapping enforcing new naming convention.
 var ResourcesMapping = map[string]ResourceStructure{
 	"azurerm_automation_account":              Resources["aaa"],
 	"azurerm_container_app":                   Resources["ac"],

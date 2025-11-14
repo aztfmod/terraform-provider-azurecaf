@@ -7,8 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-// TestAcc_ErrorHandling tests error handling of the azurecaf provider
-// This test uses direct provider schema testing to avoid Terraform CLI dependency
+// This test uses direct provider schema testing to avoid Terraform CLI dependency.
 func TestAcc_ErrorHandling(t *testing.T) {
 	provider := Provider()
 
@@ -121,42 +120,4 @@ func TestAcc_ErrorHandling(t *testing.T) {
 	t.Log("Error handling tests completed successfully")
 }
 
-// Invalid resource type configuration
-const testAccInvalidResourceTypeConfig = `
-resource "azurecaf_naming_convention" "invalid_type" {
-  name           = "test"
-  prefix         = "dev"
-  resource_type  = "not_a_valid_type"
-  convention     = "cafclassic"
-}
-`
-
-// Configuration with excessive random length for a resource type
-const testAccExcessiveRandomLengthConfig = `
-resource "azurecaf_name" "excessive_length" {
-  name           = "test"
-  prefixes       = ["dev"]
-  resource_type  = "azurerm_storage_account"
-  random_length  = 30
-}
-`
-
-// Configuration with negative random length
-const testAccNegativeRandomLengthConfig = `
-resource "azurecaf_name" "negative_length" {
-  name           = "test"
-  prefixes       = ["dev"]
-  resource_type  = "azurerm_resource_group"
-  random_length  = -5
-}
-`
-
-// Configuration with invalid convention type
-const testAccInvalidConventionConfig = `
-resource "azurecaf_naming_convention" "invalid_convention" {
-  name           = "test"
-  prefix         = "dev"
-  resource_type  = "rg"
-  convention     = "invalid_convention"
-}
-`
+// Invalid resource type configuration.

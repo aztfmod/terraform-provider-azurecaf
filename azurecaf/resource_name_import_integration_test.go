@@ -23,24 +23,24 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-// testCase represents a single import test case
+// testCase represents a single import test case.
 type testCase struct {
+	expectedAttrs  map[string]interface{}
 	name           string
 	importID       string
-	expectError    bool
-	expectedAttrs  map[string]interface{}
 	errorSubstring string
 	description    string
+	expectError    bool
 }
 
-// integrationTestHelper provides common functionality for integration tests
+// integrationTestHelper provides common functionality for integration tests.
 type integrationTestHelper struct {
 	provider           *schema.Provider
 	resourceDefinition *schema.Resource
 	t                  *testing.T
 }
 
-// newIntegrationTestHelper creates a new helper instance
+// newIntegrationTestHelper creates a new helper instance.
 func newIntegrationTestHelper(t *testing.T) *integrationTestHelper {
 	provider := Provider()
 	resourceDefinition := provider.ResourcesMap["azurecaf_name"]
@@ -60,7 +60,7 @@ func newIntegrationTestHelper(t *testing.T) *integrationTestHelper {
 	}
 }
 
-// runImportTest executes a single import test case
+// runImportTest executes a single import test case.
 func (h *integrationTestHelper) runImportTest(tc testCase) {
 	h.t.Run(tc.name, func(t *testing.T) {
 		// Create ResourceData instance
@@ -107,7 +107,7 @@ func (h *integrationTestHelper) runImportTest(tc testCase) {
 	})
 }
 
-// getDefaultExpectedAttrs returns the standard expected attributes for import tests
+// getDefaultExpectedAttrs returns the standard expected attributes for import tests.
 func getDefaultExpectedAttrs() map[string]interface{} {
 	return map[string]interface{}{
 		"passthrough":   true,
@@ -118,7 +118,7 @@ func getDefaultExpectedAttrs() map[string]interface{} {
 	}
 }
 
-// createTestCaseFromImportID creates a test case from an import ID with standard attributes
+// createTestCaseFromImportID creates a test case from an import ID with standard attributes.
 func createTestCaseFromImportID(name, importID string, expectError bool, extraAttrs map[string]interface{}) testCase {
 	expectedAttrs := getDefaultExpectedAttrs()
 
@@ -144,7 +144,7 @@ func createTestCaseFromImportID(name, importID string, expectError bool, extraAt
 	}
 }
 
-// createTestCasesFromRegistry creates test cases from the resource type registry
+// createTestCasesFromRegistry creates test cases from the resource type registry.
 func createTestCasesFromRegistry(pattern string) []testCase {
 	registry := getResourceTypeRegistry()
 	var testCases []testCase
@@ -163,7 +163,7 @@ func createTestCasesFromRegistry(pattern string) []testCase {
 	return testCases
 }
 
-// runTestGroup executes a group of test cases with a common description
+// runTestGroup executes a group of test cases with a common description.
 func (h *integrationTestHelper) runTestGroup(t *testing.T, groupName string, testCases []testCase) {
 	t.Run(groupName, func(t *testing.T) {
 		for _, tc := range testCases {
@@ -171,6 +171,7 @@ func (h *integrationTestHelper) runTestGroup(t *testing.T, groupName string, tes
 		}
 	})
 }
+
 func TestResourceNameImport_IntegrationBasic(t *testing.T) {
 	helper := newIntegrationTestHelper(t)
 	t.Log("Import functionality is properly configured in the provider")
@@ -198,8 +199,7 @@ func TestResourceNameImport_IntegrationBasic(t *testing.T) {
 	}
 }
 
-// TestResourceNameImport_AcceptanceStyleBasic demonstrates how the import tests would work in full acceptance test mode
-// This test is commented out since it requires Terraform CLI which isn't available in the current environment
+// This test is commented out since it requires Terraform CLI which isn't available in the current environment.
 func TestResourceNameImport_AcceptanceStyleBasic(t *testing.T) {
 	// Skip this test unless explicitly requested since it requires Terraform CLI
 	if testing.Short() {
@@ -239,7 +239,7 @@ func TestResourceNameImport_AcceptanceStyleBasic(t *testing.T) {
 	t.Log("Acceptance-style test configuration is properly structured")
 }
 
-// resourceTypeDefinition represents a comprehensive resource type definition for testing
+// resourceTypeDefinition represents a comprehensive resource type definition for testing.
 type resourceTypeDefinition struct {
 	ResourceType string
 	Name         string
@@ -247,7 +247,7 @@ type resourceTypeDefinition struct {
 	Pattern      string
 }
 
-// getResourceTypeRegistry returns a comprehensive registry of resource types for testing
+// getResourceTypeRegistry returns a comprehensive registry of resource types for testing.
 func getResourceTypeRegistry() []resourceTypeDefinition {
 	return []resourceTypeDefinition{
 		{"azurerm_storage_account", "mystorageaccount123", "Storage Account with valid lowercase alphanumeric name", "basic"},
@@ -263,7 +263,7 @@ func getResourceTypeRegistry() []resourceTypeDefinition {
 	}
 }
 
-// getMinimalTerraformConfig provides basic configuration template for documentation
+// getMinimalTerraformConfig provides basic configuration template for documentation.
 func getMinimalTerraformConfig(resourceType, name string) string {
 	return fmt.Sprintf(`resource "azurecaf_name" "test" {
   name          = "%s"
@@ -272,14 +272,14 @@ func getMinimalTerraformConfig(resourceType, name string) string {
 }`, name, resourceType)
 }
 
-// TestResourceNameImport_IntegrationMultipleResourceTypes tests importing various Azure resource types
+// TestResourceNameImport_IntegrationMultipleResourceTypes tests importing various Azure resource types.
 func TestResourceNameImport_IntegrationMultipleResourceTypes(t *testing.T) {
 	helper := newIntegrationTestHelper(t)
 	testCases := createTestCasesFromRegistry("basic")
 	helper.runTestGroup(t, "MultipleResourceTypes", testCases)
 }
 
-// TestResourceNameImport_IntegrationPassthroughBehavior verifies that imported resources automatically use passthrough mode
+// TestResourceNameImport_IntegrationPassthroughBehavior verifies that imported resources automatically use passthrough mode.
 func TestResourceNameImport_IntegrationPassthroughBehavior(t *testing.T) {
 	helper := newIntegrationTestHelper(t)
 
@@ -298,7 +298,7 @@ func TestResourceNameImport_IntegrationPassthroughBehavior(t *testing.T) {
 	}
 }
 
-// createErrorTestCase creates a test case for error scenarios
+// createErrorTestCase creates a test case for error scenarios.
 func createErrorTestCase(name, importID, errorSubstring, description string) testCase {
 	return testCase{
 		name:           name,
@@ -309,7 +309,7 @@ func createErrorTestCase(name, importID, errorSubstring, description string) tes
 	}
 }
 
-// TestResourceNameImport_IntegrationEdgeCases tests edge cases in import functionality
+// TestResourceNameImport_IntegrationEdgeCases tests edge cases in import functionality.
 func TestResourceNameImport_IntegrationEdgeCases(t *testing.T) {
 	helper := newIntegrationTestHelper(t)
 
@@ -328,7 +328,7 @@ func TestResourceNameImport_IntegrationEdgeCases(t *testing.T) {
 	}
 }
 
-// TestResourceNameImport_AcceptanceStyleImportBlocks tests the import {} block functionality
+// TestResourceNameImport_AcceptanceStyleImportBlocks tests the import {} block functionality.
 func TestResourceNameImport_AcceptanceStyleImportBlocks(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Skipping import {} block acceptance tests in short mode - requires Terraform CLI")
@@ -343,7 +343,7 @@ func TestResourceNameImport_AcceptanceStyleImportBlocks(t *testing.T) {
 	t.Log("Import {} block configurations are properly structured")
 }
 
-// TestResourceNameImport_ImportBlockValidationSimulation tests import {} block scenarios using schema validation
+// TestResourceNameImport_ImportBlockValidationSimulation tests import {} block scenarios using schema validation.
 func TestResourceNameImport_ImportBlockValidationSimulation(t *testing.T) {
 	helper := newIntegrationTestHelper(t)
 	testCases := createTestCasesFromRegistry("all")
@@ -351,7 +351,7 @@ func TestResourceNameImport_ImportBlockValidationSimulation(t *testing.T) {
 	t.Log("Import {} block simulation tests completed successfully")
 }
 
-// TestResourceNameImport_SubmodulePatternValidation tests both patterns for submodule import usage
+// TestResourceNameImport_SubmodulePatternValidation tests both patterns for submodule import usage.
 func TestResourceNameImport_SubmodulePatternValidation(t *testing.T) {
 	helper := newIntegrationTestHelper(t)
 

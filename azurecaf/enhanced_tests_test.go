@@ -1,18 +1,18 @@
 package azurecaf
 
 import (
-	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"testing"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-// TestResourceNameInvalidInputs tests error handling for invalid inputs
+// TestResourceNameInvalidInputs tests error handling for invalid inputs.
 func TestResourceNameInvalidInputs(t *testing.T) {
 	testCases := []struct {
-		name          string
 		resourceData  map[string]interface{}
-		expectedError bool
+		name          string
 		description   string
+		expectedError bool
 	}{
 		{
 			name: "invalid_resource_type",
@@ -91,16 +91,16 @@ func TestResourceNameInvalidInputs(t *testing.T) {
 	}
 }
 
-// TestBoundaryConditions tests edge cases and boundary conditions
+// TestBoundaryConditions tests edge cases and boundary conditions.
 func TestBoundaryConditions(t *testing.T) {
 	testCases := []struct {
 		name         string
 		resourceType string
 		inputName    string
+		description  string
 		prefixes     []interface{}
 		suffixes     []interface{}
 		randomLength int
-		description  string
 	}{
 		{
 			name:         "max_length_boundary",
@@ -175,7 +175,7 @@ func TestBoundaryConditions(t *testing.T) {
 	}
 }
 
-// TestValidResourceTypes verifies all resource types work correctly
+// TestValidResourceTypes verifies all resource types work correctly.
 func TestValidResourceTypes(t *testing.T) {
 	// Test a sample of resource types
 	resourceTypes := []string{
@@ -195,7 +195,6 @@ func TestValidResourceTypes(t *testing.T) {
 
 			rd := schema.TestResourceDataRaw(t, resourceName().Schema, resourceData)
 			err := getNameResult(rd, nil)
-
 			if err != nil {
 				t.Errorf("Valid resource type %s should not fail: %v", resourceType, err)
 				return
@@ -211,7 +210,7 @@ func TestValidResourceTypes(t *testing.T) {
 	}
 }
 
-// TestNamingConventions tests all naming conventions
+// TestNamingConventions tests all naming conventions.
 func TestNamingConventions(t *testing.T) {
 	conventions := []string{"cafclassic", "cafrandom", "random", "passthrough"}
 
@@ -230,7 +229,6 @@ func TestNamingConventions(t *testing.T) {
 
 			rd := schema.TestResourceDataRaw(t, resourceName().Schema, resourceData)
 			err := getNameResult(rd, nil)
-
 			if err != nil {
 				t.Errorf("Convention %s failed: %v", convention, err)
 				return
@@ -262,9 +260,9 @@ func TestNamingConventions(t *testing.T) {
 	}
 }
 
-// Helper function to check if string contains substring
+// Helper function to check if string contains substring.
 func contains(s, substr string) bool {
 	return len(s) >= len(substr) && (s == substr || len(substr) == 0 ||
 		(len(s) > len(substr) && (s[:len(substr)] == substr || s[len(s)-len(substr):] == substr ||
-			fmt.Sprintf("%s", s)[len(substr):len(s)-len(substr)] != s[len(substr):len(s)-len(substr)])))
+			s[len(substr):len(s)-len(substr)] != s[len(substr):len(s)-len(substr)])))
 }

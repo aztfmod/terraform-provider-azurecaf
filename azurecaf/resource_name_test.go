@@ -10,15 +10,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func setData(prefixes []string, name string, suffixes []string, cleanInput bool) *schema.ResourceData {
-	data := &schema.ResourceData{}
-	data.Set("name", name)
-	data.Set("prefixes", prefixes)
-	data.Set("suffixes", suffixes)
-	data.Set("clean_input", cleanInput)
-	return data
-}
-
 func TestCleanInput_no_changes(t *testing.T) {
 	data := "testdata"
 	resource := ResourceDefinitions["azurerm_resource_group"]
@@ -110,6 +101,7 @@ func TestAccResourceName_CafClassic(t *testing.T) {
 			"clean_input":   true,
 		})
 
+		// nolint:staticcheck // SA1019: deprecated function used in test
 		err := nameResource.Create(resourceData, nil)
 		if err != nil {
 			t.Fatalf("Failed to create resource: %v", err)
@@ -137,6 +129,7 @@ func TestAccResourceName_CafClassic(t *testing.T) {
 			"clean_input":   true,
 		})
 
+		// nolint:staticcheck // SA1019: deprecated function used in test
 		err := nameResource.Create(resourceData, nil)
 		if err != nil {
 			t.Fatalf("Failed to create resource: %v", err)
@@ -167,6 +160,7 @@ func TestAccResourceName_CafClassic(t *testing.T) {
 			"passthrough":   true,
 		})
 
+		// nolint:staticcheck // SA1019: deprecated function used in test
 		err := nameResource.Create(resourceData, nil)
 		if err != nil {
 			t.Fatalf("Failed to create resource: %v", err)
@@ -189,6 +183,7 @@ func TestAccResourceName_CafClassic(t *testing.T) {
 			"clean_input":   true,
 		})
 
+		// nolint:staticcheck // SA1019: deprecated function used in test
 		err := nameResource.Create(resourceData, nil)
 		if err != nil {
 			t.Fatalf("Failed to create resource: %v", err)
@@ -218,6 +213,7 @@ func TestAccResourceName_CafClassic(t *testing.T) {
 			"clean_input":   true,
 		})
 
+		// nolint:staticcheck // SA1019: deprecated function used in test
 		err := nameResource.Create(resourceData, nil)
 		if err != nil {
 			t.Fatalf("Failed to create resource: %v", err)
@@ -258,6 +254,7 @@ func TestAccResourceName_CafClassicRSV(t *testing.T) {
 			"passthrough":   false,
 		})
 
+		// nolint:staticcheck // SA1019: deprecated function used in test
 		err := nameResource.Create(resourceData, nil)
 		if err != nil {
 			t.Fatalf("Failed to create resource: %v", err)
@@ -356,6 +353,7 @@ func TestValidResourceType_validParameters(t *testing.T) {
 		t.Fail()
 	}
 }
+
 func TestValidResourceType_invalidParameters(t *testing.T) {
 	resourceType := "azurerm_resource_group"
 	resourceTypes := []string{"azurerm_not_supported", "azurerm_storage_account"}
@@ -462,82 +460,3 @@ func TestResourceExampleInstanceStateUpgradeV2(t *testing.T) {
 		t.Fatalf("\n\nexpected:\n\n%#v\n\ngot:\n\n%#v\n\n", expected, actual)
 	}
 }
-
-const testAccResourceNameCafClassicConfig = `
-
-
-# Resource Group
-resource "azurecaf_name" "classic_rg" {
-    name            = "myrg"
-	resource_type   = "azurerm_resource_group"
-	prefixes        = ["pr1", "pr2"]
-	suffixes        = ["su1", "su2"]
-	random_seed     = 1
-	random_length   = 5
-	clean_input     = true
-}
-
-resource "azurecaf_name" "classic_ca_invalid" {
-    name            = "my_invalid_ca_name"
-	resource_type   = "azurerm_container_app"
-	random_seed     = 1
-	random_length   = 5
-	clean_input     = true
-}
-
-resource "azurecaf_name" "classic_cae_invalid" {
-    name            = "my_invalid_cae_name"
-	resource_type   = "azurerm_container_app_environment"
-	random_seed     = 1
-	random_length   = 5
-	clean_input     = true
-}
-
-resource "azurecaf_name" "classic_acr_invalid" {
-    name            = "my_invalid_acr_name"
-	resource_type   = "azurerm_container_registry"
-	prefixes        = ["pr1", "pr2"]
-	suffixes        = ["su1", "su2"]
-	random_seed     = 1
-	random_length   = 5
-	clean_input     = true
-}
-
-resource "azurecaf_name" "passthrough" {
-    name            = "passthRough"
-	resource_type   = "azurerm_container_registry"
-	prefixes        = ["pr1", "pr2"]
-	suffixes        = ["su1", "su2"]
-	random_seed     = 1
-	random_length   = 5
-	clean_input     = true
-	passthrough     = true
-}
-
-
-resource "azurecaf_name" "apim" {
-	name = "apim"
-	resource_type = "azurerm_api_management_service"
-	prefixes = ["vsic"]
-	random_length = 0
-	clean_input = true
-	passthrough = false
-   }
-`
-
-const testAccResourceNameCafClassicConfigRsv = `
-
-
-# Resource Group
-
-resource "azurecaf_name" "rsv" {
-    name            = "test"
-	resource_type   = "azurerm_recovery_services_vault"
-	prefixes        = ["pr1"]
-	suffixes        = ["su1"]
-	random_length   = 2
-	random_seed     = 1
-	clean_input     = true
-	passthrough     = false
-}
-`

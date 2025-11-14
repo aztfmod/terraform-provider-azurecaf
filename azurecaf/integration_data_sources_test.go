@@ -9,8 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-// TestAcc_DataSourcesIntegration tests integration between data sources and resources
-// This test uses direct provider schema testing to avoid Terraform CLI dependency
+// This test uses direct provider schema testing to avoid Terraform CLI dependency.
 func TestAcc_DataSourcesIntegration(t *testing.T) {
 	provider := Provider()
 
@@ -139,41 +138,3 @@ func TestAcc_DataSourcesIntegration(t *testing.T) {
 
 	t.Log("Data sources integration tests completed successfully")
 }
-
-// Configuration for data sources integration test
-const testAccDataSourcesIntegrationConfig = `
-# Test environment variable
-data "azurecaf_environment_variable" "test_env" {
-  name = "TEST_ENV_VAR"
-}
-
-# Basic name data source
-data "azurecaf_name" "simple" {
-  name          = "myapp"
-  resource_type = "azurerm_app_service"
-  random_length = 5
-}
-
-# Name data source with prefixes and suffixes
-data "azurecaf_name" "with_prefixes" {
-  name          = "storage-data"
-  prefixes      = ["dev"]
-  resource_type = "azurerm_storage_account"
-  use_slug      = false
-  clean_input   = true
-  separator     = "-"
-}
-
-# Name data source using environment variable
-data "azurecaf_name" "with_env_var" {
-  name          = "${data.azurecaf_environment_variable.test_env.value}-resource"
-  resource_type = "azurerm_resource_group"
-}
-
-# Naming convention resource that uses data source outputs
-resource "azurecaf_naming_convention" "combined" {
-  name          = "${data.azurecaf_name.with_prefixes.result}-combined"
-  resource_type = "rg"
-  convention    = "random"
-}
-`

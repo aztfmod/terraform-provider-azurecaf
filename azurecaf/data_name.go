@@ -2,6 +2,7 @@ package azurecaf
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -105,26 +106,61 @@ func dataName() *schema.Resource {
 	}
 }
 
-func dataNameRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	getNameReadResult(d, meta)
+func dataNameRead(_ context.Context, d *schema.ResourceData, _ interface{}) diag.Diagnostics {
+	if err := getNameReadResult(d); err != nil {
+		return diag.FromErr(err)
+	}
 	return diag.Diagnostics{}
 }
 
-func getNameReadResult(d *schema.ResourceData, meta interface{}) error {
-	name := d.Get("name").(string)
-	prefixes := convertInterfaceToString(d.Get("prefixes").([]interface{}))
-	suffixes := convertInterfaceToString(d.Get("suffixes").([]interface{}))
-	separator := d.Get("separator").(string)
-	resourceType := d.Get("resource_type").(string)
-	cleanInput := d.Get("clean_input").(bool)
-	passthrough := d.Get("passthrough").(bool)
-	useSlug := d.Get("use_slug").(bool)
-	randomLength := d.Get("random_length").(int)
-	randomSeed := int64(d.Get("random_seed").(int))
+func getNameReadResult(d *schema.ResourceData) error {
+	name, ok := d.Get("name").(string)
+	if !ok {
+		return fmt.Errorf("name must be a string")
+	}
+	prefixesRaw, ok := d.Get("prefixes").([]interface{})
+	if !ok {
+		return fmt.Errorf("prefixes must be an array")
+	}
+	prefixes := convertInterfaceToString(prefixesRaw)
+	suffixesRaw, ok := d.Get("suffixes").([]interface{})
+	if !ok {
+		return fmt.Errorf("suffixes must be an array")
+	}
+	suffixes := convertInterfaceToString(suffixesRaw)
+	separator, ok := d.Get("separator").(string)
+	if !ok {
+		return fmt.Errorf("separator must be a string")
+	}
+	resourceType, ok := d.Get("resource_type").(string)
+	if !ok {
+		return fmt.Errorf("resource_type must be a string")
+	}
+	cleanInput, ok := d.Get("clean_input").(bool)
+	if !ok {
+		return fmt.Errorf("clean_input must be a boolean")
+	}
+	passthrough, ok := d.Get("passthrough").(bool)
+	if !ok {
+		return fmt.Errorf("passthrough must be a boolean")
+	}
+	useSlug, ok := d.Get("use_slug").(bool)
+	if !ok {
+		return fmt.Errorf("use_slug must be a boolean")
+	}
+	randomLength, ok := d.Get("random_length").(int)
+	if !ok {
+		return fmt.Errorf("random_length must be an integer")
+	}
+	randomSeedInt, ok := d.Get("random_seed").(int)
+	if !ok {
+		return fmt.Errorf("random_seed must be an integer")
+	}
+	randomSeed := int64(randomSeedInt)
 
 	convention := ConventionCafClassic
 
-	randomSuffix := randSeq(int(randomLength), &randomSeed)
+	randomSuffix := randSeq(randomLength, &randomSeed)
 
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 
@@ -132,7 +168,9 @@ func getNameReadResult(d *schema.ResourceData, meta interface{}) error {
 	if err != nil {
 		return err
 	}
-	d.Set("result", resourceName)
+	if err := d.Set("result", resourceName); err != nil {
+		return fmt.Errorf("error setting result: %w", err)
+	}
 
 	d.SetId(resourceName)
 	return nil

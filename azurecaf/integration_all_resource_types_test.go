@@ -8,14 +8,13 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-// Constants to control testing batches
+// Constants to control testing batches.
 const (
 	maxResourcesPerBatch = 20 // Maximum number of resources to test per batch
 	batchToRun           = 1  // Which batch to run (1-indexed)
 )
 
-// TestAcc_ResourceTypeBatch tests a batch of Azure resource types defined in the provider
-// This test uses direct provider schema testing to avoid Terraform CLI dependency
+// This test uses direct provider schema testing to avoid Terraform CLI dependency.
 func TestAcc_ResourceTypeBatch(t *testing.T) {
 	// Skip this test in short mode as it tests many resource types
 	if testing.Short() {
@@ -118,7 +117,7 @@ func TestAcc_ResourceTypeBatch(t *testing.T) {
 	t.Logf("Batch %d testing completed successfully", batchToRun)
 }
 
-// sanitizeResourceType makes a resource type name suitable for use as a test identifier
+// sanitizeResourceType makes a resource type name suitable for use as a test identifier.
 func sanitizeResourceType(resourceType string) string {
 	// Replace dots and other special characters with underscores for test names
 	result := ""
@@ -132,7 +131,7 @@ func sanitizeResourceType(resourceType string) string {
 	return result
 }
 
-// generateResourceBatch creates a batch of resource types for testing
+// generateResourceBatch creates a batch of resource types for testing.
 func generateResourceBatch(batchNumber int) []string {
 	// Get all resource types
 	allResourceTypes := make([]string, 0, len(ResourceDefinitions))

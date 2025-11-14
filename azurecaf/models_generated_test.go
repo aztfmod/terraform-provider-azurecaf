@@ -2,7 +2,6 @@ package azurecaf
 
 import (
 	"regexp"
-	"strings"
 	"testing"
 )
 
@@ -62,7 +61,7 @@ func TestRegexValidationMinLength(t *testing.T) {
 func TestRegexValidationMaxLength(t *testing.T) {
 	content := "aaaaaaaaaa"
 	for i := 0; i < 200; i++ {
-		content = strings.Join([]string{content, "aaaaaaaaaa"}, "")
+		content = content + "aaaaaaaaaa"
 	}
 	contentBase := []rune(content)
 	for _, resource := range ResourceDefinitions {

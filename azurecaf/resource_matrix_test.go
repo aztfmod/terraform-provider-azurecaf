@@ -9,8 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-// TestResourceMatrix generates a comprehensive test matrix for all resource types
-// This helps identify patterns and edge cases across different resource categories
+// This helps identify patterns and edge cases across different resource categories.
 func TestResourceMatrix(t *testing.T) {
 	// Group resources by category
 	categories := map[string][]string{
@@ -123,7 +122,7 @@ func TestResourceMatrix(t *testing.T) {
 	t.Logf("%-15s: %3d resources", "TOTAL", totalTested)
 }
 
-// containsAny checks if the string contains any of the specified substrings
+// containsAny checks if the string contains any of the specified substrings.
 func containsAny(s string, substrings []string) bool {
 	for _, substring := range substrings {
 		if len(s) > 0 && len(substring) > 0 {
@@ -145,7 +144,7 @@ func containsAny(s string, substrings []string) bool {
 	return false
 }
 
-// TestResourceConstraints validates that all resource definitions meet expected constraints
+// TestResourceConstraints validates that all resource definitions meet expected constraints.
 func TestResourceConstraints(t *testing.T) {
 	constraints := map[string]func(string, ResourceStructure) bool{
 		"ValidMinLength": func(name string, def ResourceStructure) bool {

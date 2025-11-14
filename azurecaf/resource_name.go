@@ -119,7 +119,7 @@ func resourceNameV2() *schema.Resource {
 	}
 }
 
-func resourceNameStateUpgradeV2(ctx context.Context, rawState map[string]interface{}, meta interface{}) (map[string]interface{}, error) {
+func resourceNameStateUpgradeV2(_ context.Context, rawState map[string]interface{}, _ interface{}) (map[string]interface{}, error) {
 	rawState["use_slug"] = true
 
 	return rawState, nil
@@ -246,14 +246,19 @@ func resourceNameRead(d *schema.ResourceData, meta interface{}) error {
 	return getNameResult(d, meta)
 }
 
-func resourceNameDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceNameDelete(_ *schema.ResourceData, _ interface{}) error {
 	return nil
 }
 
-// resourceNameImport handles importing existing resource names.
-// Import ID format: <resource_type>:<existing_name>
-// Example: azurerm_storage_account:mystorageaccount123
-func resourceNameImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
+// resourceNameImport imports an existing Azure resource name into the Terraform state.
+// 
+// The import ID must be in the format "<resource_type>:<existing_name>", for example:
+//   azurerm_storage_account:mystorageaccount123
+//
+// The function validates the resource type and the existing name against Azure naming requirements,
+// sets the resource data fields accordingly (using passthrough mode), and uses the existing name
+// as the Terraform resource ID.
+func resourceNameImport(d *schema.ResourceData, _ interface{}) ([]*schema.ResourceData, error) {
 	importID := d.Id()
 
 	// Parse the import ID
@@ -284,18 +289,34 @@ func resourceNameImport(d *schema.ResourceData, meta interface{}) ([]*schema.Res
 
 	// Set the resource data for the imported resource
 	// We use passthrough mode to preserve the existing name as-is
-	d.Set("name", existingName)
-	d.Set("resource_type", resourceType)
-	d.Set("passthrough", true)
+	if err := d.Set("name", existingName); err != nil {
+		return nil, fmt.Errorf("error setting name: %w", err)
+	}
+	if err := d.Set("resource_type", resourceType); err != nil {
+		return nil, fmt.Errorf("error setting resource_type: %w", err)
+	}
+	if err := d.Set("passthrough", true); err != nil {
+		return nil, fmt.Errorf("error setting passthrough: %w", err)
+	}
 
 	// Set empty slices for prefixes and suffixes since we can't reverse-engineer them
-	d.Set("prefixes", []string{})
-	d.Set("suffixes", []string{})
-	d.Set("resource_types", []string{})
+	if err := d.Set("prefixes", []string{}); err != nil {
+		return nil, fmt.Errorf("error setting prefixes: %w", err)
+	}
+	if err := d.Set("suffixes", []string{}); err != nil {
+		return nil, fmt.Errorf("error setting suffixes: %w", err)
+	}
+	if err := d.Set("resource_types", []string{}); err != nil {
+		return nil, fmt.Errorf("error setting resource_types: %w", err)
+	}
 
 	// Set the result to match the imported name
-	d.Set("result", existingName)
-	d.Set("results", map[string]string{})
+	if err := d.Set("result", existingName); err != nil {
+		return nil, fmt.Errorf("error setting result: %w", err)
+	}
+	if err := d.Set("results", map[string]string{}); err != nil {
+		return nil, fmt.Errorf("error setting results: %w", err)
+	}
 
 	// Use the existing name as the Terraform resource ID
 	d.SetId(existingName)
@@ -319,7 +340,7 @@ func concatenateParameters(separator string, parameters ...[]string) string {
 	elems := []string{}
 	for _, items := range parameters {
 		for _, item := range items {
-			if len(item) > 0 {
+			if item != "" {
 				elems = append(elems, []string{item}...)
 			}
 		}
@@ -337,8 +358,8 @@ func getResource(resourceType string) (*ResourceStructure, error) {
 	return nil, fmt.Errorf("invalid resource type %s", resourceType)
 }
 
-// Retrieve the resource slug / shortname based on the resourceType and the selected convention
-func getSlug(resourceType string, convention string) string {
+// Retrieve the resource slug / shortname based on the resourceType and the selected convention.
+func getSlug(resourceType, convention string) string {
 	if convention == ConventionCafClassic || convention == ConventionCafRandom {
 		if val, ok := ResourceDefinitions[resourceType]; ok {
 			return val.CafPrefix
@@ -348,13 +369,13 @@ func getSlug(resourceType string, convention string) string {
 }
 
 func trimResourceName(resourceName string, maxLength int) string {
-	var length int = len(resourceName)
+	length := len(resourceName)
 
 	if length > maxLength {
 		length = maxLength
 	}
 
-	return string(resourceName[0:length])
+	return resourceName[0:length]
 }
 
 func convertInterfaceToString(source []interface{}) []string {
@@ -372,7 +393,8 @@ func composeName(separator string,
 	suffixes []string,
 	randomSuffix string,
 	maxlength int,
-	namePrecedence []string) string {
+	namePrecedence []string,
+) string {
 	contents := []string{}
 	currentlength := 0
 
@@ -383,21 +405,21 @@ func composeName(separator string,
 		}
 		switch c := namePrecedence[i]; c {
 		case "name":
-			if len(name) > 0 {
+			if name != "" {
 				if currentlength+len(name)+initialized <= maxlength {
 					contents = append(contents, name)
 					currentlength = currentlength + len(name) + initialized
 				}
 			}
 		case "slug":
-			if len(slug) > 0 {
+			if slug != "" {
 				if currentlength+len(slug)+initialized <= maxlength {
 					contents = append([]string{slug}, contents...)
 					currentlength = currentlength + len(slug) + initialized
 				}
 			}
 		case "random":
-			if len(randomSuffix) > 0 {
+			if randomSuffix != "" {
 				if currentlength+len(randomSuffix)+initialized <= maxlength {
 					contents = append(contents, randomSuffix)
 					currentlength = currentlength + len(randomSuffix) + initialized
@@ -405,7 +427,7 @@ func composeName(separator string,
 			}
 		case "suffixes":
 			if len(suffixes) > 0 {
-				if len(suffixes[0]) > 0 {
+				if suffixes[0] != "" {
 					if currentlength+len(suffixes[0])+initialized <= maxlength {
 						contents = append(contents, suffixes[0])
 						currentlength = currentlength + len(suffixes[0]) + initialized
@@ -418,7 +440,7 @@ func composeName(separator string,
 			}
 		case "prefixes":
 			if len(prefixes) > 0 {
-				if len(prefixes[len(prefixes)-1]) > 0 {
+				if prefixes[len(prefixes)-1] != "" {
 					if currentlength+len(prefixes[len(prefixes)-1])+initialized <= maxlength {
 						contents = append([]string{prefixes[len(prefixes)-1]}, contents...)
 						currentlength = currentlength + len(prefixes[len(prefixes)-1]) + initialized
@@ -429,22 +451,20 @@ func composeName(separator string,
 					i--
 				}
 			}
-
 		}
-
 	}
 	content := strings.Join(contents, separator)
 	return content
 }
 
 func validateResourceType(resourceType string, resourceTypes []string) (bool, error) {
-	isEmpty := len(resourceType) == 0 && len(resourceTypes) == 0
+	isEmpty := resourceType == "" && len(resourceTypes) == 0
 	if isEmpty {
 		return false, fmt.Errorf("resource_type and resource_types parameters are empty, you must specify at least one resource type")
 	}
 	errorStrings := []string{}
 	resourceList := resourceTypes
-	if len(resourceType) > 0 {
+	if resourceType != "" {
 		resourceList = append(resourceList, resourceType)
 	}
 
@@ -469,8 +489,8 @@ func getResourceName(resourceTypeName string, separator string,
 	cleanInput bool,
 	passthrough bool,
 	useSlug bool,
-	namePrecedence []string) (string, error) {
-
+	namePrecedence []string,
+) (string, error) {
 	resource, err := getResource(resourceTypeName)
 	if err != nil {
 		return "", err
@@ -513,18 +533,55 @@ func getResourceName(resourceTypeName string, separator string,
 	return resourceName, nil
 }
 
-func getNameResult(d *schema.ResourceData, meta interface{}) error {
-	name := d.Get("name").(string)
-	prefixes := convertInterfaceToString(d.Get("prefixes").([]interface{}))
-	suffixes := convertInterfaceToString(d.Get("suffixes").([]interface{}))
-	separator := d.Get("separator").(string)
-	resourceType := d.Get("resource_type").(string)
-	resourceTypes := convertInterfaceToString(d.Get("resource_types").([]interface{}))
-	cleanInput := d.Get("clean_input").(bool)
-	passthrough := d.Get("passthrough").(bool)
-	useSlug := d.Get("use_slug").(bool)
-	randomLength := d.Get("random_length").(int)
-	randomSeed := int64(d.Get("random_seed").(int))
+func getNameResult(d *schema.ResourceData, _ interface{}) error {
+	name, ok := d.Get("name").(string)
+	if !ok {
+		return fmt.Errorf("name must be a string")
+	}
+	prefixesRaw, ok := d.Get("prefixes").([]interface{})
+	if !ok {
+		return fmt.Errorf("prefixes must be an array")
+	}
+	prefixes := convertInterfaceToString(prefixesRaw)
+	suffixesRaw, ok := d.Get("suffixes").([]interface{})
+	if !ok {
+		return fmt.Errorf("suffixes must be an array")
+	}
+	suffixes := convertInterfaceToString(suffixesRaw)
+	separator, ok := d.Get("separator").(string)
+	if !ok {
+		return fmt.Errorf("separator must be a string")
+	}
+	resourceType, ok := d.Get("resource_type").(string)
+	if !ok {
+		return fmt.Errorf("resource_type must be a string")
+	}
+	resourceTypesRaw, ok := d.Get("resource_types").([]interface{})
+	if !ok {
+		return fmt.Errorf("resource_types must be an array")
+	}
+	resourceTypes := convertInterfaceToString(resourceTypesRaw)
+	cleanInput, ok := d.Get("clean_input").(bool)
+	if !ok {
+		return fmt.Errorf("clean_input must be a boolean")
+	}
+	passthrough, ok := d.Get("passthrough").(bool)
+	if !ok {
+		return fmt.Errorf("passthrough must be a boolean")
+	}
+	useSlug, ok := d.Get("use_slug").(bool)
+	if !ok {
+		return fmt.Errorf("use_slug must be a boolean")
+	}
+	randomLength, ok := d.Get("random_length").(int)
+	if !ok {
+		return fmt.Errorf("random_length must be an integer")
+	}
+	randomSeedInt, ok := d.Get("random_seed").(int)
+	if !ok {
+		return fmt.Errorf("random_seed must be an integer")
+	}
+	randomSeed := int64(randomSeedInt)
 
 	// Validate random_length parameter
 	if randomLength < 0 {
@@ -543,7 +600,7 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 
 	convention := ConventionCafClassic
 
-	randomSuffix := randSeq(int(randomLength), &randomSeed)
+	randomSuffix := randSeq(randomLength, &randomSeed)
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 
 	isValid, err := validateResourceType(resourceType, resourceTypes)
@@ -551,12 +608,14 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	if len(resourceType) > 0 {
+	if resourceType != "" {
 		resourceName, err := getResourceName(resourceType, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence)
 		if err != nil {
 			return err
 		}
-		d.Set("result", resourceName)
+		if err := d.Set("result", resourceName); err != nil {
+			return fmt.Errorf("error setting result: %w", err)
+		}
 	}
 	resourceNames := make(map[string]string, len(resourceTypes))
 	for _, resourceTypeName := range resourceTypes {
@@ -566,7 +625,9 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 			return err
 		}
 	}
-	d.Set("results", resourceNames)
+	if err := d.Set("results", resourceNames); err != nil {
+		return fmt.Errorf("error setting results: %w", err)
+	}
 	d.SetId(randSeq(16, nil))
 	return nil
 }
