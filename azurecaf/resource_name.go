@@ -250,7 +250,14 @@ func resourceNameDelete(_ *schema.ResourceData, _ interface{}) error {
 	return nil
 }
 
-// Example: azurerm_storage_account:mystorageaccount123.
+// resourceNameImport imports an existing Azure resource name into the Terraform state.
+// 
+// The import ID must be in the format "<resource_type>:<existing_name>", for example:
+//   azurerm_storage_account:mystorageaccount123
+//
+// The function validates the resource type and the existing name against Azure naming requirements,
+// sets the resource data fields accordingly (using passthrough mode), and uses the existing name
+// as the Terraform resource ID.
 func resourceNameImport(d *schema.ResourceData, _ interface{}) ([]*schema.ResourceData, error) {
 	importID := d.Id()
 
