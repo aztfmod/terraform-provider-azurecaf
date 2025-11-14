@@ -7,6 +7,7 @@ This comprehensive guide covers testing strategies, tools, and best practices fo
 - [Quick Start](#quick-start)
 - [Test Organization](#test-organization)
 - [Running Tests](#running-tests)
+  - [Fuzz Testing](#fuzz-tests-go-118)
 - [Understanding Test Files](#understanding-test-files)
 - [Writing New Tests](#writing-new-tests)
 - [Test Coverage](#test-coverage)
@@ -82,6 +83,15 @@ The project includes a comprehensive test suite designed to ensure the proper fu
    - `remaining_coverage_test.go` - Remaining untested code paths
    - `enhanced_tests_test.go` - Enhanced test cases with structured test data
 
+### 8. **Fuzz Tests (Go 1.18+)**
+   - `fuzz_test.go` - Native Go fuzz tests for input validation:
+     - `FuzzCleanString` - Tests cleanString function with random inputs
+     - `FuzzGetResourceName` - Tests name generation with random parameters
+     - `FuzzComposeName` - Tests composeName edge cases
+     - `FuzzRandSeq` - Tests random string generation stability
+   - Validates the provider never panics with malformed inputs
+   - Automatically builds a corpus of interesting test cases over time
+
 ## 🏃‍♂️ Running Tests
 
 ### Available Test Commands
@@ -147,6 +157,28 @@ go tool cover -func=coverage.out
 # Generate HTML coverage report
 go tool cover -html=coverage.out -o coverage.html
 ```
+
+**Fuzz Tests (Go 1.18+):**
+```bash
+# Quick fuzz tests (30s each, recommended for CI)
+make test_fuzz
+
+# Extended fuzz tests (10 minutes total)
+make test_fuzz_extended
+
+# Individual fuzz tests
+make test_fuzz_clean_string      # Test cleanString function
+make test_fuzz_generate_name     # Test name generation
+
+# Run a specific fuzz test manually
+go test -fuzz=FuzzCleanString -fuzztime=1m ./azurecaf
+go test -fuzz=FuzzGetResourceName -fuzztime=30s ./azurecaf
+
+# List all fuzz tests
+go test -list Fuzz ./azurecaf
+```
+
+Fuzz tests validate that the provider never panics with malformed inputs by continuously generating semi-random test cases. The corpus of interesting inputs is automatically cached and reused to improve test effectiveness over time.
 
 ### Environment Variables for Testing
 
