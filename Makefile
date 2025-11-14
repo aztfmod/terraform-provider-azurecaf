@@ -144,3 +144,24 @@ test_complete_with_e2e: test_complete test_e2e	## Run complete test suite includ
 
 test_ci_with_e2e: test_ci test_e2e_quick	## Run CI tests including quick e2e tests
 
+# Fuzz testing targets
+
+test_fuzz: 	## Run quick fuzz tests (30s each) for CI
+	@echo "Running quick fuzz tests (30s each)..."
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 go test -fuzz=FuzzCleanString -fuzztime=30s ./azurecaf
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 go test -fuzz=FuzzGetResourceName -fuzztime=30s ./azurecaf
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 go test -fuzz=FuzzComposeName -fuzztime=30s ./azurecaf
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 go test -fuzz=FuzzRandSeq -fuzztime=30s ./azurecaf
+
+test_fuzz_extended: 	## Run extended fuzz tests (10 minutes total)
+	@echo "Running extended fuzz tests (10 minutes total)..."
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 go test -fuzz=. -fuzztime=10m ./azurecaf
+
+test_fuzz_clean_string: 	## Run fuzz test for cleanString function
+	@echo "Running FuzzCleanString..."
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 go test -fuzz=FuzzCleanString -fuzztime=1m ./azurecaf
+
+test_fuzz_generate_name: 	## Run fuzz test for name generation
+	@echo "Running FuzzGetResourceName..."
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 go test -fuzz=FuzzGetResourceName -fuzztime=1m ./azurecaf
+
