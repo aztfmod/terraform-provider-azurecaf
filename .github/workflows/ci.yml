@@ -1,0 +1,478 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags:
+      - "v*"
+  pull_request:
+    branches: [main]
+  repository_dispatch:
+
+# Restrict permissions for all jobs by default
+permissions:
+  contents: read
+
+env:
+  CHECKPOINT_DISABLE: 1
+  TF_IN_AUTOMATION: 1
+  TF_CLI_ARGS_init: "-upgrade=false"
+
+jobs:
+  # Build job - compiles provider once and uploads as artifact
+  build:
+    name: Build Provider
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Required for creating releases
+      id-token: write  # Required for keyless signing
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: './go.mod'
+
+      # Cache Go modules and build artifacts
+      - name: Cache Go modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Install tfproviderlint
+        run: |
+          go install github.com/bflad/tfproviderlint/cmd/tfproviderlint@latest
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~> 1.12.0"
+
+      - name: Build Provider
+        run: |
+          go generate
+          go fmt ./...
+          go build -o ./terraform-provider-azurecaf
+
+      # Upload provider binary for use in test jobs
+      - name: Upload Provider Binary
+        uses: actions/upload-artifact@v4.4.3
+        with:
+          name: provider-binary
+          path: terraform-provider-azurecaf
+          retention-days: 1
+
+      # Run GoReleaser on tags
+      - name: Import GPG key
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@v6
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v6
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          version: '~> v2'
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+
+  # Unit tests - fast parallel execution
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: './go.mod'
+
+      - name: Cache Go modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Install tfproviderlint
+        run: |
+          go install github.com/bflad/tfproviderlint/cmd/tfproviderlint@latest
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+
+      - name: Download Provider Binary
+        uses: actions/download-artifact@v4.1.3
+        with:
+          name: provider-binary
+
+      - name: Run Unit Tests
+        run: make unittest
+
+  # Coverage tests - run in parallel
+  coverage-tests:
+    name: Coverage Tests
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: './go.mod'
+
+      - name: Cache Go modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Download Provider Binary
+        uses: actions/download-artifact@v4.1.3
+        with:
+          name: provider-binary
+
+      - name: Run Coverage Tests
+        run: make test_coverage
+
+      - name: Generate Coverage HTML
+        run: make test_coverage_html
+
+  # Resource validation tests
+  resource-validation:
+    name: Resource Validation
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: './go.mod'
+
+      - name: Cache Go modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~> 1.12.0"
+
+      - name: Download Provider Binary
+        uses: actions/download-artifact@v4.1.3
+        with:
+          name: provider-binary
+
+      - name: Resource Definition Validation
+        run: make test_resource_definitions
+
+      - name: Resource Matrix Testing
+        run: make test_resource_matrix
+
+      - name: Resource Coverage Analysis
+        run: make test_resource_coverage
+
+  # Integration tests - parallel by category
+  integration-tests:
+    name: Integration Tests - ${{ matrix.category }}
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        category:
+          - data-sources
+          - error-handling
+          - naming-conventions
+          - general
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: './go.mod'
+
+      - name: Cache Go modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~> 1.12.0"
+
+      - name: Download Provider Binary
+        uses: actions/download-artifact@v4.1.3
+        with:
+          name: provider-binary
+
+      - name: Run Integration Tests - Data Sources
+        if: matrix.category == 'data-sources'
+        run: make test_data_sources
+
+      - name: Run Integration Tests - Error Handling
+        if: matrix.category == 'error-handling'
+        run: make test_error_handling
+
+      - name: Run Integration Tests - Naming Conventions
+        if: matrix.category == 'naming-conventions'
+        run: make test_resource_naming
+
+      - name: Run Integration Tests - General
+        if: matrix.category == 'general'
+        run: make test_integration
+
+  # E2E tests - parallel execution
+  e2e-tests:
+    name: E2E Tests - ${{ matrix.test-type }}
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        test-type:
+          - quick
+          - data-source
+          - naming
+          - multiple-types
+          - import
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: './go.mod'
+
+      - name: Cache Go modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~> 1.12.0"
+
+      - name: Download Provider Binary
+        uses: actions/download-artifact@v4.1.3
+        with:
+          name: provider-binary
+
+      - name: Run E2E Tests - Quick
+        if: matrix.test-type == 'quick'
+        run: make test_e2e_quick
+
+      - name: Run E2E Tests - Data Source
+        if: matrix.test-type == 'data-source'
+        run: make test_e2e_data_source
+
+      - name: Run E2E Tests - Naming Conventions
+        if: matrix.test-type == 'naming'
+        run: make test_e2e_naming
+
+      - name: Run E2E Tests - Multiple Types
+        if: matrix.test-type == 'multiple-types'
+        run: make test_e2e_multiple_types
+
+      - name: Run E2E Tests - Import
+        if: matrix.test-type == 'import'
+        run: make test_e2e_import
+
+  # Full E2E test suite - only on pull requests
+  e2e-full:
+    name: E2E Tests - Full Suite
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: './go.mod'
+
+      - name: Cache Go modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~> 1.12.0"
+
+      - name: Download Provider Binary
+        uses: actions/download-artifact@v4.1.3
+        with:
+          name: provider-binary
+
+      - name: Run Full E2E Tests
+        run: make test_e2e
+
+  # Comprehensive CI tests
+  ci-tests:
+    name: Comprehensive CI Tests
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: './go.mod'
+
+      - name: Cache Go modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Install tfproviderlint
+        run: |
+          go install github.com/bflad/tfproviderlint/cmd/tfproviderlint@latest
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~> 1.12.0"
+
+      - name: Download Provider Binary
+        uses: actions/download-artifact@v4.1.3
+        with:
+          name: provider-binary
+
+      - name: Run Comprehensive CI Tests
+        run: make test_ci
+
+  # Test summary job - always runs, reports final status
+  test-summary:
+    name: Test Summary
+    runs-on: ubuntu-latest
+    needs:
+      - unit-tests
+      - coverage-tests
+      - resource-validation
+      - integration-tests
+      - e2e-tests
+      - ci-tests
+    if: always()
+    steps:
+      - name: Check Test Results
+        run: |
+          echo "## Test Results Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ needs.unit-tests.result }}" == "success" ]; then
+            echo "✅ Unit Tests: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Unit Tests: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ needs.coverage-tests.result }}" == "success" ]; then
+            echo "✅ Coverage Tests: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Coverage Tests: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ needs.resource-validation.result }}" == "success" ]; then
+            echo "✅ Resource Validation: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Resource Validation: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ needs.integration-tests.result }}" == "success" ]; then
+            echo "✅ Integration Tests: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Integration Tests: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ needs.e2e-tests.result }}" == "success" ]; then
+            echo "✅ E2E Tests: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ E2E Tests: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ needs.ci-tests.result }}" == "success" ]; then
+            echo "✅ Comprehensive CI Tests: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Comprehensive CI Tests: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Check if all required tests passed
+          if [ "${{ needs.unit-tests.result }}" == "success" ] && \
+             [ "${{ needs.coverage-tests.result }}" == "success" ] && \
+             [ "${{ needs.resource-validation.result }}" == "success" ] && \
+             [ "${{ needs.integration-tests.result }}" == "success" ] && \
+             [ "${{ needs.e2e-tests.result }}" == "success" ] && \
+             [ "${{ needs.ci-tests.result }}" == "success" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "🚀 All tests passed successfully!" >> $GITHUB_STEP_SUMMARY
+            exit 0
+          else
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "❌ Some tests failed. Please check the logs above." >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
