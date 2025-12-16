@@ -111,7 +111,10 @@ func dataName() *schema.Resource {
 }
 
 func dataNameRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	getNameReadResult(d, meta)
+	err := getNameReadResult(d, meta)
+	if err != nil {
+		return diag.FromErr(err)
+	}
 	return diag.Diagnostics{}
 }
 
