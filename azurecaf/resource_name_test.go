@@ -343,6 +343,16 @@ func TestComposeEmptyStringArray(t *testing.T) {
 	}
 }
 
+func TestComposeName_ErrorWhenExceedingMaxLength(t *testing.T) {
+	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+	prefixes := []string{"prefix"}
+	suffixes := []string{"suffix"}
+	_, err := composeName("-", prefixes, "verylongname", "", suffixes, "", 10, namePrecedence, true)
+	if err == nil {
+		t.Errorf("expected error when name exceeds max length, got nil")
+	}
+}
+
 func TestValidResourceType_validParameters(t *testing.T) {
 	resourceType := "azurerm_resource_group"
 	resourceTypes := []string{"azurerm_container_registry", "azurerm_storage_account"}
