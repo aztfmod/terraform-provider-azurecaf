@@ -24,7 +24,7 @@ func NewNameBuilder(maxLength int, separator string) *NameBuilder {
 }
 
 func (b NameBuilder) include(segment string) bool {
-	trimmedLength := b.GetTrimmedLength()
+	trimmedLength := len(b.GetTrimmedName())
 	segmentLength := len(segment)
 	if trimmedLength == 0 {
 		return segmentLength <= b.MaxLength
@@ -38,14 +38,6 @@ func (b *NameBuilder) Append(segment string) {
 
 func (b *NameBuilder) Prepend(segment string) {
 	b.content = append([]NameSegment{{Value: segment, Include: b.include(segment)}}, b.content...)
-}
-
-func (b NameBuilder) GetLength() int {
-	return len(b.GetName())
-}
-
-func (b NameBuilder) GetTrimmedLength() int {
-	return len(b.GetTrimmedName())
 }
 
 func (b NameBuilder) GetName() string {
