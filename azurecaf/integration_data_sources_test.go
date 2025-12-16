@@ -99,6 +99,27 @@ func TestAcc_DataSourcesIntegration(t *testing.T) {
 		}
 	})
 
+	// Test name data source returns error when exceeding max length
+	t.Run("NameDataSourceErrorWhenExceedingMaxLength", func(t *testing.T) {
+		nameDataSource := provider.DataSourcesMap["azurecaf_name"]
+
+		nameData := schema.TestResourceDataRaw(t, nameDataSource.Schema, map[string]interface{}{
+			"name":                            "verylongnamethatwillexceedmaxlength",
+			"prefixes":                        []interface{}{"prefix1", "prefix2"},
+			"suffixes":                        []interface{}{"suffix1", "suffix2"},
+			"resource_type":                   "azurerm_storage_account", // max length 24
+			"use_slug":                        true,
+			"clean_input":                     true,
+			"separator":                       "-",
+			"error_when_exceeding_max_length": true,
+		})
+
+		diags := nameDataSource.ReadContext(context.Background(), nameData, nil)
+		if !diags.HasError() {
+			t.Errorf("Expected error when name exceeds max length, but got none")
+		}
+	})
+
 	// Test integration between environment variable and name data source
 	t.Run("IntegrationEnvVarAndName", func(t *testing.T) {
 		envVarDataSource := provider.DataSourcesMap["azurecaf_environment_variable"]
