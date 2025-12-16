@@ -3,9 +3,11 @@ package azurecaf
 import (
 	"context"
 	"os"
+	"regexp"
 	"strings"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -99,27 +101,6 @@ func TestAcc_DataSourcesIntegration(t *testing.T) {
 		}
 	})
 
-	// Test name data source returns error when exceeding max length
-	t.Run("NameDataSourceErrorWhenExceedingMaxLength", func(t *testing.T) {
-		nameDataSource := provider.DataSourcesMap["azurecaf_name"]
-
-		nameData := schema.TestResourceDataRaw(t, nameDataSource.Schema, map[string]interface{}{
-			"name":                            "verylongnamethatwillexceedmaxlength",
-			"prefixes":                        []interface{}{"prefix1", "prefix2"},
-			"suffixes":                        []interface{}{"suffix1", "suffix2"},
-			"resource_type":                   "azurerm_storage_account", // max length 24
-			"use_slug":                        true,
-			"clean_input":                     true,
-			"separator":                       "-",
-			"error_when_exceeding_max_length": true,
-		})
-
-		diags := nameDataSource.ReadContext(context.Background(), nameData, nil)
-		if !diags.HasError() {
-			t.Errorf("Expected error when name exceeds max length, but got none")
-		}
-	})
-
 	// Test integration between environment variable and name data source
 	t.Run("IntegrationEnvVarAndName", func(t *testing.T) {
 		envVarDataSource := provider.DataSourcesMap["azurecaf_environment_variable"]
@@ -198,3 +179,30 @@ resource "azurecaf_naming_convention" "combined" {
   convention    = "random"
 }
 `
+
+// TestAccDataSourceName_ErrorWhenExceedingMaxLength is a real acceptance test that verifies
+// the data source returns an error when the generated name exceeds the resource's max length
+func TestAccDataSourceName_ErrorWhenExceedingMaxLength(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:  func() { testAccPreCheck(t) },
+		Providers: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+data "azurecaf_name" "test" {
+  name                            = "verylongnamethatwillexceedmaxlength"
+  prefixes                        = ["prefix1", "prefix2"]
+  suffixes                        = ["suffix1", "suffix2"]
+  resource_type                   = "azurerm_storage_account"
+  use_slug                        = true
+  clean_input                     = true
+  separator                       = "-"
+  error_when_exceeding_max_length = true
+}
+`,
+				// For storage accounts, separator is cleaned (hyphens not allowed), so name has no separators
+				ExpectError: regexp.MustCompile(`prefix1prefix2stverylongnamethatwillexceedmaxlengthsuffix1suffix2.*exceeds maximum length`),
+			},
+		},
+	})
+}
