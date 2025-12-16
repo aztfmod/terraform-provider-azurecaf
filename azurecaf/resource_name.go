@@ -372,7 +372,8 @@ func composeName(separator string,
 	suffixes []string,
 	randomSuffix string,
 	maxlength int,
-	namePrecedence []string) string {
+	namePrecedence []string,
+	errorWhenExceedingMaxLength bool) (string, error) {
 	contents := []string{}
 	currentlength := 0
 
@@ -434,7 +435,7 @@ func composeName(separator string,
 
 	}
 	content := strings.Join(contents, separator)
-	return content
+	return content, nil
 }
 
 func validateResourceType(resourceType string, resourceTypes []string) (bool, error) {
@@ -469,7 +470,8 @@ func getResourceName(resourceTypeName string, separator string,
 	cleanInput bool,
 	passthrough bool,
 	useSlug bool,
-	namePrecedence []string) (string, error) {
+	namePrecedence []string,
+	errorWhenExceedingMaxLength bool) (string, error) {
 
 	resource, err := getResource(resourceTypeName)
 	if err != nil {
@@ -498,7 +500,10 @@ func getResourceName(resourceTypeName string, separator string,
 	if passthrough {
 		resourceName = name
 	} else {
-		resourceName = composeName(separator, prefixes, name, slug, suffixes, randomSuffix, resource.MaxLength, namePrecedence)
+		resourceName, err = composeName(separator, prefixes, name, slug, suffixes, randomSuffix, resource.MaxLength, namePrecedence, errorWhenExceedingMaxLength)
+		if err != nil {
+			return "", err
+		}
 	}
 	resourceName = trimResourceName(resourceName, resource.MaxLength)
 
@@ -525,6 +530,7 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	useSlug := d.Get("use_slug").(bool)
 	randomLength := d.Get("random_length").(int)
 	randomSeed := int64(d.Get("random_seed").(int))
+	errorWhenExceedingMaxLenght := false
 
 	// Validate random_length parameter
 	if randomLength < 0 {
@@ -552,7 +558,7 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	if len(resourceType) > 0 {
-		resourceName, err := getResourceName(resourceType, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence)
+		resourceName, err := getResourceName(resourceType, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence, errorWhenExceedingMaxLenght)
 		if err != nil {
 			return err
 		}
@@ -561,7 +567,7 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	resourceNames := make(map[string]string, len(resourceTypes))
 	for _, resourceTypeName := range resourceTypes {
 		var err error
-		resourceNames[resourceTypeName], err = getResourceName(resourceTypeName, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence)
+		resourceNames[resourceTypeName], err = getResourceName(resourceTypeName, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence, errorWhenExceedingMaxLenght)
 		if err != nil {
 			return err
 		}

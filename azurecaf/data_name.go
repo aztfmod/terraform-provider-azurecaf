@@ -101,6 +101,11 @@ func dataName() *schema.Resource {
 				ForceNew: true,
 				Default:  true,
 			},
+			"error_when_exceeding_max_length": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 		},
 	}
 }
@@ -121,6 +126,7 @@ func getNameReadResult(d *schema.ResourceData, meta interface{}) error {
 	useSlug := d.Get("use_slug").(bool)
 	randomLength := d.Get("random_length").(int)
 	randomSeed := int64(d.Get("random_seed").(int))
+	errorWhenExceedingMaxLength := d.Get("error_when_exceeding_max_length").(bool)
 
 	convention := ConventionCafClassic
 
@@ -128,7 +134,7 @@ func getNameReadResult(d *schema.ResourceData, meta interface{}) error {
 
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 
-	resourceName, err := getResourceName(resourceType, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence)
+	resourceName, err := getResourceName(resourceType, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence, errorWhenExceedingMaxLength)
 	if err != nil {
 		return err
 	}
