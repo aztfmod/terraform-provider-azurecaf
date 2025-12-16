@@ -180,12 +180,13 @@ resource "azurecaf_naming_convention" "combined" {
 }
 `
 
-// TestAccDataSourceName_ErrorWhenExceedingMaxLength is a real acceptance test that verifies
+// TestAcc_DataSourceName_ErrorWhenExceedingMaxLength is a real acceptance test that verifies
 // the data source returns an error when the generated name exceeds the resource's max length
-func TestAccDataSourceName_ErrorWhenExceedingMaxLength(t *testing.T) {
+func TestAcc_DataSourceName_ErrorWhenExceedingMaxLength(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: `
