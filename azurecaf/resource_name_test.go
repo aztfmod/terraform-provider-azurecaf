@@ -353,6 +353,31 @@ func TestComposeName_ErrorWhenExceedingMaxLength(t *testing.T) {
 	}
 }
 
+func TestResourceName_ErrorWhenExceedingMaxLength(t *testing.T) {
+	provider := Provider()
+	nameResource := provider.ResourcesMap["azurecaf_name"]
+
+	resourceData := schema.TestResourceDataRaw(t, nameResource.Schema, map[string]interface{}{
+		"name":                            "verylongnamethatwillexceedmaxlength",
+		"prefixes":                        []interface{}{"prefix1", "prefix2"},
+		"suffixes":                        []interface{}{"suffix1", "suffix2"},
+		"resource_type":                   "azurerm_storage_account",
+		"use_slug":                        true,
+		"clean_input":                     true,
+		"separator":                       "-",
+		"error_when_exceeding_max_length": true,
+	})
+
+	err := nameResource.Create(resourceData, nil)
+	if err == nil {
+		t.Errorf("expected error when name exceeds max length, got nil")
+	}
+	expectedPattern := regexp.MustCompile(`exceeds maximum length of \d+ by \d+ characters`)
+	if !expectedPattern.MatchString(err.Error()) {
+		t.Errorf("error %q does not match pattern %q", err.Error(), expectedPattern.String())
+	}
+}
+
 func TestValidResourceType_validParameters(t *testing.T) {
 	resourceType := "azurerm_resource_group"
 	resourceTypes := []string{"azurerm_container_registry", "azurerm_storage_account"}

@@ -234,6 +234,12 @@ func resourceName() *schema.Resource {
 				ForceNew: true,
 				Default:  true,
 			},
+			"error_when_exceeding_max_length": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				ForceNew: true,
+				Default:  false,
+			},
 		},
 	}
 }
@@ -516,7 +522,7 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	useSlug := d.Get("use_slug").(bool)
 	randomLength := d.Get("random_length").(int)
 	randomSeed := int64(d.Get("random_seed").(int))
-	errorWhenExceedingMaxLength := false
+	errorWhenExceedingMaxLength := d.Get("error_when_exceeding_max_length").(bool)
 
 	// Validate random_length parameter
 	if randomLength < 0 {
