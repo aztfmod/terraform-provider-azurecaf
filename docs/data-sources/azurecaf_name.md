@@ -141,6 +141,8 @@ The following arguments are supported:
 
 * `use_slug` - (Optional) Include resource type abbreviation (slug) in the generated name. When `false`, no resource type identifier is added. Defaults to `true`.
 
+* `error_when_exceeding_max_length` - (Optional) Fail when the generated name exceeds max length of the resource. Defaults to `false`.
+
 # Name Composition and Truncation
 
 This section provides detailed information about how the Azure CAF provider composes resource names, handles length constraints, and applies truncation when necessary.

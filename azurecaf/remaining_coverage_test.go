@@ -55,7 +55,7 @@ func TestGetResourceNameRegexError(t *testing.T) {
 		ResourceDefinitions["azurerm_storage_account"] = originalResource
 	}()
 
-	_, err := getResourceName("azurerm_storage_account", "-", []string{}, "test", []string{}, "", "cafclassic", false, false, true, []string{"name"})
+	_, err := getResourceName("azurerm_storage_account", "-", []string{}, "test", []string{}, "", "cafclassic", false, false, true, []string{"name"}, false)
 	if err == nil {
 		t.Error("Expected regex compilation error but got none")
 	}

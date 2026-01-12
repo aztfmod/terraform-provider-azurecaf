@@ -3,9 +3,11 @@ package azurecaf
 import (
 	"context"
 	"os"
+	"regexp"
 	"strings"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -177,3 +179,31 @@ resource "azurecaf_naming_convention" "combined" {
   convention    = "random"
 }
 `
+
+// TestAcc_DataSourceName_ErrorWhenExceedingMaxLength is a real acceptance test that verifies
+// the data source returns an error when the generated name exceeds the resource's max length
+func TestAcc_DataSourceName_ErrorWhenExceedingMaxLength(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+data "azurecaf_name" "test" {
+  name                            = "verylongnamethatwillexceedmaxlength"
+  prefixes                        = ["prefix1", "prefix2"]
+  suffixes                        = ["suffix1", "suffix2"]
+  resource_type                   = "azurerm_storage_account"
+  use_slug                        = true
+  clean_input                     = true
+  separator                       = "-"
+  error_when_exceeding_max_length = true
+}
+`,
+				// Match only the stable part of the error message to avoid brittleness if name composition changes.
+				ExpectError: regexp.MustCompile(`exceeds maximum length of \d+ by \d+ characters`),
+			},
+		},
+	})
+}
