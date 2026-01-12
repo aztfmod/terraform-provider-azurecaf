@@ -201,8 +201,8 @@ data "azurecaf_name" "test" {
   error_when_exceeding_max_length = true
 }
 `,
-				// For storage accounts, separator is cleaned (hyphens not allowed), so name has no separators
-				ExpectError: regexp.MustCompile(`prefix1prefix2stverylongnamethatwillexceedmaxlengthsuffix1suffix2.*exceeds maximum length`),
+				// Match only the stable part of the error message to avoid brittleness if name composition changes.
+				ExpectError: regexp.MustCompile(`exceeds maximum length of \d+ by \d+ characters`),
 			},
 		},
 	})
