@@ -54,3 +54,5 @@ func regexMatch(id string, exp *regexp.Regexp, requiredMatches int) resource.Tes
 		return nil
 	}
 }
+
+// Test new Linux and Windows function app resources
