@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Function App Resources**: Added support for new Azure Function App resource types
+  - Added `azurerm_linux_function_app` with slug `fa`
+  - Added `azurerm_linux_function_app_slot` with slug `fas`
+  - Added `azurerm_windows_function_app` with slug `fa`
+  - Added `azurerm_windows_function_app_slot` with slug `fas`
+  - These replace the deprecated `azurerm_function_app` and `azurerm_function_app_slot`
+  - Maintains consistency with existing function app naming rules (2-60 chars, global scope)
+  - Impact: High - Enables support for modern Azure Function App deployment patterns
+
 ### Fixed
 - **Go Version Alignment**: Resolved conflicting Go version declarations in go.mod
   - Changed from conflicting `go 1.23.0` and `toolchain go1.24.4` to unified `go 1.24`
