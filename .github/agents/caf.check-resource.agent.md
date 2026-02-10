@@ -74,17 +74,22 @@ From the naming rules prose, derive these fields:
 - "subscription" -> `"subscription"`
 - "region" -> `"region"`
 
-**validation_regex**: Construct a regex matching the valid characters description. Use these common patterns as reference:
+**validation_regex**: Construct a regex that directly matches the **documented constraints**: required start/end characters (if any) and the allowed character set, with `{MIN,MAX}` quantifiers based on the `min_length`/`max_length` values.
 
-| Rule description | validation_regex |
-|-----------------|-----------------|
+| Rule description | validation_regex (example) |
+|-----------------|----------------------------|
 | Lowercase alphanumeric only | `"\"^[a-z0-9]{MIN,MAX}$\""` |
 | Alphanumeric only (mixed case) | `"\"^[a-zA-Z0-9]{MIN,MAX}$\""` |
-| Alphanumeric + hyphens, start with letter, end with alphanumeric | `"\"^[a-zA-Z][a-zA-Z0-9-]{MIN-2,MAX-2}[a-zA-Z0-9]$\""` |
-| Alphanumeric + hyphens + underscores | `"\"^[a-zA-Z0-9][a-zA-Z0-9_-]{MIN-2,MAX-2}[a-zA-Z0-9]$\""` |
-| Alphanumeric + hyphens + underscores + periods | `"\"^[a-zA-Z0-9][a-zA-Z0-9_.-]{MIN-2,MAX-2}[a-zA-Z0-9_]$\""` |
+| Alphanumeric + hyphens | `"\"^[a-zA-Z0-9-]{MIN,MAX}$\""` |
+| Alphanumeric + hyphens + underscores | `"\"^[a-zA-Z0-9_-]{MIN,MAX}$\""` |
+| Alphanumeric + hyphens + underscores + periods | `"\"^[a-zA-Z0-9_.-]{MIN,MAX}$\""` |
 
-IMPORTANT: The regex value MUST be wrapped in escaped double quotes: `"\"^pattern$\""`. This is a project convention.
+IMPORTANT:
+- The regex value MUST be wrapped in escaped double quotes: `"\"^pattern$\""`. This is a project convention.
+- If the docs **require a specific starting or ending character** (for example, “must start with a letter and end with an alphanumeric character”), construct the pattern explicitly from that rule instead of blindly applying a `{MIN-2,MAX-2}` formula.
+  - In such cases, only split the pattern into first/middle/last segments when `MIN` and `MAX` are both **at least 2**.
+  - Derive the middle quantifier from the actual lengths. For example, for “start with a letter, end with alphanumeric, length MIN–MAX, allowed [a-zA-Z0-9-] in the middle”, use: `"\"^[a-zA-Z][a-zA-Z0-9-]{MIN-2,MAX-2}[a-zA-Z0-9]$\""`, but **only** when `MIN >= 2` and `MAX >= 2`.
+  - When `MIN < 2` or when there is **no** fixed start/end requirement, prefer a single character class with `{MIN,MAX}` as in the table above.
 
 **regex** (cleaning regex): The inverse pattern that matches characters to REMOVE. Common mappings:
 
