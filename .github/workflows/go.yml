@@ -136,6 +136,20 @@ jobs:
           TF_IN_AUTOMATION: 1
           TF_CLI_ARGS_init: "-upgrade=false"
 
+      - name: Fuzz Tests (Quick)
+        run: make test_fuzz
+        env:
+          CHECKPOINT_DISABLE: 1
+          TF_IN_AUTOMATION: 1
+
+      - name: Store Fuzz Corpus
+        if: always()
+        uses: actions/cache@v4
+        with:
+          path: testdata/fuzz/
+          key: fuzz-corpus-${{ github.sha }}
+          restore-keys: fuzz-corpus-
+
       - name: Import GPG key
         id: import_gpg
         uses: crazy-max/ghaction-import-gpg@v6

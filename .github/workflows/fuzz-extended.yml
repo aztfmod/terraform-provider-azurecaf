@@ -1,0 +1,53 @@
+name: Extended Fuzz Testing
+
+on:
+  schedule:
+    - cron: '0 2 * * 0'  # Weekly on Sunday at 2 AM UTC
+  workflow_dispatch:  # Allow manual triggering
+
+permissions:
+  contents: read
+
+jobs:
+  fuzz:
+    name: Extended Fuzzing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: './go.mod'
+
+      - name: Restore Fuzz Corpus
+        uses: actions/cache@v4
+        with:
+          path: testdata/fuzz/
+          key: fuzz-corpus-${{ github.sha }}
+          restore-keys: fuzz-corpus-
+
+      - name: Run Extended Fuzzing
+        run: make test_fuzz_extended
+        env:
+          CHECKPOINT_DISABLE: 1
+          TF_IN_AUTOMATION: 1
+
+      - name: Store Fuzz Corpus
+        if: always()
+        uses: actions/cache@v4
+        with:
+          path: testdata/fuzz/
+          key: fuzz-corpus-${{ github.sha }}
+          restore-keys: fuzz-corpus-
+
+      - name: Upload Fuzz Findings
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fuzz-findings
+          path: testdata/fuzz/
+          retention-days: 30
