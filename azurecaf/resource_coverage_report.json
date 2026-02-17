@@ -201,6 +201,8 @@
     "azurerm_lb_outbound_rule",
     "azurerm_lb_probe",
     "azurerm_lb_rule",
+    "azurerm_linux_function_app",
+    "azurerm_linux_function_app_slot",
     "azurerm_linux_virtual_machine",
     "azurerm_linux_virtual_machine_scale_set",
     "azurerm_linux_web_app",
@@ -390,6 +392,8 @@
     "azurerm_web_application_firewall_policy",
     "azurerm_web_pubsub",
     "azurerm_web_pubsub_hub",
+    "azurerm_windows_function_app",
+    "azurerm_windows_function_app_slot",
     "azurerm_windows_virtual_machine",
     "azurerm_windows_virtual_machine_scale_set",
     "azurerm_windows_web_app",
@@ -399,6 +403,6 @@
     "general",
     "general_safe"
   ],
-  "successful_resources": 395,
-  "total_resources": 395
+  "successful_resources": 399,
+  "total_resources": 399
 }
