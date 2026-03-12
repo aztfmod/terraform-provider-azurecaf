@@ -3154,6 +3154,23 @@
         }
     },
     {
+        "name": "azurerm_managed_redis",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$\"",
+        "invalid-double-dash": true,
+        "scope": "resourceGroup",
+        "slug": "amr",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "slug": "amr",
+            "resource": "Azure Managed Redis",
+            "resource_provider_namespace": "Microsoft.Cache/redisEnterprise"
+        }
+    },
+    {
         "name": "azurerm_maps_account",
         "min_length": 1,
         "max_length": 98,
