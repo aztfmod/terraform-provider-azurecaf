@@ -18,7 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Impact: Medium - Enables CAF-compliant naming for the new Azure Managed Redis offering
 
 ### Fixed
-- **Go Version Alignment**: Resolved conflicting Go version declarations in go.mod
+- **Go Version Alignment**: Reverted unintentional Go version and SDK version bumps in go.mod
+  - Downgraded `terraform-plugin-sdk/v2` from `v2.40.0` back to `v2.39.0` (the intended target version)
+  - Reverted `go 1.25.0` back to `go 1.24.4` in go.mod to align with `e2e/go.mod` and `devcontainer.json`
+  - The Go 1.25.0 bump was caused by `terraform-plugin-sdk v2.40.0` requiring it; using v2.39.0 keeps Go at 1.24.4
+  - Impact: Low - Ensures consistent Go toolchain across all environments (go.mod, e2e/go.mod, devcontainer.json)
+- **Go Version Unification (prior fix)**: Resolved conflicting Go version declarations in go.mod
   - Changed from conflicting `go 1.23.0` and `toolchain go1.24.4` to unified `go 1.24`
   - Eliminates version mismatch errors during builds
   - Ensures consistent Go toolchain usage across all environments
