@@ -3158,7 +3158,6 @@
         "min_length": 3,
         "max_length": 63,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$\"",
-        "invalid-double-dash": true,
         "scope": "resourceGroup",
         "slug": "amr",
         "dashes": true,
