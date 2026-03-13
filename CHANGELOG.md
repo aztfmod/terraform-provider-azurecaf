@@ -17,6 +17,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - This resource supersedes `azurerm_redis_cache` (Azure Cache for Redis), which is being retired
   - Impact: Medium - Enables CAF-compliant naming for the new Azure Managed Redis offering
 
+### Changed
+- **Dependency Updates**: Bumped key provider dependencies to latest versions
+  - `github.com/hashicorp/terraform-plugin-sdk/v2`: 2.38.2 → 2.39.0 (minor version bump with SDK improvements)
+  - `github.com/hashicorp/terraform-plugin-go`: updated to v0.31.0 as a transitive dependency
+  - `google.golang.org/grpc`: updated to v1.79.2 as a transitive dependency
+  - Associated transitive dependencies updated accordingly via `go mod tidy`
+  - Impact: Low - Keeps the provider up to date with the latest Terraform plugin SDK improvements and security patches
+
 ### Fixed
 - **Go Version Alignment**: Resolved conflicting Go version declarations in go.mod
   - Changed from conflicting `go 1.23.0` and `toolchain go1.24.4` to unified `go 1.24`
