@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **azurerm_managed_redis**: Added support for Azure Managed Redis resource type
+  - Slug: `amr` (per Microsoft CAF documentation)
+  - Length: 3–63 characters
+  - Scope: `resourceGroup`
+  - Valid characters: alphanumeric and hyphens; must start and end with alphanumeric; consecutive hyphens are permitted (matches current regex validation behavior)
+  - Resource provider namespace: `Microsoft.Cache/redisEnterprise`
+  - This resource supersedes `azurerm_redis_cache` (Azure Cache for Redis), which is being retired
+  - Impact: Medium - Enables CAF-compliant naming for the new Azure Managed Redis offering
+
 ### Fixed
 - **Go Version Alignment**: Resolved conflicting Go version declarations in go.mod
   - Changed from conflicting `go 1.23.0` and `toolchain go1.24.4` to unified `go 1.24`
