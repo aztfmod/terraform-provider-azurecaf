@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Slug: `amr` (per Microsoft CAF documentation)
   - Length: 3–63 characters
   - Scope: `resourceGroup`
-  - Valid characters: alphanumeric and hyphens; must start and end with alphanumeric; no consecutive hyphens
+  - Valid characters: alphanumeric and hyphens; must start and end with alphanumeric; consecutive hyphens are permitted (matches current regex validation behavior)
   - Resource provider namespace: `Microsoft.Cache/redisEnterprise`
   - This resource supersedes `azurerm_redis_cache` (Azure Cache for Redis), which is being retired
   - Impact: Medium - Enables CAF-compliant naming for the new Azure Managed Redis offering
