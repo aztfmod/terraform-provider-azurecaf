@@ -152,8 +152,14 @@ func getResult(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	// joning the elements performing first filter to remove non compatible characters based on the resource type
-	myRegex, _ := regexp.Compile(regExFilter)
-	validationRegEx, _ := regexp.Compile(validationRegExPattern)
+	myRegex, err := regexp.Compile(regExFilter)
+	if err != nil {
+		return fmt.Errorf("invalid regex filter pattern %q for resource %s: %w", regExFilter, resourceType, err)
+	}
+	validationRegEx, err := regexp.Compile(validationRegExPattern)
+	if err != nil {
+		return fmt.Errorf("invalid validation regex pattern %q for resource %s: %w", validationRegExPattern, resourceType, err)
+	}
 	// clear the name first based on the regexp filter of the resource type
 	nameList := []string{}
 	for _, s := range []string{prefix, cafPrefix, name, postfix} {
