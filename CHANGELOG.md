@@ -49,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Nil pointer panic on invalid regex patterns**: `cleanString()` in `resource_name.go` and `getResult()` in `resource_naming_convention.go` previously discarded `regexp.Compile` errors, causing nil pointer dereference panics at runtime when a regex pattern in `resourceDefinition.json` was invalid. Both functions now handle compilation errors explicitly: `cleanString()` logs a warning and returns the input string unchanged, while `getResult()` returns a descriptive error to the caller.
 - **Function App Resources**: Added support for new Azure Function App resource types
   - Added `azurerm_linux_function_app` with slug `fa`
   - Added `azurerm_linux_function_app_slot` with slug `fas`
