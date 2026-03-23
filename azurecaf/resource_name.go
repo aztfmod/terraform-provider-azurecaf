@@ -3,6 +3,7 @@ package azurecaf
 import (
 	"context"
 	"fmt"
+	"log"
 	"regexp"
 	"strings"
 
@@ -317,7 +318,11 @@ func cleanSlice(names []string, resourceDefinition *ResourceStructure) []string 
 }
 
 func cleanString(name string, resourceDefinition *ResourceStructure) string {
-	myRegex, _ := regexp.Compile(resourceDefinition.RegEx)
+	myRegex, err := regexp.Compile(resourceDefinition.RegEx)
+	if err != nil {
+		log.Printf("[WARN] invalid regex pattern %q for resource %s: %v", resourceDefinition.RegEx, resourceDefinition.ResourceTypeName, err)
+		return name
+	}
 	return myRegex.ReplaceAllString(name, "")
 }
 

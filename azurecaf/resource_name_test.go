@@ -48,6 +48,18 @@ func TestCleanInput_not_remove_special_allowed_chars(t *testing.T) {
 	}
 }
 
+func TestCleanStringInvalidRegex(t *testing.T) {
+	// Inject an invalid regex pattern to verify cleanString returns the input unchanged (no panic)
+	resource := ResourceDefinitions["azurerm_resource_group"]
+	invalidResource := resource
+	invalidResource.RegEx = "[" // Invalid regex
+	input := "my-test-name"
+	result := cleanString(input, &invalidResource)
+	if result != input {
+		t.Errorf("Expected cleanString to return input unchanged for invalid regex, got %q", result)
+	}
+}
+
 func TestCleanSplice_no_changes(t *testing.T) {
 	data := []string{"testdata", "test", "data"}
 	resource := ResourceDefinitions["azurerm_resource_group"]
