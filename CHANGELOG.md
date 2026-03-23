@@ -8,6 +8,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Automation**: Added comprehensive Copilot skills and agents framework for repository automation
+  - **18 new skills** across 6 domains: resource lifecycle, CI/CD & testing, release management, community, documentation, and Azure sync
+    - `changelog-update` — automated CHANGELOG.md entry creation with semver impact assessment
+    - `readme-resource-table` — README.md resource status table sync
+    - `regression-test-runner` — full CI test suite execution and reporting
+    - `e2e-test-runner` — E2E test execution with structured summaries
+    - `coverage-analysis` — test coverage analysis against 95% threshold
+    - `test-failure-diagnosis` — automated test failure root cause analysis
+    - `pr-compliance-check` — PR checklist validation (generated code, CHANGELOG, README)
+    - `resource-diff-report` — resourceDefinition.json diff between versions
+    - `issue-to-resource-spec` — parse resource request issues into draft JSON entries
+    - `contributor-guide` — step-by-step contribution guidance by type
+    - `azure-caf-sync` — CAF slug drift detection from official Microsoft docs
+    - `azure-resource-discovery` — discover new azurerm resources not yet supported
+    - `naming-rules-drift-check` — detect Azure naming rule changes
+    - `resource-completeness-check` — provider coverage vs known azurerm resources
+    - `semver-assessment` — semantic version bump determination
+    - `release-notes-generator` — GitHub Release notes from CHANGELOG
+    - `pre-release-validation` — comprehensive pre-release checks
+    - `docs-resource-sync` — keep documentation in sync with resource definitions
+    - `example-generator` — generate Terraform example configurations
+    - `resource-bulk-import` — batch-research and insert multiple resources
+  - **6 new interactive agents** for Copilot Chat workflows:
+    - `caf.add-resource` — end-to-end new resource addition (research → JSON → build → test → changelog → readme)
+    - `caf.update-resource` — update existing resource with full validation
+    - `caf.bulk-add-resources` — add multiple resources in one session
+    - `caf.audit-resources` — full audit: completeness, drift, coverage
+    - `caf.release-prep` — prepare releases: validate, version, generate notes
+    - `caf.diagnose-failure` — diagnose and fix build/test failures
+  - **6 new GitHub Actions agentic workflows**:
+    - `nightly-regression` — nightly test suite on main, auto-creates issues on failure
+    - `pr-review-agent` — automated PR compliance review on open/update
+    - `issue-to-pr-agent` — auto-creates PR from issues labeled `new-resource`
+    - `contributor-welcome` — welcomes first-time contributors with guidance
+    - `weekly-azure-sync` — weekly Azure resource discovery and CAF drift detection
+    - `release-validation` — validates releases on tag push
+  - Updated `copilot-instructions.md` with complete skill and agent catalog
+  - Impact: High — enables comprehensive repository automation across all development workflows
+
+### Fixed
+
 - **Function App Resources**: Added support for new Azure Function App resource types
   - Added `azurerm_linux_function_app` with slug `fa`
   - Added `azurerm_linux_function_app_slot` with slug `fas`
