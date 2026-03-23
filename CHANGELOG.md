@@ -8,6 +8,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Automation**: Added comprehensive Copilot skills and agents framework for repository automation
+  - **18 new skills** across 6 domains: resource lifecycle, CI/CD & testing, release management, community, documentation, and Azure sync
+    - `changelog-update` — automated CHANGELOG.md entry creation with semver impact assessment
+    - `readme-resource-table` — README.md resource status table sync
+    - `regression-test-runner` — full CI test suite execution and reporting
+    - `e2e-test-runner` — E2E test execution with structured summaries
+    - `coverage-analysis` — test coverage analysis against 95% threshold
+    - `test-failure-diagnosis` — automated test failure root cause analysis
+    - `pr-compliance-check` — PR checklist validation (generated code, CHANGELOG, README)
+    - `resource-diff-report` — resourceDefinition.json diff between versions
+    - `issue-to-resource-spec` — parse resource request issues into draft JSON entries
+    - `contributor-guide` — step-by-step contribution guidance by type
+    - `azure-caf-sync` — CAF slug drift detection from official Microsoft docs
+    - `azure-resource-discovery` — discover new azurerm resources not yet supported
+    - `naming-rules-drift-check` — detect Azure naming rule changes
+    - `resource-completeness-check` — provider coverage vs known azurerm resources
+    - `semver-assessment` — semantic version bump determination
+    - `release-notes-generator` — GitHub Release notes from CHANGELOG
+    - `pre-release-validation` — comprehensive pre-release checks
+    - `docs-resource-sync` — keep documentation in sync with resource definitions
+    - `example-generator` — generate Terraform example configurations
+    - `resource-bulk-import` — batch-research and insert multiple resources
+  - **6 new interactive agents** for Copilot Chat workflows:
+    - `caf.add-resource` — end-to-end new resource addition (research → JSON → build → test → changelog → readme)
+    - `caf.update-resource` — update existing resource with full validation
+    - `caf.bulk-add-resources` — add multiple resources in one session
+    - `caf.audit-resources` — full audit: completeness, drift, coverage
+    - `caf.release-prep` — prepare releases: validate, version, generate notes
+    - `caf.diagnose-failure` — diagnose and fix build/test failures
+  - **6 new GitHub Actions agentic workflows**:
+    - `nightly-regression` — nightly test suite on main, auto-creates issues on failure
+    - `pr-review-agent` — automated PR compliance review on open/update
+    - `issue-to-pr-agent` — auto-creates PR from issues labeled `new-resource`
+    - `contributor-welcome` — welcomes first-time contributors with guidance
+    - `weekly-azure-sync` — weekly Azure resource discovery and CAF drift detection
+    - `release-validation` — validates releases on tag push
+  - Updated `copilot-instructions.md` with complete skill and agent catalog
+  - Impact: High — enables comprehensive repository automation across all development workflows
+- **RESOURCE**: Bulk addition of 235 new Azure resource types
+  - Added resources across all major Azure categories: API Management (27), App Service (12), Automation (12), Compute (16), Containers (3), CosmosDB (10), Data Factory (3), Database (8), Event Hub/Grid (8), Firewall (3), IoT (11), Key Vault (6), Kubernetes (3), Kusto (6), Load Balancer (3), Log Analytics (8), Logic Apps (2), Monitor (8), MSSQL (9), MySQL (4), Networking (20), Notification Hub (2), Policy (4), PostgreSQL (4), Private Link (4), Public IP (3), Redis (2), Recovery Services (8), Resource Group (2), Service Bus (6), SignalR (1), SQL (4), Storage (12), Stream Analytics (1), Subnet (4), Synapse (2), Traffic Manager (3), Virtual Hub (5), Virtual Network (3), VPN (2), and more
+  - Impact: High — increases provider coverage from 400 to 635 resource types (58.8% increase)
+
+### Fixed
+- **Regex Patterns**: Fixed 28 pre-existing Go-incompatible regex patterns across 20 resources
+  - Replaced backtick-wrapped regex patterns (`` `[^-\w\._\(\)]` ``) with Go string literal compatible equivalents
+  - Fixed resources: `azurerm_automation_certificate`, `azurerm_automation_credential`, `azurerm_automation_job_schedule`, `azurerm_automation_schedule`, `azurerm_automation_variable`, `azurerm_monitor_action_group`, `azurerm_synapse_sql_pool_workload_classifier`, `azurerm_synapse_sql_pool_workload_group`, `azurerm_data_protection_backup_policy_*`, `azurerm_logic_app_*`, `azurerm_resource_group`, `azurerm_template_deployment`, `azurerm_web_pubsub_hub`, and others
+  - Impact: Medium — fixes build reliability for resources with complex naming rules
+
 - **Function App Resources**: Added support for new Azure Function App resource types
   - Added `azurerm_linux_function_app` with slug `fa`
   - Added `azurerm_linux_function_app_slot` with slug `fas`
