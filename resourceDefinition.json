@@ -2225,6 +2225,34 @@
         }
     },
     {
+        "name": "azurerm_linux_function_app",
+        "min_length": 2,
+        "max_length": 60,
+        "validation_regex": "\"^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$\"",
+        "scope": "global",
+        "slug": "fa",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Linux Function App"
+        }
+    },
+    {
+        "name": "azurerm_linux_function_app_slot",
+        "min_length": 2,
+        "max_length": 59,
+        "validation_regex": "\"^[0-9A-Za-z][0-9A-Za-z-]{0,57}[0-9a-zA-Z]$\"",
+        "scope": "global",
+        "slug": "fas",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Linux Function App Slot"
+        }
+    },
+    {
         "name": "azurerm_hdinsight_hadoop_cluster",
         "min_length": 3,
         "max_length": 59,
@@ -5627,6 +5655,34 @@
             "slug": "vmss",
             "resource": "Virtual machine scale set",
             "resource_provider_namespace": "Microsoft.Compute/virtualMachineScaleSets"
+        }
+    },
+    {
+        "name": "azurerm_windows_function_app",
+        "min_length": 2,
+        "max_length": 60,
+        "validation_regex": "\"^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$\"",
+        "scope": "global",
+        "slug": "fa",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Windows Function App"
+        }
+    },
+    {
+        "name": "azurerm_windows_function_app_slot",
+        "min_length": 2,
+        "max_length": 59,
+        "validation_regex": "\"^[0-9A-Za-z][0-9A-Za-z-]{0,57}[0-9a-zA-Z]$\"",
+        "scope": "global",
+        "slug": "fas",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Windows Function App Slot"
         }
     },
     {
