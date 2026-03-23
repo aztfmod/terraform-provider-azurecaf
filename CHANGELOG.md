@@ -46,15 +46,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `release-validation` — validates releases on tag push
   - Updated `copilot-instructions.md` with complete skill and agent catalog
   - Impact: High — enables comprehensive repository automation across all development workflows
-- **RESOURCE**: Bulk addition of 235 new Azure resource types
-  - Added resources across all major Azure categories: API Management (27), App Service (12), Automation (12), Compute (16), Containers (3), CosmosDB (10), Data Factory (3), Database (8), Event Hub/Grid (8), Firewall (3), IoT (11), Key Vault (6), Kubernetes (3), Kusto (6), Load Balancer (3), Log Analytics (8), Logic Apps (2), Monitor (8), MSSQL (9), MySQL (4), Networking (20), Notification Hub (2), Policy (4), PostgreSQL (4), Private Link (4), Public IP (3), Redis (2), Recovery Services (8), Resource Group (2), Service Bus (6), SignalR (1), SQL (4), Storage (12), Stream Analytics (1), Subnet (4), Synapse (2), Traffic Manager (3), Virtual Hub (5), Virtual Network (3), VPN (2), and more
-  - Impact: High — increases provider coverage from 400 to 635 resource types (58.8% increase)
 
 ### Fixed
-- **Regex Patterns**: Fixed 28 pre-existing Go-incompatible regex patterns across 20 resources
-  - Replaced backtick-wrapped regex patterns (`` `[^-\w\._\(\)]` ``) with Go string literal compatible equivalents
-  - Fixed resources: `azurerm_automation_certificate`, `azurerm_automation_credential`, `azurerm_automation_job_schedule`, `azurerm_automation_schedule`, `azurerm_automation_variable`, `azurerm_monitor_action_group`, `azurerm_synapse_sql_pool_workload_classifier`, `azurerm_synapse_sql_pool_workload_group`, `azurerm_data_protection_backup_policy_*`, `azurerm_logic_app_*`, `azurerm_resource_group`, `azurerm_template_deployment`, `azurerm_web_pubsub_hub`, and others
-  - Impact: Medium — fixes build reliability for resources with complex naming rules
 
 - **Function App Resources**: Added support for new Azure Function App resource types
   - Added `azurerm_linux_function_app` with slug `fa`
