@@ -24,7 +24,7 @@ func TestGetResourceNameValidationError(t *testing.T) {
 	}()
 
 	// Now try to use the resource type with a name that won't match the regex
-	_, err := getResourceName("azurerm_storage_account", "-", []string{}, "test", []string{}, "", "cafclassic", false, false, true, []string{"name"})
+	_, err := getResourceName("azurerm_storage_account", "-", []string{}, "test", []string{}, "", "cafclassic", false, false, true, []string{"name"}, false)
 
 	if err == nil {
 		t.Error("Expected validation error but got none")
