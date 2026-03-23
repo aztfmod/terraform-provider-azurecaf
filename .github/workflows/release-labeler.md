@@ -11,7 +11,7 @@ on:
 
 permissions:
   contents: read
-  issues: read
+  issues: write
   pull-requests: read
 
 network: defaults
@@ -29,6 +29,8 @@ tools:
     - "sed *"
     - "sort *"
     - "comm *"
+    - "gh label *"
+    - "gh api *"
 
 safe-outputs:
   mentions: false
@@ -40,7 +42,7 @@ safe-outputs:
 
 source: local
 engine: copilot
-timeout-minutes: 15
+timeout-minutes: 45
 ---
 
 # Release Labeler
@@ -61,7 +63,8 @@ After a release is tagged (or on manual trigger for backfilling), determine whic
 
 **On manual trigger (`workflow_dispatch`):**
 - List all release tags (`git tag --sort=v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$'`).
-- Process all tags to backfill labels.
+- Process tags in batches, starting from the most recent. Focus on efficiency — extract all references with a single `git log` per tag pair using `--format` flags.
+- Use bash to do bulk extraction of PR/issue numbers from commit messages rather than making individual API calls per commit.
 
 ### 2. For each release tag
 
@@ -90,8 +93,8 @@ Use the GitHub API to also check:
 ### 4. Create version labels
 
 For each version tag being processed:
-- Ensure a label named after the tag exists (e.g., `v1.2.32`). If not, create it with a consistent color.
-- Use color `#7B61FF` for version labels.
+- Use `gh label create "<tag>" --color "7B61FF" --force` to ensure the label exists. The `--force` flag updates the label if it already exists, avoiding errors.
+- This requires bash access to the `gh` CLI.
 
 ### 5. Apply labels
 
@@ -125,3 +128,18 @@ Post the report as a comment on the latest release (for tag push) or as a new is
 - Do not remove existing version labels — only add missing ones.
 - Skip pre-release tags (e.g., `v1.2.24-preview`, `v2.0.0-preview-1`).
 - Skip test tags (e.g., `v1.2.31-test`).
+
+## Efficiency guidelines
+
+- Use bash to extract all PR/issue references in bulk:
+  ```bash
+  git log $prev_tag..$curr_tag --oneline | grep -oE '#[0-9]+' | sort -u
+  ```
+- Create all version labels in a single bash loop before applying them:
+  ```bash
+  for tag in $(git tag --sort=v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$'); do
+    gh label create "$tag" --color "7B61FF" --force 2>/dev/null
+  done
+  ```
+- Minimize GitHub API calls — prefer `search_issues` with batch queries over individual issue lookups.
+- When checking if a label is already applied, use `search_issues` with `label:vX.Y.Z` to find already-labeled items and skip them.
