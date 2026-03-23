@@ -1,6 +1,6 @@
 # Azurecaf Terraform Provider
 
-[![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)](https://registry.terraform.io/providers/aztfmod/azurecaf/latest)
+[![Terraform Registry Downloads](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fregistry.terraform.io%2Fv1%2Fproviders%2Faztfmod%2Fazurecaf&query=%24.downloads&style=for-the-badge&logo=terraform&label=Downloads&color=5C4EE5)](https://registry.terraform.io/providers/aztfmod/azurecaf/latest)
 [![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)](https://golang.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
