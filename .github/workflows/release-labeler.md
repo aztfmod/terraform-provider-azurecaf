@@ -33,6 +33,10 @@ tools:
 safe-outputs:
   mentions: false
   allowed-github-references: []
+  add-labels: {}
+  create-issue:
+    title-prefix: "[Release Labeler] "
+    max: 1
 
 source: local
 engine: copilot

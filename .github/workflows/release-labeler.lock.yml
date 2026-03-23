@@ -26,7 +26,7 @@
 #
 # Source: local
 #
-# gh-aw-metadata: {"schema_version":"v2","frontmatter_hash":"f564d62342b262a979dd0360f3913c763d4eef5f3f5386a50554495225652e3b","compiler_version":"v0.61.0","strict":true}
+# gh-aw-metadata: {"schema_version":"v2","frontmatter_hash":"538fd3919b07c43034ee26a12d32a162f4c10b8f356ee2f7ae7b26791e64fbad","compiler_version":"v0.61.0","strict":true}
 
 name: "Release Labeler"
 "on":
@@ -131,10 +131,7 @@ jobs:
           cat "/opt/gh-aw/prompts/safe_outputs_prompt.md"
           cat << 'GH_AW_PROMPT_EOF'
           <safe-output-tools>
-          Tools: create_issue, missing_tool, missing_data, noop
-          GH_AW_PROMPT_EOF
-          cat "/opt/gh-aw/prompts/safe_outputs_auto_create_issue.md"
-          cat << 'GH_AW_PROMPT_EOF'
+          Tools: create_issue, add_labels, missing_tool, missing_data, noop
           </safe-output-tools>
           <github-context>
           The following GitHub context information is available for this workflow:
@@ -317,14 +314,14 @@ jobs:
           mkdir -p /tmp/gh-aw/safeoutputs
           mkdir -p /tmp/gh-aw/mcp-logs/safeoutputs
           cat > /opt/gh-aw/safeoutputs/config.json << 'GH_AW_SAFE_OUTPUTS_CONFIG_EOF'
-          {"create_issue":{"max":1},"mentions":{"enabled":false},"missing_data":{},"missing_tool":{},"noop":{"max":1}}
+          {"add_labels":{"max":3},"create_issue":{"max":1},"mentions":{"enabled":false},"missing_data":{},"missing_tool":{},"noop":{"max":1}}
           GH_AW_SAFE_OUTPUTS_CONFIG_EOF
       - name: Write Safe Outputs Tools
         run: |
           cat > /opt/gh-aw/safeoutputs/tools_meta.json << 'GH_AW_SAFE_OUTPUTS_TOOLS_META_EOF'
           {
             "description_suffixes": {
-              "create_issue": " CONSTRAINTS: Maximum 1 issue(s) can be created. Title will be prefixed with \"[release-labeler]\". Labels [\"release-labeler\"] will be automatically added."
+              "create_issue": " CONSTRAINTS: Maximum 1 issue(s) can be created. Title will be prefixed with \"[Release Labeler] \"."
             },
             "repo_params": {},
             "dynamic_tools": []
@@ -332,6 +329,25 @@ jobs:
           GH_AW_SAFE_OUTPUTS_TOOLS_META_EOF
           cat > /opt/gh-aw/safeoutputs/validation.json << 'GH_AW_SAFE_OUTPUTS_VALIDATION_EOF'
           {
+            "add_labels": {
+              "defaultMax": 5,
+              "fields": {
+                "item_number": {
+                  "issueNumberOrTemporaryId": true
+                },
+                "labels": {
+                  "required": true,
+                  "type": "array",
+                  "itemType": "string",
+                  "itemSanitize": true,
+                  "itemMaxLength": 128
+                },
+                "repo": {
+                  "type": "string",
+                  "maxLength": 256
+                }
+              }
+            },
             "create_issue": {
               "defaultMax": 1,
               "fields": {
@@ -862,6 +878,7 @@ jobs:
     permissions:
       contents: read
       issues: write
+      pull-requests: write
     concurrency:
       group: "gh-aw-conclusion-release-labeler"
       cancel-in-progress: false
@@ -988,6 +1005,7 @@ jobs:
     permissions:
       contents: read
       issues: write
+      pull-requests: write
     timeout-minutes: 15
     env:
       GH_AW_CALLER_WORKFLOW_ID: "${{ github.repository }}/release-labeler"
@@ -1030,7 +1048,7 @@ jobs:
           GH_AW_ALLOWED_DOMAINS: "api.business.githubcopilot.com,api.enterprise.githubcopilot.com,api.github.com,api.githubcopilot.com,api.individual.githubcopilot.com,api.snapcraft.io,archive.ubuntu.com,azure.archive.ubuntu.com,crl.geotrust.com,crl.globalsign.com,crl.identrust.com,crl.sectigo.com,crl.thawte.com,crl.usertrust.com,crl.verisign.com,crl3.digicert.com,crl4.digicert.com,crls.ssl.com,github.com,host.docker.internal,json-schema.org,json.schemastore.org,keyserver.ubuntu.com,ocsp.digicert.com,ocsp.geotrust.com,ocsp.globalsign.com,ocsp.identrust.com,ocsp.sectigo.com,ocsp.ssl.com,ocsp.thawte.com,ocsp.usertrust.com,ocsp.verisign.com,packagecloud.io,packages.cloud.google.com,packages.microsoft.com,ppa.launchpad.net,raw.githubusercontent.com,registry.npmjs.org,s.symcb.com,s.symcd.com,security.ubuntu.com,telemetry.enterprise.githubcopilot.com,ts-crl.ws.symantec.com,ts-ocsp.ws.symantec.com"
           GITHUB_SERVER_URL: ${{ github.server_url }}
           GITHUB_API_URL: ${{ github.api_url }}
-          GH_AW_SAFE_OUTPUTS_HANDLER_CONFIG: "{\"create_issue\":{\"labels\":[\"release-labeler\"],\"max\":1,\"title_prefix\":\"[release-labeler]\"},\"missing_data\":{},\"missing_tool\":{}}"
+          GH_AW_SAFE_OUTPUTS_HANDLER_CONFIG: "{\"add_labels\":{},\"create_issue\":{\"max\":1,\"title_prefix\":\"[Release Labeler] \"},\"missing_data\":{},\"missing_tool\":{}}"
         with:
           github-token: ${{ secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
           script: |
