@@ -26,7 +26,7 @@
 #
 # Source: local
 #
-# gh-aw-metadata: {"schema_version":"v2","frontmatter_hash":"538fd3919b07c43034ee26a12d32a162f4c10b8f356ee2f7ae7b26791e64fbad","compiler_version":"v0.61.0","strict":true}
+# gh-aw-metadata: {"schema_version":"v2","frontmatter_hash":"5816e740cfeb781af7da641f5b6f76b851666e94a75108a6965c93d40bde140e","compiler_version":"v0.61.0","strict":true}
 
 name: "Release Labeler"
 "on":
@@ -580,7 +580,7 @@ jobs:
         # --allow-tool shell(wc)
         # --allow-tool shell(yq)
         # --allow-tool write
-        timeout-minutes: 15
+        timeout-minutes: 45
         run: |
           set -o pipefail
           touch /tmp/gh-aw/agent-step-summary.md
@@ -948,7 +948,7 @@ jobs:
           GH_AW_INFERENCE_ACCESS_ERROR: ${{ needs.agent.outputs.inference_access_error }}
           GH_AW_GROUP_REPORTS: "false"
           GH_AW_FAILURE_REPORT_AS_ISSUE: "true"
-          GH_AW_TIMEOUT_MINUTES: "15"
+          GH_AW_TIMEOUT_MINUTES: "45"
         with:
           github-token: ${{ secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
           script: |

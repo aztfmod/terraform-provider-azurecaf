@@ -11,7 +11,7 @@ on:
 
 permissions:
   contents: read
-  issues: write
+  issues: read
   pull-requests: read
 
 network: defaults
@@ -29,8 +29,6 @@ tools:
     - "sed *"
     - "sort *"
     - "comm *"
-    - "gh label *"
-    - "gh api *"
 
 safe-outputs:
   mentions: false
@@ -93,8 +91,8 @@ Use the GitHub API to also check:
 ### 4. Create version labels
 
 For each version tag being processed:
-- Use `gh label create "<tag>" --color "7B61FF" --force` to ensure the label exists. The `--force` flag updates the label if it already exists, avoiding errors.
-- This requires bash access to the `gh` CLI.
+- Use the `add_labels` tool to apply the version label (e.g., `v1.2.32`) to issues and PRs. The tool will handle label creation if needed.
+- If `add_labels` fails because the label doesn't exist, skip that item and note it in the report.
 
 ### 5. Apply labels
 
@@ -134,12 +132,6 @@ Post the report as a comment on the latest release (for tag push) or as a new is
 - Use bash to extract all PR/issue references in bulk:
   ```bash
   git log $prev_tag..$curr_tag --oneline | grep -oE '#[0-9]+' | sort -u
-  ```
-- Create all version labels in a single bash loop before applying them:
-  ```bash
-  for tag in $(git tag --sort=v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$'); do
-    gh label create "$tag" --color "7B61FF" --force 2>/dev/null
-  done
   ```
 - Minimize GitHub API calls — prefer `search_issues` with batch queries over individual issue lookups.
 - When checking if a label is already applied, use `search_issues` with `label:vX.Y.Z` to find already-labeled items and skip them.
