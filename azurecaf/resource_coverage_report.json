@@ -224,6 +224,7 @@
     "azurerm_machine_learning_workspace",
     "azurerm_maintenance_configuration",
     "azurerm_managed_disk",
+    "azurerm_managed_redis",
     "azurerm_maps_account",
     "azurerm_mariadb_database",
     "azurerm_mariadb_firewall_rule",
@@ -403,6 +404,6 @@
     "general",
     "general_safe"
   ],
-  "successful_resources": 399,
-  "total_resources": 399
+  "successful_resources": 400,
+  "total_resources": 400
 }
