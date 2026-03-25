@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Includes resource configuration generation logic for `-generate-config-out` flag (Terraform v1.14.0+)
   - Added deprecation message support for attributes and blocks
   - Go version updated from 1.24.4 to 1.25.0
+  - Aligned `e2e/go.mod` dependencies (`terraform-exec` v0.25.0, `terraform-json` v0.27.2, `go-cty` v1.17.0)
   - Impact: Low -- dependency update only, no breaking changes
 
 ## [v1.2.32] - 2026-03-23
