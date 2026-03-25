@@ -801,16 +801,17 @@ func TestComputeNamesMatchesGetNameResult(t *testing.T) {
 
 	// Path 2: via computeNames directly
 	p := namingParams{
-		name:         "myapp",
-		resourceType: "azurerm_resource_group",
+		name:          "myapp",
+		resourceType:  "azurerm_resource_group",
 		resourceTypes: []string{"azurerm_storage_account", "azurerm_key_vault"},
-		prefixes:     []string{"dev"},
-		suffixes:     []string{"001"},
-		randomSeed:   42,
-		randomLength: 4,
-		cleanInput:   true,
-		useSlug:      true,
-		separator:    "-",
+		prefixes:      []string{"dev"},
+		suffixes:      []string{"001"},
+		randomSeed:    42,
+		randomSeedSet: true,
+		randomLength:  4,
+		cleanInput:    true,
+		useSlug:       true,
+		separator:     "-",
 	}
 	computeResult, computeResults, err := computeNames(p)
 	if err != nil {
@@ -835,6 +836,7 @@ func TestComputeNamesOnlyResourceTypes(t *testing.T) {
 		resourceTypes: []string{"azurerm_storage_account"},
 		prefixes:      []string{"dev"},
 		randomSeed:    42,
+		randomSeedSet: true,
 		randomLength:  3,
 		cleanInput:    true,
 		useSlug:       true,
