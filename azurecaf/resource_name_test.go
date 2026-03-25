@@ -7,8 +7,11 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
+
+const errResourceNotFound = "azurecaf_name resource not found"
 
 func setData(prefixes []string, name string, suffixes []string, cleanInput bool) *schema.ResourceData {
 	data := &schema.ResourceData{}
@@ -107,7 +110,7 @@ func TestAccResourceName_CafClassic(t *testing.T) {
 	provider := Provider()
 	nameResource := provider.ResourcesMap["azurecaf_name"]
 	if nameResource == nil {
-		t.Fatal("azurecaf_name resource not found")
+		t.Fatal(errResourceNotFound)
 	}
 
 	// Test case 1: Resource Group
@@ -254,7 +257,7 @@ func TestAccResourceName_CafClassicRSV(t *testing.T) {
 	provider := Provider()
 	nameResource := provider.ResourcesMap["azurecaf_name"]
 	if nameResource == nil {
-		t.Fatal("azurecaf_name resource not found")
+		t.Fatal(errResourceNotFound)
 	}
 
 	// Test Recovery Services Vault
@@ -595,7 +598,7 @@ func TestResourceNameHasCustomizeDiff(t *testing.T) {
 	provider := Provider()
 	nameResource := provider.ResourcesMap["azurecaf_name"]
 	if nameResource == nil {
-		t.Fatal("azurecaf_name resource not found")
+		t.Fatal(errResourceNotFound)
 	}
 	if nameResource.CustomizeDiff == nil {
 		t.Fatal("azurecaf_name resource must have CustomizeDiff for plan-time computation")
@@ -752,4 +755,274 @@ func TestRandSeqZeroLength(t *testing.T) {
 	if r := randSeq(-1, &seed); r != "" {
 		t.Errorf("Expected empty string for negative length, got %q", r)
 	}
+}
+
+// TestComputeNamesMatchesGetNameResult verifies the refactored computeNames
+// function produces identical output to the Create path (getNameResult).
+func TestComputeNamesMatchesGetNameResult(t *testing.T) {
+	provider := Provider()
+	nameResource := provider.ResourcesMap["azurecaf_name"]
+
+	input := map[string]interface{}{
+		"name":           "myapp",
+		"resource_type":  "azurerm_resource_group",
+		"resource_types": []interface{}{"azurerm_storage_account", "azurerm_key_vault"},
+		"prefixes":       []interface{}{"dev"},
+		"suffixes":       []interface{}{"001"},
+		"random_seed":    42,
+		"random_length":  4,
+		"clean_input":    true,
+		"use_slug":       true,
+	}
+
+	// Path 1: via Create (getNameResult)
+	rd := schema.TestResourceDataRaw(t, nameResource.Schema, input)
+	if err := nameResource.Create(rd, nil); err != nil {
+		t.Fatalf("Create failed: %v", err)
+	}
+	createResult := rd.Get("result").(string)
+	createResults := rd.Get("results").(map[string]interface{})
+
+	// Path 2: via computeNames directly
+	p := namingParams{
+		name:         "myapp",
+		resourceType: "azurerm_resource_group",
+		resourceTypes: []string{"azurerm_storage_account", "azurerm_key_vault"},
+		prefixes:     []string{"dev"},
+		suffixes:     []string{"001"},
+		randomSeed:   42,
+		randomLength: 4,
+		cleanInput:   true,
+		useSlug:      true,
+		separator:    "-",
+	}
+	computeResult, computeResults, err := computeNames(p)
+	if err != nil {
+		t.Fatalf("computeNames failed: %v", err)
+	}
+
+	if createResult != computeResult {
+		t.Errorf("result mismatch: Create=%q computeNames=%q", createResult, computeResult)
+	}
+	for k, v := range createResults {
+		if computeResults[k] != v.(string) {
+			t.Errorf("results[%s] mismatch: Create=%q computeNames=%q", k, v, computeResults[k])
+		}
+	}
+}
+
+// TestComputeNamesOnlyResourceTypes verifies computeNames when only
+// resource_types is set (no resource_type), result should be empty.
+func TestComputeNamesOnlyResourceTypes(t *testing.T) {
+	p := namingParams{
+		name:          "myapp",
+		resourceTypes: []string{"azurerm_storage_account"},
+		prefixes:      []string{"dev"},
+		randomSeed:    42,
+		randomLength:  3,
+		cleanInput:    true,
+		useSlug:       true,
+		separator:     "-",
+	}
+	result, results, err := computeNames(p)
+	if err != nil {
+		t.Fatalf("computeNames failed: %v", err)
+	}
+	if result != "" {
+		t.Errorf("Expected empty result when resource_type is not set, got %q", result)
+	}
+	if len(results) != 1 {
+		t.Fatalf("Expected 1 entry in results, got %d", len(results))
+	}
+	if results["azurerm_storage_account"] == "" {
+		t.Error("azurerm_storage_account result must not be empty")
+	}
+}
+
+// TestComputeNamesInvalidResourceType verifies computeNames returns an error
+// for an invalid resource type.
+func TestComputeNamesInvalidResourceType(t *testing.T) {
+	p := namingParams{
+		name:         "myapp",
+		resourceType: "azurerm_nonexistent",
+		cleanInput:   true,
+		useSlug:      true,
+		separator:    "-",
+	}
+	_, _, err := computeNames(p)
+	if err == nil {
+		t.Error("Expected error for invalid resource type, got nil")
+	}
+}
+
+// TestComposeName_ErrorWhenExceedingMaxLength_Success verifies that composeName
+// returns the full name (not trimmed) when errorWhenExceedingMaxLength is true
+// and the name fits within the limit.
+func TestComposeName_ErrorWhenExceedingMaxLength_Success(t *testing.T) {
+	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+	result, err := composeName("-", []string{"a"}, "b", "", []string{"c"}, "", 100, namePrecedence, true)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	expected := "a-b-c"
+	if result != expected {
+		t.Errorf("expected %q, got %q", expected, result)
+	}
+}
+
+// TestComputeNamesInvalidResourceTypes verifies computeNames returns an error
+// when one of the resource_types entries is invalid.
+func TestComputeNamesInvalidResourceTypes(t *testing.T) {
+	p := namingParams{
+		resourceType:  "azurerm_resource_group",
+		resourceTypes: []string{"azurerm_nonexistent_type"},
+		name:          "myapp",
+		cleanInput:    true,
+		useSlug:       true,
+		separator:     "-",
+	}
+	_, _, err := computeNames(p)
+	if err == nil {
+		t.Error("Expected error for invalid resource_types entry, got nil")
+	}
+}
+
+// TestDataNameReadError verifies that the data source returns a diagnostic
+// error when given an invalid resource type.
+func TestDataNameReadError(t *testing.T) {
+	provider := Provider()
+	dataSource := provider.DataSourcesMap["azurecaf_name"]
+	if dataSource == nil {
+		t.Fatal("azurecaf_name data source not found")
+	}
+
+	// Use error_when_exceeding_max_length to trigger a validation error:
+	// a very long name for a short-max-length resource
+	rd := schema.TestResourceDataRaw(t, dataSource.Schema, map[string]interface{}{
+		"name":                            "averyveryveryverylongnamethatwillexceedmaxlength",
+		"resource_type":                   "azurerm_storage_account",
+		"prefixes":                        []interface{}{"prefix1", "prefix2", "prefix3"},
+		"suffixes":                        []interface{}{"suffix1", "suffix2", "suffix3"},
+		"clean_input":                     true,
+		"use_slug":                        true,
+		"error_when_exceeding_max_length": true,
+	})
+
+	diags := dataSource.ReadContext(context.Background(), rd, nil)
+	if !diags.HasError() {
+		t.Error("Expected error diagnostic when name exceeds max length, got none")
+	}
+}
+
+// TestNamingConventionWithMaxLength covers the desiredMaxLength override branch
+// in getResult where max_length < resource.MaxLength.
+func TestNamingConventionWithMaxLength(t *testing.T) {
+	provider := Provider()
+	ncResource := provider.ResourcesMap["azurecaf_naming_convention"]
+	if ncResource == nil {
+		t.Fatal("azurecaf_naming_convention resource not found")
+	}
+
+	rd := schema.TestResourceDataRaw(t, ncResource.Schema, map[string]interface{}{
+		"name":          "myrg",
+		"convention":    "cafclassic",
+		"resource_type": "rg",
+		"max_length":    15,
+	})
+
+	if err := ncResource.Create(rd, nil); err != nil {
+		t.Fatalf("Create failed: %v", err)
+	}
+	result := rd.Get("result").(string)
+	if len(result) > 15 {
+		t.Errorf("Expected result length <= 15, got %d (%q)", len(result), result)
+	}
+}
+
+// TestAccResourceName_PlanTimeVisibility is an acceptance test that verifies
+// CustomizeDiff populates result and results during the plan phase, so they
+// are visible in terraform plan output (not "known after apply").
+func TestAccResourceName_PlanTimeVisibility(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "azurecaf_name" "plan_test" {
+  name          = "myapp"
+  resource_type = "azurerm_resource_group"
+  prefixes      = ["dev"]
+  suffixes      = ["001"]
+  random_length = 4
+  random_seed   = 42
+  clean_input   = true
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("azurecaf_name.plan_test", "result", regexp.MustCompile(`^dev-rg-myapp-[a-z]{4}-001$`)),
+				),
+			},
+		},
+	})
+}
+
+// TestAccResourceName_PlanTimeMultipleTypes is an acceptance test that verifies
+// CustomizeDiff populates both result and results for multiple resource types.
+func TestAccResourceName_PlanTimeMultipleTypes(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "azurecaf_name" "multi_test" {
+  name           = "myapp"
+  resource_type  = "azurerm_resource_group"
+  resource_types = ["azurerm_storage_account", "azurerm_key_vault"]
+  prefixes       = ["dev"]
+  suffixes       = ["001"]
+  random_length  = 3
+  random_seed    = 100
+  clean_input    = true
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("azurecaf_name.multi_test", "result", regexp.MustCompile(`^dev-rg-myapp-.+-001$`)),
+					resource.TestCheckResourceAttrSet("azurecaf_name.multi_test", "results.azurerm_storage_account"),
+					resource.TestCheckResourceAttrSet("azurecaf_name.multi_test", "results.azurerm_key_vault"),
+				),
+			},
+		},
+	})
+}
+
+// TestAccResourceName_PlanTimeAutoSeed is an acceptance test that verifies
+// that when random_seed is not set but random_length > 0, the plan-apply
+// cycle succeeds (falls back to apply-time computation).
+func TestAccResourceName_PlanTimeAutoSeed(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "azurecaf_name" "auto_seed_test" {
+  name          = "myapp"
+  resource_type = "azurerm_resource_group"
+  prefixes      = ["dev"]
+  random_length = 5
+  clean_input   = true
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					// Result should still be computed (at apply time) and non-empty
+					resource.TestMatchResourceAttr("azurecaf_name.auto_seed_test", "result", regexp.MustCompile(`^dev-rg-myapp-[a-z]{5}$`)),
+				),
+			},
+		},
+	})
 }

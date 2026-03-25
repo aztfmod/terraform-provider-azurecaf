@@ -110,8 +110,7 @@ func randSeq(length int, seed *int64) string {
 	// generate at least one random character
 	b := make([]rune, length)
 	for i := range b {
-		// We need the random generated string to start with a letter
-		b[i] = alphagenerator[rng.Intn(len(alphagenerator)-1)]
+		b[i] = alphagenerator[rng.Intn(len(alphagenerator))]
 	}
 	return string(b)
 }
