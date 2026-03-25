@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Feature**: Names are now computed at plan time instead of apply time (#336)
+  - Added `CustomizeDiff` to the `azurecaf_name` resource so `result` and `results` values
+    are visible during `terraform plan` instead of showing "(known after apply)"
+  - When `random_length > 0` and no `random_seed` is set, a stable seed is auto-generated
+    during plan and persisted to ensure consistent values between plan and apply phases
+  - Fixed `randSeq` to use a local `rand.Source` instead of the deprecated global `rand.Seed`,
+    which was non-deterministic in Go 1.20+ and caused plan-apply inconsistency
+  - Fully backward compatible with existing configurations
+
 ## [v1.2.32] - 2026-03-23
 
 ### Added

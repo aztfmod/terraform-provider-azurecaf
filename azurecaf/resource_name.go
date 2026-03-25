@@ -6,7 +6,9 @@ import (
 	"log"
 	"regexp"
 	"strings"
+	"time"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -136,6 +138,7 @@ func resourceName() *schema.Resource {
 		Create:        resourceNameCreate,
 		Read:          schema.Noop,
 		Delete:        schema.RemoveFromState,
+		CustomizeDiff: customdiff.All(resourceNameCustomizeDiff),
 		SchemaVersion: 3,
 		StateUpgraders: []schema.StateUpgrader{
 			{
@@ -308,6 +311,65 @@ func resourceNameImport(d *schema.ResourceData, meta interface{}) ([]*schema.Res
 	d.SetId(existingName)
 
 	return []*schema.ResourceData{d}, nil
+}
+
+// resourceNameCustomizeDiff computes naming values during the plan phase so that
+// users can see the actual resource names in terraform plan output instead of
+// "(known after apply)". This runs during plan for new or replaced resources.
+func resourceNameCustomizeDiff(ctx context.Context, d *schema.ResourceDiff, meta interface{}) error {
+	// For existing resources with no input changes, values are already in state.
+	if d.Id() != "" {
+		return nil
+	}
+
+	name := d.Get("name").(string)
+	prefixes := convertInterfaceToString(d.Get("prefixes").([]interface{}))
+	suffixes := convertInterfaceToString(d.Get("suffixes").([]interface{}))
+	separator := d.Get("separator").(string)
+	resourceType := d.Get("resource_type").(string)
+	resourceTypes := convertInterfaceToString(d.Get("resource_types").([]interface{}))
+	cleanInput := d.Get("clean_input").(bool)
+	passthrough := d.Get("passthrough").(bool)
+	useSlug := d.Get("use_slug").(bool)
+	randomLength := d.Get("random_length").(int)
+	randomSeed := int64(d.Get("random_seed").(int))
+	errorWhenExceedingMaxLength := d.Get("error_when_exceeding_max_length").(bool)
+
+	// If random_seed is not set (0) and random_length > 0, generate a stable
+	// seed and persist it so that Create (apply phase) produces the same
+	// random suffix, avoiding "Provider produced inconsistent final plan".
+	if randomLength > 0 && randomSeed == 0 {
+		randomSeed = time.Now().UnixNano()
+		d.SetNew("random_seed", int(randomSeed))
+	}
+
+	convention := ConventionCafClassic
+	randomSuffix := randSeq(int(randomLength), &randomSeed)
+	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+
+	isValid, err := validateResourceType(resourceType, resourceTypes)
+	if !isValid {
+		return err
+	}
+
+	if len(resourceType) > 0 {
+		resourceName, err := getResourceName(resourceType, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence, errorWhenExceedingMaxLength)
+		if err != nil {
+			return err
+		}
+		d.SetNew("result", resourceName)
+	}
+
+	resourceNames := make(map[string]string, len(resourceTypes))
+	for _, resourceTypeName := range resourceTypes {
+		resourceNames[resourceTypeName], err = getResourceName(resourceTypeName, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence, errorWhenExceedingMaxLength)
+		if err != nil {
+			return err
+		}
+	}
+	d.SetNew("results", resourceNames)
+
+	return nil
 }
 
 func cleanSlice(names []string, resourceDefinition *ResourceStructure) []string {
