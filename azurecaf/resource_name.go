@@ -331,11 +331,13 @@ type namingParams struct {
 	useSlug                     bool
 	randomLength                int
 	randomSeed                  int64
+	randomSeedSet               bool
 	errorWhenExceedingMaxLength bool
 }
 
 // extractNamingParams reads naming input parameters from a schema getter.
 func extractNamingParams(d schemaGetter) namingParams {
+	seedVal := d.Get("random_seed").(int)
 	return namingParams{
 		name:                        d.Get("name").(string),
 		prefixes:                    convertInterfaceToString(d.Get("prefixes").([]interface{})),
@@ -347,7 +349,8 @@ func extractNamingParams(d schemaGetter) namingParams {
 		passthrough:                 d.Get("passthrough").(bool),
 		useSlug:                     d.Get("use_slug").(bool),
 		randomLength:                d.Get("random_length").(int),
-		randomSeed:                  int64(d.Get("random_seed").(int)),
+		randomSeed:                  int64(seedVal),
+		randomSeedSet:               seedVal != 0,
 		errorWhenExceedingMaxLength: d.Get("error_when_exceeding_max_length").(bool),
 	}
 }
@@ -368,7 +371,11 @@ func computeNames(p namingParams) (string, map[string]string, error) {
 		}
 	}
 
-	randomSuffix := randSeq(p.randomLength, &p.randomSeed)
+	var seedPtr *int64
+	if p.randomSeedSet {
+		seedPtr = &p.randomSeed
+	}
+	randomSuffix := randSeq(p.randomLength, seedPtr)
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 	convention := ConventionCafClassic
 
@@ -424,7 +431,7 @@ func resourceNameCustomizeDiff(ctx context.Context, d *schema.ResourceDiff, meta
 	// When random_length > 0 but no random_seed is explicitly provided, we cannot
 	// compute deterministic names at plan time (each CustomizeDiff call would
 	// generate a different seed). Fall back to "known after apply" for this case.
-	if p.randomLength > 0 && !d.HasChange("random_seed") && p.randomSeed == 0 {
+	if p.randomLength > 0 && !p.randomSeedSet {
 		return nil
 	}
 
