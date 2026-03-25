@@ -757,6 +757,20 @@ func TestRandSeqZeroLength(t *testing.T) {
 	}
 }
 
+// TestRandSeqZeroSeed verifies that seed=0 is a valid deterministic seed.
+func TestRandSeqZeroSeed(t *testing.T) {
+	seed1 := int64(0)
+	seed2 := int64(0)
+	r1 := randSeq(8, &seed1)
+	r2 := randSeq(8, &seed2)
+	if r1 != r2 {
+		t.Errorf("seed=0 should be deterministic: %q vs %q", r1, r2)
+	}
+	if len(r1) != 8 {
+		t.Errorf("Expected length 8, got %d", len(r1))
+	}
+}
+
 // TestComputeNamesMatchesGetNameResult verifies the refactored computeNames
 // function produces identical output to the Create path (getNameResult).
 func TestComputeNamesMatchesGetNameResult(t *testing.T) {
@@ -960,6 +974,24 @@ resource "azurecaf_name" "plan_test" {
   clean_input   = true
 }
 `,
+				PlanOnly:           true,
+				ExpectNonEmptyPlan: true,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("azurecaf_name.plan_test", "result", regexp.MustCompile(`^dev-rg-myapp-[a-z]{4}-001$`)),
+				),
+			},
+			{
+				Config: `
+resource "azurecaf_name" "plan_test" {
+  name          = "myapp"
+  resource_type = "azurerm_resource_group"
+  prefixes      = ["dev"]
+  suffixes      = ["001"]
+  random_length = 4
+  random_seed   = 42
+  clean_input   = true
+}
+`,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestMatchResourceAttr("azurecaf_name.plan_test", "result", regexp.MustCompile(`^dev-rg-myapp-[a-z]{4}-001$`)),
 				),
@@ -976,6 +1008,27 @@ func TestAccResourceName_PlanTimeMultipleTypes(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckResourceDestroy,
 		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "azurecaf_name" "multi_test" {
+  name           = "myapp"
+  resource_type  = "azurerm_resource_group"
+  resource_types = ["azurerm_storage_account", "azurerm_key_vault"]
+  prefixes       = ["dev"]
+  suffixes       = ["001"]
+  random_length  = 3
+  random_seed    = 100
+  clean_input    = true
+}
+`,
+				PlanOnly:           true,
+				ExpectNonEmptyPlan: true,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("azurecaf_name.multi_test", "result", regexp.MustCompile(`^dev-rg-myapp-.+-001$`)),
+					resource.TestCheckResourceAttrSet("azurecaf_name.multi_test", "results.azurerm_storage_account"),
+					resource.TestCheckResourceAttrSet("azurecaf_name.multi_test", "results.azurerm_key_vault"),
+				),
+			},
 			{
 				Config: `
 resource "azurecaf_name" "multi_test" {

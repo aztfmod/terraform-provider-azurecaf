@@ -421,10 +421,10 @@ func resourceNameCustomizeDiff(ctx context.Context, d *schema.ResourceDiff, meta
 
 	p := extractNamingParams(d)
 
-	// When random_length > 0 but no random_seed is provided, we cannot compute
-	// deterministic names at plan time (each CustomizeDiff call would generate
-	// a different seed). Fall back to "known after apply" for this case.
-	if p.randomLength > 0 && p.randomSeed == 0 {
+	// When random_length > 0 but no random_seed is explicitly provided, we cannot
+	// compute deterministic names at plan time (each CustomizeDiff call would
+	// generate a different seed). Fall back to "known after apply" for this case.
+	if p.randomLength > 0 && !d.HasChange("random_seed") && p.randomSeed == 0 {
 		return nil
 	}
 

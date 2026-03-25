@@ -99,13 +99,14 @@ func randSeq(length int, seed *int64) string {
 		return ""
 	}
 	// initialize random seed
-	if seed == nil || *seed == 0 {
+	if seed == nil {
 		value := time.Now().UnixNano()
 		seed = &value
 	}
-	// Use a local source for deterministic output with the same seed.
-	// The global rand.Seed was deprecated in Go 1.20 and is no longer
-	// deterministic, which caused plan-apply inconsistency (#336).
+	// As of Go 1.20, the package-level generator is auto-seeded with a random
+	// value, so using the global source directly would be non-deterministic across
+	// runs and can cause plan-apply inconsistency (#336). A local rand.Rand with
+	// an explicit source preserves deterministic behavior.
 	rng := rand.New(rand.NewSource(*seed))
 	// generate at least one random character
 	b := make([]rune, length)
