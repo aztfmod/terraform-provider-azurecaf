@@ -1,0 +1,43 @@
+name: 'Setup Go Environment'
+description: 'Shared setup: Go toolchain, cache restore, Terraform, tfproviderlint. Checkout must happen BEFORE calling this action.'
+
+inputs:
+  install-terraform:
+    description: 'Whether to install Terraform CLI'
+    required: false
+    default: 'false'
+  install-tfproviderlint:
+    description: 'Whether to install tfproviderlint'
+    required: false
+    default: 'false'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Go
+      uses: actions/setup-go@v6
+      with:
+        go-version-file: './go.mod'
+
+    - name: Restore Go module cache
+      uses: actions/cache/restore@v4
+      with:
+        path: |
+          ~/go/pkg/mod
+          ~/.cache/go-build
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+
+    - name: Install tfproviderlint
+      if: inputs.install-tfproviderlint == 'true'
+      shell: bash
+      run: |
+        go install github.com/bflad/tfproviderlint/cmd/tfproviderlint@latest
+        echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+
+    - name: Setup Terraform
+      if: inputs.install-terraform == 'true'
+      uses: hashicorp/setup-terraform@v4
+      with:
+        terraform_version: "~> 1.12.0"
