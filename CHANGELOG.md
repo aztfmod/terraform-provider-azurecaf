@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Dependencies**: Bumped `github.com/hashicorp/terraform-plugin-sdk/v2` from v2.38.2 to v2.40.0
+  - Includes resource configuration generation logic for `-generate-config-out` flag (Terraform v1.14.0+)
+  - Added deprecation message support for attributes and blocks
+  - Go version updated from 1.24.4 to 1.25.0
+  - Impact: Low -- dependency update only, no breaking changes
+
 ## [v1.2.32] - 2026-03-23
 
 ### Added
