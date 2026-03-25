@@ -316,6 +316,7 @@ func resourceNameImport(d *schema.ResourceData, meta interface{}) ([]*schema.Res
 // allowing shared parameter extraction logic.
 type schemaGetter interface {
 	Get(key string) interface{}
+	GetOk(key string) (interface{}, bool)
 }
 
 // namingParams holds the extracted input parameters for name computation.
@@ -337,7 +338,11 @@ type namingParams struct {
 
 // extractNamingParams reads naming input parameters from a schema getter.
 func extractNamingParams(d schemaGetter) namingParams {
-	seedVal := d.Get("random_seed").(int)
+	seedVal, seedSet := d.GetOk("random_seed")
+	var seed int64
+	if seedSet {
+		seed = int64(seedVal.(int))
+	}
 	return namingParams{
 		name:                        d.Get("name").(string),
 		prefixes:                    convertInterfaceToString(d.Get("prefixes").([]interface{})),
@@ -349,8 +354,8 @@ func extractNamingParams(d schemaGetter) namingParams {
 		passthrough:                 d.Get("passthrough").(bool),
 		useSlug:                     d.Get("use_slug").(bool),
 		randomLength:                d.Get("random_length").(int),
-		randomSeed:                  int64(seedVal),
-		randomSeedSet:               seedVal != 0,
+		randomSeed:                  seed,
+		randomSeedSet:               seedSet,
 		errorWhenExceedingMaxLength: d.Get("error_when_exceeding_max_length").(bool),
 	}
 }
@@ -430,9 +435,11 @@ func resourceNameCustomizeDiff(ctx context.Context, d *schema.ResourceDiff, meta
 
 	// When random_length > 0 but no random_seed is explicitly provided, we cannot
 	// compute deterministic names at plan time (each CustomizeDiff call would
-	// generate a different seed). Fall back to "known after apply" for this case.
+	// generate a different seed). Still run validations so errors surface during
+	// plan, but skip setting result/results (they remain "known after apply").
 	if p.randomLength > 0 && !p.randomSeedSet {
-		return nil
+		_, _, err := computeNames(p)
+		return err
 	}
 
 	result, resourceNames, err := computeNames(p)
