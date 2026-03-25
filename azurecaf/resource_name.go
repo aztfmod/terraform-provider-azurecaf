@@ -673,9 +673,13 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	if len(p.resourceType) > 0 {
-		d.Set("result", result)
+		if err := d.Set("result", result); err != nil {
+			return fmt.Errorf("failed to set result: %w", err)
+		}
 	}
-	d.Set("results", resourceNames)
+	if err := d.Set("results", resourceNames); err != nil {
+		return fmt.Errorf("failed to set results: %w", err)
+	}
 	d.SetId(randSeq(16, nil))
 	return nil
 }
