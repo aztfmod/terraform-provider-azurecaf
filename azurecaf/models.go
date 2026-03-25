@@ -103,12 +103,15 @@ func randSeq(length int, seed *int64) string {
 		value := time.Now().UnixNano()
 		seed = &value
 	}
-	rand.Seed(*seed)
+	// Use a local source for deterministic output with the same seed.
+	// The global rand.Seed was deprecated in Go 1.20 and is no longer
+	// deterministic, which caused plan-apply inconsistency (#336).
+	rng := rand.New(rand.NewSource(*seed))
 	// generate at least one random character
 	b := make([]rune, length)
 	for i := range b {
 		// We need the random generated string to start with a letter
-		b[i] = alphagenerator[rand.Intn(len(alphagenerator)-1)]
+		b[i] = alphagenerator[rng.Intn(len(alphagenerator)-1)]
 	}
 	return string(b)
 }

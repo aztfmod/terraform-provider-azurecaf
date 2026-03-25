@@ -133,6 +133,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **CI/Automation**: Excluded the auto-generated `agentics-maintenance.yml` self-maintenance workflow that `gh aw compile` v0.72.1 emits. The compiler-emitted file inlined `${{ inputs.operation }}` and `${{ inputs.run_url }}` directly into shell `run:` blocks (CWE-94 script injection, SonarCloud rule `actions:S7631`). Even after refactoring those values through environment variables, SonarCloud's analyzer continues to flag any propagation of `${{ inputs.* }}` into a step that has a `run:` block. Since the maintenance workflow is optional, manually-triggered (`workflow_dispatch` / `workflow_call`), and not referenced by any other workflow in this repo, it has been removed from version control. If a future `gh aw compile` re-emits it, it must be deleted again or refactored to use `actions/github-script` (no shell `run:` block) before being committed.
 - **CI/Automation**: Added `.checkov.yaml` to suppress Checkov rule `CKV_GHA_7` ("workflow_dispatch inputs MUST be empty") for the auto-generated agentic workflow lock files. The compiler emits an internal `aw_context` input on every `workflow_dispatch` trigger; the lock files carry "DO NOT EDIT" headers, so a global skip with a documented justification is the auto-regen-safe approach. The repo is not a SLSA-tracked build-artifact producer, so the rule does not apply.
 
+### Fixed
+- **Feature**: Names are now computed at plan time instead of apply time (#336)
+  - Added `CustomizeDiff` to the `azurecaf_name` resource so `result` and `results` values
+    are visible during `terraform plan` instead of showing "(known after apply)"
+  - When `random_length > 0` and no `random_seed` is set, a stable seed is auto-generated
+    during plan and persisted to ensure consistent values between plan and apply phases
+  - Fixed `randSeq` to use a local `rand.Source` instead of the deprecated global `rand.Seed`,
+    which was non-deterministic in Go 1.20+ and caused plan-apply inconsistency
+  - Fully backward compatible with existing configurations
+
 ## [v1.2.32] - 2026-03-23
 
 ### Added
