@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **CI Pipeline**: Replaced sequential `go.yml` with parallelized `ci.yml` + dedicated `release.yml`
+  - 7 parallel test jobs via matrix strategies (unit, coverage, resource validation, 4 integration suites, 5 E2E suites)
+  - Extracted shared setup into composite action (`.github/actions/setup-go-env`) to eliminate ~100 lines of YAML duplication
+  - Build job saves Go module cache; test jobs restore-only — eliminates cache write contention warnings
+  - Separated release workflow (`release.yml`) so CI jobs run with minimal `contents: read` permissions
+  - Dynamic test summary — adding/removing jobs no longer requires editing the summary script
+  - Pinned to latest GitHub Action versions: `actions/checkout@v6`, `actions/setup-go@v6`, `hashicorp/setup-terraform@v4`, `crazy-max/ghaction-import-gpg@v7`, `goreleaser/goreleaser-action@v7`
+  - E2E full suite now included in test-summary gate (was previously excluded)
+  - Removed redundant `test_ci` job that duplicated work already run by dedicated parallel jobs
+  - Impact: Medium — CI/CD infrastructure only, no provider behavior changes
+
 ## [v1.2.32] - 2026-03-23
 
 ### Added
@@ -81,18 +93,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Resource provider namespace: `Microsoft.Cache/redisEnterprise`
   - This resource supersedes `azurerm_redis_cache` (Azure Cache for Redis), which is being retired
   - Impact: Medium - Enables CAF-compliant naming for the new Azure Managed Redis offering
-
-### Fixed
-- **Go Version Alignment**: Resolved conflicting Go version declarations in go.mod
-  - Changed from conflicting `go 1.23.0` and `toolchain go1.24.4` to unified `go 1.24`
-  - Eliminates version mismatch errors during builds
-  - Ensures consistent Go toolchain usage across all environments
-  - Impact: Medium - Fixes build reliability and development environment consistency
-- **Linting Issues**: Fixed non-constant format string errors in logging and error handling
-  - Fixed `fmt.Errorf` call in `resource_name.go` to use proper format string
-  - Fixed `log.Printf` call in `resource_naming_convention.go` to use proper format string
-  - Resolves Go vet warnings and ensures build passes all checks
-  - Impact: Low - Improves code quality and eliminates build warnings
 
 ## [v1.2.31] - 2025-07-03
 
