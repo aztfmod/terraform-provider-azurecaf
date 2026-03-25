@@ -16,8 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Fixed `randSeq` to use a local `rand.Source` instead of the global source,
     which is auto-seeded randomly in Go 1.20+ and caused plan-apply inconsistency
   - Fixed `randSeq` off-by-one: `Intn(len-1)` never selected the last letter (`z`)
-  - Fixed `random_seed = 0` now treated as a valid deterministic seed (only unset
-    means non-deterministic)
+  - Clarified behavior: `random_seed = 0` is treated as an unset/non-deterministic
+    seed; only non-zero seeds produce deterministic names, matching `extractNamingParams`
   - Refactored shared naming logic into `extractNamingParams`, `computeNames` helpers
     to eliminate code duplication between `CustomizeDiff` and `Create`
   - Moved `random_length` validation into shared `computeNames` so plan and apply
