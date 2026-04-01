@@ -99,16 +99,19 @@ func randSeq(length int, seed *int64) string {
 		return ""
 	}
 	// initialize random seed
-	if seed == nil || *seed == 0 {
+	if seed == nil {
 		value := time.Now().UnixNano()
 		seed = &value
 	}
-	rand.Seed(*seed)
+	// As of Go 1.20, the package-level generator is auto-seeded with a random
+	// value, so using the global source directly would be non-deterministic across
+	// runs and can cause plan-apply inconsistency (#336). A local rand.Rand with
+	// an explicit source preserves deterministic behavior.
+	rng := rand.New(rand.NewSource(*seed))
 	// generate at least one random character
 	b := make([]rune, length)
 	for i := range b {
-		// We need the random generated string to start with a letter
-		b[i] = alphagenerator[rand.Intn(len(alphagenerator)-1)]
+		b[i] = alphagenerator[rng.Intn(len(alphagenerator))]
 	}
 	return string(b)
 }
