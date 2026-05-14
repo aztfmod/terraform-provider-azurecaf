@@ -1,15 +1,15 @@
 # Complete Resource Testing Guide
 
-This guide explains how to test all 395 Azure resource types supported by the terraform-provider-azurecaf.
+This guide explains how to test all 400 Azure resource types supported by the terraform-provider-azurecaf.
 
 ## Overview
 
-The provider supports **395 different Azure resource types** and provides comprehensive testing capabilities to ensure all resource types work correctly with the naming conventions.
+The provider supports **400 different Azure resource types** and provides comprehensive testing capabilities to ensure all resource types work correctly with the naming conventions.
 
 ## Current Test Coverage
 
 - **98.6%** code coverage on the core provider functionality
-- **395** Azure resource types defined
+- **400** Azure resource types defined
 - **20 batches** of systematic testing (20 resources per batch)
 - **Multiple test configurations** per resource type
 
@@ -58,7 +58,7 @@ make test_integration
 | File | Purpose |
 |------|---------|
 | `integration_all_resource_types_test.go` | Original batch testing (batch 1 only) |
-| `integration_all_resources_complete_test.go` | **NEW**: Complete testing of all 395 resources |
+| `integration_all_resources_complete_test.go` | **NEW**: Complete testing of all 400 resources |
 | `resource_coverage_analysis_test.go` | **NEW**: Coverage analysis and validation |
 | `resource_matrix_test.go` | **NEW**: Category-based testing and constraints |
 | `models_generated_test.go` | Validation of resource definition structures |
@@ -194,7 +194,7 @@ make test_complete
 
 ## Performance Considerations
 
-- **Complete test suite**: ~30+ minutes (395 resources × 3 configs each)
+- **Complete test suite**: ~30+ minutes (400 resources × 3 configs each)
 - **Single batch**: ~2-3 minutes (20 resources)
 - **Coverage analysis**: ~5-10 minutes
 - **Resource validation**: ~30 seconds
@@ -211,7 +211,7 @@ When adding new resource types:
 
 ## Summary
 
-This testing framework ensures that **all 395 Azure resource types** are thoroughly tested with multiple configurations, providing confidence that the provider works correctly for any Azure resource naming scenario.
+This testing framework ensures that **all 400 Azure resource types** are thoroughly tested with multiple configurations, providing confidence that the provider works correctly for any Azure resource naming scenario.
 
 The tests are organized in a hierarchical way:
 - **Batch level**: Groups of 20 resources

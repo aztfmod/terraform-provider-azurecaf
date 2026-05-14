@@ -75,7 +75,7 @@ act workflow_dispatch --input test_type=import_only
 act workflow_dispatch --input test_type=naming_only
 ```
 
-### � **Comprehensive Testing Scripts** ⭐ **NEW**
+### 🧪 **Comprehensive Testing Scripts** ⭐ **NEW**
 - ✅ `scripts/complete-e2e-validation.sh` - Full local + CI validation
 - ✅ `scripts/quick-ci-test.sh` - Quick CI environment testing
 - ✅ `scripts/test-ci-with-act.sh` - Interactive CI simulation

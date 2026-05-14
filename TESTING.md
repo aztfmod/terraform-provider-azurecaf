@@ -17,7 +17,7 @@ This comprehensive guide covers testing strategies, tools, and best practices fo
 
 ### Prerequisites
 
-- Go 1.19+
+- Go 1.25.0+
 - Make (for using Makefile targets)
 - Terraform CLI (for integration tests)
 

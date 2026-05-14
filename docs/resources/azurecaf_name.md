@@ -6,7 +6,7 @@ The `azurecaf_name` resource generates Azure-compliant resource names following 
 
 ## Key Features
 
-- **300+ Resource Types** - Comprehensive coverage of Azure services with accurate validation
+- **400+ Resource Types** - Comprehensive coverage of Azure services with accurate validation
 - **CAF Compliance** - Follows Microsoft Cloud Adoption Framework recommendations
 - **Multi-Resource Support** - Generate names for multiple related resource types simultaneously
 - **Flexible Configuration** - Supports prefixes, suffixes, random generation, and custom patterns
@@ -159,6 +159,8 @@ The following arguments are supported:
 * `passthrough` - (Optional) Enable passthrough mode for name validation only. When enabled, only input cleaning is applied; prefixes, suffixes, random characters, and resource slug are ignored. Defaults to `false`.
 
 * `use_slug` - (Optional) Include resource type abbreviation (slug) in the generated name. When `false`, no resource type identifier is added. Defaults to `true`.
+
+* `error_when_exceeding_max_length` - (Optional) Fail when the generated name exceeds max length of the resource. Defaults to `false`.
 
 # Name Composition and Truncation
 
@@ -442,7 +444,7 @@ resource "azurecaf_name" "new" {
 
 ## Supported Resource Types
 
-This resource supports **300+ Azure resource types** with accurate naming validation rules. 
+This resource supports **400+ Azure resource types** with accurate naming validation rules. 
 
 For the complete list of supported resource types, validation rules, and examples, see the [main provider documentation](../index.md#supported-azure-resource-types).
 

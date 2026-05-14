@@ -22,6 +22,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - **CI/Automation**: Added a pre-agent `Set up Go` + `Build provider` step block to `pr-review-agent.md` so the PR review agent can verify `make build` against the repo's Go version (`go.mod` → `1.25.0`). Previously the agent reported "Build passes ⚠️ Unverified — Go toolchain unavailable in sandbox" because the gh-aw agent container (`ghcr.io/github/gh-aw-firewall/agent`) does not ship a Go toolchain. The build now runs on the host runner (where `setup-go` populates the tool cache) and the agent reads `BUILD_RESULT` and a 80-line log tail from `/tmp/`. **Requires recompiling** with `gh aw compile pr-review-agent` to regenerate `pr-review-agent.lock.yml`.
+
+### Documentation
+- **Resource count**: Updated documented Azure resource type count from `395` / `300+` to the actual `400` (verified via `jq 'length' resourceDefinition.json`). Touches README.md (8 places), COMPLETE_TESTING_GUIDE.md (6 places), docs/index.md (2 places), docs/resources/azurecaf_name.md (2 places), docs/data-sources/azurecaf_name.md (1 place), and .github/CONTRIBUTING.md (1 place).
+- **Missing argument doc**: Added `error_when_exceeding_max_length` to `docs/resources/azurecaf_name.md` (was already documented for the data source but absent from the resource doc since v1.2.32).
+- **Go prerequisite**: TESTING.md updated `Go 1.19+` → `Go 1.25.0+` to match `go.mod` (`go 1.25.0`).
+- **Version pin**: Bumped `version = "~> 1.2.28"` example pin to `~> 1.2.32` (latest tag) in README.md and docs/index.md.
+- **SECURITY.md**: Replaced unmodified GitHub template placeholder text with an actual Supported Versions statement.
+- **Encoding**: Fixed U+FFFD replacement character in E2E_IMPLEMENTATION_SUMMARY.md heading.
+- **Deprecation**: Strengthened deprecation notice on `docs/resources/azurecaf_naming_convention.md` to a top-of-page Deprecated callout pointing at `azurecaf_name` and the migration guide (the source code already marks the resource `Deprecated:`; the doc framing was too soft).
 - **CI/Automation**: Recompiled all 10 GitHub Agentic Workflow lock files with `gh aw` v0.72.1 (previously v0.61.0)
   - Generated missing `.lock.yml` files for `contributor-welcome`, `issue-to-pr-agent`, `nightly-regression`, `pr-review-agent`, `release-validation`, and `weekly-azure-sync`
 - **CI/Automation**: Migrated agentic workflows to current gh-aw schema

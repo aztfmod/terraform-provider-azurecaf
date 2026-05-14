@@ -1,8 +1,8 @@
 # azurecaf_naming_convention
 
-The `azurecaf_naming_convention` resource provides a legacy and deprecated approach to generating Azure resource names following the Microsoft Cloud Adoption Framework (CAF) naming conventions. This resource implements predefined naming methodologies with a fixed set of Azure resource types.
+> **Deprecated.** This resource is deprecated and retained only for backward compatibility. New projects MUST use the [`azurecaf_name` resource](azurecaf_name.md) (or its [data source equivalent](../data-sources/azurecaf_name.md)), which supports more resource types, more configuration options, and is the only resource that receives ongoing updates. See the [Migration Guide](../index.md#migration-guide) for a before/after example.
 
-> **Note**: For new projects, consider using the [`azurecaf_name` resource](azurecaf_name.md) which offers more flexibility and supports a broader range of Azure resource types.
+The `azurecaf_naming_convention` resource provides a legacy approach to generating Azure resource names following the Microsoft Cloud Adoption Framework (CAF) naming conventions. It implements predefined naming methodologies with a fixed set of Azure resource types.
 
 ## Key Features
 
