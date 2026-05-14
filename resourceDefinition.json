@@ -1893,6 +1893,21 @@
         }
     },
     {
+        "name": "azurerm_email_communication_service",
+        "min_length": 1,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]$\"",
+        "scope": "global",
+        "slug": "acsmail",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Email Communication Service"
+        },
+        "out_of_doc": true
+    },
+    {
         "name": "azurerm_eventgrid_domain",
         "min_length": 3,
         "max_length": 50,
@@ -3394,6 +3409,21 @@
         }
     },
     {
+        "name": "azurerm_monitor_workspace",
+        "min_length": 4,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{2,61}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "amw",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Monitor Workspace"
+        },
+        "out_of_doc": true
+    },
+    {
         "name": "azurerm_mssql_database",
         "min_length": 1,
         "max_length": 128,
@@ -3551,6 +3581,22 @@
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
             "resource": "Azure Mysql Virtual Network Rule"
+        }
+    },
+    {
+        "name": "azurerm_nat_gateway",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "ng",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "slug": "ng",
+            "resource": "NAT gateway",
+            "resource_provider_namespace": "Microsoft.Network/natGateways"
         }
     },
     {
@@ -5582,6 +5628,21 @@
         "official": {
             "resource": "Azure Vpn Gateway Connection"
         }
+    },
+    {
+        "name": "azurerm_vpn_server_configuration",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "vpnsc",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure VPN Server Configuration"
+        },
+        "out_of_doc": true
     },
     {
         "name": "azurerm_vpn_site",
