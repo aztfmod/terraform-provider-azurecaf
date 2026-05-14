@@ -194,6 +194,7 @@ data "azurecaf_name" "custom_vm" {
 | `clean_input` | bool | Remove non-compliant characters from inputs | `true` |
 | `passthrough` | bool | Validate without modification | `false` |
 | `use_slug` | bool | Include resource type abbreviation | `true` |
+| `error_when_exceeding_max_length` | bool | Fail when generated name exceeds the resource's max length | `false` |
 
 ### Output Attributes
 
@@ -395,7 +396,8 @@ The test files are organized as follows:
 - **Integration Tests**: Tests with the prefix `TestAcc` that interact with Terraform directly
 - **Error Handling Tests**: Tests that verify proper error reporting in edge cases
 - **Complete Coverage Tests**: Tests designed specifically to achieve maximum code coverage
-- **Resource Matrix Tests**: Comprehensive validation of all 401 resource types- **Constraint Tests**: Validation of resource naming constraints and limitations
+- **Resource Matrix Tests**: Comprehensive validation of all 401 resource types
+- **Constraint Tests**: Validation of resource naming constraints and limitations
 
 ### Comprehensive Testing Framework
 
@@ -404,18 +406,16 @@ The provider includes a comprehensive testing framework that validates all 401 A
 # Run comprehensive tests for all resource types
 make test_all_resources
 
-# Run resource matrix validation (category-based testing)
+# Run resource matrix validation (category-based testing and constraint validation)
 make test_resource_matrix
-
-# Run resource constraint validation
-make test_resource_constraints
 
 # Test resource definition completeness
 make test_resource_definitions
 ```
 
 This framework ensures:
-- **100% Resource Coverage**: All 401 resource types are tested- **Naming Validation**: Each resource type's naming constraints are verified
+- **100% Resource Coverage**: All 401 resource types are tested
+- **Naming Validation**: Each resource type's naming constraints are verified
 - **Category Organization**: Resources are tested by logical categories (Compute, Networking, etc.)
 - **Edge Case Testing**: Complex naming scenarios and error conditions are validated
 
@@ -462,8 +462,8 @@ make test_all
 make test_ci
 
 # Comprehensive testing framework
-make test_all_resources          # Test all 401 resource typesmake test_resource_matrix        # Category-based resource testing
-make test_resource_constraints   # Validation constraint testing
+make test_all_resources          # Test all 401 resource types
+make test_resource_matrix        # Category-based testing and constraint validation
 make test_resource_definitions   # Resource definition completeness
 
 # Build the project and run unit tests

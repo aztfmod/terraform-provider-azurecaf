@@ -33,27 +33,57 @@ safe-outputs:
     close-older-issues: true
 
 steps:
+  - name: Set up Go
+    uses: actions/setup-go@v6
+    with:
+      go-version-file: './go.mod'
+      cache: true
+
+  - name: Setup Terraform
+    uses: hashicorp/setup-terraform@v4
+    with:
+      terraform_version: "~> 1.0"
+      terraform_wrapper: false
+
   - name: Build and test
+    env:
+      CHECKPOINT_DISABLE: "1"
+      TF_IN_AUTOMATION: "1"
+      TF_CLI_ARGS_init: "-upgrade=false"
     run: |
+      set -o pipefail
+      : > /tmp/results.env
+
       echo "🔨 Building provider..."
-      make build 2>&1 | tee /tmp/build-output.txt
-      BUILD_EXIT=$?
+      if make build 2>&1 | tee /tmp/build-output.txt; then
+        BUILD_EXIT=0
+      else
+        BUILD_EXIT=$?
+      fi
+      echo "BUILD_EXIT=$BUILD_EXIT" >> /tmp/results.env
 
       echo "🧪 Running CI tests..."
-      make test_ci 2>&1 | tee /tmp/test-ci-output.txt
-      TEST_EXIT=$?
+      if make test_ci 2>&1 | tee /tmp/test-ci-output.txt; then
+        TEST_EXIT=0
+      else
+        TEST_EXIT=$?
+      fi
+      echo "TEST_EXIT=$TEST_EXIT" >> /tmp/results.env
 
       echo "🔬 Running E2E quick tests..."
-      make test_e2e_quick 2>&1 | tee /tmp/e2e-output.txt
-      E2E_EXIT=$?
-
-      echo "BUILD_EXIT=$BUILD_EXIT" >> /tmp/results.env
-      echo "TEST_EXIT=$TEST_EXIT" >> /tmp/results.env
+      if make test_e2e_quick 2>&1 | tee /tmp/e2e-output.txt; then
+        E2E_EXIT=0
+      else
+        E2E_EXIT=$?
+      fi
       echo "E2E_EXIT=$E2E_EXIT" >> /tmp/results.env
 
       # Extract test summary lines
       grep -E "^(ok|FAIL|---)" /tmp/test-ci-output.txt > /tmp/test-summary.txt 2>/dev/null || true
       grep -E "^(ok|FAIL|---)" /tmp/e2e-output.txt >> /tmp/test-summary.txt 2>/dev/null || true
+
+      # Always exit 0 from this step so the agent can run and report failures.
+      exit 0
 
 source: local
 engine: copilot

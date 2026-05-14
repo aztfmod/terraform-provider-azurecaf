@@ -31,11 +31,14 @@ steps:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     run: |
-      # Create output directory
-      mkdir -p /tmp/gh-aw/issues-data
-      
+      # Create output directory under the workspace so the agent sandbox can
+      # read the files. /tmp/gh-aw/ is reserved for gh-aw runtime files and
+      # the agent firewall blocks application reads from that path in v0.72.1.
+      DATA_DIR="${GITHUB_WORKSPACE}/.gh-aw-data"
+      mkdir -p "${DATA_DIR}"
+
       echo "⬇ Downloading the last 100 open issues (excluding sub-issues)..."
-      
+
       # Fetch the last 100 open issues that don't have a parent issue
       # Using search filter to exclude issues that are already sub-issues
       gh issue list --repo ${{ github.repository }} \
@@ -43,17 +46,17 @@ steps:
         --state open \
         --json number,title,author,createdAt,state,url,body,labels,updatedAt,closedAt,milestone,assignees \
         --limit 100 \
-        > /tmp/gh-aw/issues-data/issues.json
+        > "${DATA_DIR}/issues.json"
 
       # Generate schema for reference using jqschema
-      /tmp/gh-aw/jqschema.sh < /tmp/gh-aw/issues-data/issues.json > /tmp/gh-aw/issues-data/issues-schema.json
+      /tmp/gh-aw/jqschema.sh < "${DATA_DIR}/issues.json" > "${DATA_DIR}/issues-schema.json"
 
-      echo "✓ Issues data saved to /tmp/gh-aw/issues-data/issues.json"
-      echo "✓ Schema saved to /tmp/gh-aw/issues-data/issues-schema.json"
-      echo "Total issues fetched: $(jq 'length' /tmp/gh-aw/issues-data/issues.json)"
+      echo "✓ Issues data saved to ${DATA_DIR}/issues.json"
+      echo "✓ Schema saved to ${DATA_DIR}/issues-schema.json"
+      echo "Total issues fetched: $(jq 'length' "${DATA_DIR}/issues.json")"
       echo ""
       echo "Schema of the issues data:"
-      cat /tmp/gh-aw/issues-data/issues-schema.json | jq .
+      cat "${DATA_DIR}/issues-schema.json" | jq .
 safe-outputs:
   create-issue:
     expires: 2d
@@ -80,17 +83,17 @@ Analyze the last 100 open issues in repository ${{ github.repository }} (see `is
 
 ## Pre-Downloaded Data
 
-The issue data has been pre-downloaded and is available at:
-- **Issues data**: `/tmp/gh-aw/issues-data/issues.json` - Contains the last 100 open issues (excluding those that are already sub-issues)
-- **Schema**: `/tmp/gh-aw/issues-data/issues-schema.json` - JSON schema showing the structure of the data
+The issue data has been pre-downloaded and is available under the workspace at:
+- **Issues data**: `${GITHUB_WORKSPACE}/.gh-aw-data/issues.json` - Contains the last 100 open issues (excluding those that are already sub-issues)
+- **Schema**: `${GITHUB_WORKSPACE}/.gh-aw-data/issues-schema.json` - JSON schema showing the structure of the data
 
-Use `cat /tmp/gh-aw/issues-data/issues.json | jq ...` to query and analyze the issues.
+Use `cat "${GITHUB_WORKSPACE}/.gh-aw-data/issues.json" | jq ...` to query and analyze the issues.
 
 ## Process
 
 ### Step 1: Load and Analyze Issues
 
-Read the pre-downloaded issues data from `/tmp/gh-aw/issues-data/issues.json`. The data includes:
+Read the pre-downloaded issues data from `${GITHUB_WORKSPACE}/.gh-aw-data/issues.json`. The data includes:
 - Issue number
 - Title
 - Body/description
@@ -101,13 +104,13 @@ Read the pre-downloaded issues data from `/tmp/gh-aw/issues-data/issues.json`. T
 Use `jq` to filter and analyze the data. Example queries:
 ```bash
 # Get count of issues
-jq 'length' /tmp/gh-aw/issues-data/issues.json
+jq 'length' "${GITHUB_WORKSPACE}/.gh-aw-data/issues.json"
 
 # Get open issues only
-jq '[.[] | select(.state == "OPEN")]' /tmp/gh-aw/issues-data/issues.json
+jq '[.[] | select(.state == "OPEN")]' "${GITHUB_WORKSPACE}/.gh-aw-data/issues.json"
 
 # Get issues with specific label
-jq '[.[] | select(.labels | any(.name == "bug"))]' /tmp/gh-aw/issues-data/issues.json
+jq '[.[] | select(.labels | any(.name == "bug"))]' "${GITHUB_WORKSPACE}/.gh-aw-data/issues.json"
 ```
 
 ### Step 2: Analyze Relationships
