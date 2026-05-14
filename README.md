@@ -17,8 +17,7 @@ The Azure CAF provider allows you to:
 - **🏷️ Handle prefixes and suffixes** (either manual or as per Azure CAF resource conventions)
 - **✅ Validate existing names** using passthrough mode
 - **🔄 Support multiple naming conventions** (CAF classic, CAF random, passthrough, etc.)
-- **📋 Generate names for 396 Azure resource types** with accurate validation rules
-
+- **📋 Generate names for 401 Azure resource types** with accurate validation rules
 ## 📦 Quick Start
 
 ### Installation
@@ -30,7 +29,7 @@ terraform {
   required_providers {
     azurecaf = {
       source  = "aztfmod/azurecaf"
-      version = "~> 1.2.28"  # Use the latest version
+      version = "~> 1.2.32"  # Use the latest version
     }
   }
 }
@@ -206,8 +205,7 @@ data "azurecaf_name" "custom_vm" {
 
 ## 🔧 Supported Azure Resources
 
-This provider supports **396 Azure resource types** with accurate naming validation rules. Each resource type has specific constraints for:
-
+This provider supports **401 Azure resource types** with accurate naming validation rules. Each resource type has specific constraints for:
 - **Minimum and maximum length**
 - **Allowed characters and patterns** 
 - **Case sensitivity requirements**
@@ -228,8 +226,7 @@ This provider supports **396 Azure resource types** with accurate naming validat
 <details>
 <summary>📋 View Full Resource Type List</summary>
 
-For the complete list of 396 supported resource types, see the [Resource Types Documentation](docs/index.md#resource-types).
-
+For the complete list of 401 supported resource types, see the [Resource Types Documentation](docs/index.md#complete-supported-resource-types).
 </details>
 
 ## 🚀 Advanced Usage
@@ -398,13 +395,11 @@ The test files are organized as follows:
 - **Integration Tests**: Tests with the prefix `TestAcc` that interact with Terraform directly
 - **Error Handling Tests**: Tests that verify proper error reporting in edge cases
 - **Complete Coverage Tests**: Tests designed specifically to achieve maximum code coverage
-- **Resource Matrix Tests**: Comprehensive validation of all 396 resource types
-- **Constraint Tests**: Validation of resource naming constraints and limitations
+- **Resource Matrix Tests**: Comprehensive validation of all 401 resource types- **Constraint Tests**: Validation of resource naming constraints and limitations
 
 ### Comprehensive Testing Framework
 
-The provider includes a comprehensive testing framework that validates all 396 Azure resource types:
-
+The provider includes a comprehensive testing framework that validates all 401 Azure resource types:
 ```bash
 # Run comprehensive tests for all resource types
 make test_all_resources
@@ -420,8 +415,7 @@ make test_resource_definitions
 ```
 
 This framework ensures:
-- **100% Resource Coverage**: All 396 resource types are tested
-- **Naming Validation**: Each resource type's naming constraints are verified
+- **100% Resource Coverage**: All 401 resource types are tested- **Naming Validation**: Each resource type's naming constraints are verified
 - **Category Organization**: Resources are tested by logical categories (Compute, Networking, etc.)
 - **Edge Case Testing**: Complex naming scenarios and error conditions are validated
 
@@ -468,8 +462,7 @@ make test_all
 make test_ci
 
 # Comprehensive testing framework
-make test_all_resources          # Test all 396 resource types
-make test_resource_matrix        # Category-based resource testing
+make test_all_resources          # Test all 401 resource typesmake test_resource_matrix        # Category-based resource testing
 make test_resource_constraints   # Validation constraint testing
 make test_resource_definitions   # Resource definition completeness
 
@@ -541,8 +534,7 @@ For detailed contribution guidelines, see [CONTRIBUTING.md](.github/CONTRIBUTING
 
 ## 📊 Resource Status
 
-This provider supports 396 Azure resource types. Here's the implementation status compared to the azurerm provider:
-
+This provider supports 401 Azure resource types. Here's the implementation status compared to the azurerm provider:
 <details>
 <summary>🔍 View Detailed Resource Status Table</summary>
 
@@ -859,6 +851,8 @@ This provider supports 396 Azure resource types. Here's the implementation statu
 |azurerm_lb_rule | ✔ |
 |azurerm_lighthouse_assignment | ❌ |
 |azurerm_lighthouse_definition | ❌ |
+|azurerm_linux_function_app | ✔ |
+|azurerm_linux_function_app_slot | ✔ |
 |azurerm_linux_virtual_machine | ✔ |
 |azurerm_linux_virtual_machine_scale_set | ✔ |
 |azurerm_linux_web_app | ✔ |
@@ -891,6 +885,7 @@ This provider supports 396 Azure resource types. Here's the implementation statu
 |azurerm_managed_application | ❌ |
 |azurerm_managed_application_definition | ❌ |
 |azurerm_managed_disk | ✔ |
+|azurerm_managed_redis | ✔ |
 |azurerm_management_group | ❌ |
 |azurerm_management_lock | ❌ |
 |azurerm_maps_account | ✔ |
@@ -1156,8 +1151,11 @@ This provider supports 396 Azure resource types. Here's the implementation statu
 |azurerm_web_application_firewall_policy | ✔ |
 |azurerm_web_pubsub | ✔ |
 |azurerm_web_pubsub_hub | ✔ |
+|azurerm_windows_function_app | ✔ |
+|azurerm_windows_function_app_slot | ✔ |
 |azurerm_windows_virtual_machine | ✔ |
 |azurerm_windows_virtual_machine_scale_set | ✔ |
+|azurerm_windows_web_app | ✔ |
 |azurerm_app_service_custom_hostname_binding | ❌ |
 
 </details>

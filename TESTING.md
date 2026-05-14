@@ -17,7 +17,7 @@ This comprehensive guide covers testing strategies, tools, and best practices fo
 
 ### Prerequisites
 
-- Go 1.19+
+- Go 1.25.0+
 - Make (for using Makefile targets)
 - Terraform CLI (for integration tests)
 
@@ -37,8 +37,6 @@ make test_ci
 ## 🗂️ Test Organization
 
 The project includes a comprehensive test suite designed to ensure the proper functioning of the provider. Tests are organized into several categories:
-
-### Test Organization
 
 ### 1. **Provider Tests**
    - `provider_test.go` - Basic provider configuration and initialization tests

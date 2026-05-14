@@ -18,7 +18,7 @@ The Azure CAF (Cloud Adoption Framework) provider is a *logical provider* that o
 - **🏷️ Handle prefixes and suffixes** (manual or CAF-compliant)
 - **✅ Validate existing names** using passthrough mode
 - **🔄 Support multiple naming conventions** (CAF Classic, CAF Random, Random, Passthrough)
-- **📋 Support 300+ Azure resource types** with accurate validation rules
+- **📋 Support 400+ Azure resource types** with accurate validation rules
 
 ## Quick Start
 
@@ -31,7 +31,7 @@ terraform {
   required_providers {
     azurecaf = {
       source  = "aztfmod/azurecaf"
-      version = "~> 1.2.28"
+      version = "~> 1.2.32"
     }
   }
 }
@@ -96,7 +96,7 @@ data "azurecaf_name" "new" {
 
 ## Supported Azure Resource Types
 
-The provider supports **300+ Azure resource types** with accurate naming validation rules. Each resource type has specific constraints for:
+The provider supports **400+ Azure resource types** with accurate naming validation rules. Each resource type has specific constraints for:
 
 - **Length requirements** (minimum and maximum)
 - **Character restrictions** (allowed patterns)
@@ -155,7 +155,14 @@ The provider supports **300+ Azure resource types** with accurate naming validat
 | azurerm_image| img| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$"|
 | azurerm_linux_virtual_machine| vm| 1| 64| false| "^[^\\/\"\\[\\]:|<>+=;,?*@&_][^\\/\"\\[\\]:|<>+=;,?*@&]{0,62}[^\\/\"\\[\\]:|<>+=;,?*@&.-]$"|
 | azurerm_linux_virtual_machine_scale_set| vmss| 1| 64| false| "^[^\\/\"\\[\\]:|<>+=;,?*@&_][^\\/\"\\[\\]:|<>+=;,?*@&]{0,62}[^\\/\"\\[\\]:|<>+=;,?*@&.-]$"|
+| azurerm_linux_function_app| fa| 2| 60| false| "^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$"|
+| azurerm_linux_function_app_slot| fas| 2| 59| false| "^[0-9A-Za-z][0-9A-Za-z-]{0,57}[0-9a-zA-Z]$"|
+| azurerm_linux_web_app| lwapp| 2| 60| false| "^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$"|
+| azurerm_windows_function_app| fa| 2| 60| false| "^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$"|
+| azurerm_windows_function_app_slot| fas| 2| 59| false| "^[0-9A-Za-z][0-9A-Za-z-]{0,57}[0-9a-zA-Z]$"|
+| azurerm_windows_web_app| wwapp| 2| 60| false| "^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$"|
 | azurerm_managed_disk| dsk| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,78}[a-zA-Z0-9_]$"|
+| azurerm_managed_redis| amr| 3| 63| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$"|
 | azurerm_virtual_machine| vm| 1| 15| false| "^[^\\/\"\\[\\]:|<>+=;,?*@&_][^\\/\"\\[\\]:|<>+=;,?*@&]{0,13}[^\\/\"\\[\\]:|<>+=;,?*@&.-]$"|
 | azurerm_virtual_machine_scale_set| vmss| 1| 15| false| "^[^\\/\"\\[\\]:|<>+=;,?*@&_][^\\/\"\\[\\]:|<>+=;,?*@&]{0,13}[^\\/\"\\[\\]:|<>+=;,?*@&.-]$"|
 | azurerm_windows_virtual_machine| vm| 1| 15| false| "^[^\\/\"\\[\\]:|<>+=;,?*@&_][^\\/\"\\[\\]:|<>+=;,?*@&]{0,13}[^\\/\"\\[\\]:|<>+=;,?*@&.-]$"|
@@ -312,8 +319,13 @@ The provider supports **300+ Azure resource types** with accurate naming validat
 | azurerm_eventgrid_topic| egt| 3| 50| false| "^[a-zA-Z0-9-]{3,50}$"|
 | azurerm_relay_namespace| rln| 6| 50| false| "^[a-zA-Z][a-zA-Z0-9-]{4,48}[a-zA-Z0-9]$"|
 | azurerm_relay_hybrid_connection| rlhc| 1| 260| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,258}[a-zA-Z0-9]$"|
-# Resources not in official Azure CAF documentation (out_of_doc: true)
-cat resourceDefinition.json | jq -r '.[] | select(.out_of_doc == true) | "| \(.name)| \(.slug)| \(.min_length)| \(.max_length)| \(.lowercase)| \(.validation_regex)|"'
+
+#### Resources not in official Azure CAF documentation
+
+These resource types are supported by the provider but are not listed in the upstream CAF abbreviation reference (entries marked `out_of_doc: true` in `resourceDefinition.json`).
+
+| Resource type           | Resource type code (short)  | minimum length  |  maximum length | lowercase only | validation regex                          |
+| ------------------------| ----------------------------|-----------------|-----------------|----------------|-------------------------------------------|
 | azurerm_private_endpoint| pe| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
 | azurerm_private_service_connection| psc| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
 | azurerm_firewall_ip_configuration| fwipconf| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
@@ -337,6 +349,7 @@ cat resourceDefinition.json | jq -r '.[] | select(.out_of_doc == true) | "| \(.n
 | azurerm_private_dns_txt_record| pdnsrec| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
 | azurerm_virtual_machine_extension| vmx| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
 | azurerm_virtual_machine_scale_set_extension| vmssx| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
+| azurerm_network_connection_monitor| cm| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$"|
 | azurerm_network_ddos_protection_plan| ddospp| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
 | azurerm_private_dns_zone_group| pdnszg| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
 | azurerm_proximity_placement_group| ppg| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9\\-\\._]{0,78}[a-zA-Z0-9_]$"|
