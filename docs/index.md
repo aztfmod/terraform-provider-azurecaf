@@ -18,7 +18,7 @@ The Azure CAF (Cloud Adoption Framework) provider is a *logical provider* that o
 - **🏷️ Handle prefixes and suffixes** (manual or CAF-compliant)
 - **✅ Validate existing names** using passthrough mode
 - **🔄 Support multiple naming conventions** (CAF Classic, CAF Random, Random, Passthrough)
-- **📋 Support 401 Azure resource types** with accurate validation rules
+- **📋 Support 405 Azure resource types** with accurate validation rules
 
 ## Quick Start
 
@@ -96,7 +96,7 @@ data "azurecaf_name" "new" {
 
 ## Supported Azure Resource Types
 
-The provider supports **401 Azure resource types** with accurate naming validation rules. Each resource type has specific constraints for:
+The provider supports **405 Azure resource types** with accurate naming validation rules. Each resource type has specific constraints for:
 
 - **Length requirements** (minimum and maximum)
 - **Character restrictions** (allowed patterns)

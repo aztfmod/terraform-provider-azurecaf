@@ -17,7 +17,7 @@ The Azure CAF provider allows you to:
 - **🏷️ Handle prefixes and suffixes** (either manual or as per Azure CAF resource conventions)
 - **✅ Validate existing names** using passthrough mode
 - **🔄 Support multiple naming conventions** (CAF classic, CAF random, passthrough, etc.)
-- **📋 Generate names for 401 Azure resource types** with accurate validation rules
+- **📋 Generate names for 405 Azure resource types** with accurate validation rules
 ## 📦 Quick Start
 
 ### Installation
@@ -206,7 +206,7 @@ data "azurecaf_name" "custom_vm" {
 
 ## 🔧 Supported Azure Resources
 
-This provider supports **401 Azure resource types** with accurate naming validation rules. Each resource type has specific constraints for:
+This provider supports **405 Azure resource types** with accurate naming validation rules. Each resource type has specific constraints for:
 - **Minimum and maximum length**
 - **Allowed characters and patterns** 
 - **Case sensitivity requirements**
@@ -227,7 +227,7 @@ This provider supports **401 Azure resource types** with accurate naming validat
 <details>
 <summary>📋 View Full Resource Type List</summary>
 
-For the complete list of 401 supported resource types, see the [Resource Types Documentation](docs/index.md#complete-supported-resource-types).
+For the complete list of 405 supported resource types, see the [Resource Types Documentation](docs/index.md#complete-supported-resource-types).
 </details>
 
 ## 🚀 Advanced Usage
@@ -396,12 +396,12 @@ The test files are organized as follows:
 - **Integration Tests**: Tests with the prefix `TestAcc` that interact with Terraform directly
 - **Error Handling Tests**: Tests that verify proper error reporting in edge cases
 - **Complete Coverage Tests**: Tests designed specifically to achieve maximum code coverage
-- **Resource Matrix Tests**: Comprehensive validation of all 401 resource types
+- **Resource Matrix Tests**: Comprehensive validation of all 405 resource types
 - **Constraint Tests**: Validation of resource naming constraints and limitations
 
 ### Comprehensive Testing Framework
 
-The provider includes a comprehensive testing framework that validates all 401 Azure resource types:
+The provider includes a comprehensive testing framework that validates all 405 Azure resource types:
 ```bash
 # Run comprehensive tests for all resource types
 make test_all_resources
@@ -414,7 +414,7 @@ make test_resource_definitions
 ```
 
 This framework ensures:
-- **100% Resource Coverage**: All 401 resource types are tested
+- **100% Resource Coverage**: All 405 resource types are tested
 - **Naming Validation**: Each resource type's naming constraints are verified
 - **Category Organization**: Resources are tested by logical categories (Compute, Networking, etc.)
 - **Edge Case Testing**: Complex naming scenarios and error conditions are validated
@@ -462,7 +462,7 @@ make test_all
 make test_ci
 
 # Comprehensive testing framework
-make test_all_resources          # Test all 401 resource types
+make test_all_resources          # Test all 405 resource types
 make test_resource_matrix        # Category-based testing and constraint validation
 make test_resource_definitions   # Resource definition completeness
 
@@ -534,7 +534,7 @@ For detailed contribution guidelines, see [CONTRIBUTING.md](.github/CONTRIBUTING
 
 ## 📊 Resource Status
 
-This provider supports 401 Azure resource types. Here's the implementation status compared to the azurerm provider:
+This provider supports 405 Azure resource types. Here's the implementation status compared to the azurerm provider:
 <details>
 <summary>🔍 View Detailed Resource Status Table</summary>
 
@@ -754,6 +754,7 @@ This provider supports 401 Azure resource types. Here's the implementation statu
 |azurerm_dns_srv_record | ❌ |
 |azurerm_dns_txt_record | ❌ |
 |azurerm_dns_zone | ✔ |
+|azurerm_email_communication_service | ✔ |
 |azurerm_eventgrid_domain | ✔ |
 |azurerm_eventgrid_domain_topic | ✔ |
 |azurerm_eventgrid_event_subscription | ✔ |
@@ -911,6 +912,7 @@ This provider supports 401 Azure resource types. Here's the implementation statu
 |azurerm_monitor_scheduled_query_rules_alert | ✔ |
 |azurerm_monitor_scheduled_query_rules_log | ❌ |
 |azurerm_monitor_smart_detector_alert_rule | ❌ |
+|azurerm_monitor_workspace | ✔ |
 |azurerm_mssql_database | ✔ |
 |azurerm_mssql_database_extended_auditing_policy | ❌ |
 |azurerm_mssql_database_vulnerability_assessment_rule_baseline | ❌ |
@@ -931,7 +933,7 @@ This provider supports 401 Azure resource types. Here's the implementation statu
 |azurerm_mysql_server | ✔ |
 |azurerm_mysql_server_key | ❌ |
 |azurerm_mysql_virtual_network_rule | ✔ |
-|azurerm_nat_gateway | ❌ |
+|azurerm_nat_gateway | ✔ |
 |azurerm_nat_gateway_public_ip_association | ❌ |
 |azurerm_netapp_account | ✔ |
 |azurerm_netapp_pool | ✔ |
@@ -1146,7 +1148,7 @@ This provider supports 401 Azure resource types. Here's the implementation statu
 |azurerm_vmware_private_cloud | ✔ |
 |azurerm_vpn_gateway | ❌ |
 |azurerm_vpn_gateway_connection | ✔ |
-|azurerm_vpn_server_configuration | ❌ |
+|azurerm_vpn_server_configuration | ✔ |
 |azurerm_vpn_site | ✔ |
 |azurerm_web_application_firewall_policy | ✔ |
 |azurerm_web_pubsub | ✔ |
