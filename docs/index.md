@@ -155,7 +155,14 @@ The provider supports **400+ Azure resource types** with accurate naming validat
 | azurerm_image| img| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$"|
 | azurerm_linux_virtual_machine| vm| 1| 64| false| "^[^\\/\"\\[\\]:|<>+=;,?*@&_][^\\/\"\\[\\]:|<>+=;,?*@&]{0,62}[^\\/\"\\[\\]:|<>+=;,?*@&.-]$"|
 | azurerm_linux_virtual_machine_scale_set| vmss| 1| 64| false| "^[^\\/\"\\[\\]:|<>+=;,?*@&_][^\\/\"\\[\\]:|<>+=;,?*@&]{0,62}[^\\/\"\\[\\]:|<>+=;,?*@&.-]$"|
+| azurerm_linux_function_app| fa| 2| 60| false| "^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$"|
+| azurerm_linux_function_app_slot| fas| 2| 59| false| "^[0-9A-Za-z][0-9A-Za-z-]{0,57}[0-9a-zA-Z]$"|
+| azurerm_linux_web_app| lwapp| 2| 60| false| "^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$"|
+| azurerm_windows_function_app| fa| 2| 60| false| "^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$"|
+| azurerm_windows_function_app_slot| fas| 2| 59| false| "^[0-9A-Za-z][0-9A-Za-z-]{0,57}[0-9a-zA-Z]$"|
+| azurerm_windows_web_app| wwapp| 2| 60| false| "^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$"|
 | azurerm_managed_disk| dsk| 1| 80| false| "^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,78}[a-zA-Z0-9_]$"|
+| azurerm_managed_redis| amr| 3| 63| false| "^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$"|
 | azurerm_virtual_machine| vm| 1| 15| false| "^[^\\/\"\\[\\]:|<>+=;,?*@&_][^\\/\"\\[\\]:|<>+=;,?*@&]{0,13}[^\\/\"\\[\\]:|<>+=;,?*@&.-]$"|
 | azurerm_virtual_machine_scale_set| vmss| 1| 15| false| "^[^\\/\"\\[\\]:|<>+=;,?*@&_][^\\/\"\\[\\]:|<>+=;,?*@&]{0,13}[^\\/\"\\[\\]:|<>+=;,?*@&.-]$"|
 | azurerm_windows_virtual_machine| vm| 1| 15| false| "^[^\\/\"\\[\\]:|<>+=;,?*@&_][^\\/\"\\[\\]:|<>+=;,?*@&]{0,13}[^\\/\"\\[\\]:|<>+=;,?*@&.-]$"|

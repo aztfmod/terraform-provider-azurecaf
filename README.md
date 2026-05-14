@@ -859,6 +859,8 @@ This provider supports 400 Azure resource types. Here's the implementation statu
 |azurerm_lb_rule | ✔ |
 |azurerm_lighthouse_assignment | ❌ |
 |azurerm_lighthouse_definition | ❌ |
+|azurerm_linux_function_app | ✔ |
+|azurerm_linux_function_app_slot | ✔ |
 |azurerm_linux_virtual_machine | ✔ |
 |azurerm_linux_virtual_machine_scale_set | ✔ |
 |azurerm_linux_web_app | ✔ |
@@ -891,6 +893,7 @@ This provider supports 400 Azure resource types. Here's the implementation statu
 |azurerm_managed_application | ❌ |
 |azurerm_managed_application_definition | ❌ |
 |azurerm_managed_disk | ✔ |
+|azurerm_managed_redis | ✔ |
 |azurerm_management_group | ❌ |
 |azurerm_management_lock | ❌ |
 |azurerm_maps_account | ✔ |
@@ -1156,8 +1159,11 @@ This provider supports 400 Azure resource types. Here's the implementation statu
 |azurerm_web_application_firewall_policy | ✔ |
 |azurerm_web_pubsub | ✔ |
 |azurerm_web_pubsub_hub | ✔ |
+|azurerm_windows_function_app | ✔ |
+|azurerm_windows_function_app_slot | ✔ |
 |azurerm_windows_virtual_machine | ✔ |
 |azurerm_windows_virtual_machine_scale_set | ✔ |
+|azurerm_windows_web_app | ✔ |
 |azurerm_app_service_custom_hostname_binding | ❌ |
 
 </details>

@@ -22,9 +22,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - **CI/Automation**: Added a pre-agent `Set up Go` + `Build provider` step block to `pr-review-agent.md` so the PR review agent can verify `make build` against the repo's Go version (`go.mod` → `1.25.0`). Previously the agent reported "Build passes ⚠️ Unverified — Go toolchain unavailable in sandbox" because the gh-aw agent container (`ghcr.io/github/gh-aw-firewall/agent`) does not ship a Go toolchain. The build now runs on the host runner (where `setup-go` populates the tool cache) and the agent reads `BUILD_RESULT` and a 80-line log tail from `/tmp/`. **Requires recompiling** with `gh aw compile pr-review-agent` to regenerate `pr-review-agent.lock.yml`.
+- **CI/Automation**: Recompiled all 10 GitHub Agentic Workflow lock files with `gh aw` v0.72.1 (previously v0.61.0)
+  - Generated missing `.lock.yml` files for `contributor-welcome`, `issue-to-pr-agent`, `nightly-regression`, `pr-review-agent`, `release-validation`, and `weekly-azure-sync`
+- **CI/Automation**: Migrated agentic workflows to current gh-aw schema
+  - Replaced deprecated `tools.github.repos` with `tools.github.allowed-repos` in `daily-repo-status` and `release-labeler`
+  - Removed redundant `contents: write` / `issues: write` permissions now handled by `safe-outputs` (strict-mode requirement) in `issue-to-pr-agent`, `nightly-regression`, `weekly-azure-sync`
+  - Added missing toolset read permissions (`pull-requests: read`, `issues: read`) required by declared GitHub toolsets
+  - Switched fixed cron expressions to fuzzy schedules (`daily`, `weekly on monday`) in `nightly-regression` and `weekly-azure-sync` to spread load
+  - Replaced `registry.terraform.io` domain in `weekly-azure-sync` network allowlist with the `terraform` ecosystem identifier
 
 ### Documentation
 - **Resource count**: Updated documented Azure resource type count from `395` / `300+` to the actual `400` (verified via `jq 'length' resourceDefinition.json`). Touches README.md (8 places), COMPLETE_TESTING_GUIDE.md (6 places), docs/index.md (2 places), docs/resources/azurecaf_name.md (2 places), docs/data-sources/azurecaf_name.md (1 place), and .github/CONTRIBUTING.md (1 place).
+- **Resource status table**: Added `azurerm_linux_function_app`, `azurerm_linux_function_app_slot`, `azurerm_managed_redis`, `azurerm_windows_function_app`, `azurerm_windows_function_app_slot`, and `azurerm_windows_web_app` to the README.md and docs/index.md resource tables. These resources were already supported in `resourceDefinition.json` but the user-facing tables were stale.
 - **Missing argument doc**: Added `error_when_exceeding_max_length` to `docs/resources/azurecaf_name.md` (was already documented for the data source but absent from the resource doc since v1.2.32).
 - **Go prerequisite**: TESTING.md updated `Go 1.19+` → `Go 1.25.0+` to match `go.mod` (`go 1.25.0`).
 - **Version pin**: Bumped `version = "~> 1.2.28"` example pin to `~> 1.2.32` (latest tag) in README.md and docs/index.md.
@@ -35,14 +44,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`azurecaf_naming_convention` dead arguments**: Documented that the `prefixes` and `suffixes` *list* arguments are accepted by the schema but **ignored** by `getResult`; only the singular `prefix` and `postfix` are honored. Users who need list semantics should migrate to `azurecaf_name`.
 - **TESTING.md**: Removed an orphan `### Test Organization` heading that had no body and was sitting directly under the `## 🗂️ Test Organization` section heading.
 - **docs/index.md**: Fixed a broken `<details>` block where leftover generator commentary (a bare `# Resources not in official Azure CAF documentation` heading and a stray `cat resourceDefinition.json | jq …` shell command) was rendering as a level-1 heading and a paragraph between two markdown tables. Replaced with a proper `#### Resources not in official Azure CAF documentation` subheading and a one-sentence intro.
-- **CI/Automation**: Recompiled all 10 GitHub Agentic Workflow lock files with `gh aw` v0.72.1 (previously v0.61.0)
-  - Generated missing `.lock.yml` files for `contributor-welcome`, `issue-to-pr-agent`, `nightly-regression`, `pr-review-agent`, `release-validation`, and `weekly-azure-sync`
-- **CI/Automation**: Migrated agentic workflows to current gh-aw schema
-  - Replaced deprecated `tools.github.repos` with `tools.github.allowed-repos` in `daily-repo-status` and `release-labeler`
-  - Removed redundant `contents: write` / `issues: write` permissions now handled by `safe-outputs` (strict-mode requirement) in `issue-to-pr-agent`, `nightly-regression`, `weekly-azure-sync`
-  - Added missing toolset read permissions (`pull-requests: read`, `issues: read`) required by declared GitHub toolsets
-  - Switched fixed cron expressions to fuzzy schedules (`daily`, `weekly on monday`) in `nightly-regression` and `weekly-azure-sync` to spread load
-  - Replaced `registry.terraform.io` domain in `weekly-azure-sync` network allowlist with the `terraform` ecosystem identifier
 
 ### Security
 - **CI/Automation**: Excluded the auto-generated `agentics-maintenance.yml` self-maintenance workflow that `gh aw compile` v0.72.1 emits. The compiler-emitted file inlined `${{ inputs.operation }}` and `${{ inputs.run_url }}` directly into shell `run:` blocks (CWE-94 script injection, SonarCloud rule `actions:S7631`). Even after refactoring those values through environment variables, SonarCloud's analyzer continues to flag any propagation of `${{ inputs.* }}` into a step that has a `run:` block. Since the maintenance workflow is optional, manually-triggered (`workflow_dispatch` / `workflow_call`), and not referenced by any other workflow in this repo, it has been removed from version control. If a future `gh aw compile` re-emits it, it must be deleted again or refactored to use `actions/github-script` (no shell `run:` block) before being committed.
