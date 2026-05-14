@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Allows alphanumerics, hyphens, periods, and underscores
   - Follows Azure naming conventions for Network Connection Monitor resources
   - Impact: Low - Adds new resource type support for Azure Network Watcher connection monitoring
+- **Missing name resources from tracking issue [#432](https://github.com/aztfmod/terraform-provider-azurecaf/issues/432)**: Added four resource type entries that were previously requested but unsupported. Each entry was researched against the Azure naming-rules documentation (`Microsoft.Network/natGateways`) and CAF abbreviations page; resources without an official CAF abbreviation are flagged `out_of_doc: true`.
+  - `azurerm_nat_gateway` — slug `ng` (official CAF), scope `resourceGroup`, min 1 / max 80, allows alphanumerics, hyphens, periods, and underscores. Resource provider namespace: `Microsoft.Network/natGateways`. Closes [#254](https://github.com/aztfmod/terraform-provider-azurecaf/issues/254).
+  - `azurerm_monitor_workspace` — slug `amw`, scope `resourceGroup`, min 4 / max 63, allows alphanumerics and hyphens. Azure Monitor managed Prometheus workspace. Closes [#276](https://github.com/aztfmod/terraform-provider-azurecaf/issues/276).
+  - `azurerm_email_communication_service` — slug `acsmail`, scope `global`, min 1 / max 63, allows alphanumerics and hyphens. Companion to the existing `azurerm_communication_service` entry (`acs`). Closes [#261](https://github.com/aztfmod/terraform-provider-azurecaf/issues/261).
+  - `azurerm_vpn_server_configuration` — slug `vpnsc`, scope `resourceGroup`, min 1 / max 80, allows alphanumerics, hyphens, periods, and underscores. Companion to the existing `azurerm_vpn_gateway_connection` (`vcn`) and `azurerm_vpn_site` (`vst`) entries. Closes [#174](https://github.com/aztfmod/terraform-provider-azurecaf/issues/174).
+  - Impact: Low - additive only, no breaking changes; existing names are unchanged.
 
 ### Changed
 - **Dependencies**: Bumped `github.com/hashicorp/terraform-plugin-sdk/v2` from v2.38.2 to v2.40.0
@@ -47,7 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Replaced `registry.terraform.io` domain in `weekly-azure-sync` network allowlist with the `terraform` ecosystem identifier
 
 ### Documentation
-- **Resource count alignment**: Updated documented Azure resource type count to the actual `401` (verified via `jq 'length' resourceDefinition.json`) across `README.md`, `COMPLETE_TESTING_GUIDE.md`, `docs/index.md`, `docs/resources/azurecaf_name.md`, `docs/resources/azurecaf_naming_convention.md`, `docs/data-sources/azurecaf_name.md`, and `.github/CONTRIBUTING.md`.
+- **Resource count alignment**: Updated documented Azure resource type count to the actual `405` (verified via `jq 'length' resourceDefinition.json`) across `README.md`, `COMPLETE_TESTING_GUIDE.md`, `docs/index.md`, `docs/resources/azurecaf_name.md`, `docs/resources/azurecaf_naming_convention.md`, `docs/data-sources/azurecaf_name.md`, and `.github/CONTRIBUTING.md`. Reflects the four new resources added under tracking issue [#432](https://github.com/aztfmod/terraform-provider-azurecaf/issues/432).
 - **README.md run-on regressions**: Fixed three rendering bugs introduced by an earlier bulk substitution where a missing newline collapsed adjacent list items / fenced-code lines (lines 398, 418, and 465 — `Resource Matrix Tests` / `Constraint Tests`, `100% Resource Coverage` / `Naming Validation`, and the comprehensive testing framework code block). Items now render as separate bullets / lines.
 - **README.md broken make targets**: Replaced two references to the non-existent `make test_resource_constraints` target with `make test_resource_matrix` (whose Makefile help string already says "Test resources by category and validate constraints"). The duplicate row was de-duplicated.
 - **README.md missing argument**: Added `error_when_exceeding_max_length` to the Supported Parameters table; the schema (`resource_name.go:238`) exposes the field but the table omitted it.

@@ -135,6 +135,7 @@
     "azurerm_dns_ptr_record",
     "azurerm_dns_txt_record",
     "azurerm_dns_zone",
+    "azurerm_email_communication_service",
     "azurerm_eventgrid_domain",
     "azurerm_eventgrid_domain_topic",
     "azurerm_eventgrid_event_subscription",
@@ -239,6 +240,7 @@
     "azurerm_monitor_metric_alert",
     "azurerm_monitor_private_link_scope",
     "azurerm_monitor_scheduled_query_rules_alert",
+    "azurerm_monitor_workspace",
     "azurerm_mssql_database",
     "azurerm_mssql_elasticpool",
     "azurerm_mssql_mi",
@@ -250,6 +252,7 @@
     "azurerm_mysql_flexible_server_firewall_rule",
     "azurerm_mysql_server",
     "azurerm_mysql_virtual_network_rule",
+    "azurerm_nat_gateway",
     "azurerm_netapp_account",
     "azurerm_netapp_pool",
     "azurerm_netapp_snapshot",
@@ -390,6 +393,7 @@
     "azurerm_vmware_express_route_authorization",
     "azurerm_vmware_private_cloud",
     "azurerm_vpn_gateway_connection",
+    "azurerm_vpn_server_configuration",
     "azurerm_vpn_site",
     "azurerm_web_application_firewall_policy",
     "azurerm_web_pubsub",
@@ -405,6 +409,6 @@
     "general",
     "general_safe"
   ],
-  "successful_resources": 401,
-  "total_resources": 401
+  "successful_resources": 405,
+  "total_resources": 405
 }

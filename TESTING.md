@@ -70,7 +70,7 @@ The project includes a comprehensive test suite designed to ensure the proper fu
    - `integration_data_sources_test.go` - Data source integration with Terraform
    - `integration_error_cases_test.go` - Error handling and edge cases
    - `integration_all_resource_types_test.go` - Comprehensive resource type testing
-   - `integration_all_resources_complete_test.go` - Complete testing of all 401 resource types
+   - `integration_all_resources_complete_test.go` - Complete testing of all 405 resource types
 
 ### 7. **Coverage and Edge Case Tests**
    - `complete_coverage_test.go` - Tests to improve code coverage
