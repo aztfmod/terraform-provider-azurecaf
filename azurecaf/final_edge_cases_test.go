@@ -24,22 +24,19 @@ func TestGetResourceNameValidationError(t *testing.T) {
 	}()
 
 	// Now try to use the resource type with a name that won't match the regex
-	_, err := getResourceName("azurerm_storage_account", "-", []string{}, "test", []string{}, "", "cafclassic", false, false, true, []string{"name"})
+	_, err := getResourceName("azurerm_storage_account", "-", []string{}, "test", []string{}, "", "cafclassic", false, false, true, []string{"name"}, false)
 
 	if err == nil {
 		t.Error("Expected validation error but got none")
 	}
 }
 
-// Test regex compilation error in getResult by handling panic (since there's a nil pointer issue)
+// Test regex compilation error in getResult - now returns an error instead of panicking
 func TestGetResultRegexError(t *testing.T) {
-	// Some code paths in getResult don't properly handle invalid regex and cause panics
-	// We can test this by using defer/recover
-
 	// Save the original resource
 	originalResource := Resources["st"]
 
-	// Create a modified version with invalid regex pattern - this should error on compile
+	// Create a modified version with invalid regex pattern - this should now return an error
 	modifiedResource := originalResource
 	modifiedResource.RegEx = "[" // Invalid regex pattern that will cause compile error
 	Resources["st"] = modifiedResource
@@ -47,11 +44,6 @@ func TestGetResultRegexError(t *testing.T) {
 	defer func() {
 		// Restore original after test
 		Resources["st"] = originalResource
-
-		// Recover from panic
-		if r := recover(); r == nil {
-			t.Error("Expected panic but none occurred")
-		}
 	}()
 
 	rd := schema.TestResourceDataRaw(t, resourceNamingConvention().Schema, map[string]interface{}{
@@ -60,11 +52,13 @@ func TestGetResultRegexError(t *testing.T) {
 		"convention":    "random",
 	})
 
-	// This will cause a panic when it hits the invalid regex
-	_ = getResult(rd, nil)
+	err := getResult(rd, nil)
+	if err == nil {
+		t.Error("Expected error for invalid regex pattern but got none")
+	}
 }
 
-// Test getResult with validation regex error
+// Test getResult with validation regex error - now returns an error instead of panicking
 func TestGetResultValidationRegexError(t *testing.T) {
 	// Save the original resource
 	originalResource := Resources["st"]
@@ -77,11 +71,6 @@ func TestGetResultValidationRegexError(t *testing.T) {
 	defer func() {
 		// Restore original after test
 		Resources["st"] = originalResource
-
-		// Recover from panic
-		if r := recover(); r == nil {
-			t.Error("Expected panic but none occurred")
-		}
 	}()
 
 	rd := schema.TestResourceDataRaw(t, resourceNamingConvention().Schema, map[string]interface{}{
@@ -90,8 +79,10 @@ func TestGetResultValidationRegexError(t *testing.T) {
 		"convention":    "random",
 	})
 
-	// This will cause a panic when it hits the invalid validation regex
-	_ = getResult(rd, nil)
+	err := getResult(rd, nil)
+	if err == nil {
+		t.Error("Expected error for invalid validation regex pattern but got none")
+	}
 }
 
 // Test getResult error handling with validation match failure

@@ -16,6 +16,109 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Follows Azure naming conventions for Network Connection Monitor resources
   - Impact: Low - Adds new resource type support for Azure Network Watcher connection monitoring
 
+### Changed
+- **Dependencies**: Bumped `github.com/hashicorp/terraform-plugin-sdk/v2` from v2.38.2 to v2.40.0
+  - Includes resource configuration generation logic for `-generate-config-out` flag (Terraform v1.14.0+)
+  - Added deprecation message support for attributes and blocks
+  - Go version updated from 1.24.4 to 1.25.0
+  - Aligned `e2e/go.mod` dependencies (`terraform-exec` v0.25.0, `terraform-json` v0.27.2, `go-cty` v1.17.0)
+  - Impact: Low -- dependency update only, no breaking changes
+- **Dev Environment**: Bumped `.devcontainer/devcontainer.json` Go feature from `1.24.4` to `1.25.0` to match `go.mod` (`go 1.25.0`). Previous pin would have failed `go build` inside the dev container.
+- **Documentation**: Updated `.github/CONTRIBUTING.md` prerequisite from `Go 1.24.4+` to `Go 1.25.0+` to match `go.mod`.
+
+### Security
+- **CI/Automation**: SHA-pinned `actions/checkout` and `actions/setup-go` in hand-authored workflows (`codeql.yml`, `copilot-setup-steps.yml`, `e2e.yml`, `go.yml`, `security.yml`) to match the SHA-pinning posture of the gh-aw-managed agentic lock files. Pinned `actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd` (v6.0.2) and `actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c` (v6.4.0). Mitigates tag-mutability risk (CWE-829).
+
+### Fixed
+- **CI/Automation**: Added a pre-agent `Set up Go` + `Build provider` step block to `pr-review-agent.md` so the PR review agent can verify `make build` against the repo's Go version (`go.mod` → `1.25.0`). Previously the agent reported "Build passes ⚠️ Unverified — Go toolchain unavailable in sandbox" because the gh-aw agent container (`ghcr.io/github/gh-aw-firewall/agent`) does not ship a Go toolchain. The build now runs on the host runner (where `setup-go` populates the tool cache) and the agent reads `BUILD_RESULT` and a 80-line log tail from `/tmp/`. **Requires recompiling** with `gh aw compile pr-review-agent` to regenerate `pr-review-agent.lock.yml`.
+- **CI/Automation**: Recompiled all 10 GitHub Agentic Workflow lock files with `gh aw` v0.72.1 (previously v0.61.0)
+  - Generated missing `.lock.yml` files for `contributor-welcome`, `issue-to-pr-agent`, `nightly-regression`, `pr-review-agent`, `release-validation`, and `weekly-azure-sync`
+- **CI/Automation**: Migrated agentic workflows to current gh-aw schema
+  - Replaced deprecated `tools.github.repos` with `tools.github.allowed-repos` in `daily-repo-status` and `release-labeler`
+  - Removed redundant `contents: write` / `issues: write` permissions now handled by `safe-outputs` (strict-mode requirement) in `issue-to-pr-agent`, `nightly-regression`, `weekly-azure-sync`
+  - Added missing toolset read permissions (`pull-requests: read`, `issues: read`) required by declared GitHub toolsets
+  - Switched fixed cron expressions to fuzzy schedules (`daily`, `weekly on monday`) in `nightly-regression` and `weekly-azure-sync` to spread load
+  - Replaced `registry.terraform.io` domain in `weekly-azure-sync` network allowlist with the `terraform` ecosystem identifier
+
+### Security
+- **CI/Automation**: Excluded the auto-generated `agentics-maintenance.yml` self-maintenance workflow that `gh aw compile` v0.72.1 emits. The compiler-emitted file inlined `${{ inputs.operation }}` and `${{ inputs.run_url }}` directly into shell `run:` blocks (CWE-94 script injection, SonarCloud rule `actions:S7631`). Even after refactoring those values through environment variables, SonarCloud's analyzer continues to flag any propagation of `${{ inputs.* }}` into a step that has a `run:` block. Since the maintenance workflow is optional, manually-triggered (`workflow_dispatch` / `workflow_call`), and not referenced by any other workflow in this repo, it has been removed from version control. If a future `gh aw compile` re-emits it, it must be deleted again or refactored to use `actions/github-script` (no shell `run:` block) before being committed.
+- **CI/Automation**: Added `.checkov.yaml` to suppress Checkov rule `CKV_GHA_7` ("workflow_dispatch inputs MUST be empty") for the auto-generated agentic workflow lock files. The compiler emits an internal `aw_context` input on every `workflow_dispatch` trigger; the lock files carry "DO NOT EDIT" headers, so a global skip with a documented justification is the auto-regen-safe approach. The repo is not a SLSA-tracked build-artifact producer, so the rule does not apply.
+
+## [v1.2.32] - 2026-03-23
+
+### Added
+- **Documentation**: Added Terraform Registry downloads badge to README.md
+- **Feature**: Added `error_when_exceeding_max_length` attribute to `azurecaf_name` resource and data source
+  - When enabled, returns an error if the composed name exceeds the resource type's maximum length
+  - Supports both resource and data source usage
+  - Includes comprehensive tests and documentation
+
+### Fixed
+- **Bug Fix**: Handle `regexp.Compile` errors to prevent nil pointer panics (#379)
+  - Properly handle regex compilation errors in resource name validation
+  - Prevents crashes when invalid regex patterns are encountered
+- **Testing**: Moved test helper functions to `_test.go` file to exclude them from coverage metrics (92.8% → 98.3%)
+
+
+- **Automation**: Added comprehensive Copilot skills and agents framework for repository automation
+  - **18 new skills** across 6 domains: resource lifecycle, CI/CD & testing, release management, community, documentation, and Azure sync
+    - `changelog-update` — automated CHANGELOG.md entry creation with semver impact assessment
+    - `readme-resource-table` — README.md resource status table sync
+    - `regression-test-runner` — full CI test suite execution and reporting
+    - `e2e-test-runner` — E2E test execution with structured summaries
+    - `coverage-analysis` — test coverage analysis against 95% threshold
+    - `test-failure-diagnosis` — automated test failure root cause analysis
+    - `pr-compliance-check` — PR checklist validation (generated code, CHANGELOG, README)
+    - `resource-diff-report` — resourceDefinition.json diff between versions
+    - `issue-to-resource-spec` — parse resource request issues into draft JSON entries
+    - `contributor-guide` — step-by-step contribution guidance by type
+    - `azure-caf-sync` — CAF slug drift detection from official Microsoft docs
+    - `azure-resource-discovery` — discover new azurerm resources not yet supported
+    - `naming-rules-drift-check` — detect Azure naming rule changes
+    - `resource-completeness-check` — provider coverage vs known azurerm resources
+    - `semver-assessment` — semantic version bump determination
+    - `release-notes-generator` — GitHub Release notes from CHANGELOG
+    - `pre-release-validation` — comprehensive pre-release checks
+    - `docs-resource-sync` — keep documentation in sync with resource definitions
+    - `example-generator` — generate Terraform example configurations
+    - `resource-bulk-import` — batch-research and insert multiple resources
+  - **6 new interactive agents** for Copilot Chat workflows:
+    - `caf.add-resource` — end-to-end new resource addition (research → JSON → build → test → changelog → readme)
+    - `caf.update-resource` — update existing resource with full validation
+    - `caf.bulk-add-resources` — add multiple resources in one session
+    - `caf.audit-resources` — full audit: completeness, drift, coverage
+    - `caf.release-prep` — prepare releases: validate, version, generate notes
+    - `caf.diagnose-failure` — diagnose and fix build/test failures
+  - **6 new GitHub Actions agentic workflows**:
+    - `nightly-regression` — nightly test suite on main, auto-creates issues on failure
+    - `pr-review-agent` — automated PR compliance review on open/update
+    - `issue-to-pr-agent` — auto-creates PR from issues labeled `new-resource`
+    - `contributor-welcome` — welcomes first-time contributors with guidance
+    - `weekly-azure-sync` — weekly Azure resource discovery and CAF drift detection
+    - `release-validation` — validates releases on tag push
+  - Updated `copilot-instructions.md` with complete skill and agent catalog
+  - Impact: High — enables comprehensive repository automation across all development workflows
+
+### Fixed
+
+- **Nil pointer panic on invalid regex patterns**: `cleanString()` in `resource_name.go` and `getResult()` in `resource_naming_convention.go` previously discarded `regexp.Compile` errors, causing nil pointer dereference panics at runtime when a regex pattern in `resourceDefinition.json` was invalid. Both functions now handle compilation errors explicitly: `cleanString()` logs a warning and returns the input string unchanged, while `getResult()` returns a descriptive error to the caller.
+- **Function App Resources**: Added support for new Azure Function App resource types
+  - Added `azurerm_linux_function_app` with slug `fa`
+  - Added `azurerm_linux_function_app_slot` with slug `fas`
+  - Added `azurerm_windows_function_app` with slug `fa`
+  - Added `azurerm_windows_function_app_slot` with slug `fas`
+  - These replace the deprecated `azurerm_function_app` and `azurerm_function_app_slot`
+  - Maintains consistency with existing function app naming rules (2-60 chars, global scope)
+  - Impact: High - Enables support for modern Azure Function App deployment patterns
+- **azurerm_managed_redis**: Added support for Azure Managed Redis resource type
+  - Slug: `amr` (per Microsoft CAF documentation)
+  - Length: 3–63 characters
+  - Scope: `resourceGroup`
+  - Valid characters: alphanumeric and hyphens; must start and end with alphanumeric; consecutive hyphens are permitted (matches current regex validation behavior)
+  - Resource provider namespace: `Microsoft.Cache/redisEnterprise`
+  - This resource supersedes `azurerm_redis_cache` (Azure Cache for Redis), which is being retired
+  - Impact: Medium - Enables CAF-compliant naming for the new Azure Managed Redis offering
+
 ### Fixed
 - **Go Version Alignment**: Resolved conflicting Go version declarations in go.mod
   - Changed from conflicting `go 1.23.0` and `toolchain go1.24.4` to unified `go 1.24`
@@ -28,7 +131,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Resolves Go vet warnings and ensures build passes all checks
   - Impact: Low - Improves code quality and eliminates build warnings
 
-## [v1.2.30]
+## [v1.2.31] - 2025-07-03
+
+### Fixed
+- **CI/CD Pipeline**: Release provider in zip archives instead of tarballs for Terraform Registry compatibility
+
+## [v1.2.30] - 2025-07-02
 
 ### Fixed
 - **CI/CD Pipeline**: Fixed GoReleaser failure due to git tag mismatch and dirty state
@@ -176,6 +284,365 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Non-Official Resources**: 340 resources with simplified official structure
 - **Files Consolidated**: 2 → 1 resource definition file
 
----
+## [v1.2.29] - 2025-06-16
 
-*This changelog consolidates major structural changes made to the terraform-provider-azurecaf resource definitions and documentation mapping. Future releases will continue to document changes in this format for semantic versioning purposes.*
+### Added
+- Support for Azure Dev Center resources (`azurerm_dev_center`, `azurerm_dev_center_project`, `azurerm_dev_center_gallery`)
+- Support for `azurerm_service_plan`
+- Support for `azurerm_servicebus_namespace_disaster_recovery_config`
+- Support for Log Analytics Solution, Query Pack, and Monitor Data Collection Rule
+- Support for `azurerm_bot_service_azure_bot`
+- Support for `azurerm_data_protection_backup_policy_postgresql_flexible_server`
+- Added LICENSE file
+
+### Fixed
+- Fixed typos across documentation
+- Replaced Dockerfile with devcontainer.json configuration
+
+### Security
+- Bumped `golang.org/x/net` from 0.20.0 to 0.23.0
+- Bumped `google.golang.org/protobuf` from 1.32.0 to 1.33.0
+
+### Added
+- Support for Azure OpenAI Deployment resource
+
+## [v1.2.28] - 2024-03-13
+
+### Added
+- Support for `azurerm_load_test` resource
+
+### Changed
+- Updated documentation to add notice and remove Microsoft references
+
+## [v1.2.27] - 2024-01-16
+
+### Added
+- Support for `azurerm_powerbi_embedded`
+- Support for `azurerm_search_service`
+- Support for `azurerm_monitor_data_collection_endpoint`
+- Support for `azurerm_portal_dashboard`
+- Support for `azurerm_route_server`
+
+### Security
+- Bumped `github.com/cloudflare/circl` from 1.3.3 to 1.3.7
+- Bumped `golang.org/x/net` from 0.7.0 to 0.17.0
+- Bumped `golang.org/x/crypto` from 0.1.0 to 0.17.0
+- Bumped `google.golang.org/grpc` from 1.32.0 to 1.56.3
+
+## [v1.2.26] - 2023-06-23
+
+### Added
+- Support for `azurerm_linux_web_app` and `azurerm_windows_web_app`
+
+### Fixed
+- Better error handling for empty environment variable values
+
+## [v1.2.25] - 2023-05-03
+
+### Added
+- Support for IoT security resources
+- Support for IoTHub and DPS shared access policies
+
+## [v1.2.24] - 2023-03-09
+
+### Added
+- Support for `azurerm_container_app`
+- Support for `azurerm_virtual_machine_portal_name`
+
+### Fixed
+- Fixed documentation issues
+- Reverted #200
+
+### Security
+- Bumped `golang.org/x/crypto` from 0.0.0 to 0.1.0
+- Bumped `golang.org/x/net` from 0.0.0 to 0.7.0
+- Bumped `golang.org/x/text` from 0.3.5 to 0.3.8
+
+## [v1.2.23] - 2022-11-29
+
+### Added
+- Support for FHIR service
+- Support for `azurerm_federated_identity_credential`
+- Support for log alert, Kubernetes fleet manager, DNS forwarding rule and VNet link
+- Support for Application Insights web test
+
+### Fixed
+- Allow hyphens in `azurerm_shared_image` resource
+
+## [v1.2.22] - 2022-11-16
+
+### Added
+- Support for `azurerm_maintenance_configuration`
+- Data source `azurecaf_name` for reading existing naming conventions
+
+### Fixed
+- Fixed issues #194 and #204
+
+## [v1.2.21] - 2022-11-01
+
+### Added
+- Support for DNS forwarding rulesets and private resolver endpoints
+- Support for CDN FrontDoor route and custom domain
+- Support for metric alert, NGINX, and DNS resolver resources
+- Support for `azurerm_automation_job_schedule`
+- Data source `azurecaf_environment_variable` for reading environment variables
+
+### Changed
+- Increased length limits for `azurerm_windows_virtual_machine` and `azurerm_windows_virtual_machine_scale_set`
+
+## [v1.2.20] - 2022-09-28
+
+### Added
+- Support for Azure Red Hat OpenShift (ARO)
+- Support for `azurerm_web_pubsub` and `azurerm_web_pubsub_hub`
+- Support for CDN FrontDoor rule and secret
+
+## [v1.2.19] - 2022-08-19
+
+### Added
+- Support for `azurerm_static_site`
+- Support for CDN FrontDoor firewall and security policies
+
+### Fixed
+- Corrected slug for `azurerm_static_site`
+
+## [v1.2.18] - 2022-08-03
+
+### Added
+- Support for `azurerm_iothub_certificate`
+
+### Fixed
+- Fixed issue #162
+- Updated CI/CD pipeline
+
+## [v1.2.17] - 2022-05-05
+
+### Added
+- Support for `azurerm_data_protection_backup_vault` and backup policies
+- Support for `azurerm_virtual_hub_connection`
+
+## [v1.2.16] - 2022-03-11
+
+### Fixed
+- Fixed `azurerm_synapse_sql_pool` naming
+
+## [v1.2.15] - 2022-03-07
+
+### Added
+- Support for Synapse and Purview resources
+
+## [v1.2.14] - 2022-03-01
+
+### Added
+- Support for `azurerm_log_analytics_storage_insights`
+
+### Fixed
+- Fixed issues #146 and #156
+
+## [v1.2.13] - 2022-02-15
+
+### Fixed
+- Fixes for APIM naming conventions
+
+## [v1.2.12] - 2022-02-14
+
+### Added
+- Support for `azurerm_mysql_flexible_server`
+- Support for `azurerm_digital_twins_endpoint`
+- Support for `azurerm_aadb2c_directory`
+
+## [v1.2.11] - 2022-01-14
+
+### Added
+- Support for Load Balancer resources
+- Support for APIM resources
+- Support for `azurerm_digital_twins_instance`
+
+## [v1.2.10] - 2021-12-02
+
+### Added
+- Support for `azurerm_elastic_cloud_deployment`
+- Support for `azurerm_postgresql_flexible_server` resources
+- Support for additional resources (#127, #136)
+
+## [v1.2.9] - 2021-11-24
+
+### Added
+- Support for Data Factory resources
+
+### Changed
+- Updated Go and GoReleaser versions
+
+## [v1.2.8] - 2021-11-17
+
+### Added
+- Support for Azure Communication Services
+- Support for `azurerm_machine_learning_compute_instance`
+
+## [v1.2.7] - 2021-11-10
+
+### Added
+- Support for `azurerm_storage_sync` and `azurerm_storage_sync_group`
+
+### Fixed
+- Updated regex for `azurerm_managed_disk`
+- Added darwin_arm64 build target
+
+## [v1.2.6] - 2021-08-24
+
+### Added
+- Support for `azurerm_web_application_firewall_policy`
+- Support for `azurerm_vmware_cluster`
+- Support for NetApp resources
+- Support for issue #59
+
+### Fixed
+- Fixed issues #107 and #120
+
+## [v1.2.5] - 2021-07-02
+
+### Added
+- Support for `azurerm_consumption_budget_subscription`
+- Support for `azurerm_consumption_budget_resource_group`
+- Support for `azurerm_monitor_action_group`
+
+### Fixed
+- Fixed tests with Terraform v1.0.1
+
+## [v1.2.4] - 2021-06-18
+
+### Added
+- Support for `azurerm_vpn_gateway_connection`
+- Support for `azurerm_vpn_site`
+- Support for `azurerm_monitor_activity_log_alert`
+
+### Fixed
+- Fixed CosmosDB naming (#89)
+- Fixed App Configuration by removing `_` support (#58)
+
+## [v1.2.3] - 2021-05-04
+
+### Added
+- Support for computer name prefix resource
+
+### Changed
+- Upgraded dependencies and actions to latest Go version
+
+## [v1.2.2] - 2021-02-18
+
+### Fixed
+- Added missing `models_generated.go`
+
+## [v1.2.1] - 2021-02-18
+
+### Added
+- Support for `azurerm_ip_group`
+
+### Changed
+- Pinned GoReleaser version
+
+## [v1.2.0] - 2021-02-04
+
+### Added
+- Support for Logic App
+- Support for Functions App
+
+### Changed
+- Migrated provider to SDK v2
+
+## [v1.1.9] - 2020-12-16
+
+### Fixed
+- Fixed naming convention for APIM (#74)
+
+### Added
+- Added contribution guidelines
+
+## [v1.1.8] - 2020-11-24
+
+### Added
+- Added implementation reference documentation
+
+## [v1.1.7] - 2020-11-17
+
+### Fixed
+- Fixed shared image documentation bug
+
+## [v1.1.6] - 2020-11-17
+
+### Added
+- Added test for hyphen validation in regex
+
+## [v1.1.5] - 2020-11-10
+
+### Added
+- Support for `azurerm_monitor_diagnostic_setting`
+- Added space to valid characters for resource names
+
+## [v1.1.4] - 2020-10-20
+
+### Fixed
+- Corrected name validation
+
+## [v1.1.3] - 2020-10-19
+
+### Fixed
+- Fixed App Service Environment (ASE) slug and character limits
+
+## [v1.1.2] - 2020-10-19
+
+### Added
+- Support for `azurerm_private_dns_zone_virtual_network_link`
+- Support for Managed Identity (MSI)
+- Support for Synapse SQL pools
+
+## [v1.1.1] - 2020-09-17
+
+### Fixed
+- Corrected regex for name cleaning
+
+## [v1.1.0] - 2020-09-17
+
+### Added
+- Support for Azure Synapse resources
+
+### Fixed
+- Removed slug name collision
+
+## [v1.0.0] - 2020-09-16
+
+### Added
+- Support for `azurerm_recovery_services_vault`
+- Additional missing resources
+- Initial stable release with comprehensive Azure resource naming support
+
+## [v0.4.3] - 2020-06-18
+
+### Changed
+- Added GoReleaser for automated releases
+- Moved documentation to `docs/` directory for Terraform Registry compliance
+- Added GPG signing for releases
+
+## [v0.4.2] - 2020-05-15
+
+### Added
+- Support for AKS (cluster, node pool, DNS prefix)
+- Support for Application Gateway, API Management, Application Insights
+- Support for App Service, App Service Plan, SQL Server, SQL Database
+- Support for Application Service Environment (ASE)
+- Support for subnets
+
+### Fixed
+- Fixed filter regex patterns
+- Fixed passthrough mode character stripping
+- Fixed validation regex character limits based on Microsoft docs
+
+## [v0.2.1] - 2020-03-27
+
+### Fixed
+- Bug fixes and improvements
+
+## [v0.2] - 2020-03-23
+
+### Added
+- Initial release with basic Azure resource naming convention support
