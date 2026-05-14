@@ -5,18 +5,18 @@ description: |
   can prioritize adding or updating resource definitions.
 
 on:
-  schedule: "0 9 * * 1"
+  schedule: weekly on monday
   workflow_dispatch:
 
 permissions:
   contents: read
-  issues: write
+  issues: read
 
 network:
   allowed:
     - defaults
     - learn.microsoft.com
-    - registry.terraform.io
+    - terraform
 
 tools:
   github:

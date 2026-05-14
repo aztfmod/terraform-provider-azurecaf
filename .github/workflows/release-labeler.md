@@ -20,7 +20,7 @@ tools:
   github:
     lockdown: false
     min-integrity: none
-    repos: all
+    allowed-repos: all
   bash:
     - "git *"
     - "grep *"
