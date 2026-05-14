@@ -228,7 +228,7 @@ This provider supports **400 Azure resource types** with accurate naming validat
 <details>
 <summary>📋 View Full Resource Type List</summary>
 
-For the complete list of 400 supported resource types, see the [Resource Types Documentation](docs/index.md#resource-types).
+For the complete list of 400 supported resource types, see the [Resource Types Documentation](docs/index.md#complete-supported-resource-types).
 
 </details>
 
