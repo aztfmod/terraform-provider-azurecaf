@@ -98,7 +98,7 @@ In all conventions:
 - Length is bounded by `max_length`, capped to the resource type's Azure-mandated maximum.
 - The output is validated against the resource type's `ValidationRegExp`. If validation fails, the resource returns an error.
 
-> **Migrating to [`azurecaf_name`](azurecaf_name.md)?** That resource exposes a much richer composition pipeline (multiple prefixes/suffixes, configurable random length and separator, optional slug, passthrough as a flag, length-overflow control). It also covers **400+** resource types versus this resource's fixed legacy set. See the [Migration Guide](../index.md#migration-guide) for a side-by-side example.
+> **Migrating to [`azurecaf_name`](azurecaf_name.md)?** That resource exposes a much richer composition pipeline (multiple prefixes/suffixes, configurable random length and separator, optional slug, passthrough as a flag, length-overflow control). It also covers **401** resource types versus this resource's fixed legacy set. See the [Migration Guide](../index.md#migration-guide) for a side-by-side example.
 
 ## Attributes Reference
 

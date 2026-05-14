@@ -137,9 +137,11 @@ The E2E tests are fully integrated into GitHub Actions CI/CD pipelines:
 - **Comprehensive Testing**: Full suite of E2E tests
 - **Manual Triggers**: Can be run manually with different test types
 - **Conditional Execution**: Smart execution based on file changes
-- **Test Categories**: 
+
+#### Test Categories
+
   - `quick` - Basic functionality only
-  - `all` - Complete test suite  
+  - `all` - Complete test suite
   - `import_only` - Import functionality only
   - `naming_only` - Naming convention tests only
 

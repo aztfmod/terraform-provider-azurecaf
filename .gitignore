@@ -35,3 +35,6 @@ e2e/**/terraform.rc
 
 # Terraform configuration files
 **/terraform.rc
+
+# Doc-Ops / Copilot session tracking files (local-only working notes)
+.copilot-tracking/
