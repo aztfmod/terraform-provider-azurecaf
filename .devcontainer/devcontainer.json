@@ -32,7 +32,7 @@
         },
         "ghcr.io/devcontainers/features/github-cli:1": {},
         "ghcr.io/devcontainers/features/terraform:1": {},
-        "ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {
+        "ghcr.io/devcontainers-extra/features/zsh-plugins:0": {
             "plugins": [
                 "aliases",
                 "syntax-highlighting",
