@@ -1,0 +1,195 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  repository_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CHECKPOINT_DISABLE: 1
+  TF_IN_AUTOMATION: 1
+  TF_CLI_ARGS_init: "-upgrade=false"
+
+jobs:
+  # Build once, save Go cache for all downstream jobs
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-go-env
+        with:
+          install-terraform: 'true'
+          install-tfproviderlint: 'true'
+
+      # Save cache (only build job writes; test jobs restore-only)
+      - name: Save Go module cache
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+
+      - name: Build
+        run: |
+          go generate
+          go fmt ./...
+          go build -o ./terraform-provider-azurecaf
+
+  # ── Unit & Coverage ──────────────────────────────────────────────
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-go-env
+        with:
+          install-tfproviderlint: 'true'
+      - run: make unittest
+
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-go-env
+      - run: make test_coverage
+      - run: make test_coverage_html
+
+  # ── Resource Validation ──────────────────────────────────────────
+  resource-validation:
+    name: Resource Validation
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-go-env
+        with:
+          install-terraform: 'true'
+      - run: make test_resource_definitions
+      - run: make test_resource_matrix
+      - run: make test_resource_coverage
+
+  # ── Integration Tests (matrix) ──────────────────────────────────
+  integration:
+    name: Integration - ${{ matrix.suite }}
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - suite: data-sources
+            target: test_data_sources
+          - suite: error-handling
+            target: test_error_handling
+          - suite: naming-conventions
+            target: test_resource_naming
+          - suite: general
+            target: test_integration
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-go-env
+        with:
+          install-terraform: 'true'
+      - run: make ${{ matrix.target }}
+
+  # ── E2E Tests (matrix) ──────────────────────────────────────────
+  e2e:
+    name: E2E - ${{ matrix.suite }}
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - suite: quick
+            target: test_e2e_quick
+          - suite: data-source
+            target: test_e2e_data_source
+          - suite: naming
+            target: test_e2e_naming
+          - suite: multiple-types
+            target: test_e2e_multiple_types
+          - suite: import
+            target: test_e2e_import
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-go-env
+        with:
+          install-terraform: 'true'
+      - name: Build provider for E2E
+        run: make build
+      - run: make ${{ matrix.target }}
+
+  # ── E2E Full Suite (PRs only) ───────────────────────────────────
+  e2e-full:
+    name: E2E Full Suite
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-go-env
+        with:
+          install-terraform: 'true'
+      - name: Build provider for E2E
+        run: make build
+      - run: make test_e2e
+
+  # ── Summary ─────────────────────────────────────────────────────
+  test-summary:
+    name: Test Summary
+    runs-on: ubuntu-latest
+    if: always()
+    needs:
+      - unit-tests
+      - coverage
+      - resource-validation
+      - integration
+      - e2e
+      - e2e-full
+    steps:
+      - name: Evaluate results
+        run: |
+          echo "## Test Results Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Dynamically report each job result
+          failed=0
+          for pair in \
+            "Unit Tests:${{ needs.unit-tests.result }}" \
+            "Coverage:${{ needs.coverage.result }}" \
+            "Resource Validation:${{ needs.resource-validation.result }}" \
+            "Integration:${{ needs.integration.result }}" \
+            "E2E:${{ needs.e2e.result }}" \
+            "E2E Full Suite:${{ needs.e2e-full.result }}"; do
+
+            name="${pair%%:*}"
+            result="${pair##*:}"
+
+            if [ "$result" = "success" ]; then
+              echo "- :white_check_mark: **${name}**: Passed" >> $GITHUB_STEP_SUMMARY
+            elif [ "$result" = "skipped" ]; then
+              echo "- :next_track_button: **${name}**: Skipped" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "- :x: **${name}**: Failed" >> $GITHUB_STEP_SUMMARY
+              failed=1
+            fi
+          done
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "$failed" -eq 0 ]; then
+            echo ":rocket: All tests passed!" >> $GITHUB_STEP_SUMMARY
+          else
+            echo ":x: Some tests failed. Check logs above." >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
