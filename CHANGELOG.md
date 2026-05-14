@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Network Connection Monitor Support**: Added support for `azurerm_network_connection_monitor` resource type
+  - Resource slug: `cm`
+  - Min length: 1, Max length: 80
+  - Scope: parent (child resource of Network Watcher)
+  - Allows alphanumerics, hyphens, periods, and underscores
+  - Follows Azure naming conventions for Network Connection Monitor resources
+  - Impact: Low - Adds new resource type support for Azure Network Watcher connection monitoring
+
 ### Changed
 - **Dependencies**: Bumped `github.com/hashicorp/terraform-plugin-sdk/v2` from v2.38.2 to v2.40.0
   - Includes resource configuration generation logic for `-generate-config-out` flag (Terraform v1.14.0+)
@@ -32,7 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Replaced `registry.terraform.io` domain in `weekly-azure-sync` network allowlist with the `terraform` ecosystem identifier
 
 ### Documentation
-- **Resource count**: Updated documented Azure resource type count from `395` / `300+` to the actual `400` (verified via `jq 'length' resourceDefinition.json`). Touches README.md (8 places), COMPLETE_TESTING_GUIDE.md (6 places), docs/index.md (2 places), docs/resources/azurecaf_name.md (2 places), docs/data-sources/azurecaf_name.md (1 place), and .github/CONTRIBUTING.md (1 place).
+- **Resource count**: Updated documented Azure resource type count from `395` / `300+` to the actual `401` (verified via `jq 'length' resourceDefinition.json`). Touches README.md (8 places), COMPLETE_TESTING_GUIDE.md (6 places), docs/index.md (2 places), docs/resources/azurecaf_name.md (2 places), docs/data-sources/azurecaf_name.md (1 place), and .github/CONTRIBUTING.md (1 place).
 - **Resource status table**: Added `azurerm_linux_function_app`, `azurerm_linux_function_app_slot`, `azurerm_managed_redis`, `azurerm_windows_function_app`, `azurerm_windows_function_app_slot`, and `azurerm_windows_web_app` to the README.md and docs/index.md resource tables. These resources were already supported in `resourceDefinition.json` but the user-facing tables were stale.
 - **Missing argument doc**: Added `error_when_exceeding_max_length` to `docs/resources/azurecaf_name.md` (was already documented for the data source but absent from the resource doc since v1.2.32).
 - **Go prerequisite**: TESTING.md updated `Go 1.19+` → `Go 1.25.0+` to match `go.mod` (`go 1.25.0`).
