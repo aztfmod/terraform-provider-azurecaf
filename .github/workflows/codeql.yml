@@ -19,6 +19,11 @@ on:
   schedule:
     - cron: '33 8 * * 5'
 
+# Restrict permissions for all jobs by default; the `analyze` job declares the
+# elevated permissions it needs (security-events: write, packages: read, etc.).
+permissions:
+  contents: read
+
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})

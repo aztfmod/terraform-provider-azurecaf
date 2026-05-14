@@ -11,6 +11,11 @@ on:
     paths:
       - .github/workflows/copilot-setup-steps.yml
 
+# Restrict permissions for all jobs by default; the `copilot-setup-steps` job
+# declares its own `contents: read` for repository checkout.
+permissions:
+  contents: read
+
 jobs:
   # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot.
   copilot-setup-steps:

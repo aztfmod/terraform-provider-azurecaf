@@ -39,6 +39,11 @@ steps:
       go-version-file: './go.mod'
       cache: true
 
+  - name: Install tfproviderlint
+    run: |
+      go install github.com/bflad/tfproviderlint/cmd/tfproviderlint@latest
+      echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+
   - name: Setup Terraform
     uses: hashicorp/setup-terraform@v4
     with:

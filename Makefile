@@ -19,7 +19,12 @@ build:	## Build the project and run unit tests
 
 unittest: 	## Run unit tests without coverage
 	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test ./...
-	tfproviderlint ./...
+	@if command -v tfproviderlint >/dev/null 2>&1; then \
+		tfproviderlint ./...; \
+	else \
+		echo "⚠️  tfproviderlint not found on PATH — skipping lint step."; \
+		echo "   Install with: go install github.com/bflad/tfproviderlint/cmd/tfproviderlint@latest"; \
+	fi
 
 test_coverage: 	## Run tests with coverage reporting
 	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -cover ./...
