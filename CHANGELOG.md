@@ -14,6 +14,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Go version updated from 1.24.4 to 1.25.0
   - Aligned `e2e/go.mod` dependencies (`terraform-exec` v0.25.0, `terraform-json` v0.27.2, `go-cty` v1.17.0)
   - Impact: Low -- dependency update only, no breaking changes
+- **Dev Environment**: Bumped `.devcontainer/devcontainer.json` Go feature from `1.24.4` to `1.25.0` to match `go.mod` (`go 1.25.0`). Previous pin would have failed `go build` inside the dev container.
+- **Documentation**: Updated `.github/CONTRIBUTING.md` prerequisite from `Go 1.24.4+` to `Go 1.25.0+` to match `go.mod`.
+
+### Security
+- **CI/Automation**: SHA-pinned `actions/checkout` and `actions/setup-go` in hand-authored workflows (`codeql.yml`, `copilot-setup-steps.yml`, `e2e.yml`, `go.yml`, `security.yml`) to match the SHA-pinning posture of the gh-aw-managed agentic lock files. Pinned `actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd` (v6.0.2) and `actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c` (v6.4.0). Mitigates tag-mutability risk (CWE-829).
+
+### Fixed
+- **CI/Automation**: Added a pre-agent `Set up Go` + `Build provider` step block to `pr-review-agent.md` so the PR review agent can verify `make build` against the repo's Go version (`go.mod` → `1.25.0`). Previously the agent reported "Build passes ⚠️ Unverified — Go toolchain unavailable in sandbox" because the gh-aw agent container (`ghcr.io/github/gh-aw-firewall/agent`) does not ship a Go toolchain. The build now runs on the host runner (where `setup-go` populates the tool cache) and the agent reads `BUILD_RESULT` and a 80-line log tail from `/tmp/`. **Requires recompiling** with `gh aw compile pr-review-agent` to regenerate `pr-review-agent.lock.yml`.
 - **CI/Automation**: Recompiled all 10 GitHub Agentic Workflow lock files with `gh aw` v0.72.1 (previously v0.61.0)
   - Generated missing `.lock.yml` files for `contributor-welcome`, `issue-to-pr-agent`, `nightly-regression`, `pr-review-agent`, `release-validation`, and `weekly-azure-sync`
 - **CI/Automation**: Migrated agentic workflows to current gh-aw schema
