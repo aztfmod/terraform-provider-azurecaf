@@ -44,6 +44,20 @@
         }
     },
     {
+        "name": "azurerm_advanced_threat_protection",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "atp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Advanced Threat Protection"
+        }
+    },
+    {
         "name": "azurerm_analysis_services_server",
         "min_length": 3,
         "max_length": 63,
@@ -218,6 +232,20 @@
         }
     },
     {
+        "name": "azurerm_app_service_certificate",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "appcert",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure App Service Certificate"
+        }
+    },
+    {
         "name": "azurerm_app_service_environment",
         "min_length": 2,
         "max_length": 36,
@@ -247,6 +275,20 @@
             "slug": "plan",
             "resource": "App Service plan",
             "resource_provider_namespace": "Microsoft.Web/serverfarms"
+        }
+    },
+    {
+        "name": "azurerm_app_service_slot",
+        "min_length": 1,
+        "max_length": 59,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{0,57}[a-zA-Z0-9]$\"",
+        "scope": "parent",
+        "slug": "apps",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure App Service Slot"
         }
     },
     {
@@ -312,6 +354,20 @@
         }
     },
     {
+        "name": "azurerm_attestation",
+        "min_length": 3,
+        "max_length": 24,
+        "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9]{2,23}$\"",
+        "scope": "resourceGroup",
+        "slug": "atst",
+        "dashes": false,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z]\"",
+        "official": {
+            "resource": "Azure Attestation"
+        }
+    },
+    {
         "name": "azurerm_automation_account",
         "min_length": 6,
         "max_length": 50,
@@ -342,6 +398,20 @@
         }
     },
     {
+        "name": "azurerm_automation_connection",
+        "min_length": 1,
+        "max_length": 128,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,126}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "aacon",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Automation Connection"
+        }
+    },
+    {
         "name": "azurerm_automation_credential",
         "min_length": 1,
         "max_length": 128,
@@ -353,6 +423,20 @@
         "regex": "`[^-\\w\\._\\(\\)]`",
         "official": {
             "resource": "Azure Automation Credential"
+        }
+    },
+    {
+        "name": "azurerm_automation_dsc_configuration",
+        "min_length": 1,
+        "max_length": 128,
+        "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9_]{0,127}$\"",
+        "scope": "parent",
+        "slug": "aadsc",
+        "dashes": false,
+        "lowercase": false,
+        "regex": "\"[^A-Za-z0-9_]\"",
+        "official": {
+            "resource": "Azure Automation Dsc Configuration"
         }
     },
     {
@@ -381,6 +465,20 @@
         "regex": "`[^-\\w\\._\\(\\)]`",
         "official": {
             "resource": "Azure Automation Job Schedule"
+        }
+    },
+    {
+        "name": "azurerm_automation_module",
+        "min_length": 1,
+        "max_length": 128,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,126}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "aamod",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Automation Module"
         }
     },
     {
@@ -507,6 +605,48 @@
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
             "resource": "Azure Batch Pool"
+        }
+    },
+    {
+        "name": "azurerm_blueprint_assignment",
+        "min_length": 1,
+        "max_length": 90,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,88}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "bpa",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Blueprint Assignment"
+        }
+    },
+    {
+        "name": "azurerm_blueprint_definition",
+        "min_length": 1,
+        "max_length": 90,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,88}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "bpd",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Blueprint Definition"
+        }
+    },
+    {
+        "name": "azurerm_blueprint_published_version",
+        "min_length": 1,
+        "max_length": 90,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,88}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "bppv",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Blueprint Published Version"
         }
     },
     {
@@ -921,6 +1061,20 @@
         }
     },
     {
+        "name": "azurerm_container_group",
+        "min_length": 1,
+        "max_length": 63,
+        "validation_regex": "\"^[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "aci",
+        "dashes": true,
+        "lowercase": true,
+        "regex": "\"[^0-9a-z-]\"",
+        "official": {
+            "resource": "Azure Container Group"
+        }
+    },
+    {
         "name": "azurerm_container_registry",
         "min_length": 1,
         "max_length": 63,
@@ -962,6 +1116,132 @@
             "slug": "cosmos",
             "resource": "Azure Cosmos DB database",
             "resource_provider_namespace": "Microsoft.DocumentDB/databaseAccounts"
+        }
+    },
+    {
+        "name": "azurerm_cosmosdb_cassandra_keyspace",
+        "min_length": 1,
+        "max_length": 255,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,253}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "coscas",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Cosmosdb Cassandra Keyspace"
+        }
+    },
+    {
+        "name": "azurerm_cosmosdb_gremlin_database",
+        "min_length": 1,
+        "max_length": 255,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,253}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "cosgrm",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Cosmosdb Gremlin Database"
+        }
+    },
+    {
+        "name": "azurerm_cosmosdb_gremlin_graph",
+        "min_length": 1,
+        "max_length": 255,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,253}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "cosgrmg",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Cosmosdb Gremlin Graph"
+        }
+    },
+    {
+        "name": "azurerm_cosmosdb_mongo_collection",
+        "min_length": 1,
+        "max_length": 255,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,253}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "cosmonc",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Cosmosdb Mongo Collection"
+        }
+    },
+    {
+        "name": "azurerm_cosmosdb_mongo_database",
+        "min_length": 1,
+        "max_length": 255,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,253}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "cosmondb",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Cosmosdb Mongo Database"
+        }
+    },
+    {
+        "name": "azurerm_cosmosdb_sql_container",
+        "min_length": 1,
+        "max_length": 255,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,253}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "cosqlc",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Cosmosdb Sql Container"
+        }
+    },
+    {
+        "name": "azurerm_cosmosdb_sql_database",
+        "min_length": 1,
+        "max_length": 255,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,253}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "cosqldb",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Cosmosdb Sql Database"
+        }
+    },
+    {
+        "name": "azurerm_cosmosdb_sql_stored_procedure",
+        "min_length": 1,
+        "max_length": 255,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,253}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "cosqlsp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Cosmosdb Sql Stored Procedure"
+        }
+    },
+    {
+        "name": "azurerm_cosmosdb_table",
+        "min_length": 1,
+        "max_length": 255,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,253}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "costbl",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Cosmosdb Table"
         }
     },
     {
@@ -1132,6 +1412,20 @@
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
             "resource": "Azure Data Factory Integration Runtime Managed"
+        }
+    },
+    {
+        "name": "azurerm_data_factory_integration_runtime_self_hosted",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$\"",
+        "scope": "parent",
+        "slug": "adfirsh",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Data Factory Integration Runtime Self Hosted"
         }
     },
     {
@@ -1459,6 +1753,104 @@
         }
     },
     {
+        "name": "azurerm_data_share",
+        "min_length": 2,
+        "max_length": 90,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,89}$\"",
+        "scope": "parent",
+        "slug": "dshr",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Data Share"
+        }
+    },
+    {
+        "name": "azurerm_data_share_account",
+        "min_length": 2,
+        "max_length": 90,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,89}$\"",
+        "scope": "resourceGroup",
+        "slug": "dshra",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Data Share Account"
+        }
+    },
+    {
+        "name": "azurerm_data_share_dataset_blob_storage",
+        "min_length": 2,
+        "max_length": 90,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,89}$\"",
+        "scope": "parent",
+        "slug": "dshrdsb",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Data Share Dataset Blob Storage"
+        }
+    },
+    {
+        "name": "azurerm_data_share_dataset_data_lake_gen1",
+        "min_length": 2,
+        "max_length": 90,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,89}$\"",
+        "scope": "parent",
+        "slug": "dshrdsg1",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Data Share Dataset Data Lake Gen1"
+        }
+    },
+    {
+        "name": "azurerm_data_share_dataset_data_lake_gen2",
+        "min_length": 2,
+        "max_length": 90,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,89}$\"",
+        "scope": "parent",
+        "slug": "dshrdsg2",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Data Share Dataset Data Lake Gen2"
+        }
+    },
+    {
+        "name": "azurerm_data_share_dataset_kusto_cluster",
+        "min_length": 2,
+        "max_length": 90,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,89}$\"",
+        "scope": "parent",
+        "slug": "dshrdskc",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Data Share Dataset Kusto Cluster"
+        }
+    },
+    {
+        "name": "azurerm_data_share_dataset_kusto_database",
+        "min_length": 2,
+        "max_length": 90,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,89}$\"",
+        "scope": "parent",
+        "slug": "dshrdskd",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Data Share Dataset Kusto Database"
+        }
+    },
+    {
         "name": "azurerm_database_migration_project",
         "min_length": 2,
         "max_length": 57,
@@ -1500,6 +1892,20 @@
         "regex": "\"[^0-9A-Za-z_-]\"",
         "official": {
             "resource": "Azure Databricks Workspace"
+        }
+    },
+    {
+        "name": "azurerm_dedicated_hardware_security_module",
+        "min_length": 3,
+        "max_length": 24,
+        "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9-]{1,22}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "hsm",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Dedicated Hardware Security Module"
         }
     },
     {
@@ -1671,6 +2077,48 @@
         }
     },
     {
+        "name": "azurerm_dev_test_policy",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,62}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "dtlp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Dev Test Policy"
+        }
+    },
+    {
+        "name": "azurerm_dev_test_schedule",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,62}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "dtls",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Dev Test Schedule"
+        }
+    },
+    {
+        "name": "azurerm_dev_test_virtual_network",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,62}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "dtlvn",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Dev Test Virtual Network"
+        }
+    },
+    {
         "name": "azurerm_dev_test_windows_virtual_machine",
         "min_length": 1,
         "max_length": 15,
@@ -1682,6 +2130,20 @@
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
             "resource": "Azure Dev Test Windows Virtual Machine"
+        }
+    },
+    {
+        "name": "azurerm_devspace_controller",
+        "min_length": 1,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "dsc",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Devspace Controller"
         }
     },
     {
@@ -1992,6 +2454,20 @@
         }
     },
     {
+        "name": "azurerm_eventhub_cluster",
+        "min_length": 1,
+        "max_length": 50,
+        "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9-]{0,48}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "ehc",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Eventhub Cluster"
+        }
+    },
+    {
         "name": "azurerm_eventhub_consumer_group",
         "min_length": 1,
         "max_length": 50,
@@ -2061,6 +2537,34 @@
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
             "resource": "Azure Express Route Circuit"
+        }
+    },
+    {
+        "name": "azurerm_express_route_circuit_authorization",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "erca",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Express Route Circuit Authorization"
+        }
+    },
+    {
+        "name": "azurerm_express_route_circuit_peering",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "ercp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Express Route Circuit Peering"
         }
     },
     {
@@ -2182,6 +2686,20 @@
         }
     },
     {
+        "name": "azurerm_firewall_policy_rule_collection_group",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "fwprcg",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Firewall Policy Rule Collection Group"
+        }
+    },
+    {
         "name": "azurerm_frontdoor",
         "min_length": 5,
         "max_length": 64,
@@ -2240,31 +2758,17 @@
         }
     },
     {
-        "name": "azurerm_linux_function_app",
-        "min_length": 2,
-        "max_length": 60,
-        "validation_regex": "\"^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$\"",
-        "scope": "global",
-        "slug": "fa",
-        "dashes": true,
-        "lowercase": false,
-        "regex": "\"[^0-9A-Za-z-]\"",
-        "official": {
-            "resource": "Azure Linux Function App"
-        }
-    },
-    {
-        "name": "azurerm_linux_function_app_slot",
-        "min_length": 2,
+        "name": "azurerm_hdinsight_cluster",
+        "min_length": 3,
         "max_length": 59,
-        "validation_regex": "\"^[0-9A-Za-z][0-9A-Za-z-]{0,57}[0-9a-zA-Z]$\"",
-        "scope": "global",
-        "slug": "fas",
+        "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9-]{1,57}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "hdi",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
-            "resource": "Azure Linux Function App Slot"
+            "resource": "Azure Hdinsight Cluster"
         }
     },
     {
@@ -2450,6 +2954,48 @@
         }
     },
     {
+        "name": "azurerm_hpc_cache",
+        "min_length": 2,
+        "max_length": 31,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{0,29}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "hpcc",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Hpc Cache"
+        }
+    },
+    {
+        "name": "azurerm_hpc_cache_blob_target",
+        "min_length": 2,
+        "max_length": 31,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{0,29}[a-zA-Z0-9]$\"",
+        "scope": "parent",
+        "slug": "hpcbt",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Hpc Cache Blob Target"
+        }
+    },
+    {
+        "name": "azurerm_hpc_cache_nfs_target",
+        "min_length": 2,
+        "max_length": 31,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{0,29}[a-zA-Z0-9]$\"",
+        "scope": "parent",
+        "slug": "hpcnt",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Hpc Cache Nfs Target"
+        }
+    },
+    {
         "name": "azurerm_image",
         "min_length": 1,
         "max_length": 80,
@@ -2503,6 +3049,34 @@
         "regex": "\"[^0-9A-Za-z-_]\"",
         "official": {
             "resource": "Azure Iot Security Solution"
+        }
+    },
+    {
+        "name": "azurerm_iot_time_series_insights_reference_data_set",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9]{3,63}$\"",
+        "scope": "parent",
+        "slug": "tsirds",
+        "dashes": false,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z]\"",
+        "official": {
+            "resource": "Azure Iot Time Series Insights Reference Data Set"
+        }
+    },
+    {
+        "name": "azurerm_iot_time_series_insights_standard_environment",
+        "min_length": 1,
+        "max_length": 90,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,88}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "tsise",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Iot Time Series Insights Standard Environment"
         }
     },
     {
@@ -2608,6 +3182,90 @@
         }
     },
     {
+        "name": "azurerm_iothub_endpoint_eventhub",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,62}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "iothepeh",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Iothub Endpoint Eventhub"
+        }
+    },
+    {
+        "name": "azurerm_iothub_endpoint_servicebus_queue",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,62}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "iothepsbq",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Iothub Endpoint Servicebus Queue"
+        }
+    },
+    {
+        "name": "azurerm_iothub_endpoint_servicebus_topic",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,62}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "iothepsbt",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Iothub Endpoint Servicebus Topic"
+        }
+    },
+    {
+        "name": "azurerm_iothub_endpoint_storage_container",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,62}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "iothepsc",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Iothub Endpoint Storage Container"
+        }
+    },
+    {
+        "name": "azurerm_iothub_fallback_route",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,62}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "iothfr",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Iothub Fallback Route"
+        }
+    },
+    {
+        "name": "azurerm_iothub_route",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,62}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "iothr",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Iothub Route"
+        }
+    },
+    {
         "name": "azurerm_iothub_shared_access_policy",
         "min_length": 1,
         "max_length": 64,
@@ -2650,6 +3308,20 @@
             "slug": "kv",
             "resource": "Key Vault",
             "resource_provider_namespace": "Microsoft.KeyVault/vaults"
+        }
+    },
+    {
+        "name": "azurerm_key_vault_access_policy",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "kvap",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Key Vault Access Policy"
         }
     },
     {
@@ -2722,6 +3394,20 @@
         "regex": "\"[^0-9a-z-]\"",
         "official": {
             "resource": "Azure Kubernetes Fleet Manager"
+        }
+    },
+    {
+        "name": "azurerm_kusto_attached_database_configuration",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[a-zA-Z0-9- .]{1,260}$\"",
+        "scope": "parent",
+        "slug": "kadc",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z- .]\"",
+        "official": {
+            "resource": "Azure Kusto Attached Database Configuration"
         }
     },
     {
@@ -2893,6 +3579,62 @@
         }
     },
     {
+        "name": "azurerm_lighthouse_assignment",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "lha",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Lighthouse Assignment"
+        }
+    },
+    {
+        "name": "azurerm_lighthouse_definition",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "lhd",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Lighthouse Definition"
+        }
+    },
+    {
+        "name": "azurerm_linux_function_app",
+        "min_length": 2,
+        "max_length": 60,
+        "validation_regex": "\"^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$\"",
+        "scope": "global",
+        "slug": "fa",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Linux Function App"
+        }
+    },
+    {
+        "name": "azurerm_linux_function_app_slot",
+        "min_length": 2,
+        "max_length": 59,
+        "validation_regex": "\"^[0-9A-Za-z][0-9A-Za-z-]{0,57}[0-9a-zA-Z]$\"",
+        "scope": "global",
+        "slug": "fas",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Linux Function App Slot"
+        }
+    },
+    {
         "name": "azurerm_linux_virtual_machine",
         "min_length": 1,
         "max_length": 64,
@@ -2983,6 +3725,48 @@
         }
     },
     {
+        "name": "azurerm_log_analytics_cluster_customer_managed_key",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "laccmk",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Log Analytics Cluster Customer Managed Key"
+        }
+    },
+    {
+        "name": "azurerm_log_analytics_data_export_rule",
+        "min_length": 4,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{2,61}[a-zA-Z0-9]$\"",
+        "scope": "parent",
+        "slug": "laer",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Log Analytics Data Export Rule"
+        }
+    },
+    {
+        "name": "azurerm_log_analytics_linked_service",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "lals",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Log Analytics Linked Service"
+        }
+    },
+    {
         "name": "azurerm_log_analytics_query_pack",
         "min_length": 4,
         "max_length": 63,
@@ -2994,6 +3778,20 @@
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
             "resource": "Azure Log Analytics Query Pack"
+        }
+    },
+    {
+        "name": "azurerm_log_analytics_saved_search",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "lass",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Log Analytics Saved Search"
         }
     },
     {
@@ -3181,6 +3979,34 @@
         }
     },
     {
+        "name": "azurerm_managed_application",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,62}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "manapp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Managed Application"
+        }
+    },
+    {
+        "name": "azurerm_managed_application_definition",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,62}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "manappd",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Managed Application Definition"
+        }
+    },
+    {
         "name": "azurerm_managed_disk",
         "min_length": 1,
         "max_length": 80,
@@ -3210,6 +4036,34 @@
             "slug": "amr",
             "resource": "Azure Managed Redis",
             "resource_provider_namespace": "Microsoft.Cache/redisEnterprise"
+        }
+    },
+    {
+        "name": "azurerm_management_group",
+        "min_length": 1,
+        "max_length": 90,
+        "validation_regex": "\"^[a-zA-Z0-9-_.()]{1,90}$\"",
+        "scope": "parent",
+        "slug": "mg",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-_.()]\"",
+        "official": {
+            "resource": "Azure Management Group"
+        }
+    },
+    {
+        "name": "azurerm_management_lock",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[a-zA-Z0-9-_.]{1,260}$\"",
+        "scope": "parent",
+        "slug": "mgl",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-_.]\"",
+        "official": {
+            "resource": "Azure Management Lock"
         }
     },
     {
@@ -3283,6 +4137,20 @@
         }
     },
     {
+        "name": "azurerm_media_services_account",
+        "min_length": 3,
+        "max_length": 24,
+        "validation_regex": "\"^[a-z0-9]{3,24}$\"",
+        "scope": "resourceGroup",
+        "slug": "ams",
+        "dashes": false,
+        "lowercase": true,
+        "regex": "\"[^0-9a-z]\"",
+        "official": {
+            "resource": "Azure Media Services Account"
+        }
+    },
+    {
         "name": "azurerm_monitor_action_group",
         "min_length": 1,
         "max_length": 260,
@@ -3294,6 +4162,34 @@
         "regex": "`[^~!@$^*()\\[\\]\\{\\}_\\-=\"';,0-9A-Za-z _.-]`",
         "official": {
             "resource": "Azure Monitor Action Group"
+        }
+    },
+    {
+        "name": "azurerm_monitor_action_rule_action_group",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[a-zA-Z0-9-_.]{1,260}$\"",
+        "scope": "resourceGroup",
+        "slug": "marag",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-_.]\"",
+        "official": {
+            "resource": "Azure Monitor Action Rule Action Group"
+        }
+    },
+    {
+        "name": "azurerm_monitor_action_rule_suppression",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[a-zA-Z0-9-_.]{1,260}$\"",
+        "scope": "resourceGroup",
+        "slug": "mars",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-_.]\"",
+        "official": {
+            "resource": "Azure Monitor Action Rule Suppression"
         }
     },
     {
@@ -3367,6 +4263,20 @@
         }
     },
     {
+        "name": "azurerm_monitor_log_profile",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "mlp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Monitor Log Profile"
+        }
+    },
+    {
         "name": "azurerm_monitor_metric_alert",
         "min_length": 1,
         "max_length": 251,
@@ -3406,6 +4316,34 @@
         "regex": "\"[<>*%&:\\\\?/#{}]\"",
         "official": {
             "resource": "Azure Monitor Scheduled Query Rules Alert"
+        }
+    },
+    {
+        "name": "azurerm_monitor_scheduled_query_rules_log",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[a-zA-Z0-9-_.]{1,260}$\"",
+        "scope": "resourceGroup",
+        "slug": "msqrl",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-_.]\"",
+        "official": {
+            "resource": "Azure Monitor Scheduled Query Rules Log"
+        }
+    },
+    {
+        "name": "azurerm_monitor_smart_detector_alert_rule",
+        "min_length": 1,
+        "max_length": 260,
+        "validation_regex": "\"^[a-zA-Z0-9-_.]{1,260}$\"",
+        "scope": "resourceGroup",
+        "slug": "msdar",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-_.]\"",
+        "official": {
+            "resource": "Azure Monitor Smart Detector Alert Rule"
         }
     },
     {
@@ -3481,6 +4419,20 @@
             "slug": "sql",
             "resource": "Azure SQL Database server",
             "resource_provider_namespace": "Microsoft.Sql/servers"
+        }
+    },
+    {
+        "name": "azurerm_mssql_virtual_machine",
+        "min_length": 1,
+        "max_length": 15,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{0,13}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "sqlvm",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Mssql Virtual Machine"
         }
     },
     {
@@ -3701,6 +4653,20 @@
         }
     },
     {
+        "name": "azurerm_network_profile",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "npr",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Network Profile"
+        }
+    },
+    {
         "name": "azurerm_network_security_group",
         "min_length": 1,
         "max_length": 80,
@@ -3815,6 +4781,20 @@
         }
     },
     {
+        "name": "azurerm_orchestrated_virtual_machine_scale_set",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{0,62}[a-zA-Z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "ovmss",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Orchestrated Virtual Machine Scale Set"
+        }
+    },
+    {
         "name": "azurerm_point_to_site_vpn_gateway",
         "min_length": 1,
         "max_length": 80,
@@ -3826,6 +4806,48 @@
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
             "resource": "Azure Point To Site Vpn Gateway"
+        }
+    },
+    {
+        "name": "azurerm_policy_definition",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9-_.()]{1,64}$\"",
+        "scope": "parent",
+        "slug": "pold",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-_.()]\"",
+        "official": {
+            "resource": "Azure Policy Definition"
+        }
+    },
+    {
+        "name": "azurerm_policy_remediation",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9-_.()]{1,64}$\"",
+        "scope": "parent",
+        "slug": "polr",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-_.()]\"",
+        "official": {
+            "resource": "Azure Policy Remediation"
+        }
+    },
+    {
+        "name": "azurerm_policy_set_definition",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9-_.()]{1,64}$\"",
+        "scope": "parent",
+        "slug": "polsd",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-_.()]\"",
+        "official": {
+            "resource": "Azure Policy Set Definition"
         }
     },
     {
@@ -4438,6 +5460,20 @@
         }
     },
     {
+        "name": "azurerm_resource_group_template_deployment",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9-_.()]{1,64}$\"",
+        "scope": "resourceGroup",
+        "slug": "rgtd",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-_.()]\"",
+        "official": {
+            "resource": "Azure Resource Group Template Deployment"
+        }
+    },
+    {
         "name": "azurerm_role_assignment",
         "min_length": 1,
         "max_length": 64,
@@ -4479,6 +5515,20 @@
             "slug": "rt",
             "resource": "Route table",
             "resource_provider_namespace": "Microsoft.Network/routeTables"
+        }
+    },
+    {
+        "name": "azurerm_route_filter",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "rf",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Route Filter"
         }
     },
     {
@@ -4526,6 +5576,90 @@
         }
     },
     {
+        "name": "azurerm_security_center_auto_provisioning",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "scap",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Security Center Auto Provisioning"
+        }
+    },
+    {
+        "name": "azurerm_security_center_automation",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "sca",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Security Center Automation"
+        }
+    },
+    {
+        "name": "azurerm_security_center_contact",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "scc",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Security Center Contact"
+        }
+    },
+    {
+        "name": "azurerm_sentinel_alert_rule",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "sentar",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Sentinel Alert Rule"
+        }
+    },
+    {
+        "name": "azurerm_sentinel_alert_rule_ms_security_incident",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "sentarms",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Sentinel Alert Rule Ms Security Incident"
+        }
+    },
+    {
+        "name": "azurerm_sentinel_alert_rule_scheduled",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "sentars",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Sentinel Alert Rule Scheduled"
+        }
+    },
+    {
         "name": "azurerm_service_fabric_cluster",
         "min_length": 4,
         "max_length": 23,
@@ -4539,6 +5673,62 @@
             "slug": "sf",
             "resource": "Service Fabric cluster",
             "resource_provider_namespace": "Microsoft.ServiceFabric/clusters"
+        }
+    },
+    {
+        "name": "azurerm_service_fabric_mesh_application",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "sfmesha",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Service Fabric Mesh Application"
+        }
+    },
+    {
+        "name": "azurerm_service_fabric_mesh_local_network",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "sfmeshln",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Service Fabric Mesh Local Network"
+        }
+    },
+    {
+        "name": "azurerm_service_fabric_mesh_secret",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "sfmeshs",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Service Fabric Mesh Secret"
+        }
+    },
+    {
+        "name": "azurerm_service_plan",
+        "min_length": 1,
+        "max_length": 40,
+        "validation_regex": "\"^[0-9A-Za-z-]{1,40}$\"",
+        "scope": "resourceGroup",
+        "slug": "asp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Service Plan"
         }
     },
     {
@@ -4702,6 +5892,20 @@
         }
     },
     {
+        "name": "azurerm_shared_image_version",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,62}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "siv",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Shared Image Version"
+        }
+    },
+    {
         "name": "azurerm_signalr_service",
         "min_length": 3,
         "max_length": 63,
@@ -4713,6 +5917,76 @@
         "regex": "\"[^0-9A-Za-z-]\"",
         "official": {
             "resource": "Azure Signalr Service"
+        }
+    },
+    {
+        "name": "azurerm_site_recovery_fabric",
+        "min_length": 1,
+        "max_length": 128,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,126}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "asrf",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Site Recovery Fabric"
+        }
+    },
+    {
+        "name": "azurerm_site_recovery_protection_container",
+        "min_length": 1,
+        "max_length": 128,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,126}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "asrpc",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Site Recovery Protection Container"
+        }
+    },
+    {
+        "name": "azurerm_site_recovery_replicated_vm",
+        "min_length": 1,
+        "max_length": 128,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,126}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "asrrvm",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Site Recovery Replicated Vm"
+        }
+    },
+    {
+        "name": "azurerm_site_recovery_replication_policy",
+        "min_length": 1,
+        "max_length": 128,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,126}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "asrrp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Site Recovery Replication Policy"
+        }
+    },
+    {
+        "name": "azurerm_snapshot",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "snp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Snapshot"
         }
     },
     {
@@ -4729,6 +6003,76 @@
             "slug": "snap",
             "resource": "Snapshot",
             "resource_provider_namespace": "Microsoft.Compute/snapshots"
+        }
+    },
+    {
+        "name": "azurerm_spatial_anchors_account",
+        "min_length": 1,
+        "max_length": 90,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,88}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "spaa",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Spatial Anchors Account"
+        }
+    },
+    {
+        "name": "azurerm_spring_cloud_app",
+        "min_length": 4,
+        "max_length": 32,
+        "validation_regex": "\"^[a-z][a-z0-9-]{2,30}[a-z0-9]$\"",
+        "scope": "parent",
+        "slug": "spca",
+        "dashes": true,
+        "lowercase": true,
+        "regex": "\"[^0-9a-z-]\"",
+        "official": {
+            "resource": "Azure Spring Cloud App"
+        }
+    },
+    {
+        "name": "azurerm_spring_cloud_certificate",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,62}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "spcert",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Spring Cloud Certificate"
+        }
+    },
+    {
+        "name": "azurerm_spring_cloud_service",
+        "min_length": 4,
+        "max_length": 32,
+        "validation_regex": "\"^[a-z][a-z0-9-]{2,30}[a-z0-9]$\"",
+        "scope": "resourceGroup",
+        "slug": "spcs",
+        "dashes": true,
+        "lowercase": true,
+        "regex": "\"[^0-9a-z-]\"",
+        "official": {
+            "resource": "Azure Spring Cloud Service"
+        }
+    },
+    {
+        "name": "azurerm_sql_database",
+        "min_length": 1,
+        "max_length": 128,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,126}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "sqld",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Sql Database"
         }
     },
     {
@@ -4861,6 +6205,34 @@
         "regex": "\"[^0-9a-z-]\"",
         "official": {
             "resource": "Azure Storage Data Lake Gen2 Filesystem"
+        }
+    },
+    {
+        "name": "azurerm_storage_data_lake_gen2_path",
+        "min_length": 1,
+        "max_length": 1024,
+        "validation_regex": "\"^[^\\\\s\\\\/$#&]{1,1000}[^\\\\s\\\\/$#&]{0,24}$\"",
+        "scope": "parent",
+        "slug": "stdlp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[\\\\s$#&]\"",
+        "official": {
+            "resource": "Azure Storage Data Lake Gen2 Path"
+        }
+    },
+    {
+        "name": "azurerm_storage_encryption_scope",
+        "min_length": 3,
+        "max_length": 63,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_]{1,62}$\"",
+        "scope": "parent",
+        "slug": "stes",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_-]\"",
+        "official": {
+            "resource": "Azure Storage Encryption Scope"
         }
     },
     {
@@ -5140,6 +6512,20 @@
         }
     },
     {
+        "name": "azurerm_subscription_template_deployment",
+        "min_length": 1,
+        "max_length": 64,
+        "validation_regex": "\"^[a-zA-Z0-9-_.()]{1,64}$\"",
+        "scope": "parent",
+        "slug": "subtd",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-_.()]\"",
+        "official": {
+            "resource": "Azure Subscription Template Deployment"
+        }
+    },
+    {
         "name": "azurerm_synapse_firewall_rule",
         "min_length": 1,
         "max_length": 128,
@@ -5406,6 +6792,20 @@
         }
     },
     {
+        "name": "azurerm_virtual_hub_bgp_connection",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "vhbgp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Virtual Hub Bgp Connection"
+        }
+    },
+    {
         "name": "azurerm_virtual_hub_connection",
         "min_length": 1,
         "max_length": 80,
@@ -5417,6 +6817,48 @@
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
             "resource": "Azure Virtual Hub Connection"
+        }
+    },
+    {
+        "name": "azurerm_virtual_hub_ip",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "vhip",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Virtual Hub Ip"
+        }
+    },
+    {
+        "name": "azurerm_virtual_hub_route_table",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "parent",
+        "slug": "vhrt",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Virtual Hub Route Table"
+        }
+    },
+    {
+        "name": "azurerm_virtual_hub_security_partner_provider",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "vhspp",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Virtual Hub Security Partner Provider"
         }
     },
     {
@@ -5530,6 +6972,20 @@
         }
     },
     {
+        "name": "azurerm_virtual_network_gateway_connection",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "vngc",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Virtual Network Gateway Connection"
+        }
+    },
+    {
         "name": "azurerm_virtual_network_peering",
         "min_length": 1,
         "max_length": 80,
@@ -5613,6 +7069,20 @@
         "regex": "\"[^0-9A-Za-z_.-]\"",
         "official": {
             "resource": "Azure Vmware Private Cloud"
+        }
+    },
+    {
+        "name": "azurerm_vpn_gateway",
+        "min_length": 1,
+        "max_length": 80,
+        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,78}[a-zA-Z0-9_]$\"",
+        "scope": "resourceGroup",
+        "slug": "vpng",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z_.-]\"",
+        "official": {
+            "resource": "Azure Vpn Gateway"
         }
     },
     {
@@ -5701,6 +7171,34 @@
         }
     },
     {
+        "name": "azurerm_windows_function_app",
+        "min_length": 2,
+        "max_length": 60,
+        "validation_regex": "\"^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$\"",
+        "scope": "global",
+        "slug": "fa",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Windows Function App"
+        }
+    },
+    {
+        "name": "azurerm_windows_function_app_slot",
+        "min_length": 2,
+        "max_length": 59,
+        "validation_regex": "\"^[0-9A-Za-z][0-9A-Za-z-]{0,57}[0-9a-zA-Z]$\"",
+        "scope": "global",
+        "slug": "fas",
+        "dashes": true,
+        "lowercase": false,
+        "regex": "\"[^0-9A-Za-z-]\"",
+        "official": {
+            "resource": "Azure Windows Function App Slot"
+        }
+    },
+    {
         "name": "azurerm_windows_virtual_machine",
         "min_length": 1,
         "max_length": 15,
@@ -5730,34 +7228,6 @@
             "slug": "vmss",
             "resource": "Virtual machine scale set",
             "resource_provider_namespace": "Microsoft.Compute/virtualMachineScaleSets"
-        }
-    },
-    {
-        "name": "azurerm_windows_function_app",
-        "min_length": 2,
-        "max_length": 60,
-        "validation_regex": "\"^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$\"",
-        "scope": "global",
-        "slug": "fa",
-        "dashes": true,
-        "lowercase": false,
-        "regex": "\"[^0-9A-Za-z-]\"",
-        "official": {
-            "resource": "Azure Windows Function App"
-        }
-    },
-    {
-        "name": "azurerm_windows_function_app_slot",
-        "min_length": 2,
-        "max_length": 59,
-        "validation_regex": "\"^[0-9A-Za-z][0-9A-Za-z-]{0,57}[0-9a-zA-Z]$\"",
-        "scope": "global",
-        "slug": "fas",
-        "dashes": true,
-        "lowercase": false,
-        "regex": "\"[^0-9A-Za-z-]\"",
-        "official": {
-            "resource": "Azure Windows Function App Slot"
         }
     },
     {
