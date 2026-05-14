@@ -38,8 +38,6 @@ make test_ci
 
 The project includes a comprehensive test suite designed to ensure the proper functioning of the provider. Tests are organized into several categories:
 
-### Test Organization
-
 ### 1. **Provider Tests**
    - `provider_test.go` - Basic provider configuration and initialization tests
 
