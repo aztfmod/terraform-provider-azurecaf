@@ -5,12 +5,12 @@ description: |
   detailed failure information for rapid diagnosis.
 
 on:
-  schedule: "0 3 * * *"
+  schedule: daily
   workflow_dispatch:
 
 permissions:
   contents: read
-  issues: write
+  issues: read
 
 network: defaults
 

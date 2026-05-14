@@ -14,6 +14,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Go version updated from 1.24.4 to 1.25.0
   - Aligned `e2e/go.mod` dependencies (`terraform-exec` v0.25.0, `terraform-json` v0.27.2, `go-cty` v1.17.0)
   - Impact: Low -- dependency update only, no breaking changes
+- **CI/Automation**: Recompiled all 10 GitHub Agentic Workflow lock files with `gh aw` v0.72.1 (previously v0.61.0)
+  - Generated missing `.lock.yml` files for `contributor-welcome`, `issue-to-pr-agent`, `nightly-regression`, `pr-review-agent`, `release-validation`, and `weekly-azure-sync`
+- **CI/Automation**: Migrated agentic workflows to current gh-aw schema
+  - Replaced deprecated `tools.github.repos` with `tools.github.allowed-repos` in `daily-repo-status` and `release-labeler`
+  - Removed redundant `contents: write` / `issues: write` permissions now handled by `safe-outputs` (strict-mode requirement) in `issue-to-pr-agent`, `nightly-regression`, `weekly-azure-sync`
+  - Added missing toolset read permissions (`pull-requests: read`, `issues: read`) required by declared GitHub toolsets
+  - Switched fixed cron expressions to fuzzy schedules (`daily`, `weekly on monday`) in `nightly-regression` and `weekly-azure-sync` to spread load
+  - Replaced `registry.terraform.io` domain in `weekly-azure-sync` network allowlist with the `terraform` ecosystem identifier
+
+### Security
+- **CI/Automation**: Excluded the auto-generated `agentics-maintenance.yml` self-maintenance workflow that `gh aw compile` v0.72.1 emits. The compiler-emitted file inlined `${{ inputs.operation }}` and `${{ inputs.run_url }}` directly into shell `run:` blocks (CWE-94 script injection, SonarCloud rule `actions:S7631`). Even after refactoring those values through environment variables, SonarCloud's analyzer continues to flag any propagation of `${{ inputs.* }}` into a step that has a `run:` block. Since the maintenance workflow is optional, manually-triggered (`workflow_dispatch` / `workflow_call`), and not referenced by any other workflow in this repo, it has been removed from version control. If a future `gh aw compile` re-emits it, it must be deleted again or refactored to use `actions/github-script` (no shell `run:` block) before being committed.
+- **CI/Automation**: Added `.checkov.yaml` to suppress Checkov rule `CKV_GHA_7` ("workflow_dispatch inputs MUST be empty") for the auto-generated agentic workflow lock files. The compiler emits an internal `aw_context` input on every `workflow_dispatch` trigger; the lock files carry "DO NOT EDIT" headers, so a global skip with a documented justification is the auto-regen-safe approach. The repo is not a SLSA-tracked build-artifact producer, so the rule does not apply.
 
 ## [v1.2.32] - 2026-03-23
 
