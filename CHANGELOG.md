@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Weekly mock-azurerm sweep** (`.github/workflows/weekly-mock-azurerm.md`): Companion gh-aw agentic workflow to the PR-time `mock-azurerm.yml` gate. Runs the full mock-azurerm sweep across **every** `azurerm_*` resource in `resourceDefinition.json` once a week (Mondays 09:00 UTC), classifies failures into three buckets (real CAF bug, scaffolding gap, deprecated upstream resource) and opens a single categorized issue with `close-older-issues: true` so the backlog stays tidy. Reuses `make test_mock_azurerm_all` and the harness under `scripts/mock-test/` introduced in the previous entry.
+  - Impact: Low — additive new agentic workflow only, no provider behavior change. Issues are advisory backlog items, not gating.
 - **Mock-azurerm PR gate** (`scripts/mock-test/` + `.github/workflows/mock-azurerm.yml`): Added a CI check that proves every CAF-generated name is accepted by the corresponding `azurerm_*` resource schema, using `terraform test` with `mock_provider "azurerm" {}`. Closes the long-standing gap where existing in-process Go tests only validated the regex against itself. Generates three naming variations per resource (`default`, `with_prefix=["dev"]`, `with_random=5/seed=12345`) and runs them against the live `hashicorp/azurerm` (~> 4.0) schema — no Azure credentials required.
   - Diff-scoped on PRs (only resources changed in `resourceDefinition.json` are re-validated) so the check stays fast.
   - New Makefile targets: `make test_mock_azurerm_setup`, `make test_mock_azurerm_changed`, `make test_mock_azurerm_all`.
