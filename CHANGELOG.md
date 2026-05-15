@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Mock-azurerm PR gate** (`scripts/mock-test/` + `.github/workflows/mock-azurerm.yml`): Added a CI check that proves every CAF-generated name is accepted by the corresponding `azurerm_*` resource schema, using `terraform test` with `mock_provider "azurerm" {}`. Closes the long-standing gap where existing in-process Go tests only validated the regex against itself. Generates three naming variations per resource (`default`, `with_prefix=["dev"]`, `with_random=5/seed=12345`) and runs them against the live `hashicorp/azurerm` (~> 4.0) schema — no Azure credentials required.
+  - Diff-scoped on PRs (only resources changed in `resourceDefinition.json` are re-validated) so the check stays fast.
+  - New Makefile targets: `make test_mock_azurerm_setup`, `make test_mock_azurerm_changed`, `make test_mock_azurerm_all`.
+  - See `scripts/mock-test/README.md` for local usage.
+  - Impact: Low — additive new CI workflow only, no provider behavior change.
 - **Network Connection Monitor Support**: Added support for `azurerm_network_connection_monitor` resource type
   - Resource slug: `cm`
   - Min length: 1, Max length: 80

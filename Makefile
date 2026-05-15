@@ -75,8 +75,50 @@ test_resource_matrix: 	## Test resources by category and validate constraints
 
 test_complete: test_all test_all_resources test_resource_coverage	## Complete test suite including all resource types
 
+# mock-azurerm validation: prove every CAF-generated name is accepted by the
+# matching azurerm_* resource schema using `terraform test` + mock_provider.
+# See scripts/mock-test/README.md for details.
+
+MOCK_OUT_DIR ?= /tmp/azurecaf-mock/tests
+MOCK_REPORT  ?= /tmp/azurecaf-mock/report.tsv
+MOCK_SCHEMA  ?= /tmp/azurecaf-mock/azurerm-schema.json
+
+test_mock_azurerm_setup: build  ## Install local provider + fetch azurerm schema for the mock-azurerm tests
+	@GOOS=$$(go env GOOS); GOARCH=$$(go env GOARCH); \
+	LOCAL_PLUGIN_DIR=$$HOME/.terraform.d/plugins/aztfmod.com/arnaudlh/azurecaf/1.0.0/$${GOOS}_$${GOARCH}; \
+	mkdir -p $$LOCAL_PLUGIN_DIR; \
+	cp ./terraform-provider-azurecaf $$LOCAL_PLUGIN_DIR/; \
+	echo "installed provider into $$LOCAL_PLUGIN_DIR"
+	mkdir -p $(dir $(MOCK_SCHEMA))
+	scripts/mock-test/fetch_schema.sh $(MOCK_SCHEMA)
+
+test_mock_azurerm_changed: test_mock_azurerm_setup  ## Validate CAF names changed vs origin/main against azurerm schema (PR gate)
+	@GOOS=$$(go env GOOS); GOARCH=$$(go env GOARCH); \
+	LOCAL_PLUGIN_DIR=$$HOME/.terraform.d/plugins/aztfmod.com/arnaudlh/azurecaf/1.0.0/$${GOOS}_$${GOARCH}; \
+	python3 scripts/mock-test/generate_tests.py \
+	  --plugin-dir "$$LOCAL_PLUGIN_DIR" \
+	  --out-dir $(MOCK_OUT_DIR) \
+	  --schema-file $(MOCK_SCHEMA) \
+	  --diff-against origin/main
+	@if [ -z "$$(ls -A $(MOCK_OUT_DIR) 2>/dev/null)" ]; then \
+	  echo "No resourceDefinition.json changes since origin/main; skipping run_all."; \
+	else \
+	  scripts/mock-test/run_all.sh --out-dir $(MOCK_OUT_DIR) --report $(MOCK_REPORT); \
+	fi
+
+test_mock_azurerm_all: test_mock_azurerm_setup  ## Validate every CAF name in resourceDefinition.json against azurerm schema (slow; weekly)
+	@GOOS=$$(go env GOOS); GOARCH=$$(go env GOARCH); \
+	LOCAL_PLUGIN_DIR=$$HOME/.terraform.d/plugins/aztfmod.com/arnaudlh/azurecaf/1.0.0/$${GOOS}_$${GOARCH}; \
+	python3 scripts/mock-test/generate_tests.py \
+	  --plugin-dir "$$LOCAL_PLUGIN_DIR" \
+	  --out-dir $(MOCK_OUT_DIR) \
+	  --schema-file $(MOCK_SCHEMA) \
+	  --all
+	scripts/mock-test/run_all.sh --out-dir $(MOCK_OUT_DIR) --report $(MOCK_REPORT)
+
 clean:	## Clean up build artifacts and test results
 	rm -f coverage.out coverage.html terraform-provider-azurecaf
+	rm -rf /tmp/azurecaf-mock
 	go clean
 
 test: ## Run terraform examples with local provider
