@@ -42,13 +42,14 @@ steps:
     continue-on-error: true
     run: |
       set -o pipefail
-      if make build 2>&1 | tee /tmp/pr-build.log; then
-        echo "BUILD_RESULT=pass" > /tmp/pr-review-results.env
+      mkdir -p .pr-review
+      if make build 2>&1 | tee .pr-review/build.log; then
+        echo "BUILD_RESULT=pass" > .pr-review/results.env
       else
-        echo "BUILD_RESULT=fail" > /tmp/pr-review-results.env
+        echo "BUILD_RESULT=fail" > .pr-review/results.env
       fi
       # Keep a short tail for the agent prompt
-      tail -n 80 /tmp/pr-build.log > /tmp/pr-build-tail.log || true
+      tail -n 80 .pr-review/build.log > .pr-review/build-tail.log || true
 
 source: local
 engine: copilot
@@ -79,9 +80,9 @@ If `resourceDefinition.json` is modified:
 ### 4. Build verification
 - The `Build provider` pre-agent step has already run `make build` on the runner
   (where Go from `go.mod` is installed). Read the result from
-  `/tmp/pr-review-results.env` — it contains `BUILD_RESULT=pass` or
+  `.pr-review/results.env` — it contains `BUILD_RESULT=pass` or
   `BUILD_RESULT=fail`.
-- If `BUILD_RESULT=fail`, include the tail of `/tmp/pr-build-tail.log` (last
+- If `BUILD_RESULT=fail`, include the tail of `.pr-review/build-tail.log` (last
   80 lines) in the comment as a fenced code block.
 - Do NOT attempt to run `make build` or `go build` from inside the agent
   sandbox — the agent container does not have the Go toolchain. The pre-agent
