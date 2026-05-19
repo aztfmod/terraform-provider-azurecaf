@@ -541,7 +541,6 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |resource | status |
 |---|---|
 |azurerm_aadb2c_directory | ✔ |
-|azurerm_advanced_threat_protection | ✔ |
 |azurerm_advisor_recommendations | ❌ |
 |azurerm_analysis_services_server | ✔ |
 |azurerm_api_management | ✔ |
@@ -596,7 +595,6 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_application_insights_api_key | ❌ |
 |azurerm_application_insights_web_test | ✔ |
 |azurerm_application_security_group | ✔ |
-|azurerm_attestation | ✔ |
 |azurerm_automation_account | ✔ |
 |azurerm_automation_certificate | ✔ |
 |azurerm_automation_connection | ✔ |
@@ -627,8 +625,6 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_batch_certificate | ✔ |
 |azurerm_batch_pool | ✔ |
 |azurerm_blueprint_assignment | ✔ |
-|azurerm_blueprint_definition | ✔ |
-|azurerm_blueprint_published_version | ✔ |
 |azurerm_bot_channel_directline | ✔ |
 |azurerm_bot_channel_email | ❌ |
 |azurerm_bot_channel_ms_teams | ✔ |
@@ -734,7 +730,6 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_dev_test_global_vm_shutdown_schedule | ❌ |
 |azurerm_dev_test_lab | ✔ |
 |azurerm_dev_test_linux_virtual_machine | ✔ |
-|azurerm_dev_test_policy | ✔ |
 |azurerm_dev_test_schedule | ✔ |
 |azurerm_dev_test_virtual_network | ✔ |
 |azurerm_dev_test_windows_virtual_machine | ✔ |
@@ -769,7 +764,6 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_eventhub_namespace_disaster_recovery_config | ✔ |
 |azurerm_express_route_circuit | ✔ |
 |azurerm_express_route_circuit_authorization | ✔ |
-|azurerm_express_route_circuit_peering | ✔ |
 |azurerm_express_route_gateway | ✔ |
 |azurerm_federated_identity_credential | ✔ |
 |azurerm_firewall | ✔ |
@@ -784,7 +778,6 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_function_app | ✔ |
 |azurerm_function_app_host_keys | ❌ |
 |azurerm_function_app_slot | ✔ |
-|azurerm_hdinsight_cluster | ✔ |
 |azurerm_hdinsight_hadoop_cluster | ✔ |
 |azurerm_hdinsight_hbase_cluster | ✔ |
 |azurerm_hdinsight_interactive_query_cluster | ✔ |
@@ -820,12 +813,10 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_iothub_endpoint_servicebus_queue | ✔ |
 |azurerm_iothub_endpoint_servicebus_topic | ✔ |
 |azurerm_iothub_endpoint_storage_container | ✔ |
-|azurerm_iothub_fallback_route | ✔ |
 |azurerm_iothub_route | ✔ |
 |azurerm_iothub_shared_access_policy | ✔ |
 |azurerm_ip_group | ✔ |
 |azurerm_key_vault | ✔ |
-|azurerm_key_vault_access_policy | ✔ |
 |azurerm_key_vault_certificate | ✔ |
 |azurerm_key_vault_certificate_issuer | ❌ |
 |azurerm_key_vault_key | ✔ |
@@ -850,7 +841,6 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_lb_outbound_rule | ✔ |
 |azurerm_lb_probe | ✔ |
 |azurerm_lb_rule | ✔ |
-|azurerm_lighthouse_assignment | ✔ |
 |azurerm_lighthouse_definition | ✔ |
 |azurerm_linux_function_app | ✔ |
 |azurerm_linux_function_app_slot | ✔ |
@@ -864,7 +854,6 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_log_analytics_data_export_rule | ✔ |
 |azurerm_log_analytics_datasource_windows_event | ❌ |
 |azurerm_log_analytics_datasource_windows_performance_counter | ❌ |
-|azurerm_log_analytics_linked_service | ✔ |
 |azurerm_log_analytics_linked_storage_account | ❌ |
 |azurerm_log_analytics_saved_search | ✔ |
 |azurerm_log_analytics_solution | ✔ |
@@ -922,7 +911,6 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_mssql_server_extended_auditing_policy | ❌ |
 |azurerm_mssql_server_security_alert_policy | ❌ |
 |azurerm_mssql_server_vulnerability_assessment | ❌ |
-|azurerm_mssql_virtual_machine | ✔ |
 |azurerm_mysql_active_directory_administrator | ❌ |
 |azurerm_mysql_configuration | ❌ |
 |azurerm_mysql_database | ✔ |
@@ -1020,13 +1008,11 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_route_server | ✔ |
 |azurerm_route_table | ✔ |
 |azurerm_search_service | ✔ |
-|azurerm_security_center_auto_provisioning | ✔ |
 |azurerm_security_center_automation | ✔ |
 |azurerm_security_center_contact | ✔ |
 |azurerm_security_center_setting | ❌ |
 |azurerm_security_center_subscription_pricing | ❌ |
 |azurerm_security_center_workspace | ❌ |
-|azurerm_sentinel_alert_rule | ✔ |
 |azurerm_sentinel_alert_rule_ms_security_incident | ✔ |
 |azurerm_sentinel_alert_rule_scheduled | ✔ |
 |azurerm_service_fabric_cluster | ✔ |
@@ -1046,7 +1032,6 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_servicebus_namespace_disaster_recovery_config | ✔ |
 |azurerm_shared_image | ✔ |
 |azurerm_shared_image_gallery | ✔ |
-|azurerm_shared_image_version | ✔ |
 |azurerm_shared_image_versions | ❌ |
 |azurerm_signalr_service | ✔ |
 |azurerm_site_recovery_fabric | ✔ |
