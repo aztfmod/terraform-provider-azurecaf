@@ -1,6 +1,7 @@
 package azurecaf
 
 import (
+"context"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -40,10 +41,10 @@ func TestResourceCoverage(t *testing.T) {
 				"clean_input":   true,
 			})
 
-			err := nameResource.Create(resourceData, nil)
-			if err != nil {
+			diags := nameResource.CreateContext(context.Background(), resourceData, nil)
+			if diags.HasError() {
 				failedResources = append(failedResources, resourceType)
-				t.Errorf("Failed to create name for %s: %v", resourceType, err)
+				t.Errorf("Failed to create name for %s: %v", resourceType, diags)
 				return
 			}
 
