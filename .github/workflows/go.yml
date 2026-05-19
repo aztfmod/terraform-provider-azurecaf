@@ -33,7 +33,7 @@ jobs:
 
       - name: Install tfproviderlint
         run: |
-          go install github.com/bflad/tfproviderlint/cmd/tfproviderlint@latest
+          go install github.com/bflad/tfproviderlint/cmd/tfproviderlint@v0.30.0
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
 
       - name: Setup Terraform

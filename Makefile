@@ -23,7 +23,7 @@ unittest: 	## Run unit tests without coverage
 		tfproviderlint ./...; \
 	else \
 		echo "⚠️  tfproviderlint not found on PATH — skipping lint step."; \
-		echo "   Install with: go install github.com/bflad/tfproviderlint/cmd/tfproviderlint@latest"; \
+		echo "   Install with: go install github.com/bflad/tfproviderlint/cmd/tfproviderlint@v0.30.0"; \
 	fi
 
 test_coverage: 	## Run tests with coverage reporting
