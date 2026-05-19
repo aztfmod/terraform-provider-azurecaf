@@ -2,6 +2,7 @@ package azurecaf
 
 import (
 	"context"
+	"fmt"
 	"reflect"
 	"regexp"
 	"strings"
@@ -122,9 +123,9 @@ func TestAccResourceName_CafClassic(t *testing.T) {
 			"clean_input":   true,
 		})
 
-		err := nameResource.Create(resourceData, nil)
-		if err != nil {
-			t.Fatalf("Failed to create resource: %v", err)
+		diags := nameResource.CreateContext(context.Background(), resourceData, nil)
+		if diags.HasError() {
+			t.Fatalf("Failed to create resource: %v", diags)
 		}
 
 		result := resourceData.Get("result").(string)
@@ -149,9 +150,9 @@ func TestAccResourceName_CafClassic(t *testing.T) {
 			"clean_input":   true,
 		})
 
-		err := nameResource.Create(resourceData, nil)
-		if err != nil {
-			t.Fatalf("Failed to create resource: %v", err)
+		diags := nameResource.CreateContext(context.Background(), resourceData, nil)
+		if diags.HasError() {
+			t.Fatalf("Failed to create resource: %v", diags)
 		}
 
 		result := resourceData.Get("result").(string)
@@ -179,9 +180,9 @@ func TestAccResourceName_CafClassic(t *testing.T) {
 			"passthrough":   true,
 		})
 
-		err := nameResource.Create(resourceData, nil)
-		if err != nil {
-			t.Fatalf("Failed to create resource: %v", err)
+		diags := nameResource.CreateContext(context.Background(), resourceData, nil)
+		if diags.HasError() {
+			t.Fatalf("Failed to create resource: %v", diags)
 		}
 
 		result := resourceData.Get("result").(string)
@@ -201,9 +202,9 @@ func TestAccResourceName_CafClassic(t *testing.T) {
 			"clean_input":   true,
 		})
 
-		err := nameResource.Create(resourceData, nil)
-		if err != nil {
-			t.Fatalf("Failed to create resource: %v", err)
+		diags := nameResource.CreateContext(context.Background(), resourceData, nil)
+		if diags.HasError() {
+			t.Fatalf("Failed to create resource: %v", diags)
 		}
 
 		result := resourceData.Get("result").(string)
@@ -230,9 +231,9 @@ func TestAccResourceName_CafClassic(t *testing.T) {
 			"clean_input":   true,
 		})
 
-		err := nameResource.Create(resourceData, nil)
-		if err != nil {
-			t.Fatalf("Failed to create resource: %v", err)
+		diags := nameResource.CreateContext(context.Background(), resourceData, nil)
+		if diags.HasError() {
+			t.Fatalf("Failed to create resource: %v", diags)
 		}
 
 		result := resourceData.Get("result").(string)
@@ -270,9 +271,9 @@ func TestAccResourceName_CafClassicRSV(t *testing.T) {
 			"passthrough":   false,
 		})
 
-		err := nameResource.Create(resourceData, nil)
-		if err != nil {
-			t.Fatalf("Failed to create resource: %v", err)
+		diags := nameResource.CreateContext(context.Background(), resourceData, nil)
+		if diags.HasError() {
+			t.Fatalf("Failed to create resource: %v", diags)
 		}
 
 		result := resourceData.Get("result").(string)
@@ -380,13 +381,14 @@ func TestResourceName_ErrorWhenExceedingMaxLength(t *testing.T) {
 		"error_when_exceeding_max_length": true,
 	})
 
-	err := nameResource.Create(resourceData, nil)
-	if err == nil {
+	diags := nameResource.CreateContext(context.Background(), resourceData, nil)
+	if !diags.HasError() {
 		t.Errorf("expected error when name exceeds max length, got nil")
 	}
 	expectedPattern := regexp.MustCompile(`exceeds maximum length of \d+ by \d+ characters`)
-	if !expectedPattern.MatchString(err.Error()) {
-		t.Errorf("error %q does not match pattern %q", err.Error(), expectedPattern.String())
+	diagStr := fmt.Sprintf("%v", diags)
+	if !expectedPattern.MatchString(diagStr) {
+		t.Errorf("diag %q does not match pattern %q", diagStr, expectedPattern.String())
 	}
 }
 

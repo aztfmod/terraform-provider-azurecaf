@@ -1,6 +1,7 @@
 package azurecaf
 
 import (
+"context"
 	"fmt"
 	"sort"
 	"strings"
@@ -89,9 +90,9 @@ func TestResourceMatrix(t *testing.T) {
 						"clean_input":   true,
 					})
 
-					err := nameResource.Create(resourceData, nil)
-					if err != nil {
-						t.Errorf("Failed for %s: %v", resourceType, err)
+					diags := nameResource.CreateContext(context.Background(), resourceData, nil)
+					if diags.HasError() {
+						t.Errorf("Failed for %s: %v", resourceType, diags)
 						return
 					}
 
