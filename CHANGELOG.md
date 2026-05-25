@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Regression test suite for `azurecaf_name`**: Added `azurecaf/regression_test.go` plus a slug golden snapshot (`azurecaf/testdata/known_slugs.json`) to guard against silent slug drift, validate resource-definition integrity, exercise issue-driven naming regressions, and verify the current state-upgrader behavior. The slug snapshot can be intentionally refreshed with `go test ./azurecaf/... -run TestRegression_SlugConsistency -args -update-slugs` when a breaking slug change is explicitly accepted.
+  - Impact: Low — tests/documentation only, no provider runtime behavior change.
+
 ### Changed
 - **E2E test suite now validates generated Terraform outputs instead of plan text only**: Expanded `e2e/e2e_comprehensive_test.go` and `e2e/e2e_test.go` to run `terraform apply`, parse `terraform output -json`, and assert actual generated values for `azurecaf_name` and legacy `azurecaf_naming_convention` resources. Added coverage for exact output checks, validation-regex matching, slug presence, storage-account length truncation, `results` map generation, clear error messages, import verification, and post-apply no-drift plans. Added `e2e/assertions.go` helpers for reusable output and state assertions, and switched E2E scratch directories from OS temp space to local `.e2e-work/` directories.
   - Impact: Low — test-only change, no provider runtime behavior change.
