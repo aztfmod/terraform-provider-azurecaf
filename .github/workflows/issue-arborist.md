@@ -24,6 +24,7 @@ tools:
   bash:
     - "cat *"
     - "jq *"
+    - "python3 *"
     - "/tmp/gh-aw/jqschema.sh"
 steps:
   - name: Fetch issues data
@@ -112,6 +113,11 @@ jq '[.[] | select(.state == "OPEN")]' "${GITHUB_WORKSPACE}/.gh-aw-data/issues.js
 # Get issues with specific label
 jq '[.[] | select(.labels | any(.name == "bug"))]' "${GITHUB_WORKSPACE}/.gh-aw-data/issues.json"
 ```
+
+`python3` is also available in the sandbox for richer analysis (e.g. token
+overlap, label-set clustering). Read the issues file with `json.load` and
+emit JSON-formatted findings to stdout — do not write files outside
+`${GITHUB_WORKSPACE}/.gh-aw-data/`.
 
 ### Step 2: Analyze Relationships
 
