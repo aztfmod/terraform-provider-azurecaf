@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **Go-native fuzz coverage for core name generation**: Added `azurecaf/fuzz_test.go` with panic-safety fuzz targets for `cleanString`, `concatenateParameters`, `composeName`, `getResourceName`, and `NameBuilder` operations across arbitrary separators, segments, and input strings.
   - Impact: Low — test-only change, no provider runtime behavior change.
+- **Golden snapshot coverage for CAF name generation**: Added `azurecaf/golden_test.go` plus JSON snapshots under `azurecaf/testdata/golden/` to lock down deterministic outputs for every `ResourceDefinitions` entry, the four legacy naming conventions (`cafclassic`, `cafrandom`, `random`, `passthrough`), and representative edge cases (empty name, very long name, special-character cleanup). Snapshots can be intentionally refreshed with `go test -v ./azurecaf/... -run TestGolden -args -update-golden`.
+  - Impact: Low — tests/documentation only, no provider runtime behavior change.
 - **Regression test suite for `azurecaf_name`**: Added `azurecaf/regression_test.go` plus a slug golden snapshot (`azurecaf/testdata/known_slugs.json`) to guard against silent slug drift, validate resource-definition integrity, exercise issue-driven naming regressions, and verify the current state-upgrader behavior. The slug snapshot can be intentionally refreshed with `go test ./azurecaf/... -run TestRegression_SlugConsistency -args -update-slugs` when a breaking slug change is explicitly accepted.
   - Impact: Low — tests/documentation only, no provider runtime behavior change.
 
