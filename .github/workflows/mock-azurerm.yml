@@ -5,7 +5,7 @@ name: Mock azurerm validation
 # `terraform test` with `mock_provider azurerm`. No Azure credentials needed.
 #
 # Scope: diff-only on PRs (only resources changed in resourceDefinition.json).
-# Full sweep is run weekly by .github/workflows/weekly-mock-azurerm.md.
+# A full sweep can also be run manually via workflow_dispatch with `scope: all`.
 
 on:
   pull_request:
