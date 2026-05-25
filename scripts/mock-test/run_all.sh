@@ -14,6 +14,7 @@ usage() {
   cat <<'EOF'
 Usage: run_all.sh --out-dir <dir> --report <file> [--log-dir <dir>]
 EOF
+  return 0
 }
 
 OUT_DIR=""
@@ -60,12 +61,12 @@ for d in "$OUT_DIR"/*/ ; do
   total=$((total+1))
   log="$LOG_DIR/${rt}.log"
 
-  pushd "$d" > /dev/null
+  pushd "$d" > /dev/null || { echo "pushd failed for $d" >&2; continue; }
 
   if ! terraform init -no-color -input=false > "$log" 2>&1 ; then
     printf '%s\tINIT_FAIL\t0\t0\tinit failed\n' "$rt" >> "$REPORT_FILE"
     init_fail=$((init_fail+1))
-    popd > /dev/null
+    popd > /dev/null || true
     continue
   fi
 
@@ -86,7 +87,7 @@ for d in "$OUT_DIR"/*/ ; do
     printf '%s\tFAIL\t%s\t%s\t%s\n' "$rt" "$p" "$f" "$summary" >> "$REPORT_FILE"
     fail=$((fail+1))
   fi
-  popd > /dev/null
+  popd > /dev/null || true
 done
 
 echo "==============================="

@@ -1,12 +1,13 @@
 package azurecaf
 
 import (
+	"context"
 	"fmt"
-	"log"
 	"math/rand"
 	"regexp"
 	"strings"
 
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -38,17 +39,22 @@ func resourceNamingConvention() *schema.Resource {
 		Delete:        schema.RemoveFromState,
 		SchemaVersion: 2,
 
+		DeprecationMessage: "This resource is deprecated and will be removed in a future major version. " +
+			"Use the azurecaf_name resource instead, which supports more resource types and configuration options.",
+
 		Schema: map[string]*schema.Schema{
 			"name": {
-				Type:     schema.TypeString,
-				Optional: true,
-				ForceNew: true,
+				Type:        schema.TypeString,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "Base name for the resource.",
 			},
 			"convention": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  ConventionCafRandom,
-				ForceNew: true,
+				Type:        schema.TypeString,
+				Optional:    true,
+				Default:     ConventionCafRandom,
+				ForceNew:    true,
+				Description: "Naming convention to apply. One of: cafclassic, cafrandom, random, passthrough.",
 				ValidateFunc: validation.StringInSlice([]string{
 					ConventionCafClassic,
 					ConventionCafRandom,
@@ -57,47 +63,54 @@ func resourceNamingConvention() *schema.Resource {
 				}, false),
 			},
 			"prefix": {
-				Type:     schema.TypeString,
-				Optional: true,
-				ForceNew: true,
+				Type:        schema.TypeString,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "Prefix to prepend to the generated name.",
 			},
 			"prefixes": {
 				Type: schema.TypeList,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
-				Optional: true,
-				ForceNew: true,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "List of prefixes to prepend to the generated name.",
 			},
 			"suffixes": {
 				Type: schema.TypeList,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
-				Optional: true,
-				ForceNew: true,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "List of suffixes to append to the generated name.",
 			},
 			"postfix": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ForceNew:     true,
 				ValidateFunc: validation.StringIsNotEmpty,
+				Description:  "Postfix to append to the generated name.",
 			},
 			"max_length": {
 				Type:         schema.TypeInt,
 				Optional:     true,
 				ForceNew:     true,
 				ValidateFunc: validation.IntAtLeast(1),
+				Description:  "Maximum length for the generated name. Defaults to the Azure resource type's maximum.",
 			},
 			"result": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The generated Azure-compliant resource name.",
 			},
 			"resource_type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validation.StringInSlice(resourceMapsKeys, false),
 				ForceNew:     true,
+				Description:  "Azure resource type short name (e.g., \"rg\", \"st\").",
 			},
 		},
 	}
@@ -136,7 +149,10 @@ func getResult(d *schema.ResourceData, meta interface{}) error {
 
 	regExFilter = string(resource.RegEx)
 	validationRegExPattern := string(resource.ValidationRegExp)
-	log.Printf("%s", regExFilter)
+	tflog.Debug(context.Background(), "applying regex filter", map[string]interface{}{
+		"regex_filter":  regExFilter,
+		"resource_type": resourceType,
+	})
 
 	var cafPrefix string
 	var randomSuffix string = randSeq(int(resource.MaxLength), nil)

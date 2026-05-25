@@ -10,6 +10,7 @@ FORCE=""
 for arg in "$@"; do
   case "$arg" in
     --force) FORCE=1 ;;
+    *) ;;  # ignore unknown args; OUT was already captured from $1
   esac
 done
 

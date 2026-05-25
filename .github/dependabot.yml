@@ -1,33 +1,32 @@
-version: 2
 updates:
-  # Enable version updates for Go modules
-  - package-ecosystem: "gomod"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "Etc/UTC"
-    open-pull-requests-limit: 10
-    commit-message:
-      prefix: "deps"
-      include: "scope"
-    labels:
-      - "dependencies"
-      - "go"
-
-  # Enable version updates for GitHub Actions
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "Etc/UTC"
-    open-pull-requests-limit: 5
-    commit-message:
-      prefix: "ci"
-      include: "scope"
-    labels:
-      - "dependencies"
-      - "github-actions"
+- commit-message:
+    include: scope
+    prefix: deps
+  directory: /
+  labels:
+  - dependencies
+  - go
+  open-pull-requests-limit: 10
+  package-ecosystem: gomod
+  schedule:
+    day: monday
+    interval: weekly
+    time: "09:00"
+    timezone: Etc/UTC
+- commit-message:
+    include: scope
+    prefix: ci
+  directory: /
+  ignore:
+  - dependency-name: "github/gh-aw-actions/**" # Managed by gh aw compile. Version-locked to the gh-aw compiler; do not bump.
+  labels:
+  - dependencies
+  - github-actions
+  open-pull-requests-limit: 5
+  package-ecosystem: github-actions
+  schedule:
+    day: monday
+    interval: weekly
+    time: "09:00"
+    timezone: Etc/UTC
+version: 2
