@@ -90,9 +90,11 @@ steps:
       echo "COV_EXIT=$COV_EXIT" >> /tmp/results.env
 
       # Extract overall coverage percentage from the "total:" line (go tool cover output).
-      COV_PCT=$(grep -E "^total:" /tmp/coverage-output.txt | awk '{print $NF}' | tail -n 1)
+      # `|| true` keeps the script alive when grep finds no match (script runs under `bash -e` +
+      # `set -o pipefail`; a failing pipeline inside a command substitution would otherwise abort).
+      COV_PCT=$(grep -E "^total:" /tmp/coverage-output.txt | awk '{print $NF}' | tail -n 1 || true)
       if [ -z "$COV_PCT" ]; then
-        COV_PCT=$(grep -Eo "coverage: [0-9.]+% of statements" /tmp/coverage-output.txt | awk '{print $2}' | tail -n 1)
+        COV_PCT=$(grep -Eo "coverage: [0-9.]+% of statements" /tmp/coverage-output.txt | awk '{print $2}' | tail -n 1 || true)
       fi
       echo "COV_PCT=${COV_PCT:-unknown}" >> /tmp/results.env
 

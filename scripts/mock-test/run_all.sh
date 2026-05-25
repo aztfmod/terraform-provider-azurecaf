@@ -14,6 +14,7 @@ usage() {
   cat <<'EOF'
 Usage: run_all.sh --out-dir <dir> --report <file> [--log-dir <dir>]
 EOF
+  return 0
 }
 
 OUT_DIR=""

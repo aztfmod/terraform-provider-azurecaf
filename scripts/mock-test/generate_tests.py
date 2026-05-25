@@ -42,13 +42,24 @@ FAKE_TENANT_ID = "11111111-1111-1111-1111-111111111111"
 FAKE_OBJ_ID = "22222222-2222-2222-2222-222222222222"
 RG_SCOPE = f"/subscriptions/{FAKE_SUB_ID}/resourceGroups/{FAKE_RG}"
 
+# Repeated HCL literals lifted to constants to keep the override tables readable
+# and to avoid magic-string duplication. Values are raw HCL literals (including
+# surrounding quotes for strings) so they can be inlined verbatim into rendered
+# terraform files.
+HCL_LINUX = '"Linux"'
+HCL_CAN_NOT_DELETE = '"CanNotDelete"'
+HCL_CUSTOM = '"Custom"'
+HCL_PRIVATE_IP = '"10.0.0.1"'  # documentation-only address used in mock plans
+HCL_PT5M = '"PT5M"'
+HCL_TEST_STR = '"test"'
+
 # Per-attribute fake-value overrides. azurerm 4.x validates many string
 # attributes against enums/regex at plan time, and the literal ``"test"`` is
 # typically rejected. Each entry is the raw HCL literal (including quotes).
 ATTR_OVERRIDES: dict[str, str] = {
-    "os_type":                         '"Linux"',
+    "os_type":                         HCL_LINUX,
     "kind":                            '"ServiceCatalog"',
-    "lock_level":                      '"CanNotDelete"',
+    "lock_level":                      HCL_CAN_NOT_DELETE,
     "evaluator_type":                  '"AllowedValuesPolicy"',
     "time_zone_id":                    '"UTC"',
     "create_option":                   '"Empty"',
@@ -56,15 +67,15 @@ ATTR_OVERRIDES: dict[str, str] = {
     "product_filter":                  '"Azure Security Center"',
     "detector_type":                   '"FailureAnomaliesDetector"',
     "security_provider_name":          '"ZScaler"',
-    "policy_type":                     '"Custom"',
+    "policy_type":                     HCL_CUSTOM,
     "mode":                            '"All"',
     "resource":                        '"directory"',
     "source":                          '"Microsoft.KeyVault"',
     "type":                            '"IPsec"',
     "priority":                        '100',
     "cache_size_in_gb":                '3072',
-    "peer_ip":                         '"10.0.0.1"',
-    "ip_address":                      '"10.0.0.1"',
+    "peer_ip":                         HCL_PRIVATE_IP,
+    "ip_address":                      HCL_PRIVATE_IP,
     "namespace_path":                  '"/test"',
     "target_path":                     '"/test"',
     "sku_name":                        '"Standard_2G"',
@@ -90,20 +101,20 @@ RESOURCE_ATTR_OVERRIDES: dict[str, dict[str, str]] = {
         "sku_name": '"standard"',
         "tenant_id": f'"{FAKE_TENANT_ID}"',
     },
-    "azurerm_container_group":                  {"os_type": '"Linux"'},
-    "azurerm_service_plan":                     {"os_type": '"Linux"', "sku_name": '"B1"'},
+    "azurerm_container_group":                  {"os_type": HCL_LINUX},
+    "azurerm_service_plan":                     {"os_type": HCL_LINUX, "sku_name": '"B1"'},
     "azurerm_dedicated_hardware_security_module": {"sku_name": '"SafeNet Luna Network HSM A790"'},
     "azurerm_eventhub_cluster":                 {"sku_name": '"Dedicated_1"'},
     "azurerm_hpc_cache":                        {"cache_size_in_gb": '3072', "sku_name": '"Standard_2G"'},
     "azurerm_managed_application":              {"kind": '"ServiceCatalog"'},
-    "azurerm_managed_application_definition":   {"lock_level": '"CanNotDelete"'},
-    "azurerm_management_lock":                  {"lock_level": '"CanNotDelete"'},
+    "azurerm_managed_application_definition":   {"lock_level": HCL_CAN_NOT_DELETE},
+    "azurerm_management_lock":                  {"lock_level": HCL_CAN_NOT_DELETE},
     "azurerm_snapshot":                         {"create_option": '"Copy"'},
     "azurerm_storage_data_lake_gen2_path":      {"resource": '"directory"'},
     "azurerm_storage_encryption_scope":         {"source": '"Microsoft.Storage"'},
     "azurerm_sentinel_alert_rule_scheduled":    {
         "severity": '"Medium"', "query": '"SecurityEvent | take 1"',
-        "query_frequency": '"PT5M"', "query_period": '"PT5M"',
+        "query_frequency": HCL_PT5M, "query_period": HCL_PT5M,
         "trigger_operator": '"GreaterThan"', "trigger_threshold": '0',
     },
     "azurerm_sentinel_alert_rule_ms_security_incident": {
@@ -112,15 +123,15 @@ RESOURCE_ATTR_OVERRIDES: dict[str, dict[str, str]] = {
     },
     "azurerm_monitor_smart_detector_alert_rule": {
         "detector_type": '"FailureAnomaliesDetector"',
-        "severity": '"Sev1"', "frequency": '"PT5M"',
+        "severity": '"Sev1"', "frequency": HCL_PT5M,
     },
     "azurerm_virtual_hub_security_partner_provider": {"security_provider_name": '"ZScaler"'},
     "azurerm_virtual_network_gateway_connection": {"type": '"IPsec"'},
     "azurerm_policy_definition": {
-        "mode": '"All"', "policy_type": '"Custom"',
+        "mode": '"All"', "policy_type": HCL_CUSTOM,
         "policy_rule": '"{\\"if\\":{\\"field\\":\\"type\\",\\"equals\\":\\"Microsoft.Storage/storageAccounts\\"},\\"then\\":{\\"effect\\":\\"audit\\"}}"',
     },
-    "azurerm_policy_set_definition":            {"policy_type": '"Custom"'},
+    "azurerm_policy_set_definition":            {"policy_type": HCL_CUSTOM},
     "azurerm_dev_test_policy": {
         "evaluator_type": '"AllowedValuesPolicy"', "threshold": '"1"',
         "fact_data": '""', "fact_name": '"UserOwnedLabVmCount"',
@@ -142,7 +153,7 @@ RESOURCE_ATTR_OVERRIDES: dict[str, dict[str, str]] = {
         "secondary_peer_address_prefix": '"10.0.0.4/30"',
         "peer_asn": '100',
     },
-    "azurerm_virtual_hub_bgp_connection":       {"peer_ip": '"10.0.0.1"', "peer_asn": '65515'},
+    "azurerm_virtual_hub_bgp_connection":       {"peer_ip": HCL_PRIVATE_IP, "peer_asn": '65515'},
     "azurerm_firewall_policy_rule_collection_group": {"priority": '500'},
     "azurerm_data_share":                       {"kind": '"CopyBased"'},
     "azurerm_data_share_dataset_blob_storage":  {"file_path": '"file.txt"', "container_name": '"ct-test"'},
@@ -299,8 +310,35 @@ FAKE_IDS: dict[str, str] = {
 }
 
 
-def fake_value_for(attr_name: str, attr_type, _attr_schema: dict, resource_type: str | None = None) -> str:
-    """Return an HCL literal for a required attribute. Most-specific override wins."""
+# Named-attribute dispatch table: simple "attribute name -> HCL literal" rules
+# whose value depends only on the attribute name. Lambdas keep callsites uniform
+# with the suffix rules below.
+_NAMED_ATTR_RULES: dict[str, "callable"] = {
+    "resource_group_name": lambda: f'"{FAKE_RG}"',
+    "location":            lambda: f'"{FAKE_LOCATION}"',
+    "subscription_id":     lambda: f'"{FAKE_SUB_ID}"',
+}
+
+# Primitive-type dispatch table for scalar attribute types.
+_PRIMITIVE_DEFAULTS: dict[str, str] = {
+    "string": HCL_TEST_STR,
+    "number": '1',
+    "bool":   'true',
+}
+
+# Collection-inner-type dispatch table for set/list attribute types.
+_COLLECTION_DEFAULTS: dict[str, str] = {
+    "string": '["test"]',
+    "number": '[1]',
+    "bool":   '[true]',
+}
+
+_DEP_ID_LIT = f'"{RG_SCOPE}/providers/Microsoft.Resources/deployments/dep-test"'
+_DEP_IDS_LIT = f'[{_DEP_ID_LIT}]'
+
+
+def _override_lookup(attr_name: str, resource_type: str | None) -> str | None:
+    """Return the most-specific HCL literal override for ``attr_name`` or None."""
     if resource_type and resource_type in RESOURCE_ATTR_OVERRIDES:
         ov = RESOURCE_ATTR_OVERRIDES[resource_type].get(attr_name)
         if ov is not None:
@@ -309,40 +347,43 @@ def fake_value_for(attr_name: str, attr_type, _attr_schema: dict, resource_type:
         return ATTR_OVERRIDES[attr_name]
     if attr_name in FAKE_IDS:
         return f'"{FAKE_IDS[attr_name]}"'
-    if attr_name == "resource_group_name":
-        return f'"{FAKE_RG}"'
-    if attr_name == "location":
-        return f'"{FAKE_LOCATION}"'
-    if attr_name == "subscription_id":
-        return f'"{FAKE_SUB_ID}"'
-    if attr_name.endswith("_id"):
-        return f'"{RG_SCOPE}/providers/Microsoft.Resources/deployments/dep-test"'
+    return None
+
+
+def _name_based_value(attr_name: str) -> str | None:
+    """Return an HCL literal derived from ``attr_name`` conventions, or None."""
+    rule = _NAMED_ATTR_RULES.get(attr_name)
+    if rule is not None:
+        return rule()
     if attr_name.endswith("_ids"):
-        return f'["{RG_SCOPE}/providers/Microsoft.Resources/deployments/dep-test"]'
-    t = attr_type
-    if isinstance(t, list):
-        head = t[0]
+        return _DEP_IDS_LIT
+    if attr_name.endswith("_id"):
+        return _DEP_ID_LIT
+    return None
+
+
+def _type_based_value(attr_type) -> str:
+    """Return an HCL literal derived solely from a Terraform attribute type."""
+    if isinstance(attr_type, list):
+        head = attr_type[0]
         if head in ("set", "list"):
-            inner = t[1] if len(t) > 1 else "string"
-            if inner == "string":
-                return '["test"]'
-            if inner == "number":
-                return '[1]'
-            if inner == "bool":
-                return '[true]'
-            return '[]'
-        if head == "map":
+            inner = attr_type[1] if len(attr_type) > 1 else "string"
+            return _COLLECTION_DEFAULTS.get(inner, '[]')
+        if head in ("map", "object"):
             return '{}'
-        if head == "object":
-            return '{}'
-        return '"test"'
-    if t == "string":
-        return '"test"'
-    if t == "number":
-        return '1'
-    if t == "bool":
-        return 'true'
-    return '"test"'
+        return HCL_TEST_STR
+    return _PRIMITIVE_DEFAULTS.get(attr_type, HCL_TEST_STR)
+
+
+def fake_value_for(attr_name: str, attr_type, _attr_schema: dict, resource_type: str | None = None) -> str:
+    """Return an HCL literal for a required attribute. Most-specific override wins."""
+    override = _override_lookup(attr_name, resource_type)
+    if override is not None:
+        return override
+    name_based = _name_based_value(attr_name)
+    if name_based is not None:
+        return name_based
+    return _type_based_value(attr_type)
 
 
 def render_block(block_name: str, block_def: dict, indent: int, resource_type: str) -> str:
@@ -436,7 +477,7 @@ output "{variant_name}_length" {{
     return "".join(parts)
 
 
-def make_test_hcl(resource_type: str, res_def: dict) -> str:
+def make_test_hcl(resource_type: str, res_def: dict, name_attr: str = "name") -> str:
     min_l = res_def.get("min_length", 1)
     max_l = res_def.get("max_length", 80)
     regex = res_def.get("validation_regex", ".*")
@@ -466,7 +507,7 @@ def make_test_hcl(resource_type: str, res_def: dict) -> str:
     error_message = "Generated name does not match validation regex for {variant}"
   }}
   assert {{
-    condition     = {resource_type}.{variant}.name == output.{variant}_result
+    condition     = {resource_type}.{variant}.{name_attr} == output.{variant}_result
     error_message = "azurerm name does not equal CAF result for {variant}"
   }}
 }}
@@ -498,28 +539,32 @@ def load_schema(path: Path) -> dict[str, dict]:
 
 def resources_changed_between(base_ref: str, res_def_path: Path, repo_root: Path) -> list[str]:
     """Return the resource ``name`` values added or modified in ``res_def_path``
-    between ``base_ref`` and ``HEAD``."""
+    between ``base_ref`` and ``HEAD``.
+
+    Compares the parsed JSON at both refs so the result is insensitive to
+    whitespace/formatting changes and immune to unified-diff edge cases.
+    """
     rel = res_def_path.relative_to(repo_root)
-    cmd = ["git", "-C", str(repo_root), "diff", "--unified=0", f"{base_ref}...HEAD", "--", str(rel)]
-    diff = subprocess.run(cmd, check=True, capture_output=True, text=True).stdout
-    names: set[str] = set()
-    for line in diff.splitlines():
-        # Match added or removed lines that contain a resource name field.
-        if not (line.startswith("+") or line.startswith("-")) or line.startswith(("+++", "---")):
-            continue
-        stripped = line[1:].strip().rstrip(",")
-        # JSON is one resource per object spanning multiple lines; "name" lines
-        # look like:   "name": "azurerm_xxx",
-        if stripped.startswith('"name"'):
-            try:
-                _, value = stripped.split(":", 1)
-                names.add(json.loads(value.strip().rstrip(",")))
-            except (ValueError, json.JSONDecodeError):
-                continue
-    return sorted(names)
+    base_blob = subprocess.run(
+        ["git", "-C", str(repo_root), "show", f"{base_ref}:{rel}"],
+        capture_output=True, text=True, check=False,
+    ).stdout
+    head_blob = subprocess.run(
+        ["git", "-C", str(repo_root), "show", f"HEAD:{rel}"],
+        capture_output=True, text=True, check=False,
+    ).stdout
+
+    base_by_name = {r["name"]: r for r in (json.loads(base_blob) if base_blob.strip() else [])
+                    if isinstance(r, dict) and "name" in r}
+    head_by_name = {r["name"]: r for r in (json.loads(head_blob) if head_blob.strip() else [])
+                    if isinstance(r, dict) and "name" in r}
+
+    changed = {name for name, entry in head_by_name.items()
+               if base_by_name.get(name) != entry}
+    return sorted(changed)
 
 
-def main() -> int:
+def _build_arg_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--plugin-dir", required=True,
                    help="Local plugin directory containing the built terraform-provider-azurecaf binary "
@@ -538,43 +583,71 @@ def main() -> int:
                      help="Comma-separated explicit list of resource type names.")
     p.add_argument("--repo-root", type=Path, default=Path.cwd(),
                    help="Repository root for git-diff scoping (default: cwd).")
-    args = p.parse_args()
+    return p
+
+
+def _select_wanted(args, res_defs: dict[str, dict]) -> list[str] | None:
+    """Return the resource list selected by CLI args, or None to signal a clean
+    no-op (e.g. nothing to diff against)."""
+    if args.all:
+        return sorted(res_defs)
+    if args.diff_against:
+        wanted = resources_changed_between(
+            args.diff_against, args.res_def.resolve(), args.repo_root.resolve()
+        )
+        if not wanted:
+            print(f"No resourceDefinition.json changes vs {args.diff_against}; nothing to test.")
+            return None
+        return wanted
+    return [r.strip() for r in args.resources.split(",") if r.strip()]
+
+
+def _classify_resource(rt: str, schema: dict, res_defs: dict[str, dict]) -> str | None:
+    """Return a skip reason for ``rt``, or None if it should be generated."""
+    if not rt.startswith("azurerm_"):
+        return "not-an-azurerm-resource"
+    if rt not in schema:
+        return "missing-from-azurerm-provider"
+    if rt not in res_defs:
+        return "missing-from-resourceDefinition.json"
+    return None
+
+
+def _emit_workspace(out_dir: Path, rt: str, schema_entry: dict, res_def: dict, plugin_dir: str) -> None:
+    d = out_dir / rt
+    if d.exists():
+        shutil.rmtree(d)
+    d.mkdir(parents=True)
+    name_attr = find_name_attr(schema_entry) or "name"
+    (d / "main.tf").write_text(make_main_tf(rt, schema_entry))
+    (d / "terraform.rc").write_text(make_terraform_rc(plugin_dir))
+    (d / "tests").mkdir()
+    (d / "tests" / "validate.tftest.hcl").write_text(make_test_hcl(rt, res_def, name_attr))
+
+
+def main() -> int:
+    args = _build_arg_parser().parse_args()
 
     res_defs = load_resource_definitions(args.res_def)
     schema = load_schema(args.schema_file)
 
-    if args.all:
-        wanted = sorted(res_defs)
-    elif args.diff_against:
-        wanted = resources_changed_between(args.diff_against, args.res_def.resolve(), args.repo_root.resolve())
-        if not wanted:
-            print(f"No resourceDefinition.json changes vs {args.diff_against}; nothing to test.")
-            return 0
-    else:
-        wanted = [r.strip() for r in args.resources.split(",") if r.strip()]
+    wanted = _select_wanted(args, res_defs)
+    if wanted is None:
+        return 0
+    if not wanted:
+        print("No resources selected.", file=sys.stderr)
+        return 2
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
 
     generated: list[str] = []
     skipped: list[tuple[str, str]] = []
     for rt in wanted:
-        if not rt.startswith("azurerm_"):
-            skipped.append((rt, "not-an-azurerm-resource"))
+        reason = _classify_resource(rt, schema, res_defs)
+        if reason is not None:
+            skipped.append((rt, reason))
             continue
-        if rt not in schema:
-            skipped.append((rt, "missing-from-azurerm-provider"))
-            continue
-        if rt not in res_defs:
-            skipped.append((rt, "missing-from-resourceDefinition.json"))
-            continue
-        d = args.out_dir / rt
-        if d.exists():
-            shutil.rmtree(d)
-        d.mkdir(parents=True)
-        (d / "main.tf").write_text(make_main_tf(rt, schema[rt]))
-        (d / "terraform.rc").write_text(make_terraform_rc(args.plugin_dir))
-        (d / "tests").mkdir()
-        (d / "tests" / "validate.tftest.hcl").write_text(make_test_hcl(rt, res_defs[rt]))
+        _emit_workspace(args.out_dir, rt, schema[rt], res_defs[rt], args.plugin_dir)
         generated.append(rt)
 
     print(f"generated: {len(generated)} workspaces under {args.out_dir}")
@@ -582,6 +655,11 @@ def main() -> int:
         print(f"skipped:   {len(skipped)}")
         for rt, reason in skipped:
             print(f"  - {rt}: {reason}")
+
+    if not generated and skipped:
+        # Requested resources were all unusable; surface a non-zero exit so CI
+        # doesn't silently succeed when nothing was actually validated.
+        return 1
     return 0
 
 
