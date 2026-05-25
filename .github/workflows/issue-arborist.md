@@ -31,6 +31,7 @@ steps:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      EXPR_GITHUB_REPOSITORY: ${{ github.repository }}
     run: |
       # Create output directory under the workspace so the agent sandbox can
       # read the files. /tmp/gh-aw/ is reserved for gh-aw runtime files and
@@ -42,7 +43,7 @@ steps:
 
       # Fetch the last 100 open issues that don't have a parent issue
       # Using search filter to exclude issues that are already sub-issues
-      gh issue list --repo ${{ github.repository }} \
+      gh issue list --repo $EXPR_GITHUB_REPOSITORY \
         --search "-parent-issue:*" \
         --state open \
         --json number,title,author,createdAt,state,url,body,labels,updatedAt,closedAt,milestone,assignees \
