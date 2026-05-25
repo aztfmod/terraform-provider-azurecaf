@@ -50,6 +50,10 @@ test_regression:	## Run regression test suite
 test_regression_update:	## Update regression baselines (after intentional slug changes)
 	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 go test -v -count=1 -run "TestRegression_SlugConsistency" ./azurecaf/... -args -update-slugs
 
+test_bench:	## Run benchmarks for name generation performance
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 go test -bench=. -benchmem -benchtime=3s ./azurecaf/... | tee benchmark.txt
+	@echo "Benchmark results saved to benchmark.txt"
+
 test_coverage: 	## Run tests with coverage reporting
 	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -cover ./...
 
