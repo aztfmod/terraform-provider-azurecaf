@@ -10,6 +10,11 @@
       "version": "v6",
       "sha": "4a3601121dd01d1626a1e23e37211e3254c1c06c"
     },
+    "github/gh-aw-actions/setup@v0.72.1": {
+      "repo": "github/gh-aw-actions/setup",
+      "version": "v0.72.1",
+      "sha": "bc56a0cad2f450c562810785ef38649c04db812a"
+    },
     "hashicorp/setup-terraform@v4": {
       "repo": "hashicorp/setup-terraform",
       "version": "v4",
