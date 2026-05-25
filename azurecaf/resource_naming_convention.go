@@ -155,9 +155,9 @@ func getResult(d *schema.ResourceData, meta interface{}) error {
 
 	regExFilter = string(resource.RegEx)
 	validationRegExPattern := string(resource.ValidationRegExp)
-	tflog.Debug(context.TODO(), "applying regex filter", map[string]interface{}{
-		"regex_filter":   regExFilter,
-		"resource_type":  resourceType,
+	tflog.Debug(context.Background(), "applying regex filter", map[string]interface{}{
+		"regex_filter":  regExFilter,
+		"resource_type": resourceType,
 	})
 
 	var cafPrefix string
