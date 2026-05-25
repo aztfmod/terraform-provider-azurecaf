@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **`azurecaf/models_generated.go` is now gofmt-clean**: The generated file's struct-literal alignment did not match what `gofmt` produces on current Go toolchains. As a result, the v1.2.34 release pipeline failed at the `Run GoReleaser` step with `git is in a dirty state - M azurecaf/models_generated.go`, because the `Go` workflow's E2E tests call `make build` (which runs `go generate` then `go fmt ./...`), and `go fmt` reformatted the file. Regenerated and gofmt'd the file (no semantic change, same 489 resource entries) so subsequent runs of `make build` leave the working tree clean. Impact: None for end users; unblocks tag releases (next attempt should be v1.2.34 or later).
+
 ### Added
 - **Weekly Azure Sync 2026-05-14 — 89 new resource types (post-review)**: Added definitions for resources highlighted by the weekly `azure-sync` report. All entries are additive (no slug or behavior changes to existing resources) and follow CAF-style abbreviations and Azure naming rules. The initial sync proposed 105 resources; 16 were removed during review (see "Removed" below) and 2 had their regex/length corrected (see "Fixed" below). Every kept addition was validated via `terraform test` with `mock_provider "azurerm"` and fuzz-tested (89 × 25 = 2,225 randomized inputs, 99.87% pass rate; 3 remaining edge cases match pre-existing patterns in `main`). Categories covered:
   - Compute: `azurerm_container_group` (slug `aci`), `azurerm_orchestrated_virtual_machine_scale_set` (`ovmss`), `azurerm_snapshot` (`snp`), `azurerm_dedicated_hardware_security_module` (`hsm`).
