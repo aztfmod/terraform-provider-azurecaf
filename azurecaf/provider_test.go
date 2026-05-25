@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 var testAccProviderFactories map[string]func() (*schema.Provider, error)
@@ -27,4 +28,8 @@ func TestProvider_impl(t *testing.T) {
 }
 
 func testAccPreCheck(t *testing.T) {
+}
+
+func testAccCheckResourceDestroy(s *terraform.State) error {
+	return nil
 }
