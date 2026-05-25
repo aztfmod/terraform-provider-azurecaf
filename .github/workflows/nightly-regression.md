@@ -1,8 +1,8 @@
 ---
 description: |
-  Nightly regression test workflow. Runs the full test suite and E2E tests
-  on the main branch. Creates a GitHub issue if any tests fail, with
-  detailed failure information for rapid diagnosis.
+  Nightly regression test workflow. Runs build, CI, golden, fuzz,
+  regression, and E2E tests on the main branch. Creates a GitHub issue
+  if any checks fail, with detailed failure information for rapid diagnosis.
 
 on:
   schedule: daily
@@ -75,6 +75,30 @@ steps:
       fi
       echo "TEST_EXIT=$TEST_EXIT" >> /tmp/results.env
 
+      echo "🟨 Running golden snapshot tests..."
+      if make test_golden 2>&1 | tee /tmp/golden-output.txt; then
+        GOLDEN_EXIT=0
+      else
+        GOLDEN_EXIT=$?
+      fi
+      echo "GOLDEN_EXIT=$GOLDEN_EXIT" >> /tmp/results.env
+
+      echo "🌀 Running fuzz tests..."
+      if make test_fuzz 2>&1 | tee /tmp/fuzz-output.txt; then
+        FUZZ_EXIT=0
+      else
+        FUZZ_EXIT=$?
+      fi
+      echo "FUZZ_EXIT=$FUZZ_EXIT" >> /tmp/results.env
+
+      echo "🧭 Running regression tests..."
+      if make test_regression 2>&1 | tee /tmp/regression-output.txt; then
+        REGRESSION_EXIT=0
+      else
+        REGRESSION_EXIT=$?
+      fi
+      echo "REGRESSION_EXIT=$REGRESSION_EXIT" >> /tmp/results.env
+
       echo "🔬 Running E2E quick tests..."
       if make test_e2e_quick 2>&1 | tee /tmp/e2e-output.txt; then
         E2E_EXIT=0
@@ -85,6 +109,9 @@ steps:
 
       # Extract test summary lines
       grep -E "^(ok|FAIL|---)" /tmp/test-ci-output.txt > /tmp/test-summary.txt 2>/dev/null || true
+      grep -E "^(ok|FAIL|---)" /tmp/golden-output.txt >> /tmp/test-summary.txt 2>/dev/null || true
+      grep -E "^(ok|FAIL|---)" /tmp/fuzz-output.txt >> /tmp/test-summary.txt 2>/dev/null || true
+      grep -E "^(ok|FAIL|---)" /tmp/regression-output.txt >> /tmp/test-summary.txt 2>/dev/null || true
       grep -E "^(ok|FAIL|---)" /tmp/e2e-output.txt >> /tmp/test-summary.txt 2>/dev/null || true
 
       # Always exit 0 from this step so the agent can run and report failures.
@@ -96,14 +123,14 @@ engine: copilot
 
 # Nightly Regression
 
-Run nightly regression tests on the main branch and report failures.
+Run nightly build, CI, golden, fuzz, regression, and E2E tests on the main branch and report failures.
 
 ## Process
 
 1. Read the test results from `/tmp/results.env` and `/tmp/test-summary.txt`
 2. If ALL exit codes are 0: no action needed, exit quietly
 3. If ANY exit code is non-zero:
-   - Analyze the failure output files (`/tmp/build-output.txt`, `/tmp/test-ci-output.txt`, `/tmp/e2e-output.txt`)
+   - Analyze the failure output files (`/tmp/build-output.txt`, `/tmp/test-ci-output.txt`, `/tmp/golden-output.txt`, `/tmp/fuzz-output.txt`, `/tmp/regression-output.txt`, `/tmp/e2e-output.txt`)
    - Identify which tests failed and extract error details
    - Create a GitHub issue with:
      - Title: `[nightly-regression] Test failures on main — <date>`
