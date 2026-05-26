@@ -213,6 +213,16 @@ Several `v1.x` code paths silently swallowed errors or skipped validation. `v2.0
   - **Impact (BREAKING)**: Any Terraform configuration that relied on the previous slug appearing in a generated name will see a different slug after upgrade. Hold for the v2.0.0 cut. Originally proposed in 2022 by @t3mi as PR #188 against the long-running `3_0` branch; this commit cherry-picks the slug changes onto current `main` (494 resources), re-validates them against today's CAF guidance, and adds the 8 bug fixes that have accumulated since.
   - **Out of scope (deferred follow-up)**: The 5 load-balancer resources still carry bogus `official.resource: "Azure Digital Twins"` metadata that was not propagated to the slug field. That `official` block cleanup is tracked separately and does not affect generated names.
 
+### Added
+- **30 new resource definitions** (issue #524): Added naming support for API Management sub-resources (api_version_set, authorization_server, named_value, openid_connect_provider), App Service certificate_order, Application Insights analytics_item/api_key, Automation connections/variables/DSC, Backup policies, Data Factory linked_service_azure_file_storage, Dev Test policy, DNS srv_record, Event Grid system_topic, Key Vault certificate_issuer, Kusto principal_assignments, Log Analytics datasources, Network packet_capture/flow_log, Site Recovery mappings. Total: 494 → 524 resources.
+  - Impact: Minor — new resource types only, no changes to existing behavior.
+- **Non-nameable resource exclusion catalog** (`completness/non_nameable_resources.json`): Machine-readable catalog of azurerm resources that do NOT have user-controlled `name` fields. Used by weekly-azure-sync to eliminate false positives.
+  - Impact: Low — infrastructure/workflow improvement.
+
+### Changed
+- **Weekly Azure Sync workflow uses schema-based nameability filter**: Updated `.github/workflows/weekly-azure-sync.md` to run `terraform providers schema -json` and dynamically filter resources by checking for a required `name` attribute. Reduces false positives from 74% to ~0%. Falls back to static exclusion list if schema fetch fails.
+  - Impact: Low — workflow/CI improvement only.
+
 ### Fixed
 - **Feature**: Names are now computed at plan time instead of apply time (#336)
   - Added `CustomizeDiff` to the `azurecaf_name` resource so `result` and `results` values
