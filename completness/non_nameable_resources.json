@@ -62,10 +62,8 @@
     "azurerm_subscription",
     "azurerm_synapse_role_assignment",
     "azurerm_virtual_machine_data_disk_attachment",
-    "azurerm_postgresql_configuration",
     "azurerm_mariadb_configuration",
-    "azurerm_mysql_configuration",
-    "azurerm_shared_image_version"
+    "azurerm_mysql_configuration"
   ],
   "deprecated_in_v4": [
     "azurerm_api_management_property",
@@ -92,8 +90,9 @@
     "azurerm_traffic_manager_endpoint"
   ],
   "name_not_caf_eligible": [
+    "azurerm_dev_test_policy",
+    "azurerm_kubernetes_cluster_node_pool",
     "azurerm_postgresql_configuration",
-    "azurerm_shared_image_version",
-    "azurerm_kubernetes_cluster_node_pool"
+    "azurerm_shared_image_version"
   ]
 }

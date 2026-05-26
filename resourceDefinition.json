@@ -2273,20 +2273,6 @@
     }
   },
   {
-    "name": "azurerm_dev_test_policy",
-    "min_length": 1,
-    "max_length": 50,
-    "validation_regex": "\"^[a-zA-Z0-9-_]{1,50}$\"",
-    "scope": "parent",
-    "slug": "dtlp",
-    "dashes": true,
-    "lowercase": false,
-    "regex": "\"[^0-9A-Za-z_-]\"",
-    "official": {
-      "resource": "Azure Dev Test Policy"
-    }
-  },
-  {
     "name": "azurerm_dev_test_schedule",
     "min_length": 1,
     "max_length": 64,

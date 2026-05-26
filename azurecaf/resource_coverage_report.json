@@ -163,7 +163,6 @@
     "azurerm_dev_center_project_environment_type",
     "azurerm_dev_test_lab",
     "azurerm_dev_test_linux_virtual_machine",
-    "azurerm_dev_test_policy",
     "azurerm_dev_test_schedule",
     "azurerm_dev_test_virtual_network",
     "azurerm_dev_test_windows_virtual_machine",
@@ -528,6 +527,6 @@
     "general",
     "general_safe"
   ],
-  "successful_resources": 524,
-  "total_resources": 524
+  "successful_resources": 523,
+  "total_resources": 523
 }
