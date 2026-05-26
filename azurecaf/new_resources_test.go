@@ -24,7 +24,7 @@ var newResourceNames = []string{
 	"azurerm_backup_policy_file_share",
 	"azurerm_backup_policy_vm",
 	"azurerm_data_factory_linked_service_azure_file_storage",
-	"azurerm_dev_test_policy",
+
 	"azurerm_dns_srv_record",
 	"azurerm_eventgrid_system_topic",
 	"azurerm_key_vault_certificate_issuer",
@@ -90,7 +90,9 @@ func TestNewResources_Conventions(t *testing.T) {
 		t.Run(conv.name, func(t *testing.T) {
 			for _, resName := range newResourceNames {
 				t.Run(resName, func(t *testing.T) {
-					_, err := getResourceName(resName, "-", []string{"dev"}, "app", []string{"001"}, "", conv.convention, true, false, true, newResourceTestPrecedence, false)
+					passthrough := conv.convention == ConventionPassThrough
+					useSlug := !passthrough
+					_, err := getResourceName(resName, "-", []string{"dev"}, "app", []string{"001"}, "", conv.convention, true, passthrough, useSlug, newResourceTestPrecedence, false)
 					if err != nil {
 						t.Errorf("convention %s failed: %v", conv.name, err)
 					}

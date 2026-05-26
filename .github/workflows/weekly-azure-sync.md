@@ -70,7 +70,7 @@ TF
 
       if [ $SCHEMA_OK -eq 0 ] && [ -s "$GH_AW_OUT/provider_schema.json" ]; then
         echo "SCHEMA_CHECK=ok" >> "$GH_AW_OUT/counts.env"
-        # Filter: keep only resources that have a required/optional `name` attribute
+        # Filter: keep only resources that have a required `name` attribute
         python3 -c "
 import json, sys, os
 
@@ -114,7 +114,6 @@ for line in open('$GH_AW_OUT/azurerm_raw.txt'):
         name_attr = attrs.get('name', {})
         has_name = 'name' in attrs
         name_required = name_attr.get('required', False)
-        name_computed_only = name_attr.get('computed', False) and not name_required
         # Keep only if name is required AND it's a CAF-eligible name
         if has_name and name_required and r not in not_caf_eligible:
             print(r)
@@ -139,7 +138,7 @@ with open('completness/non_nameable_resources.json') as f:
     excl = json.load(f)
 suffix_pats = excl.get('suffix_patterns', [])
 contains_pats = excl.get('contains_patterns', [])
-exact = set(excl.get('exact_resources', []) + excl.get('deprecated_in_v4', []))
+exact = set(excl.get('exact_resources', []) + excl.get('deprecated_in_v4', []) + excl.get('name_not_caf_eligible', []))
 for line in open('$GH_AW_OUT/azurerm_raw.txt'):
     r = line.strip()
     if not r:
