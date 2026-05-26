@@ -90,5 +90,10 @@
     "azurerm_storage_account_blob_container_sas",
     "azurerm_storage_account_sas",
     "azurerm_traffic_manager_endpoint"
+  ],
+  "name_not_caf_eligible": [
+    "azurerm_postgresql_configuration",
+    "azurerm_shared_image_version",
+    "azurerm_kubernetes_cluster_node_pool"
   ]
 }
