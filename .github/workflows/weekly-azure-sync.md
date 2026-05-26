@@ -30,6 +30,7 @@ tools:
     - "cat *"
     - "head *"
     - "tail *"
+    - "python3 *"
 
 safe-outputs:
   create-issue:
@@ -50,7 +51,30 @@ steps:
         > "$GH_AW_OUT/supported.txt"
 
       # 2. Known azurerm resources tracked in completness/existing_tf_resources.txt
-      sort -u completness/existing_tf_resources.txt > "$GH_AW_OUT/azurerm.txt"
+      sort -u completness/existing_tf_resources.txt > "$GH_AW_OUT/azurerm_raw.txt"
+
+      # 2b. Filter out non-nameable resources (associations, configs, deprecated)
+      python3 -c "
+import json, sys
+with open('completness/non_nameable_resources.json') as f:
+    excl = json.load(f)
+suffix_pats = excl.get('suffix_patterns', [])
+contains_pats = excl.get('contains_patterns', [])
+exact = set(excl.get('exact_resources', []) + excl.get('deprecated_in_v4', []))
+for line in open('$GH_AW_OUT/azurerm_raw.txt'):
+    r = line.strip()
+    if not r:
+        continue
+    if r in exact:
+        continue
+    if any(r.endswith(s) for s in suffix_pats):
+        continue
+    if any(p in r for p in contains_pats):
+        continue
+    print(r)
+" > "$GH_AW_OUT/azurerm.txt"
+
+      echo "FILTERED=$(( $(wc -l < "$GH_AW_OUT/azurerm_raw.txt" | tr -d ' ') - $(wc -l < "$GH_AW_OUT/azurerm.txt" | tr -d ' ') )) non-nameable resources excluded"
 
       # 3. Diff: resources in azurerm.txt but missing from supported.txt
       comm -23 "$GH_AW_OUT/azurerm.txt" "$GH_AW_OUT/supported.txt" > "$GH_AW_OUT/missing.txt"
@@ -92,8 +116,9 @@ The pre-agent step has already produced the following files under
 `grep`, `sort`, `comm`, or `wc`:
 
 - `supported.txt` — sorted unique resource names from `resourceDefinition.json`.
-- `azurerm.txt` — sorted unique azurerm resource names from `completness/existing_tf_resources.txt`.
-- `missing.txt` — azurerm resources NOT present in `supported.txt`.
+- `azurerm_raw.txt` — ALL azurerm resource names from `completness/existing_tf_resources.txt`.
+- `azurerm.txt` — filtered: only resources with user-controlled `name` fields (non-nameable excluded).
+- `missing.txt` — azurerm resources NOT present in `supported.txt` (pre-filtered for nameability).
 - `counts.env` — `AZURERM_TOTAL`, `SUPPORTED_TOTAL`, `MISSING_TOTAL`, `CAF_FETCH`.
 - `caf-abbreviations.html` — Microsoft Learn CAF abbreviations page (empty if `CAF_FETCH=failed`).
 
@@ -105,6 +130,10 @@ tools are intentionally not allowed. The data above is the source of truth.
 ### 1. Resource discovery
 - Read `counts.env` for totals.
 - Read `missing.txt` for the gap list.
+- Note: `missing.txt` is already pre-filtered to exclude non-nameable resources
+  (associations, bindings, configs, policies, deprecated resources) using
+  `completness/non_nameable_resources.json`. Only resources with a required
+  user-controlled `name` field appear in the list.
 - Skip any line beginning with `azurerm_` followed by a name that ends in
   `_data_source`, `_versions`, or otherwise represents a data source rather
   than a manageable resource.
