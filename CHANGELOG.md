@@ -8,10 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- **30 new resource definitions** (issue #524): Added naming support for API Management sub-resources (api_version_set, authorization_server, named_value, openid_connect_provider), App Service certificate_order, Application Insights analytics_item/api_key, Automation connections/variables/DSC, Backup policies, Data Factory linked_service_azure_file_storage, Dev Test policy, DNS srv_record, Event Grid system_topic, Key Vault certificate_issuer, Kusto principal_assignments, Log Analytics datasources, Network packet_capture/flow_log, Site Recovery mappings.
-  - Impact: Minor — new resource types only, no changes to existing behavior. Total: 494 → 524 resources.
-- **Non-nameable resource exclusion list** (`completness/non_nameable_resources.json`): Catalog of 97 azurerm resources that do NOT have user-controlled `name` fields (associations, bindings, configs, deprecated resources). Used by weekly-azure-sync to eliminate false positives.
-  - Impact: Low — infrastructure/workflow improvement.
 - **Go-native fuzz coverage for core name generation**: Added `azurecaf/fuzz_test.go` with panic-safety fuzz targets for `cleanString`, `concatenateParameters`, `composeName`, `getResourceName`, and `NameBuilder` operations across arbitrary separators, segments, and input strings.
   - Impact: Low — test-only change, no provider runtime behavior change.
 - **Golden snapshot coverage for CAF name generation**: Added `azurecaf/golden_test.go` plus JSON snapshots under `azurecaf/testdata/golden/` to lock down deterministic outputs for every `ResourceDefinitions` entry, the four legacy naming conventions (`cafclassic`, `cafrandom`, `random`, `passthrough`), and representative edge cases (empty name, very long name, special-character cleanup). Snapshots can be intentionally refreshed with `go test -v ./azurecaf/... -run TestGolden -args -update-golden`.
@@ -20,8 +16,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Impact: Low — tests/documentation only, no provider runtime behavior change.
 
 ### Changed
-- **Weekly Azure Sync workflow now filters non-nameable resources**: Updated `.github/workflows/weekly-azure-sync.md` to pre-filter `existing_tf_resources.txt` against `non_nameable_resources.json` before computing the gap list. Reduces false positives from 130 to ~33 (74% noise reduction). Added `python3` to allowed tools.
-  - Impact: Low — workflow/CI improvement only.
 - **E2E test suite now validates generated Terraform outputs instead of plan text only**: Expanded `e2e/e2e_comprehensive_test.go` and `e2e/e2e_test.go` to run `terraform apply`, parse `terraform output -json`, and assert actual generated values for `azurecaf_name` and legacy `azurecaf_naming_convention` resources. Added coverage for exact output checks, validation-regex matching, slug presence, storage-account length truncation, `results` map generation, clear error messages, import verification, and post-apply no-drift plans. Added `e2e/assertions.go` helpers for reusable output and state assertions, and switched E2E scratch directories from OS temp space to local `.e2e-work/` directories.
   - Impact: Low — test-only change, no provider runtime behavior change.
 
