@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **30 new resource definitions** (issue #524): Added naming support for API Management sub-resources (api_version_set, authorization_server, named_value, openid_connect_provider), App Service certificate_order, Application Insights analytics_item/api_key, Automation connections/variables/DSC, Backup policies, Data Factory linked_service_azure_file_storage, Dev Test policy, DNS srv_record, Event Grid system_topic, Key Vault certificate_issuer, Kusto principal_assignments, Log Analytics datasources, Network packet_capture/flow_log, Site Recovery mappings. Total: 494 → 524 resources.
+  - Impact: Minor — new resource types only, no changes to existing behavior.
+- **Non-nameable resource exclusion catalog** (`completness/non_nameable_resources.json`): Machine-readable catalog of azurerm resources that do NOT have user-controlled `name` fields. Used by weekly-azure-sync to eliminate false positives.
+  - Impact: Low — infrastructure/workflow improvement.
+
+### Changed
+- **Weekly Azure Sync workflow uses schema-based nameability filter**: Updated `.github/workflows/weekly-azure-sync.md` to run `terraform providers schema -json` and dynamically filter resources by checking for a required `name` attribute. Reduces false positives from 74% to ~0%. Falls back to static exclusion list if schema fetch fails.
+  - Impact: Low — workflow/CI improvement only.
+
 ### Fixed
 - **Issue Arborist agentic workflow — allow `python3` in agent sandbox (fixes #509)**: The daily `Issue Arborist` workflow run 26360490064 reported a missing-tools failure: *"Bash command execution was blocked by security policy. Cannot run python3 or any shell commands in this environment."* The agent tries to run `python3` to cluster ~100 issues by token/label overlap (jq alone is awkward for set similarity), but the bash allowlist only granted `cat *`, `jq *`, and the schema script. Added `python3 *` to `.github/workflows/issue-arborist.md` `tools.bash` (matching the pattern already used by `issue-to-pr-agent.md`), documented in the prompt that `python3` is available for richer analysis with output constrained to `${GITHUB_WORKSPACE}/.gh-aw-data/`, and regenerated `issue-arborist.lock.yml` via `gh aw compile` (compiler v0.72.1). The recompile also pinned `github/gh-aw-actions/setup` to its commit SHA (was floating `v0.74.4` tag, now `bc56a0cad2f450c562810785ef38649c04db812a # v0.72.1`), matching the SHA-pinning convention introduced in commit 9c6e560. Impact: removes the recurring `[aw] Issue Arborist failed` issue; no behavior change for end users of the provider.
 - **`azurecaf/models_generated.go` is now gofmt-clean**: The generated file's struct-literal alignment did not match what `gofmt` produces on current Go toolchains. As a result, the v1.2.34 release pipeline failed at the `Run GoReleaser` step with `git is in a dirty state - M azurecaf/models_generated.go`, because the `Go` workflow's E2E tests call `make build` (which runs `go generate` then `go fmt ./...`), and `go fmt` reformatted the file. Regenerated and gofmt'd the file (no semantic change, same 489 resource entries) so subsequent runs of `make build` leave the working tree clean. Impact: None for end users; unblocks tag releases (next attempt should be v1.2.34 or later).
