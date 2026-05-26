@@ -136,6 +136,80 @@ RESOURCE_ATTR_OVERRIDES: dict[str, dict[str, str]] = {
         "evaluator_type": '"AllowedValuesPolicy"', "threshold": '"1"',
         "fact_data": '""', "fact_name": '"UserOwnedLabVmCount"',
     },
+    "azurerm_api_management_api_version_set": {
+        "versioning_scheme": '"Segment"',
+    },
+    "azurerm_api_management_authorization_server": {
+        "authorization_methods": '["GET"]',
+        "grant_types": '["authorizationCode"]',
+        "authorization_endpoint": '"https://login.microsoftonline.com/common/oauth2/authorize"',
+        "client_id": '"00000000-0000-0000-0000-000000000000"',
+    },
+    "azurerm_api_management_named_value": {
+        "value": '"test-value"',
+    },
+    "azurerm_application_insights_analytics_item": {
+        "scope": '"shared"',
+        "type": '"query"',
+        "content": '"requests | take 10"',
+        "application_insights_id": f'"{RG_SCOPE}/providers/Microsoft.Insights/components/appi-test"',
+    },
+    "azurerm_application_insights_api_key": {
+        "read_permissions": '["api"]',
+        "application_insights_id": f'"{RG_SCOPE}/providers/Microsoft.Insights/components/appi-test"',
+    },
+    "azurerm_automation_connection_service_principal": {
+        "application_id": f'"{FAKE_TENANT_ID}"',
+        "tenant_id": f'"{FAKE_TENANT_ID}"',
+        "certificate_thumbprint": '"0000000000000000000000000000000000000000"',
+        "subscription_id": f'"{FAKE_SUB_ID}"',
+    },
+    "azurerm_backup_policy_file_share": {
+        "timezone": '"UTC"',
+        "frequency": '"Daily"',
+        "time": '"23:00"',
+    },
+    "azurerm_backup_policy_vm": {
+        "timezone": '"UTC"',
+        "frequency": '"Daily"',
+        "time": '"23:00"',
+    },
+    "azurerm_key_vault_certificate_issuer": {
+        "provider_name": '"DigiCert"',
+    },
+    "azurerm_kusto_cluster_principal_assignment": {
+        "principal_type": '"App"',
+        "role": '"AllDatabasesAdmin"',
+        "tenant_id": f'"{FAKE_TENANT_ID}"',
+        "principal_id": f'"{FAKE_TENANT_ID}"',
+    },
+    "azurerm_kusto_database_principal_assignment": {
+        "principal_type": '"App"',
+        "role": '"Viewer"',
+        "tenant_id": f'"{FAKE_TENANT_ID}"',
+        "principal_id": f'"{FAKE_TENANT_ID}"',
+    },
+    "azurerm_log_analytics_datasource_windows_event": {
+        "event_log_name": '"Application"',
+        "event_types": '["Error", "Warning"]',
+    },
+    "azurerm_log_analytics_datasource_windows_performance_counter": {
+        "object_name": '"Processor"',
+        "instance_name": '"*"',
+        "counter_name": '"% Processor Time"',
+        "interval_seconds": '60',
+    },
+    "azurerm_network_packet_capture": {
+        "network_watcher_name": '"nw-test"',
+        "target_resource_id": f'"{RG_SCOPE}/providers/Microsoft.Compute/virtualMachines/vm-test"',
+        "storage_account_id": f'"{RG_SCOPE}/providers/Microsoft.Storage/storageAccounts/sttest"',
+    },
+    "azurerm_network_watcher_flow_log": {
+        "network_watcher_name": '"nw-test"',
+        "network_security_group_id": f'"{RG_SCOPE}/providers/Microsoft.Network/networkSecurityGroups/nsg-test"',
+        "storage_account_id": f'"{RG_SCOPE}/providers/Microsoft.Storage/storageAccounts/sttest"',
+        "enabled": 'true',
+    },
     "azurerm_dev_test_schedule": {
         "time_zone_id": '"UTC"', "task_type": '"LabVmsShutdownTask"',
     },
@@ -214,6 +288,10 @@ RESOURCE_ATTR_OVERRIDES: dict[str, dict[str, str]] = {
         "key_vault_id": f'"{RG_SCOPE}/providers/Microsoft.KeyVault/vaults/kv-test"',
     },
 }
+
+# Extra raw HCL lines to inject into resource blocks for constraints
+# that cannot be expressed via attribute overrides alone.
+RESOURCE_EXTRA_HCL: dict[str, list[str]] = {}
 
 # Common parent-id / contextual attributes that map cleanly to a fake ARM id.
 FAKE_IDS: dict[str, str] = {
@@ -394,6 +472,9 @@ def render_block(block_name: str, block_def: dict, indent: int, resource_type: s
         if attr_def.get("required"):
             t = attr_def.get("type")
             lines.append(f"{sp}  {attr_name} = {fake_value_for(attr_name, t, attr_def, resource_type)}")
+        elif _override_lookup(attr_name, resource_type) is not None:
+            # Emit optional attrs that have explicit overrides (for "at least one of" constraints)
+            lines.append(f"{sp}  {attr_name} = {_override_lookup(attr_name, resource_type)}")
     for bn, bdef in block.get("block_types", {}).items():
         if bdef.get("min_items", 0) > 0:
             lines.append(render_block(bn, bdef, indent + 2, resource_type))
@@ -410,6 +491,11 @@ def render_required_attrs_and_blocks(schema: dict, name_attr_name: str, resource
         if attr_def.get("required"):
             t = attr_def.get("type")
             out.append(f"  {attr_name} = {fake_value_for(attr_name, t, attr_def, resource_type)}")
+        elif not attr_def.get("required") and resource_type in RESOURCE_ATTR_OVERRIDES:
+            # Emit optional attrs with resource-specific overrides (for "at least one of" constraints)
+            ov = RESOURCE_ATTR_OVERRIDES[resource_type].get(attr_name)
+            if ov is not None:
+                out.append(f"  {attr_name} = {ov}")
     for bn, bdef in block.get("block_types", {}).items():
         if bdef.get("min_items", 0) > 0:
             out.append(render_block(bn, bdef, indent=2, resource_type=resource_type))
@@ -432,6 +518,11 @@ def make_main_tf(resource_type: str, schema: dict) -> str:
     name_attr = find_name_attr(schema) or "name"
     required_lines = render_required_attrs_and_blocks(schema, name_attr_name=name_attr, resource_type=resource_type)
     required_block = "\n".join(required_lines)
+
+    # Inject extra HCL for "at least one of" constraints
+    extra_lines = RESOURCE_EXTRA_HCL.get(resource_type, [])
+    if extra_lines:
+        required_block += "\n" + "\n".join(extra_lines)
 
     variants = [
         ("default",     '  name          = "test"'),
