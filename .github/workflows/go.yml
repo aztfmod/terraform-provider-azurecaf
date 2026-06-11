@@ -17,9 +17,10 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    permissions:
-      contents: write  # Required for creating releases
-      id-token: write  # Required for keyless signing
+    env:
+      CHECKPOINT_DISABLE: 1
+      TF_IN_AUTOMATION: 1
+      TF_CLI_ARGS_init: "-upgrade=false"
     steps:
       - name: Check out code into the Go module directory
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
@@ -46,107 +47,125 @@ jobs:
 
       - name: Resource Definition Validation
         run: make test_resource_definitions
-        env:
-          CHECKPOINT_DISABLE: 1
-          TF_IN_AUTOMATION: 1
-          TF_CLI_ARGS_init: "-upgrade=false"
 
-      - name: Resource Matrix Testing
-        run: make test_resource_matrix
-        env:
-          CHECKPOINT_DISABLE: 1
-          TF_IN_AUTOMATION: 1
-          TF_CLI_ARGS_init: "-upgrade=false"
+  # Fast tier: unit + golden + regression (<30s)
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    env:
+      CHECKPOINT_DISABLE: 1
+      TF_IN_AUTOMATION: 1
+      TF_CLI_ARGS_init: "-upgrade=false"
+    steps:
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Resource Coverage Analysis
-        run: make test_resource_coverage
-        env:
-          CHECKPOINT_DISABLE: 1
-          TF_IN_AUTOMATION: 1
-          TF_CLI_ARGS_init: "-upgrade=false"
+      - name: Set up Go
+        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
+        with:
+          go-version-file: './go.mod'
 
-      - name: Unit Tests
-        run: make unittest
-        env:
-          CHECKPOINT_DISABLE: 1
-          TF_IN_AUTOMATION: 1
-          TF_CLI_ARGS_init: "-upgrade=false"
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "~> 1.12.0"
 
-      - name: Test Coverage
-        run: make test_coverage
-        env:
-          CHECKPOINT_DISABLE: 1
-          TF_IN_AUTOMATION: 1
-          TF_CLI_ARGS_init: "-upgrade=false"
+      - name: Fast Unit Tests
+        run: make test_unit_fast
 
-      - name: Test Coverage HTML
-        run: make test_coverage_html
-        env:
-          CHECKPOINT_DISABLE: 1
-          TF_IN_AUTOMATION: 1
-          TF_CLI_ARGS_init: "-upgrade=false"
+      - name: Golden Snapshot Tests
+        run: make test_golden
 
-      - name: Test Integration
+      - name: Regression Tests
+        run: make test_regression
+
+  # Medium tier: integration + table-driven (1-2 min)
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    env:
+      CHECKPOINT_DISABLE: 1
+      TF_IN_AUTOMATION: 1
+      TF_CLI_ARGS_init: "-upgrade=false"
+    steps:
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up Go
+        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
+        with:
+          go-version-file: './go.mod'
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "~> 1.12.0"
+
+      - name: Integration Tests
         run: make test_integration
-        env:
-          CHECKPOINT_DISABLE: 1
-          TF_IN_AUTOMATION: 1
-          TF_CLI_ARGS_init: "-upgrade=false"
 
-      - name: Test Data Sources
-        run: make test_data_sources
-        env:
-          CHECKPOINT_DISABLE: 1
-          TF_IN_AUTOMATION: 1
-          TF_CLI_ARGS_init: "-upgrade=false"
+      - name: Resource Matrix Tests
+        run: make test_resource_matrix
 
-      - name: Test Error Handling
-        run: make test_error_handling
-        env:
-          CHECKPOINT_DISABLE: 1
-          TF_IN_AUTOMATION: 1
-          TF_CLI_ARGS_init: "-upgrade=false"
+  # Slow tier: E2E (3 min, PR only)
+  e2e-tests:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    if: github.event_name == 'pull_request'
+    env:
+      CHECKPOINT_DISABLE: 1
+      TF_IN_AUTOMATION: 1
+      TF_CLI_ARGS_init: "-upgrade=false"
+    steps:
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Test Resource Naming
-        run: make test_resource_naming
-        env:
-          CHECKPOINT_DISABLE: 1
-          TF_IN_AUTOMATION: 1
-          TF_CLI_ARGS_init: "-upgrade=false"
+      - name: Set up Go
+        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
+        with:
+          go-version-file: './go.mod'
 
-      - name: Comprehensive CI Tests
-        run: make test_ci
-        env:
-          CHECKPOINT_DISABLE: 1
-          TF_IN_AUTOMATION: 1
-          TF_CLI_ARGS_init: "-upgrade=false"
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "~> 1.12.0"
 
-      - name: E2E Tests (Quick)
-        run: make test_e2e_quick
-        env:
-          CHECKPOINT_DISABLE: 1
-          TF_IN_AUTOMATION: 1
-          TF_CLI_ARGS_init: "-upgrade=false"
-
-      - name: E2E Tests (Full) - Pull Requests Only
-        if: github.event_name == 'pull_request'
+      - name: E2E Tests
         run: make test_e2e
-        env:
-          CHECKPOINT_DISABLE: 1
-          TF_IN_AUTOMATION: 1
-          TF_CLI_ARGS_init: "-upgrade=false"
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs:
+      - build
+      - unit-tests
+      - integration-tests
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
+        with:
+          go-version-file: './go.mod'
 
       - name: Import GPG key
         id: import_gpg
         uses: crazy-max/ghaction-import-gpg@v7
-        if: startsWith(github.ref, 'refs/tags/')
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v7
-        if: startsWith(github.ref, 'refs/tags/')
         with:
           version: '~> v2'
           args: release --clean
