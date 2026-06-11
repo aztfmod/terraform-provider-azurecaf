@@ -145,7 +145,10 @@ func getNameReadResult(d *schema.ResourceData, meta interface{}) error {
 
 	convention := ConventionCafClassic
 
-	randomSuffix := randSeq(int(randomLength), &randomSeed)
+	// randSeq never returns a non-nil error when seed is non-nil (math/rand
+	// path); &randomSeed is always non-nil here, so the error is safely
+	// discarded.
+	randomSuffix, _ := randSeq(int(randomLength), &randomSeed)
 
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 

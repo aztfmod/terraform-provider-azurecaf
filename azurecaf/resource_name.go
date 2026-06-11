@@ -402,7 +402,10 @@ func computeNames(p namingParams) (string, map[string]string, error) {
 	if p.randomSeedSet {
 		seedPtr = &p.randomSeed
 	}
-	randomSuffix := randSeq(p.randomLength, seedPtr)
+	randomSuffix, err := randSeq(p.randomLength, seedPtr)
+	if err != nil {
+		return "", nil, fmt.Errorf("failed to generate random suffix: %w", err)
+	}
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 	convention := ConventionCafClassic
 
@@ -706,6 +709,10 @@ func getNameResult(d *schema.ResourceData, meta interface{}) error {
 	if err := d.Set("results", resourceNames); err != nil {
 		return fmt.Errorf("failed to set results: %w", err)
 	}
-	d.SetId(randSeq(16, nil))
+	id, err := randSeq(16, nil)
+	if err != nil {
+		return fmt.Errorf("failed to generate resource id: %w", err)
+	}
+	d.SetId(id)
 	return nil
 }

@@ -154,7 +154,10 @@ func getResult(d *schema.ResourceData, meta interface{}) error {
 	})
 
 	var cafPrefix string
-	var randomSuffix string = randSeq(int(resource.MaxLength), nil)
+	randomSuffix, err := randSeq(int(resource.MaxLength), nil)
+	if err != nil {
+		return fmt.Errorf("failed to generate random suffix: %w", err)
+	}
 
 	// configuring the prefix, cafprefix, name, postfix depending on the naming convention
 	switch convention {
@@ -174,8 +177,7 @@ func getResult(d *schema.ResourceData, meta interface{}) error {
 	validationRegEx, err := regexp.Compile(validationRegExPattern)
 	if err != nil {
 		return fmt.Errorf("invalid validation regex pattern %q for resource %s: %w", validationRegExPattern, resourceType, err)
-	}
-	// clear the name first based on the regexp filter of the resource type
+	}	// clear the name first based on the regexp filter of the resource type
 	nameList := []string{}
 	for _, s := range []string{prefix, cafPrefix, name, postfix} {
 		if strings.TrimSpace(s) != "" {
@@ -230,7 +232,11 @@ func getResult(d *schema.ResourceData, meta interface{}) error {
 	// CSPRNG avoids the SonarCloud go:S2245 weak-PRNG hotspot at zero cost.
 	if containsRandomChar && len(result) > len(userInputName) {
 		resultRune := []rune(result)
-		resultRune[len(resultRune)-1] = randomLetter()
+		letter, err := randomLetter()
+		if err != nil {
+			return fmt.Errorf("failed to generate random letter: %w", err)
+		}
+		resultRune[len(resultRune)-1] = letter
 		result = string(resultRune)
 	}
 
@@ -245,6 +251,10 @@ func getResult(d *schema.ResourceData, meta interface{}) error {
 	d.Set("result", result)
 	// Set the attribute Id with the value
 	//d.SetId("none")
-	d.SetId(randSeq(16, nil))
+	id, err := randSeq(16, nil)
+	if err != nil {
+		return fmt.Errorf("failed to generate resource id: %w", err)
+	}
+	d.SetId(id)
 	return nil
 }

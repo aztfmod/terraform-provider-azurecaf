@@ -728,8 +728,14 @@ func TestRandSeqDeterminism(t *testing.T) {
 	seed1 := int64(12345)
 	seed2 := int64(12345)
 
-	r1 := randSeq(8, &seed1)
-	r2 := randSeq(8, &seed2)
+	r1, err := randSeq(8, &seed1)
+	if err != nil {
+		t.Fatalf("randSeq returned unexpected error: %v", err)
+	}
+	r2, err := randSeq(8, &seed2)
+	if err != nil {
+		t.Fatalf("randSeq returned unexpected error: %v", err)
+	}
 
 	if r1 != r2 {
 		t.Errorf("Same seed must produce same sequence: %q vs %q", r1, r2)
@@ -740,7 +746,10 @@ func TestRandSeqDeterminism(t *testing.T) {
 
 	// Different seed → different result
 	seed3 := int64(99999)
-	r3 := randSeq(8, &seed3)
+	r3, err := randSeq(8, &seed3)
+	if err != nil {
+		t.Fatalf("randSeq returned unexpected error: %v", err)
+	}
 	if r1 == r3 {
 		t.Errorf("Different seeds should (almost certainly) produce different sequences")
 	}
@@ -749,11 +758,11 @@ func TestRandSeqDeterminism(t *testing.T) {
 // TestRandSeqZeroLength verifies empty string for zero or negative length.
 func TestRandSeqZeroLength(t *testing.T) {
 	seed := int64(1)
-	if r := randSeq(0, &seed); r != "" {
-		t.Errorf("Expected empty string for length 0, got %q", r)
+	if r, err := randSeq(0, &seed); r != "" || err != nil {
+		t.Errorf("Expected empty string and nil error for length 0, got %q, %v", r, err)
 	}
-	if r := randSeq(-1, &seed); r != "" {
-		t.Errorf("Expected empty string for negative length, got %q", r)
+	if r, err := randSeq(-1, &seed); r != "" || err != nil {
+		t.Errorf("Expected empty string and nil error for negative length, got %q, %v", r, err)
 	}
 }
 
@@ -761,8 +770,14 @@ func TestRandSeqZeroLength(t *testing.T) {
 func TestRandSeqZeroSeed(t *testing.T) {
 	seed1 := int64(0)
 	seed2 := int64(0)
-	r1 := randSeq(8, &seed1)
-	r2 := randSeq(8, &seed2)
+	r1, err := randSeq(8, &seed1)
+	if err != nil {
+		t.Fatalf("randSeq returned unexpected error: %v", err)
+	}
+	r2, err := randSeq(8, &seed2)
+	if err != nil {
+		t.Fatalf("randSeq returned unexpected error: %v", err)
+	}
 	if r1 != r2 {
 		t.Errorf("seed=0 should be deterministic: %q vs %q", r1, r2)
 	}
