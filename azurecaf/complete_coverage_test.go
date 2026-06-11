@@ -177,9 +177,9 @@ func TestResourceNameDelete(t *testing.T) {
 		"name": "test",
 	})
 
-	err := resourceNameDelete(rd, nil)
-	if err != nil {
-		t.Errorf("Expected no error, got: %v", err)
+	diags := resourceNameDelete(context.Background(), rd, nil)
+	if diags.HasError() {
+		t.Errorf("Expected no error, got: %v", diags)
 	}
 }
 
@@ -189,9 +189,9 @@ func TestResourceNamingConventionDelete(t *testing.T) {
 		"name": "test",
 	})
 
-	err := resourceNamingConventionDelete(rd, nil)
-	if err != nil {
-		t.Errorf("Expected no error, got: %v", err)
+	diags := resourceNamingConventionDelete(context.Background(), rd, nil)
+	if diags.HasError() {
+		t.Errorf("Expected no error, got: %v", diags)
 	}
 }
 
