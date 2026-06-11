@@ -11,6 +11,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Migrate resource CRUD to context-based handlers with `diag.Diagnostics`**: Converted `Create`/`Read`/`Delete` functions in `azurecaf_name` and `azurecaf_naming_convention` resources to `CreateContext`/`ReadContext`/`DeleteContext`, returning `diag.Diagnostics` for structured multi-error reporting, attribute-path-aware errors, and context propagation (cancellation/logging). Added explicit `d.SetId("")` in `DeleteContext` handlers. Updated acceptance-test harness to use `ProviderFactories`/`testAccProviderFactories` instead of the legacy `Providers`/`testAccProviders` pattern, consistent with HashiCorp best practices.
 
 ### Fixed
+- **Feature**: Names are now computed at plan time instead of apply time (#336)
+  - Added `CustomizeDiff` to the `azurecaf_name` resource so `result` and `results` values
+    are visible during `terraform plan` instead of showing "(known after apply)"
+  - Plan-time visibility requires `random_seed` to be set when `random_length > 0`;
+    without an explicit seed, names fall back to apply-time computation
+  - Fixed `randSeq` to use a local `rand.Source` instead of the global source,
+    which is auto-seeded randomly in Go 1.20+ and caused plan-apply inconsistency
+  - Fixed `randSeq` off-by-one: `Intn(len-1)` never selected the last letter (`z`)
+  - Clarified behavior: `random_seed = 0` is treated as an unset/non-deterministic
+    seed; only non-zero seeds produce deterministic names, matching `extractNamingParams`
+  - Refactored shared naming logic into `extractNamingParams`, `computeNames` helpers
+    to eliminate code duplication between `CustomizeDiff` and `Create`
+  - Moved `random_length` validation into shared `computeNames` so plan and apply
+    perform identical checks
+  - `CustomizeDiff` now handles `ForceNew` replacements correctly by checking
+    `HasChange` on input attributes instead of skipping all existing resources
+  - All `SetNew` calls in `CustomizeDiff` now check and propagate errors
+  - Documented the `random_seed = 0` "treated as unset" caveat in
+    `docs/resources/azurecaf_name.md` and clarified that the `azurecaf_name`
+    **data source** treats `random_seed = 0` as a literal deterministic seed
+    in `docs/data-sources/azurecaf_name.md` (resource vs. data source semantics differ)
+  - Added inline SonarCloud `// NOSONAR go:S2245` justifications for the two
+    remaining `math/rand` usages in `azurecaf/models.go` (`randSeq`) and
+    `azurecaf/resource_naming_convention.go` (random last-char selection),
+    documenting why a non-cryptographic PRNG is correct here (non-secret
+    resource names; determinism required for plan→apply consistency)
+  - Fully backward compatible with existing configurations
 - **Issue Arborist agentic workflow — allow `python3` in agent sandbox (fixes #509)**: The daily `Issue Arborist` workflow run 26360490064 reported a missing-tools failure: *"Bash command execution was blocked by security policy. Cannot run python3 or any shell commands in this environment."* The agent tries to run `python3` to cluster ~100 issues by token/label overlap (jq alone is awkward for set similarity), but the bash allowlist only granted `cat *`, `jq *`, and the schema script. Added `python3 *` to `.github/workflows/issue-arborist.md` `tools.bash` (matching the pattern already used by `issue-to-pr-agent.md`), documented in the prompt that `python3` is available for richer analysis with output constrained to `${GITHUB_WORKSPACE}/.gh-aw-data/`, and regenerated `issue-arborist.lock.yml` via `gh aw compile` (compiler v0.72.1). The recompile also pinned `github/gh-aw-actions/setup` to its commit SHA (was floating `v0.74.4` tag, now `bc56a0cad2f450c562810785ef38649c04db812a # v0.72.1`), matching the SHA-pinning convention introduced in commit 9c6e560. Impact: removes the recurring `[aw] Issue Arborist failed` issue; no behavior change for end users of the provider.
 - **`azurecaf/models_generated.go` is now gofmt-clean**: The generated file's struct-literal alignment did not match what `gofmt` produces on current Go toolchains. As a result, the v1.2.34 release pipeline failed at the `Run GoReleaser` step with `git is in a dirty state - M azurecaf/models_generated.go`, because the `Go` workflow's E2E tests call `make build` (which runs `go generate` then `go fmt ./...`), and `go fmt` reformatted the file. Regenerated and gofmt'd the file (no semantic change, same 489 resource entries) so subsequent runs of `make build` leave the working tree clean. Impact: None for end users; unblocks tag releases (next attempt should be v1.2.34 or later).
 
