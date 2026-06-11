@@ -7,6 +7,8 @@ package azurecaf
 
 import (
 	cryptorand "crypto/rand"
+	"fmt"
+	"io"
 	"math/big"
 	"math/rand"
 )
@@ -91,6 +93,11 @@ type ResourceStructure struct {
 
 var (
 	alphagenerator = []rune("abcdefghijklmnopqrstuvwxyz")
+
+	// cryptoRandReader is the source of randomness for randomLetter. It is a
+	// package-level variable so tests can substitute a failing reader to
+	// exercise the error-return branch. Production code MUST NOT reassign it.
+	cryptoRandReader io.Reader = cryptorand.Reader
 )
 
 // randomLetter returns one character from alphagenerator drawn from
@@ -100,22 +107,24 @@ var (
 //
 // crypto/rand.Reader only fails when the OS entropy source is broken
 // (unreadable /dev/urandom on Linux, failing BCryptGenRandom on Windows),
-// which is fatal — there is no safe fallback. Panicking is the correct
-// behaviour: a Terraform provider that cannot read system entropy must not
-// silently degrade to a weaker PRNG.
-func randomLetter() rune {
-	v, err := cryptorand.Int(cryptorand.Reader, big.NewInt(int64(len(alphagenerator))))
+// which is fatal. We surface the error so callers can return a Terraform
+// diagnostic rather than panicking inside the provider process — both
+// because tfproviderlint R009 forbids panic() in providers and because a
+// diagnostic is the user-visible contract Terraform expects.
+func randomLetter() (rune, error) {
+	v, err := cryptorand.Int(cryptoRandReader, big.NewInt(int64(len(alphagenerator))))
 	if err != nil {
-		panic("azurecaf: crypto/rand.Reader failed: " + err.Error())
+		return 0, fmt.Errorf("azurecaf: crypto/rand.Reader failed: %w", err)
 	}
-	return alphagenerator[v.Int64()]
+	return alphagenerator[v.Int64()], nil
 }
 
 // randSeq generates a random sequence of length characters from alphagenerator.
 //
 // When seed is nil, characters are drawn from crypto/rand via randomLetter.
 // This path has no determinism requirement; using a CSPRNG removes the
-// SonarCloud go:S2245 weak-PRNG concern at zero behavioural cost.
+// SonarCloud go:S2245 weak-PRNG concern at zero behavioural cost. The error
+// is propagated upwards if the OS entropy source fails.
 //
 // When seed is non-nil, characters are drawn from a math/rand source seeded
 // with *seed. This deterministic path is REQUIRED for plan-time name
@@ -123,23 +132,28 @@ func randomLetter() rune {
 // plan and apply. math/rand is the only stdlib PRNG that can satisfy this, and
 // the output is a non-secret Terraform resource name visible in plan and
 // state — not a security-sensitive value — so the go:S2245 hotspot at the
-// rand.New call below is intentional and accepted.
-func randSeq(length int, seed *int64) string {
+// rand.New call below is intentional and accepted. This branch never returns
+// a non-nil error.
+func randSeq(length int, seed *int64) (string, error) {
 	if length <= 0 {
-		return ""
+		return "", nil
 	}
 	b := make([]rune, length)
 	if seed == nil {
 		for i := range b {
-			b[i] = randomLetter()
+			r, err := randomLetter()
+			if err != nil {
+				return "", err
+			}
+			b[i] = r
 		}
-		return string(b)
+		return string(b), nil
 	}
 	rng := rand.New(rand.NewSource(*seed))
 	for i := range b {
 		b[i] = alphagenerator[rng.Intn(len(alphagenerator))]
 	}
-	return string(b)
+	return string(b), nil
 }
 
 // Resources currently supported
