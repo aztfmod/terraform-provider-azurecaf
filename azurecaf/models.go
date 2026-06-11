@@ -9,7 +9,6 @@ import (
 	cryptorand "crypto/rand"
 	"math/big"
 	"math/rand"
-	"time"
 )
 
 // Naming convention constants define the different methodologies supported by the provider
@@ -96,16 +95,20 @@ var (
 
 // randomLetter returns one character from alphagenerator drawn from
 // crypto/rand (cryptographically secure, non-deterministic). It is used for
-// non-secret values where unpredictability is preferable to determinism — for
-// example, the random ID assigned to legacy resources at apply time. On the
-// (practically unreachable) error path it falls back to a time-seeded
-// math/rand draw so callers never receive an invalid rune.
+// non-secret values where unpredictability is preferable to determinism —
+// for example, the random ID assigned to legacy resources at apply time.
+//
+// crypto/rand.Reader only fails when the OS entropy source is broken
+// (unreadable /dev/urandom on Linux, failing BCryptGenRandom on Windows),
+// which is fatal — there is no safe fallback. Panicking is the correct
+// behaviour: a Terraform provider that cannot read system entropy must not
+// silently degrade to a weaker PRNG.
 func randomLetter() rune {
-	n := len(alphagenerator)
-	if v, err := cryptorand.Int(cryptorand.Reader, big.NewInt(int64(n))); err == nil {
-		return alphagenerator[v.Int64()]
+	v, err := cryptorand.Int(cryptorand.Reader, big.NewInt(int64(len(alphagenerator))))
+	if err != nil {
+		panic("azurecaf: crypto/rand.Reader failed: " + err.Error())
 	}
-	return alphagenerator[rand.New(rand.NewSource(time.Now().UnixNano())).Intn(n)]
+	return alphagenerator[v.Int64()]
 }
 
 // randSeq generates a random sequence of length characters from alphagenerator.
