@@ -3,7 +3,6 @@ package azurecaf
 import (
 	"context"
 	"fmt"
-	"math/rand"
 	"regexp"
 	"strings"
 
@@ -226,14 +225,12 @@ func getResult(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	result := string(filteredGeneratedName[0:length])
-	// making sure the last char is alpha char if we included random string.
-	// SonarCloud go:S2245 (insecure PRNG) does not apply: this picks a printable
-	// character for a non-secret resource name, not a security-sensitive value.
-	// crypto/rand is unsuitable because we want cheap, non-blocking selection.
+	// Ensure the last char is an alphabetic char if we included a random string.
+	// Drawn from crypto/rand via randomLetter — non-secret value, but using a
+	// CSPRNG avoids the SonarCloud go:S2245 weak-PRNG hotspot at zero cost.
 	if containsRandomChar && len(result) > len(userInputName) {
-		randomLastChar := alphagenerator[rand.Intn(len(alphagenerator)-1)] // NOSONAR go:S2245 - non-security PRNG, resource name only
 		resultRune := []rune(result)
-		resultRune[len(resultRune)-1] = randomLastChar
+		resultRune[len(resultRune)-1] = randomLetter()
 		result = string(resultRune)
 	}
 

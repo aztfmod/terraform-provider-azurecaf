@@ -6,6 +6,8 @@
 package azurecaf
 
 import (
+	cryptorand "crypto/rand"
+	"math/big"
 	"math/rand"
 	"time"
 )
@@ -92,29 +94,45 @@ var (
 	alphagenerator = []rune("abcdefghijklmnopqrstuvwxyz")
 )
 
-// Generate a random value to add to the resource names
+// randomLetter returns one character from alphagenerator drawn from
+// crypto/rand (cryptographically secure, non-deterministic). It is used for
+// non-secret values where unpredictability is preferable to determinism — for
+// example, the random ID assigned to legacy resources at apply time. On the
+// (practically unreachable) error path it falls back to a time-seeded
+// math/rand draw so callers never receive an invalid rune.
+func randomLetter() rune {
+	n := len(alphagenerator)
+	if v, err := cryptorand.Int(cryptorand.Reader, big.NewInt(int64(n))); err == nil {
+		return alphagenerator[v.Int64()]
+	}
+	return alphagenerator[rand.New(rand.NewSource(time.Now().UnixNano())).Intn(n)]
+}
+
+// randSeq generates a random sequence of length characters from alphagenerator.
+//
+// When seed is nil, characters are drawn from crypto/rand via randomLetter.
+// This path has no determinism requirement; using a CSPRNG removes the
+// SonarCloud go:S2245 weak-PRNG concern at zero behavioural cost.
+//
+// When seed is non-nil, characters are drawn from a math/rand source seeded
+// with *seed. This deterministic path is REQUIRED for plan-time name
+// visibility (issue #336): the same configuration must yield the same name at
+// plan and apply. math/rand is the only stdlib PRNG that can satisfy this, and
+// the output is a non-secret Terraform resource name visible in plan and
+// state — not a security-sensitive value — so the go:S2245 hotspot at the
+// rand.New call below is intentional and accepted.
 func randSeq(length int, seed *int64) string {
-	// Handle invalid input: negative or zero length
 	if length <= 0 {
 		return ""
 	}
-	// initialize random seed
-	if seed == nil {
-		value := time.Now().UnixNano()
-		seed = &value
-	}
-	// SonarCloud go:S2245 (insecure PRNG) is intentionally NOT applicable here:
-	//   1. The output is a Terraform resource name surfaced in plan output and
-	//      state — it is not a secret, token, key, or security-sensitive value.
-	//   2. We REQUIRE a deterministic, seedable PRNG so plan and apply produce
-	//      identical names (issue #336). crypto/rand cannot satisfy this.
-	//   3. As of Go 1.20 the package-level math/rand source is auto-seeded with
-	//      a random value, so calling rand.Intn directly would be non-deterministic
-	//      across runs. A local rand.Rand built from rand.NewSource(*seed)
-	//      preserves the deterministic behavior the provider contract depends on.
-	rng := rand.New(rand.NewSource(*seed)) // NOSONAR go:S2245 - non-security PRNG, determinism required (#336)
-	// generate at least one random character
 	b := make([]rune, length)
+	if seed == nil {
+		for i := range b {
+			b[i] = randomLetter()
+		}
+		return string(b)
+	}
+	rng := rand.New(rand.NewSource(*seed))
 	for i := range b {
 		b[i] = alphagenerator[rng.Intn(len(alphagenerator))]
 	}
