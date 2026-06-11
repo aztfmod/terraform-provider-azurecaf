@@ -38,7 +38,7 @@
         "max_length": 50,
         "validation_regex": "\"^[a-zA-Z0-9-]{5,50}$\"",
         "scope": "resourceGroup",
-        "slug": "appcg",
+        "slug": "appcs",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\""
@@ -281,7 +281,7 @@
         "max_length": 260,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{0,258}[a-zA-Z0-9]$\"",
         "scope": "resourceGroup",
-        "slug": "cdnprof",
+        "slug": "cdnp",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\""
@@ -292,7 +292,7 @@
         "max_length": 50,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{0,48}[a-zA-Z0-9]$\"",
         "scope": "global",
-        "slug": "cdn",
+        "slug": "cdne",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\""
@@ -391,7 +391,7 @@
         "max_length": 80,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,78}[a-zA-Z0-9_]$\"",
         "scope": "resourceGroup",
-        "slug": "dsk",
+        "slug": "disk",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
@@ -496,13 +496,13 @@
         "regex": "\"[^a-zA-Z0-9-_]\""
     },
     {
-        "name": "azurerm_containerGroups",
+        "name": "azurerm_container_group",
         "min_length": 1,
         "max_length": 63,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]$\"",
         "invalid-double-dash": true,
         "scope": "resourceGroup",
-        "slug": "cg",
+        "slug": "ci",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\""
@@ -799,7 +799,7 @@
         "max_length": 22,
         "validation_regex": "\"^[a-z][a-z0-9]{3,21}$\"",
         "scope": "global",
-        "slug": "kc",
+        "slug": "dec",
         "dashes": false,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z]\""
@@ -810,7 +810,7 @@
         "max_length": 260,
         "validation_regex": "\"^[a-zA-Z0-9- .]{1,260}$\"",
         "scope": "parent",
-        "slug": "kdb",
+        "slug": "dedb",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z- .]\""
@@ -821,7 +821,7 @@
         "max_length": 40,
         "validation_regex": "\"^[a-zA-Z0-9- .]{1,40}$\"",
         "scope": "parent",
-        "slug": "kehc",
+        "slug": "deevhdcon",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z- .]\""
@@ -1474,7 +1474,7 @@
         "max_length": 80,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$\"",
         "scope": "parent",
-        "slug": "lbnatrl",
+        "slug": "lbnatr",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
@@ -1496,7 +1496,7 @@
         "max_length": 80,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$\"",
         "scope": "parent",
-        "slug": "pippf",
+        "slug": "ippre",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
@@ -1507,7 +1507,7 @@
         "max_length": 80,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$\"",
         "scope": "parent",
-        "slug": "rt",
+        "slug": "udr",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
@@ -1518,7 +1518,7 @@
         "max_length": 80,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$\"",
         "scope": "resourceGroup",
-        "slug": "route",
+        "slug": "rt",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
@@ -1584,7 +1584,7 @@
         "max_length": 80,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$\"",
         "scope": "parent",
-        "slug": "vpeer",
+        "slug": "peer",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
@@ -1606,7 +1606,7 @@
         "max_length": 80,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$\"",
         "scope": "resourceGroup",
-        "slug": "fw",
+        "slug": "afw",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
@@ -1639,7 +1639,7 @@
         "max_length": 50,
         "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9-]{0,48}[a-zA-Z0-9]$\"",
         "scope": "global",
-        "slug": "ehn",
+        "slug": "evhns",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\""
@@ -1650,7 +1650,7 @@
         "max_length": 50,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,48}[a-zA-Z0-9]$\"",
         "scope": "parent",
-        "slug": "ehar",
+        "slug": "evhar",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
@@ -1661,7 +1661,7 @@
         "max_length": 50,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,48}[a-zA-Z0-9]$\"",
         "scope": "parent",
-        "slug": "ehnar",
+        "slug": "evhnsar",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
@@ -1672,7 +1672,7 @@
         "max_length": 50,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,48}[a-zA-Z0-9]$\"",
         "scope": "parent",
-        "slug": "ehdr",
+        "slug": "evhnsdr",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
@@ -1683,7 +1683,7 @@
         "max_length": 50,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,48}[a-zA-Z0-9]$\"",
         "scope": "parent",
-        "slug": "ehcg",
+        "slug": "evhnscg",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
@@ -1815,7 +1815,7 @@
         "max_length": 80,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9._]{0,78}[a-zA-Z0-9]$\"",
         "scope": "resourceGroup",
-        "slug": "sig",
+        "slug": "gal",
         "dashes": false,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.]\""
@@ -1999,7 +1999,7 @@
         "max_length": 80,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$\"",
         "scope": "parent",
-        "slug": "bast",
+        "slug": "bas",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
@@ -2252,7 +2252,7 @@
         "max_length": 80,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,78}[a-zA-Z0-9_]$\"",
         "scope": "parent",
-        "slug": "nsgr",
+        "slug": "nsgsr",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
@@ -2285,7 +2285,7 @@
         "max_length": 63,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,61}[a-zA-Z0-9_]$\"",
         "scope": "resourceGroup",
-        "slug": "dns",
+        "slug": "dnsz",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
@@ -2296,7 +2296,7 @@
         "max_length": 63,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,61}[a-zA-Z0-9_]$\"",
         "scope": "resourceGroup",
-        "slug": "pdns",
+        "slug": "pdnsz",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
@@ -2307,7 +2307,7 @@
         "max_length": 260,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,259}$\"",
         "scope": "parent",
-        "slug": "nh",
+        "slug": "ntf",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
@@ -2318,7 +2318,7 @@
         "max_length": 50,
         "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9-]{4,48}[a-zA-Z0-9]$\"",
         "scope": "global",
-        "slug": "dnsrec",
+        "slug": "ntfns",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\""
@@ -2329,7 +2329,7 @@
         "max_length": 256,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-._]{0,255}$\"",
         "scope": "parent",
-        "slug": "dnsrec",
+        "slug": "ntfar",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_.-]\""
@@ -2451,7 +2451,7 @@
         "max_length": 63,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$\"",
         "scope": "global",
-        "slug": "sgnlr",
+        "slug": "sigr",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\""
@@ -2462,7 +2462,7 @@
         "max_length": 50,
         "validation_regex": "\"^[a-zA-Z0-9-]{3,50}$\"",
         "scope": "resourceGroup",
-        "slug": "egd",
+        "slug": "evgd",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\""
@@ -2473,7 +2473,7 @@
         "max_length": 50,
         "validation_regex": "\"^[a-zA-Z0-9-]{3,50}$\"",
         "scope": "parent",
-        "slug": "egdt",
+        "slug": "evgdt",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\""
@@ -2484,7 +2484,7 @@
         "max_length": 64,
         "validation_regex": "\"^[a-zA-Z0-9-]{3,64}$\"",
         "scope": "resourceGroup",
-        "slug": "egs",
+        "slug": "evgs",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\""
@@ -2495,7 +2495,7 @@
         "max_length": 50,
         "validation_regex": "\"^[a-zA-Z0-9-]{3,50}$\"",
         "scope": "resourceGroup",
-        "slug": "egt",
+        "slug": "evgt",
         "dashes": true,
         "lowercase": false,
         "regex": "`[^0-9A-Za-z-]`"
@@ -2594,7 +2594,7 @@
         "max_length": 45,
         "validation_regex": "\"^[0-9a-z]{1,45}$\"",
         "scope": "resourceGroup",
-        "slug": "syws",
+        "slug": "synw",
         "dashes": false,
         "lowercase": true,
         "regex": "\"[^0-9a-z]\""
@@ -2605,29 +2605,18 @@
         "max_length": 15,
         "validation_regex": "\"^[0-9a-zA-Z]{1,15}$\"",
         "scope": "parent",
-        "slug": "sysp",
+        "slug": "synsp",
         "dashes": false,
         "lowercase": true,
         "regex": "\"[^0-9a-zA-Z]\""
     },    
-    {
-        "name": "azurerm_synapse_sql_pool ",
-        "min_length": 1,
-        "max_length": 15,
-        "validation_regex": "\"^[0-9a-zA-Z]{1,15}$\"",
-        "scope": "parent",
-        "slug": "sysql",
-        "dashes": false,
-        "lowercase": true,
-        "regex": "\"[^0-9a-zA-Z]\""
-    },
     {
         "name": "azurerm_synapse_firewall_rule",
         "min_length": 1,
         "max_length": 128,
         "validation_regex": "\"^[^<>*%:?\\\\+\\\\/]{1,127}[^<>*%:.?\\\\+\\\\/]$\"",
         "scope": "parent",
-        "slug": "syfw",
+        "slug": "synfw",
         "dashes": true,
         "lowercase": false,
         "regex": "`[<>*%:?\\\\+\\\\/]`"
@@ -2638,7 +2627,7 @@
         "max_length": 128,
         "validation_regex": "\"^[0-9a-zA-Z][0-9a-zA-Z-_]{2,127}$\"",
         "scope": "parent",
-        "slug": "msi",
+        "slug": "id",
         "dashes": true,
         "lowercase": true,
         "regex": "\"[^0-9a-zA-Z-_]\""
@@ -2660,7 +2649,7 @@
         "max_length": 260,
         "validation_regex": "\"^[^|:<>+#%&\\\\?/]{0,259}[^|:<>+#%&\\\\?/. ]$\"",
         "scope": "resourceGroup",
-        "slug": "amag",
+        "slug": "ag",
         "dashes": true,
         "lowercase": false,
         "regex": "`[^~!@$^*()\\[\\]\\{\\}_\\-=\"';,0-9A-Za-z _.-]`"
@@ -2693,7 +2682,7 @@
         "max_length": 260,
         "validation_regex": "\"^[a-zA-Z0-9 ][a-zA-Z0-9-._ ]{0,258}[a-zA-Z0-9_]$\"",
         "scope": "resourceGroup",
-        "slug": "dag",
+        "slug": "vdag",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z _.-]\""
@@ -2704,7 +2693,7 @@
         "max_length": 260,
         "validation_regex": "\"^[a-zA-Z0-9 ][a-zA-Z0-9-._ ]{0,258}[a-zA-Z0-9_]$\"",
         "scope": "resourceGroup",
-        "slug": "hpool",
+        "slug": "vdpool",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z _.-]\""
@@ -2715,7 +2704,7 @@
         "max_length": 260,
         "validation_regex": "\"^[a-zA-Z0-9 ][a-zA-Z0-9-._ ]{0,258}[a-zA-Z0-9_]$\"",
         "scope": "resourceGroup",
-        "slug": "wvdws",
+        "slug": "vdws",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z _.-]\""
@@ -2726,7 +2715,7 @@
         "max_length": 60,
         "validation_regex": "\"^[0-9A-Za-z][0-9A-Za-z-]{0,58}[0-9a-zA-Z]$\"",
         "scope": "global",
-        "slug": "fa",
+        "slug": "func",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\""
@@ -2737,7 +2726,7 @@
         "max_length": 59,
         "validation_regex": "\"^[0-9A-Za-z][0-9A-Za-z-]{0,57}[0-9a-zA-Z]$\"",
         "scope": "global",
-        "slug": "fas",
+        "slug": "funcs",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\""
@@ -2748,7 +2737,7 @@
         "max_length": 80,
         "validation_regex": "\"^[0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]{1,80}$\"",
         "scope": "resourceGroup",
-        "slug": "lapp",
+        "slug": "logic",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]\""
@@ -2770,7 +2759,7 @@
         "max_length": 80,
         "validation_regex": "\"^[0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]{1,80}$\"",
         "scope": "resourceGroup",
-        "slug": "lappac",
+        "slug": "logicac",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]\""
@@ -2781,7 +2770,7 @@
         "max_length": 80,
         "validation_regex": "\"^[0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]{1,80}$\"",
         "scope": "resourceGroup",
-        "slug": "lappah",
+        "slug": "logicah",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]\""
@@ -2792,7 +2781,7 @@
         "max_length": 80,
         "validation_regex": "\"^[0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]{1,80}$\"",
         "scope": "resourceGroup",
-        "slug": "lappia",
+        "slug": "ia",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]\""
@@ -2803,7 +2792,7 @@
         "max_length": 80,
         "validation_regex": "\"^[0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]{1,80}$\"",
         "scope": "resourceGroup",
-        "slug": "lapptc",
+        "slug": "logictc",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]\""
@@ -2814,7 +2803,7 @@
         "max_length": 80,
         "validation_regex": "\"^[0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]{1,80}$\"",
         "scope": "resourceGroup",
-        "slug": "lappth",
+        "slug": "logicth",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]\""
@@ -2825,7 +2814,7 @@
         "max_length": 80,
         "validation_regex": "\"^[0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]{1,80}$\"",
         "scope": "resourceGroup",
-        "slug": "lapptc",
+        "slug": "logictc",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z\\\\(\\\\-\\\\)\\\\_\\\\.]\""
@@ -2847,7 +2836,7 @@
         "max_length": 260,
         "validation_regex": "\"^[^<>*%:&?#\\\\+\\\\/]{0,259}[^<>*%:&.?#\\\\+\\\\/]$\"",
         "scope": "parent",
-        "slug": "adfmysql",
+        "slug": "amala",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z<>*%:&?#\\\\+\\\\/]\""
@@ -3071,25 +3060,14 @@
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""
-    },    
-    {
-        "name": "azurerm_lb_backend_pool",
-        "min_length": 4,
-        "max_length": 63,
-        "validation_regex": "\"^[a-zA-Z0-9_-]{1,63}$\"",
-        "scope": "subscription",
-        "slug": "adt",
-        "dashes": true,
-        "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_-]\""
-    },
+    },  
     {
         "name": "azurerm_lb_backend_address_pool",
         "min_length": 4,
         "max_length": 63,
         "validation_regex": "\"^[a-zA-Z0-9_-]{1,63}$\"",
         "scope": "subscription",
-        "slug": "adt",
+        "slug": "lbbepool",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""
@@ -3100,7 +3078,7 @@
         "max_length": 63,
         "validation_regex": "\"^[a-zA-Z0-9_-]{1,63}$\"",
         "scope": "subscription",
-        "slug": "adt",
+        "slug": "lbnatpool",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""
@@ -3111,7 +3089,7 @@
         "max_length": 63,
         "validation_regex": "\"^[a-zA-Z0-9_-]{1,63}$\"",
         "scope": "subscription",
-        "slug": "adt",
+        "slug": "lbor",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""
@@ -3122,7 +3100,7 @@
         "max_length": 63,
         "validation_regex": "\"^[a-zA-Z0-9_-]{1,63}$\"",
         "scope": "subscription",
-        "slug": "adt",
+        "slug": "probe",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""
@@ -3133,7 +3111,7 @@
         "max_length": 63,
         "validation_regex": "\"^[a-zA-Z0-9_-]{1,63}$\"",
         "scope": "subscription",
-        "slug": "adt",
+        "slug": "rule",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z_-]\""
@@ -3144,7 +3122,7 @@
         "max_length": 63,
         "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9_-]$\"",
         "scope": "subscription",
-        "slug": "purv",
+        "slug": "pview",
         "dashes": true,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z-]\""
@@ -3206,14 +3184,14 @@
     },
     {
         "name": "azurerm_synapse_sql_pool",
-        "min_length": 3,
-        "max_length": 15,
-        "validation_regex": "\"^[a-zA-Z0-9][a-zA-Z0-9_]{1,13}[a-zA-Z0-9]$\"",
-        "scope": "subscription",
-        "slug": "synsp",
+        "min_length": 1,
+        "max_length": 60,
+        "validation_regex": "\"^[^<>*%&:\\\\/?@-]{0,59}[^\\\\s.<>*%&:\\\\/?@-]$\"",
+        "scope": "parent",
+        "slug": "syndp",
         "dashes": false,
         "lowercase": false,
-        "regex": "\"[^0-9A-Za-z_]\""
+        "regex": "\"[<>*%&:\\\\/?@-]\""
     },
     {
         "name": "azurerm_synapse_sql_pool_vulnerability_assessment_baseline",
@@ -3221,7 +3199,7 @@
         "max_length": 63,
         "validation_regex": "\"^[a-zA-Z0-9]{1,63}$\"",
         "scope": "subscription",
-        "slug": "synspvab",
+        "slug": "syndpvab",
         "dashes": false,
         "lowercase": false,
         "regex": "\"[^0-9A-Za-z]\""
@@ -3232,7 +3210,7 @@
         "max_length": 128,
         "validation_regex": "\"^[^<>*%:?\\\\+\\\\/]{1,127}[^<>*%:.?\\\\+\\\\/]$\"",
         "scope": "subscription",
-        "slug": "synspwc",
+        "slug": "syndpwc",
         "dashes": true,
         "lowercase": false,
         "regex": "`[^-\\w\\._\\(\\)]`"
@@ -3243,7 +3221,7 @@
         "max_length": 128,
         "validation_regex": "\"^[^<>*%:.?\\\\+\\\\/]{0,127}[^<>*%:.?\\\\+\\\\/ ]$\"",
         "scope": "subscription",
-        "slug": "synspwg",
+        "slug": "syndpwg",
         "dashes": true,
         "lowercase": false,
         "regex": "`[^-\\w\\._\\(\\)]`"
