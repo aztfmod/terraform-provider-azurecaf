@@ -103,11 +103,16 @@ func randSeq(length int, seed *int64) string {
 		value := time.Now().UnixNano()
 		seed = &value
 	}
-	// As of Go 1.20, the package-level generator is auto-seeded with a random
-	// value, so using the global source directly would be non-deterministic across
-	// runs and can cause plan-apply inconsistency (#336). A local rand.Rand with
-	// an explicit source preserves deterministic behavior.
-	rng := rand.New(rand.NewSource(*seed))
+	// SonarCloud go:S2245 (insecure PRNG) is intentionally NOT applicable here:
+	//   1. The output is a Terraform resource name surfaced in plan output and
+	//      state — it is not a secret, token, key, or security-sensitive value.
+	//   2. We REQUIRE a deterministic, seedable PRNG so plan and apply produce
+	//      identical names (issue #336). crypto/rand cannot satisfy this.
+	//   3. As of Go 1.20 the package-level math/rand source is auto-seeded with
+	//      a random value, so calling rand.Intn directly would be non-deterministic
+	//      across runs. A local rand.Rand built from rand.NewSource(*seed)
+	//      preserves the deterministic behavior the provider contract depends on.
+	rng := rand.New(rand.NewSource(*seed)) // NOSONAR go:S2245 - non-security PRNG, determinism required (#336)
 	// generate at least one random character
 	b := make([]rune, length)
 	for i := range b {
