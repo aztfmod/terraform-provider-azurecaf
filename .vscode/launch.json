@@ -1,25 +1,39 @@
 {
 	"version": "0.2.0",
 	"configurations": [
-	
-	{
-		"name": "Launch test package",
-		"type": "go",
-		"request": "launch",
-		"mode": "test",
-		//"program": "${workspaceFolder}/main.go"
-		"args": [
-			"check-go-version",
-			"false"
-		],
-		"program": "${file}"
-	},
- 		{
-			"name": "Attach",
+		{
+			"name": "Launch Test Package",
+			"type": "go",
+			"request": "launch",
+			"mode": "test",
+			"program": "${file}",
+			"args": [
+				"check-go-version",
+				"false"
+			]
+		},
+		{
+			"name": "Debug Test Function",
+			"type": "go",
+			"request": "launch",
+			"mode": "test",
+			"program": "${fileDirname}",
+			"args": [
+				"-test.v",
+				"-test.run",
+				"${selectedText}"
+			],
+			"env": {
+				"CHECKPOINT_DISABLE": "1",
+				"TF_IN_AUTOMATION": "1"
+			}
+		},
+		{
+			"name": "Attach to Process",
 			"type": "go",
 			"request": "attach",
-            "mode": "local",
-            "processId": 23310   // pgrep terraform, put the latest number. Add time.Sleep(50 * time.Second) before the break point
-        }
+			"mode": "local",
+			"processId": "${command:pickProcess}"
+		}
 	]
 }

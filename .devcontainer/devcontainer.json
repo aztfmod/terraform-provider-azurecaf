@@ -1,38 +1,32 @@
-// For format details, see https://aka.ms/vscode-remote/devcontainer.json or this file's README at:
-// https://github.com/microsoft/vscode-dev-containers/tree/v0.101.0/containers/go
+// For format details, see https://aka.ms/devcontainers/json
 {
-    "name": "Azure SRE TF provider",
+    "name": "Azure CAF Terraform Provider",
 
-    // Use a specific image for the dev container
     "image": "mcr.microsoft.com/devcontainers/base:jammy",
     "remoteUser": "vscode",
 
-    // Mount local SSH keys into the container
+    // Persist Go module cache and Terraform plugin cache across container rebuilds
     "mounts": [
-        "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/tmp/.ssh-localhost,type=bind,consistency=cached"
+        "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/tmp/.ssh-localhost,type=bind,consistency=cached",
+        "source=azurecaf-go-mod-cache,target=/home/vscode/go,type=volume",
+        "source=azurecaf-terraform-cache,target=/home/vscode/.terraform.d,type=volume"
     ],
 
-    // Additional arguments for running the container
     "runArgs": [
         "--cap-add=SYS_PTRACE",
         "--security-opt",
-        "seccomp=unconfined",
-        "--mount",
-        "type=volume,source=shell,destination=/root",
-        "--mount",
-        "type=volume,source=go,destination=/go"
+        "seccomp=unconfined"
     ],
-    
-    // Features to be installed in the container
+
     "features": {
-        "ghcr.io/azure/azure-dev/azd:latest": {},
-        "ghcr.io/devcontainers/features/azure-cli:1": {},
         "ghcr.io/devcontainers/features/go:1": {
-            "version": "1.24.4"
+            "version": "1.25"
         },
-        "ghcr.io/devcontainers/features/github-cli:1": {},
         "ghcr.io/devcontainers/features/terraform:1": {},
-        "ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {
+        "ghcr.io/devcontainers/features/github-cli:1": {},
+        "ghcr.io/devcontainers/features/azure-cli:1": {},
+        "ghcr.io/azure/azure-dev/azd:latest": {},
+        "ghcr.io/devcontainers-extra/features/zsh-plugins:0": {
             "plugins": [
                 "aliases",
                 "syntax-highlighting",
@@ -42,18 +36,34 @@
         }
     },
 
-    // Customizations for VS Code
+    "containerEnv": {
+        "CHECKPOINT_DISABLE": "1",
+        "TF_IN_AUTOMATION": "1",
+        "TF_CLI_ARGS_init": "-upgrade=false"
+    },
+
+    "postCreateCommand": "bash .devcontainer/postCreateCommand.sh",
+
     "customizations": {
         "vscode": {
             "extensions": [
-                "ms-vscode.go",
+                "golang.go",
+                "hashicorp.terraform",
                 "GitHub.copilot",
-                "mutantdino.resourcemonitor",
-                "eamodio.gitlens"
+                "GitHub.copilot-chat",
+                "eamodio.gitlens",
+                "mutantdino.resourcemonitor"
             ],
             "settings": {
-                "terminal.integrated.shell.linux": "/bin/bash",
-                "go.gopath": "/go"
+                "terminal.integrated.defaultProfile.linux": "zsh",
+                "go.gopath": "/home/vscode/go",
+                "go.lintTool": "golangci-lint",
+                "go.lintOnSave": "workspace",
+                "go.testFlags": ["-v"],
+                "editor.formatOnSave": true,
+                "[go]": {
+                    "editor.defaultFormatter": "golang.go"
+                }
             }
         }
     }

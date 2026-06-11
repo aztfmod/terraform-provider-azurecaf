@@ -9,9 +9,9 @@ on:
     types: [labeled]
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
   issues: read
+  pull-requests: read
 
 network: defaults
 

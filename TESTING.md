@@ -17,7 +17,7 @@ This comprehensive guide covers testing strategies, tools, and best practices fo
 
 ### Prerequisites
 
-- Go 1.19+
+- Go 1.25.0+
 - Make (for using Makefile targets)
 - Terraform CLI (for integration tests)
 
@@ -37,8 +37,6 @@ make test_ci
 ## 🗂️ Test Organization
 
 The project includes a comprehensive test suite designed to ensure the proper functioning of the provider. Tests are organized into several categories:
-
-### Test Organization
 
 ### 1. **Provider Tests**
    - `provider_test.go` - Basic provider configuration and initialization tests
@@ -72,8 +70,7 @@ The project includes a comprehensive test suite designed to ensure the proper fu
    - `integration_data_sources_test.go` - Data source integration with Terraform
    - `integration_error_cases_test.go` - Error handling and edge cases
    - `integration_all_resource_types_test.go` - Comprehensive resource type testing
-   - `integration_cross_resource_test.go` - Cross-resource interactions
-   - `integration_naming_convention_types_test.go` - Naming convention validation
+   - `integration_all_resources_complete_test.go` - Complete testing of all 405 resource types
 
 ### 7. **Coverage and Edge Case Tests**
    - `complete_coverage_test.go` - Tests to improve code coverage
@@ -423,7 +420,7 @@ go tool cover -html=coverage.out
 2. **Descriptive Names**: Test names should clearly describe what they test
 3. **Arrange-Act-Assert**: Structure tests with clear setup, execution, and verification
 4. **Use Table-Driven Tests**: For testing multiple scenarios with similar logic
-5. **Test Error Cases**: Don't just test the happy path
+5. **Test Error Cases**: Cover edge cases, not only the happy path
 
 ### Integration Testing Best Practices
 
@@ -578,7 +575,7 @@ When adding new tests:
 2. **Integration Tests**: Add to an appropriate `integration_*_test.go` file based on the feature being tested.
    - For data source testing, use `integration_data_sources_test.go`
    - For error handling, use `integration_error_cases_test.go`
-   - For cross-resource interactions, use `integration_cross_resource_test.go`
+   - For cross-resource interactions, use `integration_all_resource_types_test.go` or `integration_all_resources_complete_test.go`
 
 3. **Coverage Tests**: If testing edge cases or error conditions, add to the relevant coverage test file.
    - `enhanced_tests_test.go` - For structured test cases with multiple scenarios

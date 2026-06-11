@@ -3,10 +3,10 @@ package azurecaf
 import (
 	"context"
 	"fmt"
-	"log"
 	"regexp"
 	"strings"
 
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -33,75 +33,81 @@ func resourceNameV2() *schema.Resource {
 
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			// Base name for the resource (will be sanitized according to Azure rules)
 			"name": {
-				Type:     schema.TypeString,
-				Optional: true,
-				ForceNew: true,
-				Default:  "",
+				Type:        schema.TypeString,
+				Optional:    true,
+				ForceNew:    true,
+				Default:     "",
+				Description: "Base name of the resource.",
 			},
-			// List of prefixes to add before the resource name
 			"prefixes": {
 				Type: schema.TypeList,
 				Elem: &schema.Schema{
 					Type:         schema.TypeString,
 					ValidateFunc: validation.NoZeroValues,
 				},
-				Optional: true,
-				ForceNew: true,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "List of prefixes to prepend to the generated name.",
 			},
-			// List of suffixes to add after the resource name
 			"suffixes": {
 				Type: schema.TypeList,
 				Elem: &schema.Schema{
 					Type:         schema.TypeString,
 					ValidateFunc: validation.NoZeroValues,
 				},
-				Optional: true,
-				ForceNew: true,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "List of suffixes to append to the generated name.",
 			},
-			// Number of random characters to append to the name
 			"random_length": {
 				Type:         schema.TypeInt,
 				Optional:     true,
 				ForceNew:     true,
 				ValidateFunc: validation.IntAtLeast(0),
 				Default:      0,
+				Description:  "Number of random alphanumeric characters to append.",
 			},
 			"result": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The generated resource name.",
 			},
 			"results": {
 				Type: schema.TypeMap,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
-				Computed: true,
+				Computed:    true,
+				Description: "Map of generated names keyed by resource type.",
 			},
 			"separator": {
-				Type:     schema.TypeString,
-				Optional: true,
-				ForceNew: true,
-				Default:  "-",
+				Type:        schema.TypeString,
+				Optional:    true,
+				ForceNew:    true,
+				Default:     "-",
+				Description: "Separator character between name components.",
 			},
 			"clean_input": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				ForceNew: true,
-				Default:  true,
+				Type:        schema.TypeBool,
+				Optional:    true,
+				ForceNew:    true,
+				Default:     true,
+				Description: "Whether to remove disallowed characters from input.",
 			},
 			"passthrough": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				ForceNew: true,
-				Default:  false,
+				Type:        schema.TypeBool,
+				Optional:    true,
+				ForceNew:    true,
+				Default:     false,
+				Description: "When true, returns the name as-is without applying naming conventions.",
 			},
 			"resource_type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validation.StringInSlice(resourceMapsKeys, false),
 				ForceNew:     true,
+				Description:  "Azure resource type for name generation.",
 			},
 			"resource_types": {
 				Type: schema.TypeList,
@@ -109,13 +115,15 @@ func resourceNameV2() *schema.Resource {
 					Type:         schema.TypeString,
 					ValidateFunc: validation.StringInSlice(resourceMapsKeys, false),
 				},
-				Optional: true,
-				ForceNew: true,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "List of additional Azure resource types to generate names for.",
 			},
 			"random_seed": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				ForceNew: true,
+				Type:        schema.TypeInt,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "Seed for deterministic random generation.",
 			},
 		},
 	}
@@ -152,10 +160,11 @@ func resourceName() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"name": {
-				Type:     schema.TypeString,
-				Optional: true,
-				ForceNew: true,
-				Default:  "",
+				Type:        schema.TypeString,
+				Optional:    true,
+				ForceNew:    true,
+				Default:     "",
+				Description: "Base name of the resource. Will be sanitized according to Azure naming rules for the specified resource type.",
 			},
 			"prefixes": {
 				Type: schema.TypeList,
@@ -163,8 +172,9 @@ func resourceName() *schema.Resource {
 					Type:         schema.TypeString,
 					ValidateFunc: validation.NoZeroValues,
 				},
-				Optional: true,
-				ForceNew: true,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "List of prefixes to prepend to the generated name, in order.",
 			},
 			"suffixes": {
 				Type: schema.TypeList,
@@ -172,8 +182,9 @@ func resourceName() *schema.Resource {
 					Type:         schema.TypeString,
 					ValidateFunc: validation.NoZeroValues,
 				},
-				Optional: true,
-				ForceNew: true,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "List of suffixes to append to the generated name, in order.",
 			},
 			"random_length": {
 				Type:         schema.TypeInt,
@@ -181,41 +192,48 @@ func resourceName() *schema.Resource {
 				ForceNew:     true,
 				ValidateFunc: validation.IntAtLeast(0),
 				Default:      0,
+				Description:  "Number of random alphanumeric characters to append to the name. Useful for ensuring uniqueness.",
 			},
 			"result": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The generated Azure-compliant resource name for the primary resource_type.",
 			},
 			"results": {
 				Type: schema.TypeMap,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
-				Computed: true,
+				Computed:    true,
+				Description: "Map of generated names keyed by resource type, for each type specified in resource_types.",
 			},
 			"separator": {
-				Type:     schema.TypeString,
-				Optional: true,
-				ForceNew: true,
-				Default:  "-",
+				Type:        schema.TypeString,
+				Optional:    true,
+				ForceNew:    true,
+				Default:     "-",
+				Description: "Separator character used between name components (default: \"-\").",
 			},
 			"clean_input": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				ForceNew: true,
-				Default:  true,
+				Type:        schema.TypeBool,
+				Optional:    true,
+				ForceNew:    true,
+				Default:     true,
+				Description: "Whether to remove characters that are not allowed by the Azure resource naming rules (default: true).",
 			},
 			"passthrough": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				ForceNew: true,
-				Default:  false,
+				Type:        schema.TypeBool,
+				Optional:    true,
+				ForceNew:    true,
+				Default:     false,
+				Description: "When true, the name is returned as-is without applying naming convention logic. Only validation is performed.",
 			},
 			"resource_type": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validation.StringInSlice(resourceMapsKeys, false),
 				ForceNew:     true,
+				Description:  "Azure resource type for name generation (e.g., \"azurerm_storage_account\"). The result is stored in the result attribute.",
 			},
 			"resource_types": {
 				Type: schema.TypeList,
@@ -223,25 +241,29 @@ func resourceName() *schema.Resource {
 					Type:         schema.TypeString,
 					ValidateFunc: validation.StringInSlice(resourceMapsKeys, false),
 				},
-				Optional: true,
-				ForceNew: true,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "List of additional Azure resource types to generate names for. Results are stored in the results map attribute.",
 			},
 			"random_seed": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				ForceNew: true,
+				Type:        schema.TypeInt,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "Seed value for random character generation. Set this to produce deterministic names across runs.",
 			},
 			"use_slug": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				ForceNew: true,
-				Default:  true,
+				Type:        schema.TypeBool,
+				Optional:    true,
+				ForceNew:    true,
+				Default:     true,
+				Description: "Whether to include the CAF resource type slug/abbreviation in the generated name (default: true).",
 			},
 			"error_when_exceeding_max_length": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				ForceNew: true,
-				Default:  false,
+				Type:        schema.TypeBool,
+				Optional:    true,
+				ForceNew:    true,
+				Default:     false,
+				Description: "When true, returns an error if the generated name exceeds the resource type's maximum length instead of truncating it.",
 			},
 		},
 	}
@@ -469,7 +491,11 @@ func cleanSlice(names []string, resourceDefinition *ResourceStructure) []string 
 func cleanString(name string, resourceDefinition *ResourceStructure) string {
 	myRegex, err := regexp.Compile(resourceDefinition.RegEx)
 	if err != nil {
-		log.Printf("[WARN] invalid regex pattern %q for resource %s: %v", resourceDefinition.RegEx, resourceDefinition.ResourceTypeName, err)
+		tflog.Warn(context.TODO(), "invalid regex pattern for resource", map[string]interface{}{
+			"pattern":       resourceDefinition.RegEx,
+			"resource_type": resourceDefinition.ResourceTypeName,
+			"error":         err.Error(),
+		})
 		return name
 	}
 	return myRegex.ReplaceAllString(name, "")
