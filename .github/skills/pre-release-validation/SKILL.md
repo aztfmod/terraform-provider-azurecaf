@@ -50,7 +50,53 @@ make test_coverage 2>&1 | tee /tmp/prerelease-coverage.txt
 
 Coverage must be >= 95%.
 
-### 6. Report
+### 6. Lifecycle consistency check
+
+Verify plan→apply→plan produces no drift. Build and install the provider locally, then:
+
+```bash
+mkdir -p /tmp/prerelease-lifecycle && cat > /tmp/prerelease-lifecycle/main.tf << 'LCEOF'
+terraform {
+  required_providers {
+    azurecaf = {
+      source = "aztfmod/azurecaf"
+    }
+  }
+}
+
+resource "azurecaf_name" "lifecycle_test" {
+  name          = "prerelease"
+  resource_type = "azurerm_resource_group"
+  prefixes      = ["prod"]
+  suffixes      = ["001"]
+  random_length = 5
+  random_seed   = 42
+  clean_input   = true
+}
+
+resource "azurecaf_name" "no_seed_test" {
+  name          = "prerelease"
+  resource_type = "azurerm_storage_account"
+  prefixes      = ["prod"]
+  random_length = 5
+  clean_input   = true
+}
+
+output "rg_result" { value = azurecaf_name.lifecycle_test.result }
+output "st_result" { value = azurecaf_name.no_seed_test.result }
+LCEOF
+cd /tmp/prerelease-lifecycle
+terraform plan -out=tfplan   # result should be visible for rg (has seed)
+terraform apply tfplan
+terraform plan               # Must show "No changes"
+rm -rf /tmp/prerelease-lifecycle
+```
+
+FAIL if the final plan shows any changes (plan-apply inconsistency).
+
+Also verify that `rg_result` shows an actual name during the first plan (not `(known after apply)`).
+
+### 7. Report
 
 ```
 ## Pre-Release Validation Report
@@ -62,11 +108,12 @@ Coverage must be >= 95%.
 | Unit tests | ✅ / ❌ |
 | E2E tests | ✅ / ❌ |
 | Coverage >= 95% | ✅ (<percentage>%) / ❌ (<percentage>%) |
+| Lifecycle consistency | ✅ / ❌ |
 
 Overall: READY FOR RELEASE / NOT READY
 ```
 
-### 7. Cleanup
+### 8. Cleanup
 
 ```bash
 rm -f /tmp/prerelease-*.txt

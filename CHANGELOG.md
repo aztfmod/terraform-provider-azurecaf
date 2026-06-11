@@ -7,7 +7,243 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+<!-- markdownlint-disable MD013 -->
+
+### ⚠️ BREAKING CHANGES — v2.0.0 Migration Guide
+
+> **Audience**: anyone upgrading from `1.x` to `2.0.0`.
+> **Tracking**: epic [#586](https://github.com/aztfmod/terraform-provider-azurecaf/issues/586), milestone [v2.0.0](https://github.com/aztfmod/terraform-provider-azurecaf/milestone/13), target **2026-07-31**.
+> **TL;DR**: one resource is removed, several CAF slugs are realigned with official Microsoft documentation, and plan-time name visibility imposes a small new requirement on configurations that use `random_length`. Plan an upgrade window, run `terraform plan` against your existing state, and follow the steps below.
+
+#### 1. Removed: the `azurecaf_naming_convention` resource (#315)
+
+The legacy `azurecaf_naming_convention` resource is **removed** in `v2.0.0`. The deprecation warning has been emitted by the resource's `DeprecationMessage` since `v1.x` (see [`azurecaf/resource_naming_convention.go:41`](azurecaf/resource_naming_convention.go#L41)). All consumers must migrate to `azurecaf_name` before upgrading.
+
+##### How to detect impact
+
+```bash
+grep -rE 'resource\s+"azurecaf_naming_convention"' .
+terraform state list | grep azurecaf_naming_convention
+```
+
+If either command returns matches, you need to migrate before upgrading.
+
+##### Migration pattern
+
+```hcl
+# v1.x — DEPRECATED, removed in v2.0.0
+resource "azurecaf_naming_convention" "old" {
+  name          = "myapp"
+  prefix        = "dev"
+  resource_type = "azurerm_storage_account"
+  convention    = "cafrandom"
+}
+
+# v2.0.0 — equivalent using azurecaf_name
+resource "azurecaf_name" "new" {
+  name          = "myapp"
+  prefixes      = ["dev"]
+  resource_type = "azurerm_storage_account"
+  random_length = 5
+  clean_input   = true
+}
+```
+
+| `azurecaf_naming_convention` argument | `azurecaf_name` equivalent                                                |
+|---------------------------------------|---------------------------------------------------------------------------|
+| `prefix` (singular)                   | `prefixes = ["..."]` (list)                                               |
+| `postfix` (singular)                  | `suffixes = ["..."]` (list)                                               |
+| `prefixes` / `suffixes` (list args)   | `prefixes` / `suffixes` (now actually honored — these were dead in `v1.x`)|
+| `convention = "cafclassic"`           | `random_length = 0` (no random suffix)                                    |
+| `convention = "cafrandom"`            | `random_length = 5` (or any value > 0)                                    |
+| `convention = "random"`               | `random_length = <max-allowed-for-resource>` and omit `name`              |
+| `convention = "passthrough"`          | Use the `azurecaf_name` **data source** with `passthrough = true`         |
+
+After migration, run `terraform state rm` on the old resource address and `terraform import` (or apply) the new `azurecaf_name` address. Most users only need the `result` attribute, which exists on both, so consuming references usually port over with a one-line address change.
+
+#### 2. CAF slug realignments
+
+Several slugs are corrected to match the [Microsoft CAF abbreviations guidance](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations) and the actual Azure naming rules. **All slug changes in this section mean existing `azurecaf_name` outputs will differ.** This will force replacement of any downstream resource that uses the generated name as its `name = ` argument.
+
+##### Known renames (confirmed)
+
+| Resource type                                  | `v1.x` slug | `v2.0.0` slug | Source                                                                            |
+|------------------------------------------------|-------------|---------------|-----------------------------------------------------------------------------------|
+| `azurerm_app_service_plan`                     | `plan`      | `asp`         | [#253](https://github.com/aztfmod/terraform-provider-azurecaf/issues/253)         |
+| `azurerm_function_app`                         | `fa`        | `func`        | [#168](https://github.com/aztfmod/terraform-provider-azurecaf/issues/168)         |
+| `azurerm_web_application_firewall_policy`      | `wafw`      | `waf`         | PR [#353](https://github.com/aztfmod/terraform-provider-azurecaf/pull/353) (#218) |
+| `azurerm_route_table`                          | TBD         | TBD           | [#186](https://github.com/aztfmod/terraform-provider-azurecaf/issues/186)         |
+| `azurerm_lb_*` family                          | TBD         | TBD           | [#264](https://github.com/aztfmod/terraform-provider-azurecaf/issues/264)         |
+| `azurerm_monitor_activity_log_alert`           | TBD         | TBD           | [#219](https://github.com/aztfmod/terraform-provider-azurecaf/issues/219)         |
+| `azurerm_synapse_workspace`                    | TBD         | TBD           | [#234](https://github.com/aztfmod/terraform-provider-azurecaf/issues/234)         |
+| Duplicate-slug corrections (multiple)          | TBD         | TBD           | PR [#314](https://github.com/aztfmod/terraform-provider-azurecaf/pull/314) (#306) |
+| `azurerm_eventhub_namespace`                   | `ehn`       | `evhns`       | Azure-sync (#576)                                                                 |
+| `azurerm_synapse_workspace` (slug duplicate)   | `syws`      | `synw`        | Azure-sync (#576)                                                                 |
+| `azurerm_data_protection_backup_vault`         | `dpbv`      | `bvault`      | Azure-sync (#576)                                                                 |
+
+> **Note**: rows marked `TBD` will be filled in as the slug-trilogy PRs (#314, #353, plus the consolidated PR) land. Until then, refer to the linked issues for current discussion of the target slug.
+
+##### How to detect impact (per slug change)
+
+```bash
+# 1. Find every azurecaf_name address using an affected resource_type
+grep -rE 'resource_type\s*=\s*"azurerm_app_service_plan"' .
+
+# 2. Capture the current name (run BEFORE upgrade)
+terraform state show 'azurecaf_name.<address>' | grep '^\s*result\s*='
+
+# 3. After upgrade, terraform plan will show the diff;
+#    downstream resources that pin the old name will be force-replaced.
+```
+
+##### Mitigation options
+
+1. **Accept the rename** (recommended for greenfield / non-production): let Terraform plan show the diff and apply.
+2. **Pin the legacy slug via `prefixes`/`suffixes`** to keep the same final string:
+
+   ```hcl
+   # If you depended on the v1.x slug "plan" for App Service Plan:
+   resource "azurecaf_name" "asp" {
+     name          = "myapp"
+     resource_type = "azurerm_app_service_plan"
+     suffixes      = ["plan"]   # forces the legacy slug back into the name
+     use_slug      = false      # do not also append the new "asp" slug
+   }
+   ```
+
+3. **Use the `passthrough` mode** to keep an exact name unchanged regardless of slug:
+
+   ```hcl
+   resource "azurecaf_name" "stable" {
+     name          = "myapp-prod-plan-001"  # exact legacy value
+     resource_type = "azurerm_app_service_plan"
+     passthrough   = true
+   }
+   ```
+
+Choose option 2 or 3 if you cannot replace the downstream resource (typical for stateful resources like storage accounts or databases).
+
+#### 3. Plan-time name visibility — `random_seed` is now required for deterministic plans (#336, #437)
+
+Names are now computed at `terraform plan` time (instead of `terraform apply` time) so the final value is visible during review. This works automatically **except** when `random_length > 0`. To make the plan-time and apply-time values match, you must set a non-zero `random_seed`.
+
+##### Before (`v1.x`)
+
+```hcl
+resource "azurecaf_name" "ex" {
+  name          = "myapp"
+  resource_type = "azurerm_storage_account"
+  random_length = 5
+  # result during plan: "(known after apply)"
+  # result during apply: stmyappabcde (random)
+}
+```
+
+##### After (`v2.0.0`)
+
+```hcl
+resource "azurecaf_name" "ex" {
+  name          = "myapp"
+  resource_type = "azurerm_storage_account"
+  random_length = 5
+  random_seed   = 12345          # NEW — required for plan-time visibility
+  # result during plan: stmyappxyzwv (visible)
+  # result during apply: stmyappxyzwv (same, deterministic)
+}
+```
+
+##### What happens if you don't set `random_seed`
+
+The provider **falls back to apply-time computation** (same as `v1.x` behavior). The plan will show `result = (known after apply)` for that one resource. There is no error and no breaking change for existing configurations that omit `random_seed`; you just lose the new plan-time visibility for that resource.
+
+##### Data-source caveat
+
+The `azurecaf_name` **data source** treats `random_seed = 0` as a literal deterministic seed (not as "unset"). The `azurecaf_name` **resource** treats `random_seed = 0` as unset (falls back to apply-time). This asymmetry is intentional — see [`docs/data-sources/azurecaf_name.md`](docs/data-sources/azurecaf_name.md) and [`docs/resources/azurecaf_name.md`](docs/resources/azurecaf_name.md).
+
+#### 4. CRUD function signatures migrated to `diag.Diagnostics` (#501)
+
+The internal CRUD functions for `azurecaf_name` are migrated from the legacy `func(d, meta) error` signature to the context-aware `func(ctx, d, meta) diag.Diagnostics` signature.
+
+**End-user impact: none.** This is an internal refactor that aligns the resource with the data source (which already uses `diag.Diagnostics`) and with current Terraform Plugin SDK v2 best practice.
+
+If you maintain a **fork** of this provider or import internals from `github.com/aztfmod/terraform-provider-azurecaf/azurecaf` directly (highly unusual), update any wrapper functions:
+
+```go
+// v1.x
+func resourceNameCreate(d *schema.ResourceData, meta interface{}) error { ... }
+
+// v2.0.0
+func resourceNameCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics { ... }
+```
+
+#### 5. Error behavior changes (silent-error fixes)
+
+Several `v1.x` code paths silently swallowed errors or skipped validation. `v2.0.0` surfaces these as Terraform diagnostics. Configurations that were quietly producing **invalid names** in `v1.x` will now **fail loudly** with a clear error, instead of being accepted and then rejected by Azure at apply time. Most users will not notice; users with malformed resource definitions or unusual regex inputs may see new plan-time errors that previously surfaced only at apply or at Azure-API time.
+
+| Issue                                                                     | What changed                                                                                    |
+|---------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
+| [#375](https://github.com/aztfmod/terraform-provider-azurecaf/issues/375) | `azurecaf_name` data source — regex compile errors now surface as diagnostics, not silent skip  |
+| [#376](https://github.com/aztfmod/terraform-provider-azurecaf/issues/376) | `fails_if_empty` parameter on the data source is now honored (was dead code)                    |
+| [#377](https://github.com/aztfmod/terraform-provider-azurecaf/issues/377) | `validation_regex` struct-tag typo fixed — fields that were not being validated now are         |
+| [#378](https://github.com/aztfmod/terraform-provider-azurecaf/issues/378) | Unchecked `d.Set()` returns now propagate errors as diagnostics                                 |
+| [#371](https://github.com/aztfmod/terraform-provider-azurecaf/issues/371) | Removed already-deleted upstream `azurerm_app_service_plan` mapping noise                       |
+
+#### 6. Upgrade checklist
+
+```text
+[ ] terraform plan in your current state — make sure 1.x is clean before upgrading
+[ ] grep for `resource "azurecaf_naming_convention"` and migrate to azurecaf_name (§1)
+[ ] grep for the affected resource_types in §2 and decide rename-vs-pin per resource
+[ ] add random_seed = <int> to every azurecaf_name with random_length > 0 (§3)
+[ ] terraform init -upgrade && terraform plan — review the full diff
+[ ] in CI, run `make test_mock_azurerm_all` against the new names if you have a fork
+[ ] apply during a maintenance window — slug renames force-replace downstream resources
+```
+
+<!-- markdownlint-enable MD013 -->
+
 ### Fixed
+- **Feature**: Names are now computed at plan time instead of apply time (#336)
+  - Added `CustomizeDiff` to the `azurecaf_name` resource so `result` and `results` values
+    are visible during `terraform plan` instead of showing "(known after apply)"
+  - Plan-time visibility requires `random_seed` to be set when `random_length > 0`;
+    without an explicit seed, names fall back to apply-time computation
+  - Fixed `randSeq` to use a local `rand.Source` instead of the global source,
+    which is auto-seeded randomly in Go 1.20+ and caused plan-apply inconsistency
+  - Fixed `randSeq` off-by-one: `Intn(len-1)` never selected the last letter (`z`)
+  - Clarified behavior: `random_seed = 0` is treated as an unset/non-deterministic
+    seed; only non-zero seeds produce deterministic names, matching `extractNamingParams`
+  - Refactored shared naming logic into `extractNamingParams`, `computeNames` helpers
+    to eliminate code duplication between `CustomizeDiff` and `Create`
+  - Moved `random_length` validation into shared `computeNames` so plan and apply
+    perform identical checks
+  - `CustomizeDiff` now handles `ForceNew` replacements correctly by checking
+    `HasChange` on input attributes instead of skipping all existing resources
+  - All `SetNew` calls in `CustomizeDiff` now check and propagate errors
+  - Documented the `random_seed = 0` "treated as unset" caveat in
+    `docs/resources/azurecaf_name.md` and clarified that the `azurecaf_name`
+    **data source** treats `random_seed = 0` as a literal deterministic seed
+    in `docs/data-sources/azurecaf_name.md` (resource vs. data source semantics differ)
+  - Hardened the random-suffix code path against the SonarCloud `go:S2245`
+    weak-PRNG hotspot by splitting it in two: the non-deterministic branch
+    (`randSeq(_, nil)` and the legacy `azurecaf_naming_convention` last-char
+    selector) now draws from `crypto/rand` via a new `randomLetter()` helper,
+    so there is no longer a `math/rand` call on that path. `randomLetter()`
+    panics (rather than falling back to a weaker PRNG) if `crypto/rand.Reader`
+    fails, because that only happens when the OS entropy source is broken,
+    which is fatal for a Terraform provider anyway. The deterministic branch
+    (`randSeq(_, &seed)`) intentionally keeps `math/rand`, because a
+    seedable, repeatable PRNG is what makes plan-time name visibility work
+    (#336) — its output is a non-secret Terraform resource name, not a
+    security value, and `crypto/rand` cannot satisfy the determinism contract.
+    Removed the dead `// NOSONAR` markers from the previous attempt; those
+    comments do not suppress SonarCloud Security Hotspots (only Issues), so
+    they were noise. The single remaining `go:S2245` hotspot (the seeded
+    deterministic path) must be marked **Safe** in the SonarCloud UI by a
+    maintainer; it cannot be refactored away without breaking #336. As a side
+    effect, the legacy resource's last-character selector now reaches the
+    full `a-z` alphabet (the previous `Intn(len-1)` excluded `z`).
+  - Fully backward compatible with existing configurations
 - **Issue Arborist agentic workflow — allow `python3` in agent sandbox (fixes #509)**: The daily `Issue Arborist` workflow run 26360490064 reported a missing-tools failure: *"Bash command execution was blocked by security policy. Cannot run python3 or any shell commands in this environment."* The agent tries to run `python3` to cluster ~100 issues by token/label overlap (jq alone is awkward for set similarity), but the bash allowlist only granted `cat *`, `jq *`, and the schema script. Added `python3 *` to `.github/workflows/issue-arborist.md` `tools.bash` (matching the pattern already used by `issue-to-pr-agent.md`), documented in the prompt that `python3` is available for richer analysis with output constrained to `${GITHUB_WORKSPACE}/.gh-aw-data/`, and regenerated `issue-arborist.lock.yml` via `gh aw compile` (compiler v0.72.1). The recompile also pinned `github/gh-aw-actions/setup` to its commit SHA (was floating `v0.74.4` tag, now `bc56a0cad2f450c562810785ef38649c04db812a # v0.72.1`), matching the SHA-pinning convention introduced in commit 9c6e560. Impact: removes the recurring `[aw] Issue Arborist failed` issue; no behavior change for end users of the provider.
 - **`azurecaf/models_generated.go` is now gofmt-clean**: The generated file's struct-literal alignment did not match what `gofmt` produces on current Go toolchains. As a result, the v1.2.34 release pipeline failed at the `Run GoReleaser` step with `git is in a dirty state - M azurecaf/models_generated.go`, because the `Go` workflow's E2E tests call `make build` (which runs `go generate` then `go fmt ./...`), and `go fmt` reformatted the file. Regenerated and gofmt'd the file (no semantic change, same 489 resource entries) so subsequent runs of `make build` leave the working tree clean. Impact: None for end users; unblocks tag releases (next attempt should be v1.2.34 or later).
 
