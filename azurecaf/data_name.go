@@ -2,6 +2,7 @@ package azurecaf
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -103,7 +104,7 @@ func dataName() *schema.Resource {
 				Type:        schema.TypeInt,
 				Optional:    true,
 				ForceNew:    true,
-				Description: "Seed value for random character generation. Set this to produce deterministic names.",
+				Description: "Seed value for deterministic random character generation. When omitted, fresh random characters are generated on each read.",
 			},
 			"use_slug": {
 				Type:        schema.TypeBool,
@@ -140,12 +141,14 @@ func getNameReadResult(d *schema.ResourceData, meta interface{}) error {
 	passthrough := d.Get("passthrough").(bool)
 	useSlug := d.Get("use_slug").(bool)
 	randomLength := d.Get("random_length").(int)
-	randomSeed := int64(d.Get("random_seed").(int))
 	errorWhenExceedingMaxLength := d.Get("error_when_exceeding_max_length").(bool)
 
 	convention := ConventionCafClassic
 
-	randomSuffix := randSeq(int(randomLength), &randomSeed)
+	randomSuffix, err := randSeq(randomLength, dataNameRandomSeed(d))
+	if err != nil {
+		return fmt.Errorf("failed to generate random suffix: %w", err)
+	}
 
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 
@@ -153,8 +156,20 @@ func getNameReadResult(d *schema.ResourceData, meta interface{}) error {
 	if err != nil {
 		return err
 	}
-	d.Set("result", resourceName)
+	if err := d.Set("result", resourceName); err != nil {
+		return fmt.Errorf("failed to set result: %w", err)
+	}
 
 	d.SetId(resourceName)
 	return nil
+}
+
+func dataNameRandomSeed(d *schema.ResourceData) *int64 {
+	// GetOk treats zero as absent, but zero is a valid explicit data-source seed.
+	rawSeed, configured := d.GetOkExists("random_seed")
+	if !configured {
+		return nil
+	}
+	seed := int64(rawSeed.(int))
+	return &seed
 }

@@ -7,6 +7,7 @@ data "azurecaf_name" "rg" {
   prefixes      = ["dev"]
   suffixes      = ["001"]
   random_length = 4
+  random_seed   = 42
   clean_input   = true
 }
 
@@ -22,6 +23,7 @@ resource "azurecaf_name" "kv" {
   prefixes      = ["dev"]
   suffixes      = ["001"]
   random_length = 4
+  random_seed   = 42
   clean_input   = true
 }
 
@@ -33,10 +35,11 @@ output "name_resource_kv" {
 # Example 3: Data source for an app service 
 data "azurecaf_name" "app_service" {
   name          = "multiapp"
-  resource_type = "azurerm_app_service"
+  resource_type = "azurerm_linux_web_app"
   prefixes      = ["test"]
   suffixes      = ["demo"]
   random_length = 5
+  random_seed   = 42
   clean_input   = true
 }
 
@@ -48,11 +51,12 @@ output "name_data_source_app" {
 # Example 4: Resource with multiple resource types
 resource "azurecaf_name" "multi_res" {
   name           = "multiapp"
-  resource_type  = "azurerm_app_service"
-  resource_types = ["azurerm_function_app", "azurerm_app_service_plan"]
+  resource_type  = "azurerm_linux_web_app"
+  resource_types = ["azurerm_function_app", "azurerm_service_plan"]
   prefixes       = ["prod"]
   suffixes       = ["demo"]
   random_length  = 5
+  random_seed    = 42
   clean_input    = true
 }
 
@@ -99,6 +103,7 @@ data "azurecaf_name" "no_slug_ds" {
   prefixes      = ["net"]
   suffixes      = ["private"]
   random_length = 3
+  random_seed   = 42
   clean_input   = true
   use_slug      = false
 }

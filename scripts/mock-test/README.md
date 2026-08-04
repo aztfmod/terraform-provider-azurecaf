@@ -17,8 +17,12 @@ The harness complements the existing test layers:
 - `generate_tests.py` — emits one `terraform test` workspace per resource
   with three naming variations (`default`, `with_prefix`, `with_random`).
 - `run_all.sh` — runs every workspace, writes a TSV report, exits non-zero on
-  any failure.
+  any failure. It uses an isolated direct-install configuration for
+  `terraform init`, then verifies and activates the workspace's local
+  `aztfmod/azurecaf` development override for `terraform test`.
 - `fetch_schema.sh` — downloads the `azurerm` provider schema as JSON.
+- `test_generate_tests.py` — guards override merging, generated HCL literals,
+  and local-provider activation.
 
 ## Local usage
 
@@ -39,6 +43,9 @@ make test_mock_azurerm_changed
 
 # Or run the full sweep (slow — see CI weekly job).
 make test_mock_azurerm_all
+
+# Run the harness unit tests without downloading providers.
+make test_mock_harness
 ```
 
 The TSV report and per-resource logs land under `/tmp/azurecaf-mock/` by

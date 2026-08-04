@@ -56,7 +56,22 @@ Always use `-verbose` to show generated name, resource state, and output values.
 
 The `Outputs:` section must show non-empty `result` and `result_length`. If empty, assertions are not using `output.result` — fix them.
 
-### 7. Clean up
+### 7. Lifecycle consistency check
+
+After `terraform test` passes, verify plan→apply→plan consistency using a separate lifecycle test:
+
+```bash
+cd /tmp/azurecaf-test-<resource_name>
+TF_CLI_CONFIG_FILE=/tmp/azurecaf-test-<resource_name>/terraform.rc terraform plan -out=tfplan
+TF_CLI_CONFIG_FILE=/tmp/azurecaf-test-<resource_name>/terraform.rc terraform apply tfplan
+TF_CLI_CONFIG_FILE=/tmp/azurecaf-test-<resource_name>/terraform.rc terraform plan
+```
+
+The final `terraform plan` must report **"No changes"**. If it shows changes, there is a plan-apply inconsistency that must be fixed before proceeding.
+
+Also verify that `result` is visible during the first plan (not showing `(known after apply)`) when `random_seed` is set.
+
+### 8. Clean up
 
 ```bash
 rm -rf /tmp/azurecaf-test-<resource_name>

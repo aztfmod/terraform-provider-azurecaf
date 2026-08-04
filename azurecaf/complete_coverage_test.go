@@ -3,6 +3,7 @@ package azurecaf
 import (
 	"context"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -10,51 +11,53 @@ import (
 
 // Test resourceAction function (data_environment_variable.go)
 func TestResourceAction(t *testing.T) {
-	// Test with existing environment variable
-	t.Run("existing_env_var", func(t *testing.T) {
-		os.Setenv("TEST_VAR", "test_value")
-		defer os.Unsetenv("TEST_VAR")
+	tests := []struct {
+		name         string
+		set          bool
+		value        string
+		failsIfEmpty bool
+		wantError    bool
+		errorMessage string
+	}{
+		{name: "missing default", wantError: true, errorMessage: "Environment variable is not set"},
+		{name: "missing strict", failsIfEmpty: true, wantError: true, errorMessage: "Environment variable is not set"},
+		{name: "empty default", set: true},
+		{name: "empty strict", set: true, failsIfEmpty: true, wantError: true, errorMessage: "Environment variable is empty"},
+		{name: "non-empty default", set: true, value: "test_value"},
+		{name: "non-empty strict", set: true, value: "test_value", failsIfEmpty: true},
+	}
 
-		rd := schema.TestResourceDataRaw(t, dataEnvironmentVariable().Schema, map[string]interface{}{
-			"name": "TEST_VAR",
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			const variableName = "AZURECAF_TEST_ENV_VAR"
+			if tt.set {
+				t.Setenv(variableName, tt.value)
+			} else if err := os.Unsetenv(variableName); err != nil {
+				t.Fatalf("failed to clear test environment variable: %v", err)
+			}
+
+			rd := schema.TestResourceDataRaw(t, dataEnvironmentVariable().Schema, map[string]interface{}{
+				"name":           variableName,
+				"fails_if_empty": tt.failsIfEmpty,
+			})
+			diags := resourceAction(context.Background(), rd, nil)
+			if diags.HasError() != tt.wantError {
+				t.Fatalf("expected error=%t, got diagnostics: %v", tt.wantError, diags)
+			}
+			if tt.wantError {
+				if len(diags) == 0 || !strings.Contains(diags[0].Summary, tt.errorMessage) {
+					t.Fatalf("expected diagnostic containing %q, got: %v", tt.errorMessage, diags)
+				}
+				return
+			}
+			if rd.Id() != variableName {
+				t.Fatalf("expected ID %q, got %q", variableName, rd.Id())
+			}
+			if got := rd.Get("value").(string); got != tt.value {
+				t.Fatalf("expected value %q, got %q", tt.value, got)
+			}
 		})
-
-		diags := resourceAction(context.Background(), rd, nil)
-
-		if len(diags) != 0 {
-			t.Errorf("Expected no diagnostics, got: %v", diags)
-		}
-
-		if rd.Id() != "TEST_VAR" {
-			t.Errorf("Expected ID to be 'TEST_VAR', got: %s", rd.Id())
-		}
-
-		if value := rd.Get("value").(string); value != "test_value" {
-			t.Errorf("Expected value to be 'test_value', got: %s", value)
-		}
-	})
-
-	// Test with non-existing environment variable
-	t.Run("non_existing_env_var", func(t *testing.T) {
-		rd := schema.TestResourceDataRaw(t, dataEnvironmentVariable().Schema, map[string]interface{}{
-			"name": "NON_EXISTING_VAR",
-		})
-
-		diags := resourceAction(context.Background(), rd, nil)
-
-		if len(diags) != 1 {
-			t.Errorf("Expected 1 diagnostic, got: %d", len(diags))
-		}
-
-		// Debug: print actual diagnostic details
-		if len(diags) > 0 {
-			t.Logf("Diagnostic: Severity=%d, Summary=%s", diags[0].Severity, diags[0].Summary)
-		}
-
-		if diags[0].Severity != 0 { // Error severity should be 0 based on actual behavior
-			t.Errorf("Expected Error diagnostic with severity 0, got severity: %d", diags[0].Severity)
-		}
-	})
+	}
 }
 
 // Test dataNameRead function (data_name.go)
@@ -73,6 +76,59 @@ func TestDataNameRead(t *testing.T) {
 	result := rd.Get("result").(string)
 	if result == "" {
 		t.Error("Expected result to be set")
+	}
+}
+
+func TestDataNameRandomSeedPresence(t *testing.T) {
+	tests := []struct {
+		name     string
+		config   map[string]interface{}
+		wantNil  bool
+		wantSeed int64
+	}{
+		{name: "omitted", config: map[string]interface{}{}, wantNil: true},
+		{name: "explicit zero", config: map[string]interface{}{"random_seed": 0}, wantSeed: 0},
+		{name: "explicit non-zero", config: map[string]interface{}{"random_seed": 42}, wantSeed: 42},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			rd := schema.TestResourceDataRaw(t, dataName().Schema, tt.config)
+			seed := dataNameRandomSeed(rd)
+			if tt.wantNil {
+				if seed != nil {
+					t.Fatalf("expected nil seed, got %d", *seed)
+				}
+				return
+			}
+			if seed == nil || *seed != tt.wantSeed {
+				t.Fatalf("expected seed %d, got %v", tt.wantSeed, seed)
+			}
+		})
+	}
+}
+
+func TestGetNameReadResultRandomSeedSemantics(t *testing.T) {
+	restore := failingReader()
+	defer restore()
+
+	unseeded := schema.TestResourceDataRaw(t, dataName().Schema, map[string]interface{}{
+		"name":          "test",
+		"resource_type": "azurerm_resource_group",
+		"random_length": 4,
+	})
+	if err := getNameReadResult(unseeded, nil); err == nil || !strings.Contains(err.Error(), "failed to generate random suffix") {
+		t.Fatalf("expected omitted seed to use crypto/rand and propagate its error, got: %v", err)
+	}
+
+	seeded := schema.TestResourceDataRaw(t, dataName().Schema, map[string]interface{}{
+		"name":          "test",
+		"resource_type": "azurerm_resource_group",
+		"random_length": 4,
+		"random_seed":   0,
+	})
+	if err := getNameReadResult(seeded, nil); err != nil {
+		t.Fatalf("expected explicit seed 0 to use deterministic generation, got: %v", err)
 	}
 }
 
@@ -177,21 +233,9 @@ func TestResourceNameDelete(t *testing.T) {
 		"name": "test",
 	})
 
-	err := resourceNameDelete(rd, nil)
-	if err != nil {
-		t.Errorf("Expected no error, got: %v", err)
-	}
-}
-
-// Test resourceNamingConventionDelete function (resource_naming_convention.go)
-func TestResourceNamingConventionDelete(t *testing.T) {
-	rd := schema.TestResourceDataRaw(t, resourceNamingConvention().Schema, map[string]interface{}{
-		"name": "test",
-	})
-
-	err := resourceNamingConventionDelete(rd, nil)
-	if err != nil {
-		t.Errorf("Expected no error, got: %v", err)
+	diags := resourceNameDelete(context.Background(), rd, nil)
+	if diags.HasError() {
+		t.Errorf("Expected no error, got: %v", diags)
 	}
 }
 
