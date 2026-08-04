@@ -922,6 +922,27 @@ func TestComputeNamesInvalidResourceType(t *testing.T) {
 	}
 }
 
+func TestComputeNamesValidatesResourceTypeBeforeGeneratingRandomSuffix(t *testing.T) {
+	restore := failingReader()
+	defer restore()
+
+	p := namingParams{
+		name:         "myapp",
+		resourceType: "azurerm_nonexistent",
+		randomLength: 4,
+	}
+	_, _, err := computeNames(p)
+	if err == nil {
+		t.Fatal("expected error for invalid resource type")
+	}
+	if !strings.Contains(err.Error(), "invalid resource type azurerm_nonexistent") {
+		t.Fatalf("expected invalid resource type error, got: %v", err)
+	}
+	if strings.Contains(err.Error(), "failed to generate random suffix") {
+		t.Fatalf("resource validation must precede random suffix generation, got: %v", err)
+	}
+}
+
 // TestComposeName_ErrorWhenExceedingMaxLength_Success verifies that composeName
 // returns the full name (not trimmed) when errorWhenExceedingMaxLength is true
 // and the name fits within the limit.

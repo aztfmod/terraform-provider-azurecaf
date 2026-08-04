@@ -51,6 +51,10 @@ HCL_CAN_NOT_DELETE = '"CanNotDelete"'
 HCL_CUSTOM = '"Custom"'
 HCL_PRIVATE_IP = '"10.0.0.1"'  # documentation-only address used in mock plans
 HCL_PT5M = '"PT5M"'
+HCL_SQL_CONNECTION_STRING = (
+    '"Server=tcp:sql-test.database.windows.net,1433;Database=db-test;'
+    'Authentication=Active Directory Default;Encrypt=true;"'
+)
 HCL_TEST_STR = '"test"'
 
 # Per-attribute fake-value overrides. azurerm 4.x validates many string
@@ -373,10 +377,10 @@ RESOURCE_ATTR_OVERRIDES: dict[str, dict[str, str]] = _merge_resource_attr_overri
         "url": '"https://func-test.azurewebsites.net"',
     },
     "azurerm_data_factory_linked_service_azure_sql_database": {
-        "connection_string": '"Server=tcp:sql-test.database.windows.net,1433;Database=db-test;User ID=admin;Password=p;Encrypt=true;"',
+        "connection_string": HCL_SQL_CONNECTION_STRING,
     },
     "azurerm_data_factory_linked_service_sql_server": {
-        "connection_string": '"Server=tcp:sql-test.database.windows.net,1433;Database=db-test;User ID=admin;Password=p;Encrypt=true;"',
+        "connection_string": HCL_SQL_CONNECTION_STRING,
     },
     "azurerm_data_factory_trigger_schedule": {
         "pipeline_name": '"pl-test"',

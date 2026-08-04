@@ -52,6 +52,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Corrected the mock-AzureRM harness to merge repeated resource overrides, emit valid HCL for constrained schemas, isolate provider initialization from user CLI settings, and verify that tests execute the local provider binary.
 - Prevented mock-harness unit tests from writing Python bytecode caches that can dirty tagged release worktrees before GoReleaser runs.
 - Updated the GoReleaser archive configuration to supported v2 syntax and normalized `terraform-plugin-log` as a direct module dependency so release hooks leave the source tree clean.
+- Corrected CI acceptance-test cleanup coverage and removed credential-shaped mock values while documenting the intentional deterministic PRNG used for non-secret seeded names.
+- Distinguished missing and empty environment-variable diagnostics, validated resource types before generating random suffixes, and aligned testing documentation with the 520-resource inventory.
 
 ### Migration impact
 

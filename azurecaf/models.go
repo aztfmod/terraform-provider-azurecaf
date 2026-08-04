@@ -115,7 +115,7 @@ func randSeq(length int, seed *int64) (string, error) {
 	}
 	rng := rand.New(rand.NewSource(*seed))
 	for i := range b {
-		b[i] = alphagenerator[rng.Intn(len(alphagenerator))]
+		b[i] = alphagenerator[rng.Intn(len(alphagenerator))] // NOSONAR: seeded output is deterministic, not secret.
 	}
 	return string(b), nil
 }

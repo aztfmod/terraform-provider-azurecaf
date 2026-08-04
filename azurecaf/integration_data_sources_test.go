@@ -212,6 +212,7 @@ func TestAcc_DataSourceName_ExplicitSeedsAreDeterministic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: testAccProviderFactories,
+		CheckDestroy:      testAccCheckResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: `

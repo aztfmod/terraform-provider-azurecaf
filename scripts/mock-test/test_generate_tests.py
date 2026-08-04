@@ -70,6 +70,18 @@ class GenerateTestsTest(unittest.TestCase):
         self.assertNotIn("endpoint_uri", eventhub_overrides)
         self.assertNotIn("entity_path", eventhub_overrides)
 
+    def test_sql_linked_services_use_passwordless_connection_strings(self):
+        for resource_type in (
+            "azurerm_data_factory_linked_service_azure_sql_database",
+            "azurerm_data_factory_linked_service_sql_server",
+        ):
+            self.assertEqual(
+                generate_tests.HCL_SQL_CONNECTION_STRING,
+                generate_tests.RESOURCE_ATTR_OVERRIDES[resource_type][
+                    "connection_string"
+                ],
+            )
+
     def test_logic_app_schema_override_is_valid_hcl(self):
         self.assertEqual(
             "jsonencode({})",

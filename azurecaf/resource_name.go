@@ -414,6 +414,11 @@ func computeNames(p namingParams) (string, map[string]string, error) {
 		return "", nil, fmt.Errorf("random_length must be non-negative, got: %d", p.randomLength)
 	}
 
+	isValid, err := validateResourceType(p.resourceType, p.resourceTypes)
+	if !isValid {
+		return "", nil, err
+	}
+
 	// Validate against resource type constraints if resource_type is specified
 	if p.resourceType != "" {
 		if resource, exists := ResourceDefinitions[p.resourceType]; exists {
@@ -433,11 +438,6 @@ func computeNames(p namingParams) (string, map[string]string, error) {
 	}
 	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
 	convention := ConventionCafClassic
-
-	isValid, err := validateResourceType(p.resourceType, p.resourceTypes)
-	if !isValid {
-		return "", nil, err
-	}
 
 	var result string
 	if len(p.resourceType) > 0 {

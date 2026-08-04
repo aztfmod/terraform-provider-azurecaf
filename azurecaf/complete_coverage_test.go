@@ -17,11 +17,12 @@ func TestResourceAction(t *testing.T) {
 		value        string
 		failsIfEmpty bool
 		wantError    bool
+		errorMessage string
 	}{
-		{name: "missing default", wantError: true},
-		{name: "missing strict", failsIfEmpty: true, wantError: true},
+		{name: "missing default", wantError: true, errorMessage: "Environment variable is not set"},
+		{name: "missing strict", failsIfEmpty: true, wantError: true, errorMessage: "Environment variable is not set"},
 		{name: "empty default", set: true},
-		{name: "empty strict", set: true, failsIfEmpty: true, wantError: true},
+		{name: "empty strict", set: true, failsIfEmpty: true, wantError: true, errorMessage: "Environment variable is empty"},
 		{name: "non-empty default", set: true, value: "test_value"},
 		{name: "non-empty strict", set: true, value: "test_value", failsIfEmpty: true},
 	}
@@ -44,6 +45,9 @@ func TestResourceAction(t *testing.T) {
 				t.Fatalf("expected error=%t, got diagnostics: %v", tt.wantError, diags)
 			}
 			if tt.wantError {
+				if len(diags) == 0 || !strings.Contains(diags[0].Summary, tt.errorMessage) {
+					t.Fatalf("expected diagnostic containing %q, got: %v", tt.errorMessage, diags)
+				}
 				return
 			}
 			if rd.Id() != variableName {

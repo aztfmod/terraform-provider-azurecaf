@@ -51,8 +51,11 @@ func resourceAction(ctx context.Context, d *schema.ResourceData, meta interface{
 	failsIfEmpty := d.Get("fails_if_empty").(bool)
 	value, ok := os.LookupEnv(name)
 
-	if !ok || (failsIfEmpty && value == "") {
-		return diag.Errorf("Value is not set for environment variable: %s", name)
+	if !ok {
+		return diag.Errorf("Environment variable is not set: %s", name)
+	}
+	if failsIfEmpty && value == "" {
+		return diag.Errorf("Environment variable is empty: %s", name)
 	}
 
 	d.SetId(name)
