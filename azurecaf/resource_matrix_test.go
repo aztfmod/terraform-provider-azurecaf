@@ -1,7 +1,7 @@
 package azurecaf
 
 import (
-"context"
+	"context"
 	"fmt"
 	"sort"
 	"strings"

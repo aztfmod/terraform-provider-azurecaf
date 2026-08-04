@@ -16,26 +16,25 @@ func TestAcc_ErrorHandling(t *testing.T) {
 
 	// Test handling of invalid resource type
 	t.Run("InvalidResourceType", func(t *testing.T) {
-		namingConventionResource := provider.ResourcesMap["azurecaf_naming_convention"]
-		if namingConventionResource == nil {
-			t.Fatal("azurecaf_naming_convention resource not found")
+		nameResource := provider.ResourcesMap["azurecaf_name"]
+		if nameResource == nil {
+			t.Fatal("azurecaf_name resource not found")
 		}
 
 		// Create ResourceData with invalid resource type
-		resourceData := schema.TestResourceDataRaw(t, namingConventionResource.Schema, map[string]interface{}{
+		resourceData := schema.TestResourceDataRaw(t, nameResource.Schema, map[string]interface{}{
 			"name":          "test",
-			"prefix":        "dev",
+			"prefixes":      []interface{}{"dev"},
 			"resource_type": "not_a_valid_type",
-			"convention":    "cafclassic",
 		})
 
 		// Try to create the resource - should fail validation
-		diags := namingConventionResource.CreateContext(context.Background(), resourceData, nil)
+		diags := nameResource.CreateContext(context.Background(), resourceData, nil)
 		if !diags.HasError() {
 			t.Error("Expected error for invalid resource type, but got none")
 		} else {
 			diagStr := fmt.Sprintf("%v", diags)
-			if !strings.Contains(diagStr, "Invalid resource type") {
+			if !strings.Contains(diagStr, "invalid resource type") {
 				t.Errorf("Expected error about resource type validation, got: %v", diags)
 			}
 		}
@@ -96,44 +95,15 @@ func TestAcc_ErrorHandling(t *testing.T) {
 		}
 	})
 
-	// Test handling of invalid convention type
-	t.Run("InvalidConvention", func(t *testing.T) {
-		namingConventionResource := provider.ResourcesMap["azurecaf_naming_convention"]
-
-		// Test at schema validation level first
-		conventionSchema := namingConventionResource.Schema["convention"]
-		if conventionSchema == nil {
-			t.Fatal("convention schema not found")
-		}
-
-		// Test that the schema validation rejects invalid values
-		_, errors := conventionSchema.ValidateFunc("invalid_convention", "convention")
-		if len(errors) == 0 {
-			t.Error("Expected schema validation error for invalid convention")
-		} else {
-			found := false
-			for _, err := range errors {
-				if strings.Contains(err.Error(), "expected convention to be one of") {
-					found = true
-					break
-				}
-			}
-			if !found {
-				t.Errorf("Expected validation error about convention values, got: %v", errors)
-			}
-		}
-	})
-
 	t.Log("Error handling tests completed successfully")
 }
 
 // Invalid resource type configuration
 const testAccInvalidResourceTypeConfig = `
-resource "azurecaf_naming_convention" "invalid_type" {
+resource "azurecaf_name" "invalid_type" {
   name           = "test"
-  prefix         = "dev"
+  prefixes       = ["dev"]
   resource_type  = "not_a_valid_type"
-  convention     = "cafclassic"
 }
 `
 
@@ -154,15 +124,5 @@ resource "azurecaf_name" "negative_length" {
   prefixes       = ["dev"]
   resource_type  = "azurerm_resource_group"
   random_length  = -5
-}
-`
-
-// Configuration with invalid convention type
-const testAccInvalidConventionConfig = `
-resource "azurecaf_naming_convention" "invalid_convention" {
-  name           = "test"
-  prefix         = "dev"
-  resource_type  = "rg"
-  convention     = "invalid_convention"
 }
 `

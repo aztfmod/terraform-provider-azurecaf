@@ -101,6 +101,8 @@ ATTR_OVERRIDES: dict[str, str] = {
     "filter_type":                     '"SqlFilter"',
     "format":                          '"Cer"',
     "load_balancer_type":              '"BreadthFirst"',
+    "managing_tenant_id":              f'"{FAKE_TENANT_ID}"',
+    "microsoft_app_type":              '"MultiTenant"',
     "namespace_type":                  '"Messaging"',
     "next_hop_type":                   '"VnetLocal"',
     "offer_type":                      '"Standard"',
@@ -110,6 +112,7 @@ ATTR_OVERRIDES: dict[str, str] = {
     "source_platform":                 '"SQL"',
     "storage_account_type":            '"Standard_LRS"',
     "storage_type":                    '"Standard"',
+    "tls_min_version":                 '"1.2"',
     "traffic_routing_method":          '"Performance"',
     "upgrade_policy_mode":             '"Manual"',
     "collation":                       '"SQL_Latin1_General_CP1_CI_AS"',
@@ -135,15 +138,27 @@ ATTR_OVERRIDES: dict[str, str] = {
     "body":                            '"{\\"test\\":\\"value\\"}"',
     "node_count":                      '3',
     "cluster_version":                 '"5.1"',
+    "key_vault_certificate_id":        '"https://kv-test.vault.azure.net/certificates/cert/00000000000000000000000000000000"',
     "vpn_authentication_types":        '["Certificate"]',
     "key_opts":                        '["encrypt", "decrypt"]',
 }
 
-# Per-resource per-attribute overrides (most specific wins). Add an entry here
-# whenever a new resource fails because azurerm's CustomizeDiff rejects the
-# generic placeholder. Keep entries minimal — only the required attributes the
-# generic logic cannot infer.
-RESOURCE_ATTR_OVERRIDES: dict[str, dict[str, str]] = {
+def _merge_resource_attr_overrides(
+    *fragments: dict[str, dict[str, str]],
+) -> dict[str, dict[str, str]]:
+    """Merge resource override fragments without discarding repeated resources."""
+    merged: dict[str, dict[str, str]] = {}
+    for fragment in fragments:
+        for resource_type, attributes in fragment.items():
+            merged.setdefault(resource_type, {}).update(attributes)
+    return merged
+
+
+# Per-resource per-attribute overrides (most specific wins). The map is split
+# into fragments so repeated resources merge their attributes instead of
+# silently replacing an earlier dictionary entry.
+RESOURCE_ATTR_OVERRIDES: dict[str, dict[str, str]] = _merge_resource_attr_overrides(
+    {
     "azurerm_storage_account": {
         "account_tier":             '"Standard"',
         "account_replication_type": '"LRS"',
@@ -301,7 +316,6 @@ RESOURCE_ATTR_OVERRIDES: dict[str, dict[str, str]] = {
         "read_access_id": f'"{RG_SCOPE}/providers/Microsoft.OperationalInsights/clusters/lac-test"',
     },
     "azurerm_app_service_certificate": {
-        "pfx_blob": '""', "password": '""',
         "key_vault_secret_id": '"https://kv-test.vault.azure.net/secrets/cert/00000000000000000000000000000000"',
     },
     "azurerm_spring_cloud_certificate": {
@@ -309,8 +323,7 @@ RESOURCE_ATTR_OVERRIDES: dict[str, dict[str, str]] = {
     },
     "azurerm_iothub_endpoint_eventhub": {
         "connection_string": '"Endpoint=sb://test.servicebus.windows.net/;SharedAccessKeyName=k;SharedAccessKey=k=;EntityPath=eh"',
-        "endpoint_uri": '"sb://test.servicebus.windows.net"',
-        "entity_path": '"eh-test"', "authentication_type": '"keyBased"',
+        "authentication_type": '"keyBased"',
         "iothub_id": f'"{RG_SCOPE}/providers/Microsoft.Devices/iotHubs/iot-test"',
     },
     "azurerm_iothub_endpoint_servicebus_queue": {
@@ -338,6 +351,8 @@ RESOURCE_ATTR_OVERRIDES: dict[str, dict[str, str]] = {
     "azurerm_key_vault_access_policy": {
         "key_vault_id": f'"{RG_SCOPE}/providers/Microsoft.KeyVault/vaults/kv-test"',
     },
+    },
+    {
     # --- At-least-one-of constraint fixes ---
     "azurerm_app_service_certificate": {
         "key_vault_secret_id": '"https://kv-test.vault.azure.net/secrets/cert/00000000000000000000000000000000"',
@@ -567,7 +582,7 @@ RESOURCE_ATTR_OVERRIDES: dict[str, dict[str, str]] = {
     },
     "azurerm_logic_app_trigger_http_request": {
         "logic_app_id": f'"{RG_SCOPE}/providers/Microsoft.Logic/workflows/la-test"',
-        "schema": '"{{}}',
+        "schema": 'jsonencode({})',
     },
     "azurerm_machine_learning_compute_instance": {
         "machine_learning_workspace_id": f'"{RG_SCOPE}/providers/Microsoft.MachineLearningServices/workspaces/mlw-test"',
@@ -693,6 +708,8 @@ RESOURCE_ATTR_OVERRIDES: dict[str, dict[str, str]] = {
     "azurerm_communication_service": {"data_location": '"Europe"'},
     "azurerm_consumption_budget_resource_group": {"amount": '100'},
     "azurerm_cosmosdb_account": {"offer_type": '"Standard"', "consistency_level": '"Session"'},
+    },
+    {
     "azurerm_data_factory_dataset_delimited_text": {
         "linked_service_name": '"ls-test"',
     },
@@ -900,6 +917,8 @@ RESOURCE_ATTR_OVERRIDES: dict[str, dict[str, str]] = {
     "azurerm_resource_group_policy_assignment": {
         "policy_definition_id": '"/providers/Microsoft.Authorization/policyDefinitions/00000000-0000-0000-0000-000000000000"',
     },
+    },
+    {
     # HDInsight clusters — vm_size enum
     "azurerm_hdinsight_hadoop_cluster": {
         "cluster_version": '"5.1"',
@@ -1209,6 +1228,8 @@ RESOURCE_ATTR_OVERRIDES: dict[str, dict[str, str]] = {
     "azurerm_security_center_automation": {
         "scopes": f'["/subscriptions/00000000-0000-0000-0000-000000000000"]',
     },
+    },
+    {
     # Monitor metric alert — needs criteria or dynamic_criteria
     "azurerm_monitor_metric_alert": {
         "scopes": f'["{RG_SCOPE}/providers/Microsoft.Storage/storageAccounts/sttest"]',
@@ -1272,6 +1293,8 @@ RESOURCE_ATTR_OVERRIDES: dict[str, dict[str, str]] = {
         "name": '"S1"',
         "capacity": "1",
     },
+    },
+    {
     "azurerm_iothub_dps": {
         "name": '"S1"',
         "capacity": "1",
@@ -1306,6 +1329,8 @@ RESOURCE_ATTR_OVERRIDES: dict[str, dict[str, str]] = {
     "azurerm_security_center_automation": {
         "scopes": '["/subscriptions/00000000-0000-0000-0000-000000000000"]',
     },
+    },
+    {
     "azurerm_signalr_service": {
         "sku_name": '"Standard_S1"',
     },
@@ -1390,6 +1415,8 @@ RESOURCE_ATTR_OVERRIDES: dict[str, dict[str, str]] = {
         "eventhub_consumer_group_name": '"consumergroup1"',
         "workspace_id": f'"{RG_SCOPE}/providers/Microsoft.HealthcareApis/workspaces/hw-test"',
     },
+    },
+    {
     "azurerm_hpc_cache_nfs_target": {
         "nfs_export": '"/export"',
         "target_path": '"nfs"',
@@ -1490,11 +1517,138 @@ RESOURCE_ATTR_OVERRIDES: dict[str, dict[str, str]] = {
     "azurerm_dev_center_environment_type": {
         "dev_center_id": f'"{RG_SCOPE}/providers/Microsoft.DevCenter/devCenters/dc-test"',
     },
+    },
+    {
+    "azurerm_data_factory_linked_service_data_lake_storage_gen2": {
+        "use_managed_identity": "true",
+    },
+    "azurerm_data_protection_backup_policy_blob_storage": {
+        "operational_default_retention_duration": '"P7D"',
+    },
+    "azurerm_frontdoor": {
+        "accepted_protocols": '["Https"]',
+    },
+    "azurerm_network_connection_monitor": {
+        "protocol": '"Tcp"',
+        "target_resource_id": f'"{RG_SCOPE}/providers/Microsoft.Compute/virtualMachines/vm-test"',
+    },
+    "azurerm_redhat_openshift_cluster": {
+        "pull_secret": 'jsonencode({ auths = {} })',
+        "client_id": f'"{FAKE_OBJ_ID}"',
+        "disk_size_gb": "128",
+        "pod_cidr": '"10.128.0.0/14"',
+        "service_cidr": '"172.30.0.0/16"',
+        "vm_size": '"Standard_D4s_v3"',
+    },
+    "azurerm_bot_service_azure_bot": {
+        "sku": '"F0"',
+    },
+    "azurerm_cdn_frontdoor_security_policy": {
+        "patterns_to_match": '["/*"]',
+    },
+    "azurerm_data_protection_backup_policy_postgresql_flexible_server": {
+        "backup_repeating_time_intervals": '["R/2024-01-01T00:00:00Z/P1D"]',
+        "duration": '"P7D"',
+    },
+    "azurerm_kubernetes_cluster": {
+        "mode": '"Manual"',
+        "snapshot_id": f'"{RG_SCOPE}/providers/Microsoft.ContainerService/snapshots/snap-test"',
+        "type": '"VirtualMachineScaleSets"',
+    },
+    "azurerm_kusto_attached_database_configuration": {
+        "cluster_id": f'"{RG_SCOPE}/providers/Microsoft.Kusto/clusters/kc-test"',
+    },
+    "azurerm_lighthouse_definition": {
+        "scope": f'"/subscriptions/{FAKE_SUB_ID}"',
+    },
+    "azurerm_monitor_data_collection_rule": {
+        "streams": '["Microsoft-Perf"]',
+    },
+    "azurerm_monitor_smart_detector_alert_rule": {
+        "ids": f'["{RG_SCOPE}/providers/Microsoft.Insights/actionGroups/ag-test"]',
+    },
+    "azurerm_network_watcher_flow_log": {
+        "target_resource_id": f'"{RG_SCOPE}/providers/Microsoft.Network/networkSecurityGroups/nsg-test"',
+    },
+    "azurerm_vpn_gateway_connection": {
+        "protocol": '"IKEv2"',
+        "vpn_site_link_id": f'"{RG_SCOPE}/providers/Microsoft.Network/vpnSites/vst-test/vpnSiteLinks/link-test"',
+    },
+    },
+)
+
+# Extra raw HCL lines to inject into resource blocks for constraints that
+# cannot be expressed via attribute overrides alone.
+RESOURCE_EXTRA_HCL: dict[str, list[str]] = {
+    "azurerm_application_gateway": [
+        "  backend {",
+        '    name     = "backend-test"',
+        "    port     = 80",
+        '    protocol = "Tcp"',
+        "  }",
+        "  listener {",
+        '    name                           = "listener-test"',
+        '    frontend_ip_configuration_name = "internal"',
+        '    frontend_port_name             = "test"',
+        '    protocol                       = "Tcp"',
+        "  }",
+        "  routing_rule {",
+        '    name                      = "rule-test"',
+        "    priority                  = 100",
+        '    listener_name             = "listener-test"',
+        '    backend_name              = "backend-test"',
+        '    backend_address_pool_name = "test"',
+        "  }",
+    ],
+    "azurerm_custom_provider": [
+        "  action {",
+        '    name     = "ping"',
+        '    endpoint = "https://example.com"',
+        "  }",
+    ],
+    "azurerm_data_factory_dataset_delimited_text": [
+        "  http_server_location {",
+        '    filename     = "data.csv"',
+        '    path         = "/"',
+        '    relative_url = "https://example.com/data.csv"',
+        "  }",
+    ],
+    "azurerm_key_vault_certificate": [
+        "  certificate {",
+        '    contents = "dGVzdA=="',
+        "  }",
+    ],
+    "azurerm_kubernetes_cluster": [
+        "  identity {",
+        '    type = "SystemAssigned"',
+        "  }",
+    ],
+    "azurerm_monitor_metric_alert": [
+        "  criteria {",
+        '    aggregation      = "Average"',
+        '    metric_name      = "Transactions"',
+        '    metric_namespace = "Microsoft.Storage/storageAccounts"',
+        '    operator         = "GreaterThan"',
+        "    threshold        = 0",
+        "  }",
+    ],
+    "azurerm_monitor_diagnostic_setting": [
+        "  enabled_metric {",
+        '    category = "AllMetrics"',
+        "  }",
+    ],
 }
 
-# Extra raw HCL lines to inject into resource blocks for constraints
-# that cannot be expressed via attribute overrides alone.
-RESOURCE_EXTRA_HCL: dict[str, list[str]] = {}
+RESOURCE_BLOCK_HCL_OVERRIDES: dict[str, dict[str, str]] = {
+    "azurerm_monitor_data_collection_rule": {
+        "destinations": """  destinations {
+    log_analytics {
+      name                  = "test"
+      workspace_resource_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.OperationalInsights/workspaces/la-test"
+    }
+  }""",
+    },
+}
 
 # Block-specific attr overrides: {block_name: {attr_name: value}}
 # Used when a generic ATTR_OVERRIDES value is wrong inside a specific block type.
@@ -1523,6 +1677,15 @@ BLOCK_ATTR_OVERRIDES: dict[str, dict[str, str]] = {
     "default_node_pool": {"type": '"VirtualMachineScaleSets"', "vm_size": '"Standard_DS2_v2"'},
     "source": {"event_source": '"Alerts"'},
     "namespace_junction": {"target_path": '"nfs"', "nfs_export": '"/export"', "namespace_path": '"/nfs"'},
+}
+
+RESOURCE_BLOCK_ATTR_OVERRIDES: dict[str, dict[str, dict[str, str]]] = {
+    "azurerm_application_gateway": {
+        "sku": {
+            "name": '"Standard_v2"',
+            "tier": '"Standard_v2"',
+        },
+    },
 }
 
 # Common parent-id / contextual attributes that map cleanly to a fake ARM id.
@@ -1554,11 +1717,12 @@ FAKE_IDS: dict[str, str] = {
     "managed_disk_id":                 f"{RG_SCOPE}/providers/Microsoft.Compute/disks/disk-test",
     "snapshot_id":                     f"{RG_SCOPE}/providers/Microsoft.Compute/snapshots/snap-test",
     "source_resource_id":              f"{RG_SCOPE}/providers/Microsoft.Compute/disks/disk-test",
+    "network_security_group_id":       f"{RG_SCOPE}/providers/Microsoft.Network/networkSecurityGroups/nsg-test",
+    "private_dns_zone_id":             f"{RG_SCOPE}/providers/Microsoft.Network/privateDnsZones/example.com",
     "platform_fault_domain_count":     "1",
     "subnet_id":                       f"{RG_SCOPE}/providers/Microsoft.Network/virtualNetworks/vnet-test/subnets/snet-test",
     "virtual_network_id":              f"{RG_SCOPE}/providers/Microsoft.Network/virtualNetworks/vnet-test",
     "virtual_hub_id":                  f"{RG_SCOPE}/providers/Microsoft.Network/virtualHubs/vh-test",
-    "vpn_gateway_id":                  f"{RG_SCOPE}/providers/Microsoft.Network/vpnGateways/vpng-test",
     "express_route_circuit_id":        f"{RG_SCOPE}/providers/Microsoft.Network/expressRouteCircuits/erc-test",
     "express_route_circuit_peering_id": f"{RG_SCOPE}/providers/Microsoft.Network/expressRouteCircuits/erc-test/peerings/AzurePrivatePeering",
     "express_route_gateway_id":        f"{RG_SCOPE}/providers/Microsoft.Network/expressRouteGateways/erg-test",
@@ -1600,7 +1764,6 @@ FAKE_IDS: dict[str, str] = {
     "entity_path":                     "queue-test",
     "container_name":                  "ct-test",
     "connection_string":               "Endpoint=sb://test.servicebus.windows.net/;SharedAccessKeyName=k;SharedAccessKey=k=",
-    "vault_id":                        f"{RG_SCOPE}/providers/Microsoft.KeyVault/vaults/kv-test",
     "vault_uri":                       "https://kv-test.vault.azure.net/",
     "key_vault_key_id":                "https://kv-test.vault.azure.net/keys/test/00000000000000000000000000000000",
     "addressing_family":               "IPv4",
@@ -1618,10 +1781,11 @@ FAKE_IDS: dict[str, str] = {
     "package_file_uri":                "https://example.com/package.zip",
     "function_app_id":                 f"{RG_SCOPE}/providers/Microsoft.Web/sites/func-test",
     "linux_function_app_id":           f"{RG_SCOPE}/providers/Microsoft.Web/sites/func-test",
-    "cdn_frontdoor_profile_id":         f"{RG_SCOPE}/providers/Microsoft.Cdn/profiles/cdnfd-test",
     "cdn_frontdoor_origin_group_id":   f"{RG_SCOPE}/providers/Microsoft.Cdn/profiles/cdnfd-test/originGroups/og-test",
     "cdn_frontdoor_endpoint_id":       f"{RG_SCOPE}/providers/Microsoft.Cdn/profiles/cdnfd-test/afdEndpoints/ep-test",
     "cdn_frontdoor_rule_set_id":       f"{RG_SCOPE}/providers/Microsoft.Cdn/profiles/cdnfd-test/ruleSets/rs-test",
+    "cdn_frontdoor_firewall_policy_id": f"{RG_SCOPE}/providers/Microsoft.Network/frontDoorWebApplicationFirewallPolicies/fdfp-test",
+    "cdn_frontdoor_domain_id":         f"{RG_SCOPE}/providers/Microsoft.Cdn/profiles/cdnfd-test/customDomains/domain-test",
     "api_management_id":               f"{RG_SCOPE}/providers/Microsoft.ApiManagement/service/apim-test",
     "api_management_name":             "apim-test",
     "api_id":                          f"{RG_SCOPE}/providers/Microsoft.ApiManagement/service/apim-test/apis/api-test",
@@ -1629,14 +1793,12 @@ FAKE_IDS: dict[str, str] = {
     "cognitive_account_id":            f"{RG_SCOPE}/providers/Microsoft.CognitiveServices/accounts/cog-test",
     "cognitive_deployment_id":         f"{RG_SCOPE}/providers/Microsoft.CognitiveServices/accounts/cog-test/deployments/dep-test",
     "digital_twins_id":                f"{RG_SCOPE}/providers/Microsoft.DigitalTwins/digitalTwinsInstances/dt-test",
-    "dev_center_id":                   f"{RG_SCOPE}/providers/Microsoft.DevCenter/devCenters/dc-test",
     "dev_center_project_id":           f"{RG_SCOPE}/providers/Microsoft.DevCenter/projects/proj-test",
     "dedicated_host_group_id":         f"{RG_SCOPE}/providers/Microsoft.Compute/hostGroups/hg-test",
     "healthcare_workspace_id":         f"{RG_SCOPE}/providers/Microsoft.HealthcareApis/workspaces/hcw-test",
     "loadbalancer_id":                 f"{RG_SCOPE}/providers/Microsoft.Network/loadBalancers/lb-test",
     "machine_learning_workspace_id":   f"{RG_SCOPE}/providers/Microsoft.MachineLearningServices/workspaces/mlw-test",
     "logic_app_id":                    f"{RG_SCOPE}/providers/Microsoft.Logic/workflows/la-test",
-    "network_watcher_id":              f"{RG_SCOPE}/providers/Microsoft.Network/networkWatchers/nw-test",
     "dns_resolver_id":                 f"{RG_SCOPE}/providers/Microsoft.Network/dnsResolvers/dnsr-test",
     "dns_forwarding_ruleset_id":       f"{RG_SCOPE}/providers/Microsoft.Network/dnsForwardingRulesets/frs-test",
     "outbound_endpoint_id":            f"{RG_SCOPE}/providers/Microsoft.Network/dnsResolvers/dnsr-test/outboundEndpoints/oep-test",
@@ -1656,7 +1818,6 @@ FAKE_IDS: dict[str, str] = {
     "redis_cache_id":                  f"{RG_SCOPE}/providers/Microsoft.Cache/redis/redis-test",
     "search_service_id":               f"{RG_SCOPE}/providers/Microsoft.Search/searchServices/srch-test",
     "signalr_service_id":              f"{RG_SCOPE}/providers/Microsoft.SignalRService/SignalR/sigr-test",
-    "web_pubsub_id":                   f"{RG_SCOPE}/providers/Microsoft.SignalRService/WebPubSub/wps-test",
     "blueprint_id":                    f"/providers/Microsoft.Management/managementGroups/mg-test/providers/Microsoft.Blueprint/blueprints/bp-test/versions/1.0",
     "user_assigned_identity_id":       f"{RG_SCOPE}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai-test",
     "frontdoor_id":                    f"{RG_SCOPE}/providers/Microsoft.Cdn/profiles/cdnfd-test",
@@ -1669,6 +1830,8 @@ FAKE_IDS: dict[str, str] = {
     "sql_server_id":                   f"{RG_SCOPE}/providers/Microsoft.Sql/servers/sql-test",
     "dev_center_id":                   f"{RG_SCOPE}/providers/Microsoft.DevCenter/devCenters/dc-test",
     "vpn_gateway_id":                  f"{RG_SCOPE}/providers/Microsoft.Network/vpnGateways/vpng-test",
+    "remote_vpn_site_id":              f"{RG_SCOPE}/providers/Microsoft.Network/vpnSites/vst-test",
+    "vpn_site_link_id":                f"{RG_SCOPE}/providers/Microsoft.Network/vpnSites/vst-test/links/link-test",
     "virtual_wan_id":                  f"{RG_SCOPE}/providers/Microsoft.Network/virtualWans/vwan-test",
     "web_pubsub_id":                   f"{RG_SCOPE}/providers/Microsoft.SignalRService/webPubSub/wps-test",
     "private_cloud_id":                f"{RG_SCOPE}/providers/Microsoft.AVS/privateClouds/avs-test",
@@ -1761,11 +1924,13 @@ def render_block(block_name: str, block_def: dict, indent: int, resource_type: s
     block = block_def.get("block", {})
     # Block-level overrides (lower priority than resource-specific)
     blk_overrides = BLOCK_ATTR_OVERRIDES.get(block_name, {})
+    resource_block_overrides = RESOURCE_BLOCK_ATTR_OVERRIDES.get(resource_type, {}).get(block_name, {})
     for attr_name, attr_def in block.get("attributes", {}).items():
         if attr_def.get("required"):
-            # Priority: resource-specific override > block override > generic fake_value_for
-            res_ov = RESOURCE_ATTR_OVERRIDES.get(resource_type, {}).get(attr_name)
-            if res_ov is not None:
+            # Priority: resource+block > resource > block > generic.
+            if attr_name in resource_block_overrides:
+                lines.append(f"{sp}  {attr_name} = {resource_block_overrides[attr_name]}")
+            elif (res_ov := RESOURCE_ATTR_OVERRIDES.get(resource_type, {}).get(attr_name)) is not None:
                 lines.append(f"{sp}  {attr_name} = {res_ov}")
             elif attr_name in blk_overrides:
                 lines.append(f"{sp}  {attr_name} = {blk_overrides[attr_name]}")
@@ -1800,7 +1965,11 @@ def render_required_attrs_and_blocks(schema: dict, name_attr_name: str, resource
                 out.append(f"  {attr_name} = {ov}")
     for bn, bdef in block.get("block_types", {}).items():
         if bdef.get("min_items", 0) > 0:
-            out.append(render_block(bn, bdef, indent=2, resource_type=resource_type))
+            block_override = RESOURCE_BLOCK_HCL_OVERRIDES.get(resource_type, {}).get(bn)
+            if block_override is not None:
+                out.append(block_override)
+            else:
+                out.append(render_block(bn, bdef, indent=2, resource_type=resource_type))
     return out
 
 

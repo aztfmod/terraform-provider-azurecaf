@@ -71,3 +71,14 @@ func TestRandSeqDeterministicPathIgnoresCryptoReader(t *testing.T) {
 		t.Fatalf("expected length 12, got %d (%q)", len(out), out)
 	}
 }
+
+func TestRandSeqV2SeededGoldenVector(t *testing.T) {
+	seed := int64(42)
+	out, err := randSeq(12, &seed)
+	if err != nil {
+		t.Fatalf("randSeq returned unexpected error: %v", err)
+	}
+	if out != "hrukpttuezpt" {
+		t.Fatalf("seeded output changed: expected %q, got %q", "hrukpttuezpt", out)
+	}
+}

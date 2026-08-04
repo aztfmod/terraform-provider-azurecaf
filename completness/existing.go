@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -42,7 +41,10 @@ type ResourceStructure struct {
 
 func main() {
 	wd, err := os.Getwd()
-	sourceDefinitions, err := ioutil.ReadFile(path.Join(wd, "../resourceDefinition.json"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	sourceDefinitions, err := os.ReadFile(path.Join(wd, "../resourceDefinition.json"))
 	if err != nil {
 		log.Fatal(err)
 	}

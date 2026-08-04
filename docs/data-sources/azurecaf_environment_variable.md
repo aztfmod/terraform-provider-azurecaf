@@ -21,7 +21,7 @@ output "subscription_id" {
 }
 ```
 
-### With Default Values
+### Fallback for an Explicitly Empty Value
 
 ```hcl
 data "azurecaf_environment_variable" "log_level" {
@@ -33,6 +33,8 @@ locals {
               data.azurecaf_environment_variable.log_level.value : "INFO"
 }
 ```
+
+The environment variable must exist. With the default `fails_if_empty = false`, an explicitly empty value is returned as `""`, allowing the Terraform expression to select a fallback.
 
 ### Integration with Naming Convention
 
@@ -47,6 +49,7 @@ data "azurecaf_name" "storage_account" {
   resource_type = "azurerm_storage_account"
   prefixes      = [data.azurecaf_environment_variable.environment.value]
   random_length = 3
+  random_seed   = 12345
 }
 
 resource "azurerm_storage_account" "example" {
@@ -63,15 +66,21 @@ resource "azurerm_storage_account" "example" {
 
 The following arguments are supported:
 
-* `name` - (Required) The name of the environment variable to read.
+* `name` - (Required) The name of an existing environment variable to read. Terraform returns an error if the variable is not set.
 
-* `fails_if_empty` - (Optional) If set to `true`, Terraform will fail if the environment variable is not set or is empty. Defaults to `false`.
+* `fails_if_empty` - (Optional) If set to `true`, Terraform also fails when the environment variable exists but its value is empty. Defaults to `false`.
+
+| Variable state | `fails_if_empty = false` | `fails_if_empty = true` |
+|---|---|---|
+| Not set | Error | Error |
+| Set to `""` | Returns `""` | Error |
+| Set to a non-empty value | Returns the value | Returns the value |
 
 ## Attributes Reference
 
 The following attributes are exported:
 
-* `value` - The value of the environment variable. If the environment variable is not set, this will be an empty string.
+* `value` - The value of the environment variable.
 
 ## Security Considerations
 

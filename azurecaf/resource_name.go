@@ -271,14 +271,17 @@ func resourceName() *schema.Resource {
 }
 
 func resourceNameCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	return resourceNameRead(ctx, d, meta)
-}
-
-func resourceNameRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	err := getNameResult(d, meta)
 	if err != nil {
 		return diag.FromErr(err)
 	}
+	return nil
+}
+
+func resourceNameRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	// azurecaf_name is a logical resource with no remote object to refresh.
+	// Preserve the generated values stored during create, especially an
+	// unseeded random suffix that must not change on every Terraform refresh.
 	return nil
 }
 
@@ -321,18 +324,34 @@ func resourceNameImport(d *schema.ResourceData, meta interface{}) ([]*schema.Res
 
 	// Set the resource data for the imported resource
 	// We use passthrough mode to preserve the existing name as-is
-	d.Set("name", existingName)
-	d.Set("resource_type", resourceType)
-	d.Set("passthrough", true)
+	if err := d.Set("name", existingName); err != nil {
+		return nil, fmt.Errorf("failed to set imported name: %w", err)
+	}
+	if err := d.Set("resource_type", resourceType); err != nil {
+		return nil, fmt.Errorf("failed to set imported resource type: %w", err)
+	}
+	if err := d.Set("passthrough", true); err != nil {
+		return nil, fmt.Errorf("failed to enable passthrough for imported resource: %w", err)
+	}
 
 	// Set empty slices for prefixes and suffixes since we can't reverse-engineer them
-	d.Set("prefixes", []string{})
-	d.Set("suffixes", []string{})
-	d.Set("resource_types", []string{})
+	if err := d.Set("prefixes", []string{}); err != nil {
+		return nil, fmt.Errorf("failed to clear imported prefixes: %w", err)
+	}
+	if err := d.Set("suffixes", []string{}); err != nil {
+		return nil, fmt.Errorf("failed to clear imported suffixes: %w", err)
+	}
+	if err := d.Set("resource_types", []string{}); err != nil {
+		return nil, fmt.Errorf("failed to clear imported resource types: %w", err)
+	}
 
 	// Set the result to match the imported name
-	d.Set("result", existingName)
-	d.Set("results", map[string]string{})
+	if err := d.Set("result", existingName); err != nil {
+		return nil, fmt.Errorf("failed to set imported result: %w", err)
+	}
+	if err := d.Set("results", map[string]string{}); err != nil {
+		return nil, fmt.Errorf("failed to clear imported results: %w", err)
+	}
 
 	// Use the existing name as the Terraform resource ID
 	d.SetId(existingName)
@@ -439,19 +458,57 @@ func computeNames(p namingParams) (string, map[string]string, error) {
 	return result, resourceNames, nil
 }
 
+func setNameOutputsComputed(setComputed func(string) error) error {
+	for _, attr := range []string{"result", "results"} {
+		if err := setComputed(attr); err != nil {
+			return fmt.Errorf("failed to defer %s: %w", attr, err)
+		}
+	}
+	return nil
+}
+
+type resourceNameDiff interface {
+	Get(key string) interface{}
+	NewValueKnown(key string) bool
+}
+
+func resourceNameInputsKnown(d resourceNameDiff, namingInputs []string) bool {
+	for _, attr := range namingInputs {
+		if !d.NewValueKnown(attr) {
+			return false
+		}
+	}
+
+	for _, attr := range []string{"prefixes", "suffixes", "resource_types"} {
+		if !d.NewValueKnown(attr + ".#") {
+			return false
+		}
+		values := d.Get(attr).([]interface{})
+		for i := range values {
+			if !d.NewValueKnown(fmt.Sprintf("%s.%d", attr, i)) {
+				return false
+			}
+		}
+	}
+
+	return true
+}
+
 // resourceNameCustomizeDiff computes naming values during the plan phase so that
 // users can see the actual resource names in terraform plan output instead of
 // "(known after apply)". This runs during plan for new or replaced resources.
 func resourceNameCustomizeDiff(ctx context.Context, d *schema.ResourceDiff, meta interface{}) error {
+	namingInputs := []string{
+		"name", "prefixes", "suffixes", "separator",
+		"resource_type", "resource_types", "clean_input",
+		"passthrough", "use_slug", "random_length",
+		"random_seed", "error_when_exceeding_max_length",
+	}
+
 	// For existing resources with no relevant input changes, values are already in state.
 	if d.Id() != "" {
 		needsRecompute := false
-		for _, attr := range []string{
-			"name", "prefixes", "suffixes", "separator",
-			"resource_type", "resource_types", "clean_input",
-			"passthrough", "use_slug", "random_length",
-			"random_seed", "error_when_exceeding_max_length",
-		} {
+		for _, attr := range namingInputs {
 			if d.HasChange(attr) {
 				needsRecompute = true
 				break
@@ -460,6 +517,12 @@ func resourceNameCustomizeDiff(ctx context.Context, d *schema.ResourceDiff, meta
 		if !needsRecompute {
 			return nil
 		}
+	}
+
+	// Do not derive a provisional name from placeholders when any input depends
+	// on a value that Terraform will only know after apply.
+	if !resourceNameInputsKnown(d, namingInputs) {
+		return setNameOutputsComputed(d.SetNewComputed)
 	}
 
 	p := extractNamingParams(d)

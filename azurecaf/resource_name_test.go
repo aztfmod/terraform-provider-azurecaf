@@ -626,14 +626,14 @@ func TestPlanApplyConsistency(t *testing.T) {
 
 	// Call Create twice with the same seed
 	rd1 := schema.TestResourceDataRaw(t, nameResource.Schema, input)
-	if err := nameResource.Create(rd1, nil); err != nil {
-		t.Fatalf("First call failed: %v", err)
+	if diags := nameResource.CreateContext(context.Background(), rd1, nil); diags.HasError() {
+		t.Fatalf("First call failed: %v", diags)
 	}
 	result1 := rd1.Get("result").(string)
 
 	rd2 := schema.TestResourceDataRaw(t, nameResource.Schema, input)
-	if err := nameResource.Create(rd2, nil); err != nil {
-		t.Fatalf("Second call failed: %v", err)
+	if diags := nameResource.CreateContext(context.Background(), rd2, nil); diags.HasError() {
+		t.Fatalf("Second call failed: %v", diags)
 	}
 	result2 := rd2.Get("result").(string)
 
@@ -642,6 +642,40 @@ func TestPlanApplyConsistency(t *testing.T) {
 	}
 	if result1 == "" {
 		t.Error("Result must not be empty")
+	}
+}
+
+func TestResourceNameReadPreservesUnseededRandomState(t *testing.T) {
+	nameResource := Provider().ResourcesMap["azurecaf_name"]
+	resourceData := schema.TestResourceDataRaw(t, nameResource.Schema, map[string]interface{}{
+		"name":           "myapp",
+		"resource_type":  "azurerm_resource_group",
+		"resource_types": []interface{}{"azurerm_storage_account"},
+		"prefixes":       []interface{}{"dev"},
+		"random_length":  5,
+		"clean_input":    true,
+	})
+
+	if diags := nameResource.CreateContext(context.Background(), resourceData, nil); diags.HasError() {
+		t.Fatalf("Create failed: %v", diags)
+	}
+
+	result := resourceData.Get("result")
+	results := resourceData.Get("results")
+	id := resourceData.Id()
+
+	if diags := nameResource.ReadContext(context.Background(), resourceData, nil); diags.HasError() {
+		t.Fatalf("Read failed: %v", diags)
+	}
+
+	if got := resourceData.Get("result"); got != result {
+		t.Errorf("Read changed unseeded result: before=%q after=%q", result, got)
+	}
+	if got := resourceData.Get("results"); !reflect.DeepEqual(got, results) {
+		t.Errorf("Read changed unseeded results: before=%v after=%v", results, got)
+	}
+	if got := resourceData.Id(); got != id {
+		t.Errorf("Read changed resource ID: before=%q after=%q", id, got)
 	}
 }
 
@@ -663,8 +697,8 @@ func TestPlanTimeMultipleResourceTypes(t *testing.T) {
 		"use_slug":       true,
 	})
 
-	if err := nameResource.Create(resourceData, nil); err != nil {
-		t.Fatalf("Create failed: %v", err)
+	if diags := nameResource.CreateContext(context.Background(), resourceData, nil); diags.HasError() {
+		t.Fatalf("Create failed: %v", diags)
 	}
 
 	// Check primary result
@@ -713,8 +747,8 @@ func TestDeterministicWithoutRandom(t *testing.T) {
 	}
 
 	rd1 := schema.TestResourceDataRaw(t, nameResource.Schema, input)
-	if err := nameResource.Create(rd1, nil); err != nil {
-		t.Fatalf("Create failed: %v", err)
+	if diags := nameResource.CreateContext(context.Background(), rd1, nil); diags.HasError() {
+		t.Fatalf("Create failed: %v", diags)
 	}
 	result := rd1.Get("result").(string)
 
@@ -808,8 +842,8 @@ func TestComputeNamesMatchesGetNameResult(t *testing.T) {
 
 	// Path 1: via Create (getNameResult)
 	rd := schema.TestResourceDataRaw(t, nameResource.Schema, input)
-	if err := nameResource.Create(rd, nil); err != nil {
-		t.Fatalf("Create failed: %v", err)
+	if diags := nameResource.CreateContext(context.Background(), rd, nil); diags.HasError() {
+		t.Fatalf("Create failed: %v", diags)
 	}
 	createResult := rd.Get("result").(string)
 	createResults := rd.Get("results").(map[string]interface{})
@@ -947,39 +981,14 @@ func TestDataNameReadError(t *testing.T) {
 	}
 }
 
-// TestNamingConventionWithMaxLength covers the desiredMaxLength override branch
-// in getResult where max_length < resource.MaxLength.
-func TestNamingConventionWithMaxLength(t *testing.T) {
-	provider := Provider()
-	ncResource := provider.ResourcesMap["azurecaf_naming_convention"]
-	if ncResource == nil {
-		t.Fatal("azurecaf_naming_convention resource not found")
-	}
-
-	rd := schema.TestResourceDataRaw(t, ncResource.Schema, map[string]interface{}{
-		"name":          "myrg",
-		"convention":    "cafclassic",
-		"resource_type": "rg",
-		"max_length":    15,
-	})
-
-	if err := ncResource.Create(rd, nil); err != nil {
-		t.Fatalf("Create failed: %v", err)
-	}
-	result := rd.Get("result").(string)
-	if len(result) > 15 {
-		t.Errorf("Expected result length <= 15, got %d (%q)", len(result), result)
-	}
-}
-
 // TestAccResourceName_PlanTimeVisibility is an acceptance test that verifies
 // CustomizeDiff populates result and results during the plan phase, so they
 // are visible in terraform plan output (not "known after apply").
 func TestAccResourceName_PlanTimeVisibility(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckResourceDestroy,
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: testAccProviderFactories,
+		CheckDestroy:      testAccCheckResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: `
@@ -1023,9 +1032,9 @@ resource "azurecaf_name" "plan_test" {
 // CustomizeDiff populates both result and results for multiple resource types.
 func TestAccResourceName_PlanTimeMultipleTypes(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckResourceDestroy,
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: testAccProviderFactories,
+		CheckDestroy:      testAccCheckResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: `
@@ -1076,9 +1085,9 @@ resource "azurecaf_name" "multi_test" {
 // cycle succeeds (falls back to apply-time computation).
 func TestAccResourceName_PlanTimeAutoSeed(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckResourceDestroy,
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: testAccProviderFactories,
+		CheckDestroy:      testAccCheckResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: `
@@ -1094,6 +1103,92 @@ resource "azurecaf_name" "auto_seed_test" {
 					// Result should still be computed (at apply time) and non-empty
 					resource.TestMatchResourceAttr("azurecaf_name.auto_seed_test", "result", regexp.MustCompile(`^dev-rg-myapp-[a-z]{5}$`)),
 				),
+			},
+		},
+	})
+}
+
+func TestAccResourceName_UnknownInputDefersUntilApply(t *testing.T) {
+	const config = `
+resource "terraform_data" "input" {
+  input = "latebound"
+}
+
+resource "azurecaf_name" "unknown_input" {
+  name          = terraform_data.input.output
+  resource_type = "azurerm_resource_group"
+  random_seed   = 42
+}
+`
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: testAccProviderFactories,
+		CheckDestroy:      testAccCheckResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: config,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("azurecaf_name.unknown_input", "result", "rg-latebound"),
+				),
+			},
+			{
+				Config:   config,
+				PlanOnly: true,
+			},
+		},
+	})
+}
+
+func TestAccResourceName_UnknownListElementsDeferUntilApply(t *testing.T) {
+	const config = `
+resource "terraform_data" "prefix" {
+  input = "late"
+}
+
+resource "terraform_data" "suffix" {
+  input = "001"
+}
+
+resource "terraform_data" "resource_type" {
+  input = "azurerm_storage_account"
+}
+
+resource "azurecaf_name" "unknown_prefix" {
+  name          = "app"
+  resource_type = "azurerm_resource_group"
+  prefixes      = [terraform_data.prefix.output]
+}
+
+resource "azurecaf_name" "unknown_suffix" {
+  name          = "app"
+  resource_type = "azurerm_resource_group"
+  suffixes      = [terraform_data.suffix.output]
+}
+
+resource "azurecaf_name" "unknown_resource_type" {
+  name           = "app"
+  resource_type  = "azurerm_resource_group"
+  resource_types = [terraform_data.resource_type.output]
+}
+`
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: testAccProviderFactories,
+		CheckDestroy:      testAccCheckResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: config,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("azurecaf_name.unknown_prefix", "result", "late-rg-app"),
+					resource.TestCheckResourceAttr("azurecaf_name.unknown_suffix", "result", "rg-app-001"),
+					resource.TestCheckResourceAttr("azurecaf_name.unknown_resource_type", "results.azurerm_storage_account", "stapp"),
+				),
+			},
+			{
+				Config:   config,
+				PlanOnly: true,
 			},
 		},
 	})

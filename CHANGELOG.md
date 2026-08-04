@@ -7,408 +7,78 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-- **Migrate resource CRUD to context-based handlers with `diag.Diagnostics`**: Converted `Create`/`Read`/`Delete` functions in `azurecaf_name` and `azurecaf_naming_convention` resources to `CreateContext`/`ReadContext`/`DeleteContext`, returning `diag.Diagnostics` for structured multi-error reporting, attribute-path-aware errors, and context propagation (cancellation/logging). Added explicit `d.SetId("")` in `DeleteContext` handlers. Updated acceptance-test harness to use `ProviderFactories`/`testAccProviderFactories` instead of the legacy `Providers`/`testAccProviders` pattern, consistent with HashiCorp best practices.
+## [v2.0.0] - 2026-08-03
 
-<!-- markdownlint-disable MD013 -->
+### Breaking changes
 
-### ⚠️ BREAKING CHANGES — v2.0.0 Migration Guide
-
-> **Audience**: anyone upgrading from `1.x` to `2.0.0`.
-> **Tracking**: epic [#586](https://github.com/aztfmod/terraform-provider-azurecaf/issues/586), milestone [v2.0.0](https://github.com/aztfmod/terraform-provider-azurecaf/milestone/13), target **2026-07-31**.
-> **TL;DR**: one resource is removed, several CAF slugs are realigned with official Microsoft documentation, and plan-time name visibility imposes a small new requirement on configurations that use `random_length`. Plan an upgrade window, run `terraform plan` against your existing state, and follow the steps below.
-
-#### 1. Removed: the `azurecaf_naming_convention` resource (#315)
-
-The legacy `azurecaf_naming_convention` resource is **removed** in `v2.0.0`. The deprecation warning has been emitted by the resource's `DeprecationMessage` since `v1.x` (see [`azurecaf/resource_naming_convention.go:41`](azurecaf/resource_naming_convention.go#L41)). All consumers must migrate to `azurecaf_name` before upgrading.
-
-##### How to detect impact
-
-```bash
-grep -rE 'resource\s+"azurecaf_naming_convention"' .
-terraform state list | grep azurecaf_naming_convention
-```
-
-If either command returns matches, you need to migrate before upgrading.
-
-##### Migration pattern
-
-```hcl
-# v1.x — DEPRECATED, removed in v2.0.0
-resource "azurecaf_naming_convention" "old" {
-  name          = "myapp"
-  prefix        = "dev"
-  resource_type = "azurerm_storage_account"
-  convention    = "cafrandom"
-}
-
-# v2.0.0 — equivalent using azurecaf_name
-resource "azurecaf_name" "new" {
-  name          = "myapp"
-  prefixes      = ["dev"]
-  resource_type = "azurerm_storage_account"
-  random_length = 5
-  clean_input   = true
-}
-```
-
-| `azurecaf_naming_convention` argument | `azurecaf_name` equivalent                                                |
-|---------------------------------------|---------------------------------------------------------------------------|
-| `prefix` (singular)                   | `prefixes = ["..."]` (list)                                               |
-| `postfix` (singular)                  | `suffixes = ["..."]` (list)                                               |
-| `prefixes` / `suffixes` (list args)   | `prefixes` / `suffixes` (now actually honored — these were dead in `v1.x`)|
-| `convention = "cafclassic"`           | `random_length = 0` (no random suffix)                                    |
-| `convention = "cafrandom"`            | `random_length = 5` (or any value > 0)                                    |
-| `convention = "random"`               | `random_length = <max-allowed-for-resource>` and omit `name`              |
-| `convention = "passthrough"`          | Use the `azurecaf_name` **data source** with `passthrough = true`         |
-
-After migration, run `terraform state rm` on the old resource address and `terraform import` (or apply) the new `azurecaf_name` address. Most users only need the `result` attribute, which exists on both, so consuming references usually port over with a one-line address change.
-
-#### 2. CAF slug realignments
-
-Several slugs are corrected to match the [Microsoft CAF abbreviations guidance](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations) and the actual Azure naming rules. **All slug changes in this section mean existing `azurecaf_name` outputs will differ.** This will force replacement of any downstream resource that uses the generated name as its `name = ` argument.
-
-##### Known renames (confirmed)
-
-| Resource type                                  | `v1.x` slug | `v2.0.0` slug | Source                                                                            |
-|------------------------------------------------|-------------|---------------|-----------------------------------------------------------------------------------|
-| `azurerm_app_service_plan`                     | `plan`      | `asp`         | [#253](https://github.com/aztfmod/terraform-provider-azurecaf/issues/253)         |
-| `azurerm_function_app`                         | `fa`        | `func`        | [#168](https://github.com/aztfmod/terraform-provider-azurecaf/issues/168)         |
-| `azurerm_web_application_firewall_policy`      | `wafw`      | `waf`         | PR [#353](https://github.com/aztfmod/terraform-provider-azurecaf/pull/353) (#218) |
-| `azurerm_route_table`                          | TBD         | TBD           | [#186](https://github.com/aztfmod/terraform-provider-azurecaf/issues/186)         |
-| `azurerm_lb_*` family                          | TBD         | TBD           | [#264](https://github.com/aztfmod/terraform-provider-azurecaf/issues/264)         |
-| `azurerm_monitor_activity_log_alert`           | TBD         | TBD           | [#219](https://github.com/aztfmod/terraform-provider-azurecaf/issues/219)         |
-| `azurerm_synapse_workspace`                    | TBD         | TBD           | [#234](https://github.com/aztfmod/terraform-provider-azurecaf/issues/234)         |
-| Duplicate-slug corrections (multiple)          | TBD         | TBD           | PR [#314](https://github.com/aztfmod/terraform-provider-azurecaf/pull/314) (#306) |
-| `azurerm_eventhub_namespace`                   | `ehn`       | `evhns`       | Azure-sync (#576)                                                                 |
-| `azurerm_synapse_workspace` (slug duplicate)   | `syws`      | `synw`        | Azure-sync (#576)                                                                 |
-| `azurerm_data_protection_backup_vault`         | `dpbv`      | `bvault`      | Azure-sync (#576)                                                                 |
-
-> **Note**: rows marked `TBD` will be filled in as the slug-trilogy PRs (#314, #353, plus the consolidated PR) land. Until then, refer to the linked issues for current discussion of the target slug.
-
-##### How to detect impact (per slug change)
-
-```bash
-# 1. Find every azurecaf_name address using an affected resource_type
-grep -rE 'resource_type\s*=\s*"azurerm_app_service_plan"' .
-
-# 2. Capture the current name (run BEFORE upgrade)
-terraform state show 'azurecaf_name.<address>' | grep '^\s*result\s*='
-
-# 3. After upgrade, terraform plan will show the diff;
-#    downstream resources that pin the old name will be force-replaced.
-```
-
-##### Mitigation options
-
-1. **Accept the rename** (recommended for greenfield / non-production): let Terraform plan show the diff and apply.
-2. **Pin the legacy slug via `prefixes`/`suffixes`** to keep the same final string:
-
-   ```hcl
-   # If you depended on the v1.x slug "plan" for App Service Plan:
-   resource "azurecaf_name" "asp" {
-     name          = "myapp"
-     resource_type = "azurerm_app_service_plan"
-     suffixes      = ["plan"]   # forces the legacy slug back into the name
-     use_slug      = false      # do not also append the new "asp" slug
-   }
-   ```
-
-3. **Use the `passthrough` mode** to keep an exact name unchanged regardless of slug:
-
-   ```hcl
-   resource "azurecaf_name" "stable" {
-     name          = "myapp-prod-plan-001"  # exact legacy value
-     resource_type = "azurerm_app_service_plan"
-     passthrough   = true
-   }
-   ```
-
-Choose option 2 or 3 if you cannot replace the downstream resource (typical for stateful resources like storage accounts or databases).
-
-#### 3. Plan-time name visibility — `random_seed` is now required for deterministic plans (#336, #437)
-
-Names are now computed at `terraform plan` time (instead of `terraform apply` time) so the final value is visible during review. This works automatically **except** when `random_length > 0`. To make the plan-time and apply-time values match, you must set a non-zero `random_seed`.
-
-##### Before (`v1.x`)
-
-```hcl
-resource "azurecaf_name" "ex" {
-  name          = "myapp"
-  resource_type = "azurerm_storage_account"
-  random_length = 5
-  # result during plan: "(known after apply)"
-  # result during apply: stmyappabcde (random)
-}
-```
-
-##### After (`v2.0.0`)
-
-```hcl
-resource "azurecaf_name" "ex" {
-  name          = "myapp"
-  resource_type = "azurerm_storage_account"
-  random_length = 5
-  random_seed   = 12345          # NEW — required for plan-time visibility
-  # result during plan: stmyappxyzwv (visible)
-  # result during apply: stmyappxyzwv (same, deterministic)
-}
-```
-
-##### What happens if you don't set `random_seed`
-
-The provider **falls back to apply-time computation** (same as `v1.x` behavior). The plan will show `result = (known after apply)` for that one resource. There is no error and no breaking change for existing configurations that omit `random_seed`; you just lose the new plan-time visibility for that resource.
-
-##### Data-source caveat
-
-The `azurecaf_name` **data source** treats `random_seed = 0` as a literal deterministic seed (not as "unset"). The `azurecaf_name` **resource** treats `random_seed = 0` as unset (falls back to apply-time). This asymmetry is intentional — see [`docs/data-sources/azurecaf_name.md`](docs/data-sources/azurecaf_name.md) and [`docs/resources/azurecaf_name.md`](docs/resources/azurecaf_name.md).
-
-#### 4. CRUD function signatures migrated to `diag.Diagnostics` (#501)
-
-The internal CRUD functions for `azurecaf_name` are migrated from the legacy `func(d, meta) error` signature to the context-aware `func(ctx, d, meta) diag.Diagnostics` signature.
-
-**End-user impact: none.** This is an internal refactor that aligns the resource with the data source (which already uses `diag.Diagnostics`) and with current Terraform Plugin SDK v2 best practice.
-
-If you maintain a **fork** of this provider or import internals from `github.com/aztfmod/terraform-provider-azurecaf/azurecaf` directly (highly unusual), update any wrapper functions:
-
-```go
-// v1.x
-func resourceNameCreate(d *schema.ResourceData, meta interface{}) error { ... }
-
-// v2.0.0
-func resourceNameCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics { ... }
-```
-
-#### 5. Error behavior changes (silent-error fixes)
-
-Several `v1.x` code paths silently swallowed errors or skipped validation. `v2.0.0` surfaces these as Terraform diagnostics. Configurations that were quietly producing **invalid names** in `v1.x` will now **fail loudly** with a clear error, instead of being accepted and then rejected by Azure at apply time. Most users will not notice; users with malformed resource definitions or unusual regex inputs may see new plan-time errors that previously surfaced only at apply or at Azure-API time.
-
-| Issue                                                                     | What changed                                                                                    |
-|---------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
-| [#375](https://github.com/aztfmod/terraform-provider-azurecaf/issues/375) | `azurecaf_name` data source — regex compile errors now surface as diagnostics, not silent skip  |
-| [#376](https://github.com/aztfmod/terraform-provider-azurecaf/issues/376) | `fails_if_empty` parameter on the data source is now honored (was dead code)                    |
-| [#377](https://github.com/aztfmod/terraform-provider-azurecaf/issues/377) | `validation_regex` struct-tag typo fixed — fields that were not being validated now are         |
-| [#378](https://github.com/aztfmod/terraform-provider-azurecaf/issues/378) | Unchecked `d.Set()` returns now propagate errors as diagnostics                                 |
-| [#371](https://github.com/aztfmod/terraform-provider-azurecaf/issues/371) | Removed already-deleted upstream `azurerm_app_service_plan` mapping noise                       |
-
-#### 6. Upgrade checklist
-
-```text
-[ ] terraform plan in your current state — make sure 1.x is clean before upgrading
-[ ] grep for `resource "azurecaf_naming_convention"` and migrate to azurecaf_name (§1)
-[ ] grep for the affected resource_types in §2 and decide rename-vs-pin per resource
-[ ] add random_seed = <int> to every azurecaf_name with random_length > 0 (§3)
-[ ] terraform init -upgrade && terraform plan — review the full diff
-[ ] in CI, run `make test_mock_azurerm_all` against the new names if you have a fork
-[ ] apply during a maintenance window — slug renames force-replace downstream resources
-```
-
-<!-- markdownlint-enable MD013 -->
-
-### Changed (BREAKING — v2.0.0)
-- **CAF slug realignment for 60 resources (rebases [PR #188](https://github.com/aztfmod/terraform-provider-azurecaf/pull/188) by [@t3mi](https://github.com/t3mi))**: Brought the slugs for 60 resources into agreement with the official Microsoft Cloud Adoption Framework [resource abbreviations table](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations) (last updated 2025-05-23). Every replacement was cross-checked against the live CAF page; the full per-resource validation is captured in `.copilot-tracking/github-issues/sprint/v2-0-0/pr188-caf-validation.md`. All changes are slug-only (no length, regex, scope, or `official.resource` modifications other than syncing `official.slug` where the existing official block was genuine). Breakdown:
-  - **CAF exact-match corrections (33 resources)**: `appcg→appcs`, `bast→bas`, `cdn→cdne`, `cdnprof→cdnp`, `aci→ci`, `egd→evgd`, `egdt→evgdt`, `egs→evgs`, `egt→evgt`, `ehn→evhns`, `fw→afw`, `fa→func`, `kc→dec`, `kdb→dedb`, `dsk→disk`, `amag→ag`, `nsgr→nsgsr`, `nh→ntf`, `pippf→ippre`, `purv→pview`, `sig→gal`, `sgnlr→sigr`, `sysp→synsp`, `syws→synw`, `msi→id`, `hpool→vdpool`, `dag→vdag`, `wvdws→vdws`, `vpeer→peer`, plus the `azurerm_route`/`azurerm_route_table` swap (`rt`/`route`→`udr`/`rt`) and the `azurerm_synapse_spark_pool`/`azurerm_synapse_sql_pool` swap (`sysp`/`synsp`→`synsp`/`syndp`).
-  - **CAF-rooted extensions for child resources (16 resources)**: `fas→funcs`, `dns→dnsz`, `pdns→pdnsz`, `ehar→evhar`, `ehcg→evhnscg`, `ehnar→evhnsar`, `ehdr→evhnsdr`, `kehc→deevhdcon`, `lapp→logic`, `lappac→logicac`, `lappah→logicah`, `lappia→ia`, `lapptc→logictc`, `lappth→logicth`, `synspvab→syndpvab`, `synspwc→syndpwc`, `synspwg→syndpwg`, `syfw→synfw`, `lbnatrl→lbnatr`.
-  - **Bug fixes for copy-paste slug errors (8 resources)**: 5 load-balancer child resources (`azurerm_lb_backend_address_pool`, `_nat_pool`, `_outbound_rule`, `_probe`, `_rule`) all shared the bogus slug `adt` (with an `official` block pointing to "Azure Digital Twins") — now `lbbepool`, `lbnatpool`, `lbor`, `probe`, `rule`. `azurerm_monitor_activity_log_alert` had slug `adfmysql` (Data Factory MySQL copy-paste) → `amala`. `azurerm_notification_hub_authorization_rule` and `azurerm_notification_hub_namespace` both had slug `dnsrec` (DNS copy-paste) → `ntfar` and `ntfns`.
-  - **Impact (BREAKING)**: Any Terraform configuration that relied on the previous slug appearing in a generated name will see a different slug after upgrade. Hold for the v2.0.0 cut. Originally proposed in 2022 by @t3mi as PR #188 against the long-running `3_0` branch; this commit cherry-picks the slug changes onto current `main` (494 resources), re-validates them against today's CAF guidance, and adds the 8 bug fixes that have accumulated since.
-  - **Out of scope (deferred follow-up)**: The 5 load-balancer resources still carry bogus `official.resource: "Azure Digital Twins"` metadata that was not propagated to the slug field. That `official` block cleanup is tracked separately and does not affect generated names.
+- Removed the deprecated `azurecaf_naming_convention` resource. Migrate its state and references to `azurecaf_name` before upgrading; the resource schemas are not compatible with Terraform `moved` blocks.
+- Realigned 64 existing resource slugs with current Cloud Adoption Framework abbreviations and corrected historical copy/paste errors. Configurations using `use_slug = true` can produce different names and downstream replacements. See the [v2.0.0 migration guide](docs/migration-v2.md) for the complete mapping.
+- Removed the obsolete `azurerm_app_service_plan` definition in favor of `azurerm_service_plan`, removed the nonexistent `azurerm_lb_backend_pool` definition in favor of `azurerm_lb_backend_address_pool`, and removed `azurerm_role_assignment` because AzureRM requires its name to be a tenant-unique UUID rather than a CAF-prefixed name.
+- Corrected naming scope, length, and character rules for Custom Provider, Load Balancer child resources, Private Link Service, Storage Table, Synapse Workspace, and Web Application Firewall Policy. Existing names that do not satisfy the corrected rules now fail validation.
+- Corrected seeded random generation to sample all 26 alphabet characters. Because v1.x excluded `z`, the same `random_seed` can produce a different suffix in v2.0.0; review seeded data-source results and newly generated resource names before applying.
 
 ### Added
-- **30 new resource definitions** (issue #524): Added naming support for API Management sub-resources (api_version_set, authorization_server, named_value, openid_connect_provider), App Service certificate_order, Application Insights analytics_item/api_key, Automation connections/variables/DSC, Backup policies, Data Factory linked_service_azure_file_storage, Dev Test policy, DNS srv_record, Event Grid system_topic, Key Vault certificate_issuer, Kusto principal_assignments, Log Analytics datasources, Network packet_capture/flow_log, Site Recovery mappings. Total: 494 → 524 resources.
-  - Impact: Minor — new resource types only, no changes to existing behavior.
-- **Non-nameable resource exclusion catalog** (`completness/non_nameable_resources.json`): Machine-readable catalog of azurerm resources that do NOT have user-controlled `name` fields. Used by weekly-azure-sync to eliminate false positives.
-  - Impact: Low — infrastructure/workflow improvement.
+
+- Added naming support for 29 AzureRM resource types, bringing the supported inventory from 494 to 520 after invalid and obsolete definitions were removed:
+  - API Management: `azurerm_api_management_api_version_set`, `azurerm_api_management_authorization_server`, `azurerm_api_management_named_value`, and `azurerm_api_management_openid_connect_provider`.
+  - App Service and Application Insights: `azurerm_app_service_certificate_order`, `azurerm_application_insights_analytics_item`, and `azurerm_application_insights_api_key`.
+  - Automation: `azurerm_automation_connection_certificate`, `azurerm_automation_connection_classic_certificate`, `azurerm_automation_connection_service_principal`, `azurerm_automation_dsc_nodeconfiguration`, and the bool, datetime, int, and string variable resources.
+  - Backup and Data Factory: `azurerm_backup_policy_file_share`, `azurerm_backup_policy_vm`, and `azurerm_data_factory_linked_service_azure_file_storage`.
+  - DNS, Event Grid, and Key Vault: `azurerm_dns_srv_record`, `azurerm_eventgrid_system_topic`, and `azurerm_key_vault_certificate_issuer`.
+  - Data Explorer and Log Analytics: both Kusto principal-assignment resources and the Windows event and performance-counter data sources.
+  - Networking and Site Recovery: `azurerm_network_packet_capture`, `azurerm_network_watcher_flow_log`, `azurerm_site_recovery_network_mapping`, and `azurerm_site_recovery_protection_container_mapping`.
+- Added plan-time name calculation for `azurecaf_name`. Deterministic random names are visible during planning when `random_length` uses a non-zero `random_seed`; unseeded random names remain known after apply.
+- Added generated Terraform mock-provider tests that validate CAF outputs against the AzureRM provider schema without Azure credentials, including PR-scoped and weekly full-sweep workflows.
+- Added a versioned migration guide and regression coverage for v2 resource definitions, removals, slug corrections, constraints, imports, and JSON unmarshalling.
 
 ### Changed
-- **Weekly Azure Sync workflow uses schema-based nameability filter**: Updated `.github/workflows/weekly-azure-sync.md` to run `terraform providers schema -json` and dynamically filter resources by checking for a required `name` attribute. Reduces false positives from 74% to ~0%. Falls back to static exclusion list if schema fetch fails.
-  - Impact: Low — workflow/CI improvement only.
+
+- Migrated provider, resource, and data-source operations to Terraform SDK Context CRUD APIs with `diag.Diagnostics` and context-aware provider factories.
+- Made random generation consistent across plan and apply. Seeded generation uses a local deterministic source; unseeded generation uses `crypto/rand` and returns entropy-source failures instead of panicking or silently falling back.
+- Made `go generate` format generated Go source before writing it, so freshness checks are idempotent and cannot leave a partially generated model.
+- Removed unused legacy resource maps and deprecated `ioutil` usage.
+- Regenerated the provider model from the final 520-resource definition inventory.
 
 ### Fixed
-- **Feature**: Names are now computed at plan time instead of apply time (#336)
-  - Added `CustomizeDiff` to the `azurecaf_name` resource so `result` and `results` values
-    are visible during `terraform plan` instead of showing "(known after apply)"
-  - Plan-time visibility requires `random_seed` to be set when `random_length > 0`;
-    without an explicit seed, names fall back to apply-time computation
-  - Fixed `randSeq` to use a local `rand.Source` instead of the global source,
-    which is auto-seeded randomly in Go 1.20+ and caused plan-apply inconsistency
-  - Fixed `randSeq` off-by-one: `Intn(len-1)` never selected the last letter (`z`)
-  - Clarified behavior: `random_seed = 0` is treated as an unset/non-deterministic
-    seed; only non-zero seeds produce deterministic names, matching `extractNamingParams`
-  - Refactored shared naming logic into `extractNamingParams`, `computeNames` helpers
-    to eliminate code duplication between `CustomizeDiff` and `Create`
-  - Moved `random_length` validation into shared `computeNames` so plan and apply
-    perform identical checks
-  - `CustomizeDiff` now handles `ForceNew` replacements correctly by checking
-    `HasChange` on input attributes instead of skipping all existing resources
-  - All `SetNew` calls in `CustomizeDiff` now check and propagate errors
-  - Documented the `random_seed = 0` "treated as unset" caveat in
-    `docs/resources/azurecaf_name.md` and clarified that the `azurecaf_name`
-    **data source** treats `random_seed = 0` as a literal deterministic seed
-    in `docs/data-sources/azurecaf_name.md` (resource vs. data source semantics differ)
-  - Hardened the random-suffix code path against the SonarCloud `go:S2245`
-    weak-PRNG hotspot by splitting it in two: the non-deterministic branch
-    (`randSeq(_, nil)` and the legacy `azurecaf_naming_convention` last-char
-    selector) now draws from `crypto/rand` via a new `randomLetter()` helper,
-    so there is no longer a `math/rand` call on that path. `randomLetter()`
-    panics (rather than falling back to a weaker PRNG) if `crypto/rand.Reader`
-    fails, because that only happens when the OS entropy source is broken,
-    which is fatal for a Terraform provider anyway. The deterministic branch
-    (`randSeq(_, &seed)`) intentionally keeps `math/rand`, because a
-    seedable, repeatable PRNG is what makes plan-time name visibility work
-    (#336) — its output is a non-secret Terraform resource name, not a
-    security value, and `crypto/rand` cannot satisfy the determinism contract.
-    Removed the dead `// NOSONAR` markers from the previous attempt; those
-    comments do not suppress SonarCloud Security Hotspots (only Issues), so
-    they were noise. The single remaining `go:S2245` hotspot (the seeded
-    deterministic path) must be marked **Safe** in the SonarCloud UI by a
-    maintainer; it cannot be refactored away without breaking #336. As a side
-    effect, the legacy resource's last-character selector now reaches the
-    full `a-z` alphabet (the previous `Intn(len-1)` excluded `z`).
-  - Fully backward compatible with existing configurations
-- **`validation_regex` pipe character bug in `api_management` and `azurerm_load_test` resources (fixes #527)**: The `validation_regex` for 9 resources incorrectly ended with `[a-zA-Z0-9|]`, allowing a literal pipe (`|`) as the last character. Azure APIM and Load Test names do not permit `|`, and the cleaning `regex` already stripped it — making the definitions internally inconsistent. Changed `[a-zA-Z0-9|]` to `[a-zA-Z0-9]` in `resourceDefinition.json` for: `azurerm_api_management`, `azurerm_api_management_api`, `azurerm_api_management_api_operation_tag`, `azurerm_api_management_backend`, `azurerm_api_management_certificate`, `azurerm_api_management_gateway`, `azurerm_api_management_group`, `azurerm_api_management_logger`, and `azurerm_load_test`. Regenerated `azurecaf/models_generated.go`.
-  - Impact: Low — names ending with `|` were already silently stripped by the cleaning regex; this aligns validation with actual platform behavior.
 
-- **Issue Arborist agentic workflow — allow `python3` in agent sandbox (fixes #509)**: The daily `Issue Arborist` workflow run 26360490064 reported a missing-tools failure: *"Bash command execution was blocked by security policy. Cannot run python3 or any shell commands in this environment."* The agent tries to run `python3` to cluster ~100 issues by token/label overlap (jq alone is awkward for set similarity), but the bash allowlist only granted `cat *`, `jq *`, and the schema script. Added `python3 *` to `.github/workflows/issue-arborist.md` `tools.bash` (matching the pattern already used by `issue-to-pr-agent.md`), documented in the prompt that `python3` is available for richer analysis with output constrained to `${GITHUB_WORKSPACE}/.gh-aw-data/`, and regenerated `issue-arborist.lock.yml` via `gh aw compile` (compiler v0.72.1). The recompile also pinned `github/gh-aw-actions/setup` to its commit SHA (was floating `v0.74.4` tag, now `bc56a0cad2f450c562810785ef38649c04db812a # v0.72.1`), matching the SHA-pinning convention introduced in commit 9c6e560. Impact: removes the recurring `[aw] Issue Arborist failed` issue; no behavior change for end users of the provider.
-- **`azurecaf/models_generated.go` is now gofmt-clean**: The generated file's struct-literal alignment did not match what `gofmt` produces on current Go toolchains. As a result, the v1.2.34 release pipeline failed at the `Run GoReleaser` step with `git is in a dirty state - M azurecaf/models_generated.go`, because the `Go` workflow's E2E tests call `make build` (which runs `go generate` then `go fmt ./...`), and `go fmt` reformatted the file. Regenerated and gofmt'd the file (no semantic change, same 489 resource entries) so subsequent runs of `make build` leave the working tree clean. Impact: None for end users; unblocks tag releases (next attempt should be v1.2.34 or later).
+- Preserved `azurecaf_environment_variable` compatibility: missing variables always return an error, while `fails_if_empty` additionally rejects variables that exist with an empty value.
+- Propagated imported-state, `d.Set`, regex compilation, and plan-time `SetNew` errors as Terraform diagnostics instead of discarding them.
+- Corrected the `validation_regex` JSON tag so definitions loaded from JSON retain their validation expression.
+- Corrected API Management and Load Test validation expressions that accidentally allowed a trailing pipe character.
+- Corrected 29 new or updated naming definitions so their validation expressions accept the documented one-character minimum.
+- Restored unseeded `azurecaf_name` data-source behavior so omitting `random_seed` uses fresh cryptographic randomness instead of a globally constant suffix; explicitly configured seeds, including `0`, remain deterministic.
+- Preserved unseeded random names and resource IDs during refresh, eliminating plan→apply→plan output drift.
+- Deferred plan-time name generation when any naming input, including list elements, is unknown, preventing placeholder-derived names, false validation failures, and inconsistent apply results.
+- Corrected the mock-AzureRM harness to merge repeated resource overrides, emit valid HCL for constrained schemas, isolate provider initialization from user CLI settings, and verify that tests execute the local provider binary.
+- Prevented mock-harness unit tests from writing Python bytecode caches that can dirty tagged release worktrees before GoReleaser runs.
+- Updated the GoReleaser archive configuration to supported v2 syntax and normalized `terraform-plugin-log` as a direct module dependency so release hooks leave the source tree clean.
+
+### Migration impact
+
+This is a **major** release. Complete the [v2.0.0 migration guide](docs/migration-v2.md), upgrade with `terraform init -upgrade`, and review the full Terraform plan before applying.
+
+## [v1.2.34] - 2026-05-25
 
 ### Added
-- **Weekly mock-azurerm sweep** (`.github/workflows/weekly-mock-azurerm.md`): Companion gh-aw agentic workflow to the PR-time `mock-azurerm.yml` gate. Runs the full mock-azurerm sweep across **every** `azurerm_*` resource in `resourceDefinition.json` once a week (Mondays 09:00 UTC), classifies failures into three buckets (real CAF bug, scaffolding gap, deprecated upstream resource) and opens a single categorized issue with `close-older-issues: true` so the backlog stays tidy. Reuses `make test_mock_azurerm_all` and the harness under `scripts/mock-test/` introduced in the previous entry.
-  - Impact: Low — additive new agentic workflow only, no provider behavior change. Issues are advisory backlog items, not gating.
-- **Mock-azurerm PR gate** (`scripts/mock-test/` + `.github/workflows/mock-azurerm.yml`): Added a CI check that proves every CAF-generated name is accepted by the corresponding `azurerm_*` resource schema, using `terraform test` with `mock_provider "azurerm" {}`. Closes the long-standing gap where existing in-process Go tests only validated the regex against itself. Generates three naming variations per resource (`default`, `with_prefix=["dev"]`, `with_random=5/seed=12345`) and runs them against the live `hashicorp/azurerm` (~> 4.0) schema — no Azure credentials required.
-  - Diff-scoped on PRs (only resources changed in `resourceDefinition.json` are re-validated) so the check stays fast.
-  - New Makefile targets: `make test_mock_azurerm_setup`, `make test_mock_azurerm_changed`, `make test_mock_azurerm_all`.
-  - See `scripts/mock-test/README.md` for local usage.
-  - Cleaned up `scripts/mock-test/generate_tests.py`, `fetch_schema.sh`, and `run_all.sh` to clear the SonarCloud quality-gate findings raised on PR #485: extracted repeated HCL literals (`"Linux"`, `"CanNotDelete"`, `"Custom"`, `"10.0.0.1"`, `"PT5M"`) as named constants, split `fake_value_for` into table-driven helpers (`_override_lookup`/`_name_based_value`/`_type_based_value`), split `main` into `_build_arg_parser`/`_select_wanted`/`_classify_resource`/`_emit_workspace` so it returns non-zero when no workspace can be generated, switched `resources_changed_between` to parsed-JSON diff (also addresses a PR reviewer comment), threaded the resolved `name_attr` through to `make_test_hcl` so assertions hit the right schema attribute for resources like `azurerm_policy_definition` that use `display_name`, dropped the redundant `json.JSONDecodeError` from the except clause (it derives from `ValueError`), added an explicit `return 0` to `run_all.sh::usage`, and added a default `*) ;;` case to `fetch_schema.sh`'s flag loop. No behavior change to the generated workspaces.
-  - Impact: Low — additive new CI workflow only, no provider behavior change.
-- **Weekly Azure Sync 2026-05-14 — 89 new resource types (post-review)**: Added definitions for resources highlighted by the weekly `azure-sync` report. All entries are additive (no slug or behavior changes to existing resources) and follow CAF-style abbreviations and Azure naming rules. The initial sync proposed 105 resources; 16 were removed during review (see "Removed" below) and 2 had their regex/length corrected (see "Fixed" below). Every kept addition was validated via `terraform test` with `mock_provider "azurerm"` and fuzz-tested (89 × 25 = 2,225 randomized inputs, 99.87% pass rate; 3 remaining edge cases match pre-existing patterns in `main`). Categories covered:
-  - Compute: `azurerm_container_group` (slug `aci`), `azurerm_orchestrated_virtual_machine_scale_set` (`ovmss`), `azurerm_snapshot` (`snp`), `azurerm_dedicated_hardware_security_module` (`hsm`).
-  - Networking: `azurerm_network_profile` (`npr`), `azurerm_route_filter` (`rf`), `azurerm_vpn_gateway` (`vpng`), `azurerm_virtual_network_gateway_connection` (`vngc`), `azurerm_express_route_circuit_authorization` (`erca`), `azurerm_express_route_circuit_peering` (`ercp`), `azurerm_firewall_policy_rule_collection_group` (`fwprcg`), `azurerm_virtual_hub_route_table` (`vhrt`), `azurerm_virtual_hub_ip` (`vhip`), `azurerm_virtual_hub_bgp_connection` (`vhbgp`), `azurerm_virtual_hub_security_partner_provider` (`vhspp`).
-  - Storage & Databases: `azurerm_sql_database` (`sqld`), `azurerm_mssql_virtual_machine` (`sqlvm`), `azurerm_cosmosdb_cassandra_keyspace` (`coscas`), `azurerm_cosmosdb_gremlin_database` (`cosgrm`), `azurerm_cosmosdb_gremlin_graph` (`cosgrmg`), `azurerm_cosmosdb_mongo_collection` (`cosmonc`), `azurerm_cosmosdb_mongo_database` (`cosmondb`), `azurerm_cosmosdb_sql_container` (`cosqlc`), `azurerm_cosmosdb_sql_database` (`cosqldb`), `azurerm_cosmosdb_sql_stored_procedure` (`cosqlsp`), `azurerm_cosmosdb_table` (`costbl`), `azurerm_storage_encryption_scope` (`stes`), `azurerm_storage_data_lake_gen2_path` (`stdlp`), `azurerm_shared_image_version` (`siv`).
-  - IoT & Messaging: `azurerm_iothub_endpoint_eventhub` (`iothepeh`), `azurerm_iothub_endpoint_servicebus_queue` (`iothepsbq`), `azurerm_iothub_endpoint_servicebus_topic` (`iothepsbt`), `azurerm_iothub_endpoint_storage_container` (`iothepsc`), `azurerm_iothub_fallback_route` (`iothfr`), `azurerm_iothub_route` (`iothr`), `azurerm_iot_time_series_insights_standard_environment` (`tsise`), `azurerm_iot_time_series_insights_reference_data_set` (`tsirds`), `azurerm_eventhub_cluster` (`ehc`).
-  - Analytics & Data: `azurerm_data_share` (`dshr`), `azurerm_data_share_account` (`dshra`), `azurerm_data_share_dataset_blob_storage` (`dshrdsb`), `azurerm_data_share_dataset_data_lake_gen1` (`dshrdsg1`), `azurerm_data_share_dataset_data_lake_gen2` (`dshrdsg2`), `azurerm_data_share_dataset_kusto_cluster` (`dshrdskc`), `azurerm_data_share_dataset_kusto_database` (`dshrdskd`), `azurerm_hpc_cache` (`hpcc`), `azurerm_hpc_cache_blob_target` (`hpcbt`), `azurerm_hpc_cache_nfs_target` (`hpcnt`), `azurerm_hdinsight_cluster` (`hdi`), `azurerm_data_factory_integration_runtime_self_hosted` (`adfirsh`), `azurerm_kusto_attached_database_configuration` (`kadc`).
-  - Security & Governance: `azurerm_advanced_threat_protection` (`atp`), `azurerm_attestation` (`atst`), `azurerm_security_center_automation` (`sca`), `azurerm_security_center_auto_provisioning` (`scap`), `azurerm_security_center_contact` (`scc`), `azurerm_sentinel_alert_rule` (`sentar`), `azurerm_sentinel_alert_rule_ms_security_incident` (`sentarms`), `azurerm_sentinel_alert_rule_scheduled` (`sentars`), `azurerm_lighthouse_assignment` (`lha`), `azurerm_lighthouse_definition` (`lhd`), `azurerm_policy_definition` (`pold`), `azurerm_policy_set_definition` (`polsd`), `azurerm_policy_remediation` (`polr`), `azurerm_management_lock` (`mgl`), `azurerm_management_group` (`mg`), `azurerm_key_vault_access_policy` (`kvap`).
-  - App Services & Containers: `azurerm_app_service_slot` (`apps`), `azurerm_app_service_certificate` (`appcert`), `azurerm_service_plan` (`asp`), `azurerm_spring_cloud_app` (`spca`), `azurerm_spring_cloud_certificate` (`spcert`), `azurerm_spring_cloud_service` (`spcs`), `azurerm_spatial_anchors_account` (`spaa`).
-  - Monitoring & Operations: `azurerm_monitor_log_profile` (`mlp`), `azurerm_monitor_action_rule_action_group` (`marag`), `azurerm_monitor_action_rule_suppression` (`mars`), `azurerm_monitor_scheduled_query_rules_log` (`msqrl`), `azurerm_monitor_smart_detector_alert_rule` (`msdar`), `azurerm_log_analytics_data_export_rule` (`laer`), `azurerm_log_analytics_linked_service` (`lals`), `azurerm_log_analytics_saved_search` (`lass`), `azurerm_log_analytics_cluster_customer_managed_key` (`laccmk`).
-  - Automation & DevOps: `azurerm_automation_connection` (`aacon`), `azurerm_automation_module` (`aamod`), `azurerm_automation_dsc_configuration` (`aadsc`), `azurerm_blueprint_assignment` (`bpa`), `azurerm_blueprint_definition` (`bpd`), `azurerm_blueprint_published_version` (`bppv`), `azurerm_dev_test_virtual_network` (`dtlvn`), `azurerm_dev_test_policy` (`dtlp`), `azurerm_dev_test_schedule` (`dtls`), `azurerm_resource_group_template_deployment` (`rgtd`), `azurerm_subscription_template_deployment` (`subtd`).
-  - Other / Misc: `azurerm_managed_application` (`manapp`), `azurerm_managed_application_definition` (`manappd`), `azurerm_media_services_account` (`ams`), `azurerm_devspace_controller` (`dsc`), `azurerm_service_fabric_mesh_application` (`sfmesha`), `azurerm_service_fabric_mesh_local_network` (`sfmeshln`), `azurerm_service_fabric_mesh_secret` (`sfmeshs`), `azurerm_site_recovery_fabric` (`asrf`), `azurerm_site_recovery_replicated_vm` (`asrrvm`), `azurerm_site_recovery_replication_policy` (`asrrp`), `azurerm_site_recovery_protection_container` (`asrpc`).
-  - Impact: Low - additive only. Existing resource slugs are unchanged.
-  - Note: The 3 CAF slug drifts reported in the same issue (`ehn`→`evhns`, `syws`→`synw`, `dpbv`→`bvault`) are **not** included here. Changing existing slugs is breaking for downstream users and should be handled in a separate change with an aliasing/deprecation strategy.
 
-### Fixed
-- **`azurerm_managed_application_definition` naming rules**: Tightened during PR #481 review. Azure rejects names with dashes/underscores/dots for managed-application definitions; updated to `min_length: 3`, `validation_regex: "^[a-zA-Z0-9]{3,64}$"`, `dashes: false`, cleaning `regex: "[^0-9A-Za-z]"`. Without this fix, names generated for this slug would have been rejected by the platform.
-- **`azurerm_storage_encryption_scope` naming rules**: Tightened during PR #481 review. Azure storage encryption scope names are alphanumeric only and must be at least 4 characters; updated to `min_length: 4`, `max_length: 63`, `validation_regex: "^[a-zA-Z0-9]{4,63}$"`, `dashes: false`, cleaning `regex: "[^0-9A-Za-z]"`.
-
-### Removed
-- **Invalid azurerm resource definitions (16, originally proposed in this same PR)**: The following resource types were removed before merge because they cannot be named via `azurecaf_name`. Reasons include: the Terraform resource has no user-supplied `name` argument (parent-keyed only), the platform requires a UUID for the name (so a CAF slug + random suffix is not a valid value), the resource is a data-source-only construct, or the Terraform azurerm resource has been removed/renamed. None of these resources had reached `main` — they only existed in the original PR commit.
-  - `azurerm_advanced_threat_protection` — no `name` argument (keyed by `target_resource_id`).
-  - `azurerm_attestation` — superseded by `azurerm_attestation_provider`; `azurerm_attestation` does not exist in the current azurerm provider.
-  - `azurerm_blueprint_definition` — data source only (`data "azurerm_blueprint_definition"`); no managed resource.
-  - `azurerm_blueprint_published_version` — data source only; no managed resource.
-  - `azurerm_dev_test_policy` — superseded; current resource is `azurerm_dev_test_policy_set` / `azurerm_dev_test_linux_virtual_machine` policies, no top-level `azurerm_dev_test_policy`.
-  - `azurerm_express_route_circuit_peering` — `peering_type` is an enum (`AzurePrivatePeering`, `MicrosoftPeering`, `AzurePublicPeering`), not a free-form name.
-  - `azurerm_hdinsight_cluster` — generic resource does not exist; HDInsight uses type-specific resources (`azurerm_hdinsight_hadoop_cluster`, `_spark_cluster`, etc.) which are already supported.
-  - `azurerm_iothub_fallback_route` — singular per-IoT-Hub resource with no `name` argument.
-  - `azurerm_key_vault_access_policy` — keyed by `object_id` + `tenant_id`; no `name` argument.
-  - `azurerm_lighthouse_assignment` — `lighthouse_definition_id` is a UUID, not a CAF name.
-  - `azurerm_log_analytics_cluster_customer_managed_key` — singular per-cluster resource with no `name` argument.
-  - `azurerm_log_analytics_linked_service` — keyed by `workspace_id` + `read_access_id`/`write_access_id`; no `name` argument.
-  - `azurerm_mssql_virtual_machine` — keyed by `virtual_machine_id`; no `name` argument.
-  - `azurerm_security_center_auto_provisioning` — singleton resource, `name` must be the literal string `"default"`.
-  - `azurerm_sentinel_alert_rule` — abstract type; concrete rule resources (`azurerm_sentinel_alert_rule_scheduled`, `_ms_security_incident`, etc.) are kept.
-  - `azurerm_shared_image_version` — `name` must be a semver string (`major.minor.patch`), not a CAF-style name.
-- **Network Connection Monitor Support**: Added support for `azurerm_network_connection_monitor` resource type
-  - Resource slug: `cm`
-  - Min length: 1, Max length: 80
-  - Scope: parent (child resource of Network Watcher)
-  - Allows alphanumerics, hyphens, periods, and underscores
-  - Follows Azure naming conventions for Network Connection Monitor resources
-  - Impact: Low - Adds new resource type support for Azure Network Watcher connection monitoring
-- **Missing name resources from tracking issue [#432](https://github.com/aztfmod/terraform-provider-azurecaf/issues/432)**: Added four resource type entries that were previously requested but unsupported. Each entry was researched against the Azure naming-rules documentation (`Microsoft.Network/natGateways`) and CAF abbreviations page; resources without an official CAF abbreviation are flagged `out_of_doc: true`.
-  - `azurerm_nat_gateway` — slug `ng` (official CAF), scope `resourceGroup`, min 1 / max 80, allows alphanumerics, hyphens, periods, and underscores. Resource provider namespace: `Microsoft.Network/natGateways`. Closes [#254](https://github.com/aztfmod/terraform-provider-azurecaf/issues/254).
-  - `azurerm_monitor_workspace` — slug `amw`, scope `resourceGroup`, min 4 / max 63, allows alphanumerics and hyphens. Azure Monitor managed Prometheus workspace. Closes [#276](https://github.com/aztfmod/terraform-provider-azurecaf/issues/276).
-  - `azurerm_email_communication_service` — slug `acsmail`, scope `global`, min 1 / max 63, allows alphanumerics and hyphens. Companion to the existing `azurerm_communication_service` entry (`acs`). Closes [#261](https://github.com/aztfmod/terraform-provider-azurecaf/issues/261).
-  - `azurerm_vpn_server_configuration` — slug `vpnsc`, scope `resourceGroup`, min 1 / max 80, allows alphanumerics, hyphens, periods, and underscores. Companion to the existing `azurerm_vpn_gateway_connection` (`vcn`) and `azurerm_vpn_site` (`vst`) entries. Closes [#174](https://github.com/aztfmod/terraform-provider-azurecaf/issues/174).
-  - Impact: Low - additive only, no breaking changes; existing names are unchanged.
+- Added 89 valid AzureRM naming definitions from the weekly Azure sync, bringing the supported inventory from 405 to 494 after excluding resources without a user-controlled name or without a real AzureRM counterpart.
+- Added mock-AzureRM PR and weekly validation infrastructure.
 
 ### Changed
-- **Dependencies**: Bumped `github.com/hashicorp/terraform-plugin-sdk/v2` from v2.38.2 to v2.40.0
-  - Includes resource configuration generation logic for `-generate-config-out` flag (Terraform v1.14.0+)
-  - Added deprecation message support for attributes and blocks
-  - Go version updated from 1.24.4 to 1.25.0
-  - Aligned `e2e/go.mod` dependencies (`terraform-exec` v0.25.0, `terraform-json` v0.27.2, `go-cty` v1.17.0)
-  - Impact: Low -- dependency update only, no breaking changes
-- **Dev Environment**: Bumped `.devcontainer/devcontainer.json` Go feature from `1.24.4` to `1.25.0` to match `go.mod` (`go 1.25.0`). Previous pin would have failed `go build` inside the dev container.
-- **Documentation**: Updated `.github/CONTRIBUTING.md` prerequisite from `Go 1.24.4+` to `Go 1.25.0+` to match `go.mod`.
-- **`.gitignore`**: Added `.copilot-tracking/` to exclude local Doc-Ops session tracking files from version control.
-- **Provider UX and development tooling**: Applied Terraform provider best-practice updates across the provider implementation, tests, and docs.
-  - Replaced ad-hoc provider logging with structured `tflog.Debug` / `tflog.Warn`, added a deprecation message to `azurecaf_naming_convention`, documented schema attributes for generated Registry docs, enabled `resource.ParallelTest` where safe, and pinned `tfproviderlint` to `v0.31.0`.
-  - Impact: Low -- improves provider diagnostics and documentation without changing generated naming behavior.
 
-### Security
-- **CI/Automation, top-level workflow permissions**: Added explicit `permissions: contents: read` block at the top of `.github/workflows/codeql.yml` and `.github/workflows/copilot-setup-steps.yml`. Both workflows previously declared per-job permissions only, which left the top-level `GITHUB_TOKEN` defaulting to the repo/org-level setting (historically `write-all`). The per-job blocks already declare the minimum-required elevated scopes (`security-events: write`, `packages: read`, `actions: read` for CodeQL; `contents: read` for Copilot Setup Steps), so the top-level default tightens the blast radius for any future job that omits its own `permissions:` block. Closes Checkov [CKV2_GHA_1](https://docs.bridgecrew.io/docs/ensure-top-level-permissions-are-not-set-to-write-all) code-scanning alert [#2](https://github.com/aztfmod/terraform-provider-azurecaf/security/code-scanning/2). Mitigates CWE-732 (Incorrect Permission Assignment).
-- **CI/Automation**: SHA-pinned `actions/checkout` and `actions/setup-go` in hand-authored workflows (`codeql.yml`, `copilot-setup-steps.yml`, `e2e.yml`, `go.yml`, `security.yml`) to match the SHA-pinning posture of the gh-aw-managed agentic lock files. Pinned `actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd` (v6.0.2) and `actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c` (v6.4.0). Mitigates tag-mutability risk (CWE-829).
+- Upgraded Go to 1.25.8 and `terraform-plugin-sdk/v2` to v2.40.1.
+- Applied Terraform provider best practices, including state upgrade support, schema descriptions, import validation, and stronger diagnostic handling.
+- Updated the development container, CI workflows, generated-code formatting, and release validation for the newer toolchain.
 
-### Fixed
-- **CI/Automation, `release-validation`**: Added a `hashicorp/setup-terraform@v4` (with `terraform_wrapper: false`) and `actions/setup-go@v6` pre-agent step block to `.github/workflows/release-validation.md`, plus a `Install tfproviderlint` step and a host-side run-script that builds the provider and runs `make test_ci`, `make test_e2e`, `make test_coverage`, and the `CHANGELOG.md` tag-section check. Exit codes, the parsed coverage percentage, and matched CHANGELOG headings are written to `/tmp/results.env` / `/tmp/changelog-entry.txt`, and full logs to `/tmp/{build,test-ci,e2e,coverage}-output.txt`. Removed `make *` and `go *` from the agent's allowed `bash` toolset; the agent now only consumes pre-computed files with `cat`/`grep`/`head`/`tail`. Previously the agent failed every tagged release with `bash command execution is blocked by security policy` and `Go toolchain (go, make) commands are blocked by runner security policy`, because the gh-aw firewall sandbox lacks a Go toolchain and denies shell command execution. Recompiled `release-validation.lock.yml` with `gh aw` v0.72.1; approved the new `hashicorp/setup-terraform@v4` action pin (`dfe3c3f87815947d99a8997f908cb6525fc44e9e`). Closes [#478](https://github.com/aztfmod/terraform-provider-azurecaf/issues/478).
-- **CI/Automation, `nightly-regression`**: Install `tfproviderlint` on the host runner before the agent step runs `make test_ci`, and soften the `Makefile` `unittest` target to skip the lint step (with a warning) when `tfproviderlint` is not on `PATH`. The nightly run on 2026-05-14 failed with `make: tfproviderlint: No such file or directory` (exit 127) because `make test_ci` → `make unittest` shells out to `tfproviderlint ./...` but `nightly-regression.md` never installed the tool (unlike the hand-authored `go.yml` workflow, which already has an install step). Added a `go install github.com/bflad/tfproviderlint/cmd/tfproviderlint@latest` step after `Set up Go` and recompiled `nightly-regression.lock.yml` with `gh aw` v0.72.1. The `Makefile` guard is defense-in-depth: developers on fresh checkouts and other agentic workflows (e.g. `release-validation.md`) that consume `make unittest` / `make test_ci` no longer hit a hard failure if the optional lint tool is missing. Closes [#472](https://github.com/aztfmod/terraform-provider-azurecaf/issues/472).
-- **CI/Automation, `nightly-regression`**: Added a `hashicorp/setup-terraform@v4` (with `terraform_wrapper: false`) and `actions/setup-go@v6` pre-agent step to `.github/workflows/nightly-regression.md`. The nightly E2E suite (`make test_e2e_quick`) shells out to a real `terraform` binary (`e2e/e2e_test.go:80`); without it the suite failed every night with `terraform binary not found in PATH`. Also reworked the run-script to use `set -o pipefail` and capture each suite's exit code in an `if`/`else` (assignment after `tee` was always seeing `$?` of `tee`, so `E2E_EXIT` was reported as `0` even when E2E failed). The step now always exits `0` so the agent can run and decide whether to file an issue.
-- **CI/Automation, `issue-arborist`**: Moved the pre-downloaded `issues.json` and `issues-schema.json` from `/tmp/gh-aw/issues-data/` to `${GITHUB_WORKSPACE}/.gh-aw-data/`. The gh-aw v0.72.1 agent firewall reserves `/tmp/gh-aw/` for runtime files and denies application reads from the `issues-data/` subpath, so the agent could not `cat` or `jq` the file the previous step had just written. Updated all path references in the agent prompt body. (Tracking the upstream `github/gh-aw` `issue-arborist.md` source-of-truth — diverges from `@852cb06ad…` until upstream adopts the same fix.)
-- **CI/Automation, `weekly-azure-sync`**: Moved the resource-discovery compute (supported list, azurerm list, diff, counts, CAF abbreviations fetch) into a pre-agent step that writes `${GITHUB_WORKSPACE}/.gh-aw-data/{supported,azurerm,missing,counts.env,caf-abbreviations.html}`. Removed `python3 *` and `curl *` from the agent's allowed `bash` toolset. The agent now only consumes the pre-computed files with `cat`/`grep`/`head`/`tail`/`sort`/`comm`/`wc`. Previously the agent attempted to run `python3` inside the firewall sandbox, which is denied — see [#468](https://github.com/aztfmod/terraform-provider-azurecaf/issues/468).
-- **CI/Automation**: Added a pre-agent `Set up Go` + `Build provider` step block to `pr-review-agent.md` so the PR review agent can verify `make build` against the repo's Go version (`go.mod` → `1.25.0`). Previously the agent reported "Build passes ⚠️ Unverified — Go toolchain unavailable in sandbox" because the gh-aw agent container (`ghcr.io/github/gh-aw-firewall/agent`) does not ship a Go toolchain. The build now runs on the host runner (where `setup-go` populates the tool cache) and the agent reads `BUILD_RESULT` and a 80-line log tail from `/tmp/`. **Requires recompiling** with `gh aw compile pr-review-agent` to regenerate `pr-review-agent.lock.yml`.
-- **CI/Automation**: Recompiled all 10 GitHub Agentic Workflow lock files with `gh aw` v0.72.1 (previously v0.61.0)
-  - Generated missing `.lock.yml` files for `contributor-welcome`, `issue-to-pr-agent`, `nightly-regression`, `pr-review-agent`, `release-validation`, and `weekly-azure-sync`
-- **CI/Automation**: Migrated agentic workflows to current gh-aw schema
-  - Replaced deprecated `tools.github.repos` with `tools.github.allowed-repos` in `daily-repo-status` and `release-labeler`
-  - Removed redundant `contents: write` / `issues: write` permissions now handled by `safe-outputs` (strict-mode requirement) in `issue-to-pr-agent`, `nightly-regression`, `weekly-azure-sync`
-  - Added missing toolset read permissions (`pull-requests: read`, `issues: read`) required by declared GitHub toolsets
-  - Switched fixed cron expressions to fuzzy schedules (`daily`, `weekly on monday`) in `nightly-regression` and `weekly-azure-sync` to spread load
-  - Replaced `registry.terraform.io` domain in `weekly-azure-sync` network allowlist with the `terraform` ecosystem identifier
+## [v1.2.33] - 2026-05-14
 
-### Documentation
-- **Resource count alignment**: Updated documented Azure resource type count to the actual `405` (verified via `jq 'length' resourceDefinition.json`) across `README.md`, `COMPLETE_TESTING_GUIDE.md`, `docs/index.md`, `docs/resources/azurecaf_name.md`, `docs/resources/azurecaf_naming_convention.md`, `docs/data-sources/azurecaf_name.md`, and `.github/CONTRIBUTING.md`. Reflects the four new resources added under tracking issue [#432](https://github.com/aztfmod/terraform-provider-azurecaf/issues/432).
-- **README.md run-on regressions**: Fixed three rendering bugs introduced by an earlier bulk substitution where a missing newline collapsed adjacent list items / fenced-code lines (lines 398, 418, and 465 — `Resource Matrix Tests` / `Constraint Tests`, `100% Resource Coverage` / `Naming Validation`, and the comprehensive testing framework code block). Items now render as separate bullets / lines.
-- **README.md broken make targets**: Replaced two references to the non-existent `make test_resource_constraints` target with `make test_resource_matrix` (whose Makefile help string already says "Test resources by category and validate constraints"). The duplicate row was de-duplicated.
-- **README.md missing argument**: Added `error_when_exceeding_max_length` to the Supported Parameters table; the schema (`resource_name.go:238`) exposes the field but the table omitted it.
-- **TESTING.md stale file references**: Removed two references to integration test files that do not exist (`integration_cross_resource_test.go`, `integration_naming_convention_types_test.go`) and replaced them with `integration_all_resources_complete_test.go`. Updated the "where to add a new test" guidance accordingly.
-- **TESTING.md / E2E_IMPLEMENTATION_SUMMARY.md**: Replaced two hedging phrases (`Don't just test the happy path` → `Cover edge cases, not only the happy path`; `easy to extend` → `extensible without refactoring`).
-- **e2e/README.md**: Converted a dangling `- **Test Categories**:` empty-body bullet into a `#### Test Categories` subheading so the four sub-bullets render as a section instead of as orphan list children.
+### Added
+
+- Added `azurerm_network_connection_monitor`, `azurerm_nat_gateway`, `azurerm_monitor_workspace`, `azurerm_email_communication_service`, and `azurerm_vpn_server_configuration`, bringing the supported inventory from 400 to 405.
 
 ### Changed
-- **Resource status table**: Added `azurerm_linux_function_app`, `azurerm_linux_function_app_slot`, `azurerm_managed_redis`, `azurerm_windows_function_app`, `azurerm_windows_function_app_slot`, and `azurerm_windows_web_app` to the README.md and docs/index.md resource tables. These resources were already supported in `resourceDefinition.json` but the user-facing tables were stale.
-- **Missing argument doc**: Added `error_when_exceeding_max_length` to `docs/resources/azurecaf_name.md` (was already documented for the data source but absent from the resource doc since v1.2.32).
-- **Go prerequisite**: TESTING.md updated `Go 1.19+` → `Go 1.25.0+` to match `go.mod` (`go 1.25.0`).
-- **Version pin**: Bumped `version = "~> 1.2.28"` example pin to `~> 1.2.32` (latest tag) in README.md and docs/index.md.
-- **SECURITY.md**: Replaced unmodified GitHub template placeholder text with an actual Supported Versions statement.
-- **Encoding**: Fixed U+FFFD replacement character in E2E_IMPLEMENTATION_SUMMARY.md heading.
-- **Deprecation**: Strengthened deprecation notice on `docs/resources/azurecaf_naming_convention.md` to a top-of-page Deprecated callout pointing at `azurecaf_name` and the migration guide (the source code already marks the resource `Deprecated:`; the doc framing was too soft).
-- **`azurecaf_naming_convention` algorithm doc**: Removed the incorrect "Name Composition and Truncation" section that had been copy-pasted from `azurecaf_name.md`. It documented arguments (`use_slug`, `random_length`, `clean_input`, `passthrough` as flag, `separator`) that do not exist on this resource's schema, and described the `azurecaf_name` truncation pipeline rather than the legacy `getResult` algorithm. Replaced with a concise, accurate description of the `[prefix, cafprefix, name, postfix]` composition and per-`convention` behavior.
-- **`azurecaf_naming_convention` dead arguments**: Documented that the `prefixes` and `suffixes` *list* arguments are accepted by the schema but **ignored** by `getResult`; only the singular `prefix` and `postfix` are honored. Users who need list semantics should migrate to `azurecaf_name`.
-- **TESTING.md**: Removed an orphan `### Test Organization` heading that had no body and was sitting directly under the `## 🗂️ Test Organization` section heading.
-- **docs/index.md**: Fixed a broken `<details>` block where leftover generator commentary (a bare `# Resources not in official Azure CAF documentation` heading and a stray `cat resourceDefinition.json | jq …` shell command) was rendering as a level-1 heading and a paragraph between two markdown tables. Replaced with a proper `#### Resources not in official Azure CAF documentation` subheading and a one-sentence intro.
 
-### Security
-- **CI/Automation**: Excluded the auto-generated `agentics-maintenance.yml` self-maintenance workflow that `gh aw compile` v0.72.1 emits. The compiler-emitted file inlined `${{ inputs.operation }}` and `${{ inputs.run_url }}` directly into shell `run:` blocks (CWE-94 script injection, SonarCloud rule `actions:S7631`). Even after refactoring those values through environment variables, SonarCloud's analyzer continues to flag any propagation of `${{ inputs.* }}` into a step that has a `run:` block. Since the maintenance workflow is optional, manually-triggered (`workflow_dispatch` / `workflow_call`), and not referenced by any other workflow in this repo, it has been removed from version control. If a future `gh aw compile` re-emits it, it must be deleted again or refactored to use `actions/github-script` (no shell `run:` block) before being committed.
-- **CI/Automation**: Added `.checkov.yaml` to suppress Checkov rule `CKV_GHA_7` ("workflow_dispatch inputs MUST be empty") for the auto-generated agentic workflow lock files. The compiler emits an internal `aw_context` input on every `workflow_dispatch` trigger; the lock files carry "DO NOT EDIT" headers, so a global skip with a documented justification is the auto-regen-safe approach. The repo is not a SLSA-tracked build-artifact producer, so the rule does not apply.
-
-### Fixed
-- **Feature**: Names are now computed at plan time instead of apply time (#336)
-  - Added `CustomizeDiff` to the `azurecaf_name` resource so `result` and `results` values
-    are visible during `terraform plan` instead of showing "(known after apply)"
-  - Plan-time visibility requires `random_seed` to be set when `random_length > 0`;
-    without an explicit seed, names fall back to apply-time computation
-  - Fixed `randSeq` to use a local `rand.Source` instead of the global source,
-    which is auto-seeded randomly in Go 1.20+ and caused plan-apply inconsistency
-  - Fixed `randSeq` off-by-one: `Intn(len-1)` never selected the last letter (`z`)
-  - Clarified behavior: `random_seed = 0` is treated as an unset/non-deterministic
-    seed; only non-zero seeds produce deterministic names, matching `extractNamingParams`
-  - Refactored shared naming logic into `extractNamingParams`, `computeNames` helpers
-    to eliminate code duplication between `CustomizeDiff` and `Create`
-  - Moved `random_length` validation into shared `computeNames` so plan and apply
-    perform identical checks
-  - `CustomizeDiff` now handles `ForceNew` replacements correctly by checking
-    `HasChange` on input attributes instead of skipping all existing resources
-  - All `SetNew` calls in `CustomizeDiff` now check and propagate errors
-  - Fully backward compatible with existing configurations
+- Updated provider documentation, test prerequisites, dependency alignment, and workflow hardening.
 
 ## [v1.2.32] - 2026-03-23
 

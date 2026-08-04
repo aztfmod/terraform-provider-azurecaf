@@ -2,6 +2,7 @@ package azurecaf
 
 import (
 	"context"
+	"errors"
 	"strings"
 	"testing"
 
@@ -111,6 +112,143 @@ func TestResourceNameCustomizeDiffNewResourceDeterministic(t *testing.T) {
 	}
 	if diff.Attributes["result"] == nil || diff.Attributes["result"].New == "" {
 		t.Errorf("expected result to be set at plan time, got: %+v", diff.Attributes["result"])
+	}
+}
+
+func TestResourceNameCustomizeDiffDefersUnknownInputs(t *testing.T) {
+	const terraformUnknownValue = "74D93920-ED26-11E3-AC10-0800200C9A66"
+
+	tests := []struct {
+		name   string
+		config map[string]interface{}
+	}{
+		{
+			name: "scalar",
+			config: map[string]interface{}{
+				"name": terraformUnknownValue,
+			},
+		},
+		{
+			name: "prefix element",
+			config: map[string]interface{}{
+				"name":     "app",
+				"prefixes": []interface{}{terraformUnknownValue},
+			},
+		},
+		{
+			name: "suffix element",
+			config: map[string]interface{}{
+				"name":     "app",
+				"suffixes": []interface{}{terraformUnknownValue},
+			},
+		},
+		{
+			name: "resource type element",
+			config: map[string]interface{}{
+				"name":           "app",
+				"resource_types": []interface{}{terraformUnknownValue},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.config["resource_type"] = "azurerm_resource_group"
+			tt.config["random_seed"] = 42
+			config := terraform.NewResourceConfigRaw(tt.config)
+
+			diff, err := resourceName().Diff(context.Background(), &terraform.InstanceState{}, config, nil)
+			if err != nil {
+				t.Fatalf("Diff returned unexpected error for unknown input: %v", err)
+			}
+			if diff == nil {
+				t.Fatal("expected non-nil diff")
+			}
+			resultDiff := diff.Attributes["result"]
+			if resultDiff == nil || !resultDiff.NewComputed {
+				t.Fatalf("expected result to remain computed for unknown input, got: %+v", resultDiff)
+			}
+		})
+	}
+}
+
+type resourceNameDiffStub struct {
+	unknownKey string
+	values     map[string]interface{}
+}
+
+func (d resourceNameDiffStub) Get(key string) interface{} {
+	return d.values[key]
+}
+
+func (d resourceNameDiffStub) NewValueKnown(key string) bool {
+	return key != d.unknownKey
+}
+
+func TestResourceNameInputsKnown(t *testing.T) {
+	values := map[string]interface{}{
+		"prefixes":       []interface{}{"dev"},
+		"suffixes":       []interface{}{"001"},
+		"resource_types": []interface{}{"azurerm_storage_account"},
+	}
+	namingInputs := []string{"name", "prefixes", "suffixes", "resource_types"}
+	tests := []struct {
+		name       string
+		unknownKey string
+		want       bool
+	}{
+		{name: "all known", want: true},
+		{name: "unknown scalar", unknownKey: "name"},
+		{name: "unknown list count", unknownKey: "prefixes.#"},
+		{name: "unknown list element", unknownKey: "suffixes.0"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			diff := resourceNameDiffStub{unknownKey: tt.unknownKey, values: values}
+			if got := resourceNameInputsKnown(diff, namingInputs); got != tt.want {
+				t.Fatalf("expected known=%t, got %t", tt.want, got)
+			}
+		})
+	}
+}
+
+func TestSetNameOutputsComputed(t *testing.T) {
+	tests := []struct {
+		name        string
+		failOn      string
+		wantCalls   int
+		wantErrText string
+	}{
+		{name: "success", wantCalls: 2},
+		{name: "result error", failOn: "result", wantCalls: 1, wantErrText: "failed to defer result"},
+		{name: "results error", failOn: "results", wantCalls: 2, wantErrText: "failed to defer results"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			calls := 0
+			err := setNameOutputsComputed(func(attr string) error {
+				calls++
+				if attr == tt.failOn {
+					return errors.New("set failed")
+				}
+				return nil
+			})
+
+			if calls != tt.wantCalls {
+				t.Fatalf("expected %d calls, got %d", tt.wantCalls, calls)
+			}
+			if tt.wantErrText == "" {
+				if err != nil {
+					t.Fatalf("expected no error, got: %v", err)
+				}
+				return
+			}
+			if err == nil || !strings.Contains(err.Error(), tt.wantErrText) {
+				t.Fatalf("expected error containing %q, got: %v", tt.wantErrText, err)
+			}
+		})
 	}
 }
 
@@ -316,4 +454,3 @@ func TestResourceNameImportInvalidValidationRegex(t *testing.T) {
 		t.Fatalf("expected wrapped regex compile error, got: %v", err)
 	}
 }
-

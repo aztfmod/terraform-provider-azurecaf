@@ -18,8 +18,15 @@ func init() {
 }
 
 func TestProvider(t *testing.T) {
-	if err := Provider().InternalValidate(); err != nil {
+	provider := Provider()
+	if err := provider.InternalValidate(); err != nil {
 		t.Fatalf("err: %s", err)
+	}
+	if _, exists := provider.ResourcesMap["azurecaf_naming_convention"]; exists {
+		t.Error("azurecaf_naming_convention must not be registered in v2")
+	}
+	if _, exists := provider.ResourcesMap["azurecaf_name"]; !exists {
+		t.Error("azurecaf_name resource is not registered")
 	}
 }
 
