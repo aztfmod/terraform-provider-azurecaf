@@ -26,6 +26,34 @@ unittest: 	## Run unit tests without coverage
 		echo "   Install with: go install github.com/bflad/tfproviderlint/cmd/tfproviderlint@v0.31.0"; \
 	fi
 
+# Revamped test suite targets
+
+test_unit_fast:	## Run unit tests only (no acceptance tests, <10s)
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 go test -short -count=1 ./azurecaf/...
+
+test_golden:	## Run golden file snapshot tests
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 go test -v -count=1 -run "TestGolden" ./azurecaf/...
+
+test_golden_update:	## Regenerate golden files (after intentional changes)
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 go test -v -count=1 -run "TestGolden" ./azurecaf/... -args -update-golden
+
+test_fuzz:	## Run fuzz tests (30s per target)
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 go test -fuzz=FuzzCleanString -fuzztime=30s ./azurecaf/...
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 go test -fuzz=FuzzComposeName -fuzztime=30s ./azurecaf/...
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 go test -fuzz=FuzzConcatenateParameters -fuzztime=30s ./azurecaf/...
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 go test -fuzz=FuzzNameBuilder -fuzztime=30s ./azurecaf/...
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 go test -fuzz=FuzzGetResourceName -fuzztime=30s ./azurecaf/...
+
+test_regression:	## Run regression test suite
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 go test -v -count=1 -run "TestRegression" ./azurecaf/...
+
+test_regression_update:	## Update regression baselines (after intentional slug changes)
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 go test -v -count=1 -run "TestRegression_SlugConsistency" ./azurecaf/... -args -update-slugs
+
+test_bench:	## Run benchmarks for name generation performance
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 go test -bench=. -benchmem -benchtime=3s ./azurecaf/... | tee benchmark.txt
+	@echo "Benchmark results saved to benchmark.txt"
+
 test_coverage: 	## Run tests with coverage reporting
 	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -cover ./...
 
