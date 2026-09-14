@@ -12,6 +12,7 @@ on:
 
 permissions:
   contents: read
+  copilot-requests: write
   issues: read
 
 network: defaults

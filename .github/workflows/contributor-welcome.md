@@ -9,11 +9,14 @@ on:
 
 permissions:
   contents: read
+  copilot-requests: write
   pull-requests: read
 
 network: defaults
 
 tools:
+  bash: false
+  cli-proxy: false
   github:
     lockdown: false
     min-integrity: none
