@@ -79,7 +79,9 @@ steps:
       head -n 20 "$GH_AW_OUT/missing.txt"
 
 source: local
-engine: copilot
+engine:
+  id: copilot
+  model: gpt-5.6-luna
 ---
 
 # Weekly Azure Sync

@@ -123,7 +123,9 @@ steps:
       retention-days: 30
 
 source: local
-engine: copilot
+engine:
+  id: copilot
+  model: gpt-5.6-luna
 ---
 
 # Weekly mock-azurerm sweep

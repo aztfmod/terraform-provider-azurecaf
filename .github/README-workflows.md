@@ -28,6 +28,10 @@ an optional fallback credential for GitHub API operations that need access
 beyond the built-in `GITHUB_TOKEN`; these same-repository workflows do not
 require it for Copilot inference.
 
+The workflows explicitly select `gpt-5.6-luna`. Do not replace it with the
+`auto` model alias until upstream model routing no longer selects the
+utility-only `gpt-5.6-luna-utility` model for the chat-completions endpoint.
+
 After changing an agentic workflow, regenerate and validate the lock files:
 
 ```bash

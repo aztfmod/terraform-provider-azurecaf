@@ -20,7 +20,9 @@ imports:
   - shared/mood.md
   - shared/reporting.md
 source: github/gh-aw/.github/workflows/issue-triage-agent.md@852cb06ad52958b402ed982b69957ffc57ca0619
-engine: copilot
+engine:
+  id: copilot
+  model: gpt-5.6-luna
 ---
 
 # Issue Triage Agent

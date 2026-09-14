@@ -53,7 +53,9 @@ steps:
       tail -n 80 .pr-review/build.log > .pr-review/build-tail.log || true
 
 source: local
-engine: copilot
+engine:
+  id: copilot
+  model: gpt-5.6-luna
 ---
 
 # PR Review Agent
