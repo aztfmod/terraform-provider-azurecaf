@@ -383,7 +383,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Setup gh-aw CLI
-        uses: github/gh-aw/actions/setup-cli@v0.83.4
+        uses: github/gh-aw/actions/setup-cli@v0.88.7
         with:
           version: 'v0.74.4'
       - name: Create gh-aw temp directory
