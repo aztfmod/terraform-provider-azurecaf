@@ -52,6 +52,7 @@ data "azurecaf_name" "storage" {
   resource_type = "azurerm_storage_account"
   prefixes      = ["prod"]
   random_length = 3
+  random_seed   = 42
 }
 
 resource "azurerm_storage_account" "example" {
@@ -65,13 +66,14 @@ resource "azurerm_storage_account" "example" {
 # Useful for generating multiple related names
 resource "azurecaf_name" "multi_res" {
   name           = "myapp"
-  resource_type  = "azurerm_app_service"
+  resource_type  = "azurerm_linux_web_app"
   resource_types = [
-    "azurerm_app_service_plan",
+    "azurerm_service_plan",
     "azurerm_application_insights"
   ]
   prefixes      = ["prod"]
   random_length = 3
+  random_seed   = 42
 }
 
 # Access names:
@@ -91,6 +93,7 @@ data "azurecaf_name" "custom" {
   separator     = "_"
   use_slug      = false
   random_length = 4
+  random_seed   = 42
 }
 # Result: "corp_prod_database_primary_a1b2"
 ```
@@ -166,6 +169,7 @@ data "azurecaf_name" "resources" {
   resource_type = each.key
   prefixes      = [local.current_config.prefix]
   random_length = local.current_config.random_length
+  random_seed   = 42
 }
 
 # Output all generated names
@@ -190,8 +194,8 @@ locals {
 # Frontend tier
 data "azurecaf_name" "frontend" {
   for_each = toset([
-    "azurerm_app_service",
-    "azurerm_app_service_plan"
+    "azurerm_linux_web_app",
+    "azurerm_service_plan"
   ])
   
   name          = local.app_name
@@ -203,8 +207,8 @@ data "azurecaf_name" "frontend" {
 # Backend tier  
 data "azurecaf_name" "backend" {
   for_each = toset([
-    "azurerm_app_service",
-    "azurerm_app_service_plan"
+    "azurerm_linux_web_app",
+    "azurerm_service_plan"
   ])
   
   name          = local.app_name
@@ -252,8 +256,8 @@ variable "instance" {
 data "azurecaf_name" "app_service_resources" {
   for_each = toset([
     "azurerm_resource_group",
-    "azurerm_app_service_plan", 
-    "azurerm_app_service",
+    "azurerm_service_plan",
+    "azurerm_linux_web_app",
     "azurerm_application_insights"
   ])
   
@@ -269,15 +273,12 @@ resource "azurerm_resource_group" "main" {
   location = "East US"
 }
 
-resource "azurerm_app_service_plan" "main" {
-  name                = data.azurecaf_name.app_service_resources["azurerm_app_service_plan"].result
+resource "azurerm_service_plan" "main" {
+  name                = data.azurecaf_name.app_service_resources["azurerm_service_plan"].result
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
-  
-  sku {
-    tier = "Standard"
-    size = "S1"
-  }
+  os_type             = "Linux"
+  sku_name            = "S1"
 }
 
 # Output generated names for reference

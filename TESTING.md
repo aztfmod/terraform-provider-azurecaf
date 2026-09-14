@@ -48,31 +48,24 @@ The project includes a comprehensive test suite designed to ensure the proper fu
      - Resource slug retrieval
      - Acceptance tests for the resource name resource
 
-### 3. **Naming Convention Tests**
-   - `resource_naming_convention_test.go` - Helper functions for testing naming conventions
-   - `resource_naming_convention_cafclassic_test.go` - CAF Classic naming convention tests
-   - `resource_naming_convention_cafrandom_test.go` - CAF Random naming convention tests
-   - `resource_naming_convention_random_test.go` - Random naming convention tests
-   - `resource_naming_convention_passthrough_test.go` - Passthrough naming convention tests
-
-### 4. **Data Source Tests**
+### 3. **Data Source Tests**
    - Tests for environment variables and data source functionality
    - Validation of data source behavior vs resource behavior
 
-### 5. **Model Tests**
+### 4. **Model Tests**
    - `models_generated_test.go` - Tests for generated resource models:
      - Regex validations
      - String processing
      - Length constraints
      - Resource definition validation
 
-### 6. **Integration Tests**
+### 5. **Integration Tests**
    - `integration_data_sources_test.go` - Data source integration with Terraform
    - `integration_error_cases_test.go` - Error handling and edge cases
    - `integration_all_resource_types_test.go` - Comprehensive resource type testing
-   - `integration_all_resources_complete_test.go` - Complete testing of all 405 resource types
+   - `integration_all_resources_complete_test.go` - Complete testing of all 520 resource types
 
-### 7. **Coverage and Edge Case Tests**
+### 6. **Coverage and Edge Case Tests**
    - `complete_coverage_test.go` - Tests to improve code coverage
    - `final_coverage_test.go` - Additional coverage tests
    - `final_edge_cases_test.go` - Edge cases and error paths
@@ -314,6 +307,7 @@ func TestAccDataSourceAzureCAFName_NewResource(t *testing.T) {
                         resource_type = "azurerm_new_resource"
                         prefixes      = ["dev"]
                         random_length = 3
+                        random_seed   = 42
                     }
                 `,
                 Check: resource.ComposeTestCheckFunc(
@@ -569,7 +563,7 @@ When working with the test files, it's important to understand their purpose:
 When adding new tests:
 
 1. **Unit Tests**: Add to the appropriate `*_test.go` file based on the component being tested.
-   - For core resource functionality, add to `resource_name_test.go` or `resource_naming_convention_test.go`
+   - For core resource functionality, add to `resource_name_test.go`
    - For model validation, add to `models_generated_test.go`
 
 2. **Integration Tests**: Add to an appropriate `integration_*_test.go` file based on the feature being tested.

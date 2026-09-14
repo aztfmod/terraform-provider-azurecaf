@@ -213,8 +213,7 @@ func TestResourceNameImport_AcceptanceStyleBasic(t *testing.T) {
 
 		resource.Test(t, resource.TestCase{
 			PreCheck:     func() { testAccPreCheck(t) },
-			Providers:    testAccProviders,
-			CheckDestroy: testAccCheckResourceDestroy,
+			ProviderFactories: testAccProviderFactories,
 			Steps: []resource.TestStep{
 				{
 					Config: testAccResourceNameImportBasicConfig(),

@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -141,9 +143,10 @@ func resourceName() *schema.Resource {
 	}
 
 	return &schema.Resource{
-		Create:        resourceNameCreate,
-		Read:          schema.Noop,
-		Delete:        schema.RemoveFromState,
+		CreateContext: resourceNameCreate,
+		ReadContext:   resourceNameRead,
+		DeleteContext: resourceNameDelete,
+		CustomizeDiff: customdiff.All(resourceNameCustomizeDiff),
 		SchemaVersion: 3,
 		StateUpgraders: []schema.StateUpgrader{
 			{
@@ -267,15 +270,23 @@ func resourceName() *schema.Resource {
 	}
 }
 
-func resourceNameCreate(d *schema.ResourceData, meta interface{}) error {
-	return resourceNameRead(d, meta)
+func resourceNameCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	err := getNameResult(d, meta)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	return nil
 }
 
-func resourceNameRead(d *schema.ResourceData, meta interface{}) error {
-	return getNameResult(d, meta)
+func resourceNameRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	// azurecaf_name is a logical resource with no remote object to refresh.
+	// Preserve the generated values stored during create, especially an
+	// unseeded random suffix that must not change on every Terraform refresh.
+	return nil
 }
 
-func resourceNameDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceNameDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	d.SetId("")
 	return nil
 }
 
@@ -313,23 +324,233 @@ func resourceNameImport(d *schema.ResourceData, meta interface{}) ([]*schema.Res
 
 	// Set the resource data for the imported resource
 	// We use passthrough mode to preserve the existing name as-is
-	d.Set("name", existingName)
-	d.Set("resource_type", resourceType)
-	d.Set("passthrough", true)
+	if err := d.Set("name", existingName); err != nil {
+		return nil, fmt.Errorf("failed to set imported name: %w", err)
+	}
+	if err := d.Set("resource_type", resourceType); err != nil {
+		return nil, fmt.Errorf("failed to set imported resource type: %w", err)
+	}
+	if err := d.Set("passthrough", true); err != nil {
+		return nil, fmt.Errorf("failed to enable passthrough for imported resource: %w", err)
+	}
 
 	// Set empty slices for prefixes and suffixes since we can't reverse-engineer them
-	d.Set("prefixes", []string{})
-	d.Set("suffixes", []string{})
-	d.Set("resource_types", []string{})
+	if err := d.Set("prefixes", []string{}); err != nil {
+		return nil, fmt.Errorf("failed to clear imported prefixes: %w", err)
+	}
+	if err := d.Set("suffixes", []string{}); err != nil {
+		return nil, fmt.Errorf("failed to clear imported suffixes: %w", err)
+	}
+	if err := d.Set("resource_types", []string{}); err != nil {
+		return nil, fmt.Errorf("failed to clear imported resource types: %w", err)
+	}
 
 	// Set the result to match the imported name
-	d.Set("result", existingName)
-	d.Set("results", map[string]string{})
+	if err := d.Set("result", existingName); err != nil {
+		return nil, fmt.Errorf("failed to set imported result: %w", err)
+	}
+	if err := d.Set("results", map[string]string{}); err != nil {
+		return nil, fmt.Errorf("failed to clear imported results: %w", err)
+	}
 
 	// Use the existing name as the Terraform resource ID
 	d.SetId(existingName)
 
 	return []*schema.ResourceData{d}, nil
+}
+
+// schemaGetter is implemented by both schema.ResourceData and schema.ResourceDiff,
+// allowing shared parameter extraction logic.
+type schemaGetter interface {
+	Get(key string) interface{}
+	GetOk(key string) (interface{}, bool)
+}
+
+// namingParams holds the extracted input parameters for name computation.
+type namingParams struct {
+	name                        string
+	prefixes                    []string
+	suffixes                    []string
+	separator                   string
+	resourceType                string
+	resourceTypes               []string
+	cleanInput                  bool
+	passthrough                 bool
+	useSlug                     bool
+	randomLength                int
+	randomSeed                  int64
+	randomSeedSet               bool
+	errorWhenExceedingMaxLength bool
+}
+
+// extractNamingParams reads naming input parameters from a schema getter.
+func extractNamingParams(d schemaGetter) namingParams {
+	seedVal, seedSet := d.GetOk("random_seed")
+	var seed int64
+	if seedSet {
+		seed = int64(seedVal.(int))
+	}
+	return namingParams{
+		name:                        d.Get("name").(string),
+		prefixes:                    convertInterfaceToString(d.Get("prefixes").([]interface{})),
+		suffixes:                    convertInterfaceToString(d.Get("suffixes").([]interface{})),
+		separator:                   d.Get("separator").(string),
+		resourceType:                d.Get("resource_type").(string),
+		resourceTypes:               convertInterfaceToString(d.Get("resource_types").([]interface{})),
+		cleanInput:                  d.Get("clean_input").(bool),
+		passthrough:                 d.Get("passthrough").(bool),
+		useSlug:                     d.Get("use_slug").(bool),
+		randomLength:                d.Get("random_length").(int),
+		randomSeed:                  seed,
+		randomSeedSet:               seedSet,
+		errorWhenExceedingMaxLength: d.Get("error_when_exceeding_max_length").(bool),
+	}
+}
+
+// computeNames generates the result and results map from the given parameters.
+func computeNames(p namingParams) (string, map[string]string, error) {
+	// Validate random_length parameter
+	if p.randomLength < 0 {
+		return "", nil, fmt.Errorf("random_length must be non-negative, got: %d", p.randomLength)
+	}
+
+	isValid, err := validateResourceType(p.resourceType, p.resourceTypes)
+	if !isValid {
+		return "", nil, err
+	}
+
+	// Validate against resource type constraints if resource_type is specified
+	if p.resourceType != "" {
+		if resource, exists := ResourceDefinitions[p.resourceType]; exists {
+			if p.randomLength > resource.MaxLength {
+				return "", nil, fmt.Errorf("random_length (%d) exceeds maximum length for resource type %s (%d)", p.randomLength, p.resourceType, resource.MaxLength)
+			}
+		}
+	}
+
+	var seedPtr *int64
+	if p.randomSeedSet {
+		seedPtr = &p.randomSeed
+	}
+	randomSuffix, err := randSeq(p.randomLength, seedPtr)
+	if err != nil {
+		return "", nil, fmt.Errorf("failed to generate random suffix: %w", err)
+	}
+	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
+	convention := ConventionCafClassic
+
+	var result string
+	if len(p.resourceType) > 0 {
+		result, err = getResourceName(p.resourceType, p.separator, p.prefixes, p.name, p.suffixes, randomSuffix, convention, p.cleanInput, p.passthrough, p.useSlug, namePrecedence, p.errorWhenExceedingMaxLength)
+		if err != nil {
+			return "", nil, err
+		}
+	}
+
+	resourceNames := make(map[string]string, len(p.resourceTypes))
+	for _, resourceTypeName := range p.resourceTypes {
+		resourceNames[resourceTypeName], err = getResourceName(resourceTypeName, p.separator, p.prefixes, p.name, p.suffixes, randomSuffix, convention, p.cleanInput, p.passthrough, p.useSlug, namePrecedence, p.errorWhenExceedingMaxLength)
+		if err != nil {
+			return "", nil, err
+		}
+	}
+
+	return result, resourceNames, nil
+}
+
+func setNameOutputsComputed(setComputed func(string) error) error {
+	for _, attr := range []string{"result", "results"} {
+		if err := setComputed(attr); err != nil {
+			return fmt.Errorf("failed to defer %s: %w", attr, err)
+		}
+	}
+	return nil
+}
+
+type resourceNameDiff interface {
+	Get(key string) interface{}
+	NewValueKnown(key string) bool
+}
+
+func resourceNameInputsKnown(d resourceNameDiff, namingInputs []string) bool {
+	for _, attr := range namingInputs {
+		if !d.NewValueKnown(attr) {
+			return false
+		}
+	}
+
+	for _, attr := range []string{"prefixes", "suffixes", "resource_types"} {
+		if !d.NewValueKnown(attr + ".#") {
+			return false
+		}
+		values := d.Get(attr).([]interface{})
+		for i := range values {
+			if !d.NewValueKnown(fmt.Sprintf("%s.%d", attr, i)) {
+				return false
+			}
+		}
+	}
+
+	return true
+}
+
+// resourceNameCustomizeDiff computes naming values during the plan phase so that
+// users can see the actual resource names in terraform plan output instead of
+// "(known after apply)". This runs during plan for new or replaced resources.
+func resourceNameCustomizeDiff(ctx context.Context, d *schema.ResourceDiff, meta interface{}) error {
+	namingInputs := []string{
+		"name", "prefixes", "suffixes", "separator",
+		"resource_type", "resource_types", "clean_input",
+		"passthrough", "use_slug", "random_length",
+		"random_seed", "error_when_exceeding_max_length",
+	}
+
+	// For existing resources with no relevant input changes, values are already in state.
+	if d.Id() != "" {
+		needsRecompute := false
+		for _, attr := range namingInputs {
+			if d.HasChange(attr) {
+				needsRecompute = true
+				break
+			}
+		}
+		if !needsRecompute {
+			return nil
+		}
+	}
+
+	// Do not derive a provisional name from placeholders when any input depends
+	// on a value that Terraform will only know after apply.
+	if !resourceNameInputsKnown(d, namingInputs) {
+		return setNameOutputsComputed(d.SetNewComputed)
+	}
+
+	p := extractNamingParams(d)
+
+	// When random_length > 0 but no random_seed is explicitly provided, we cannot
+	// compute deterministic names at plan time (each CustomizeDiff call would
+	// generate a different seed). Still run validations so errors surface during
+	// plan, but skip setting result/results (they remain "known after apply").
+	if p.randomLength > 0 && !p.randomSeedSet {
+		_, _, err := computeNames(p)
+		return err
+	}
+
+	result, resourceNames, err := computeNames(p)
+	if err != nil {
+		return err
+	}
+
+	if len(p.resourceType) > 0 {
+		if err := d.SetNew("result", result); err != nil {
+			return fmt.Errorf("failed to set result: %w", err)
+		}
+	}
+	if err := d.SetNew("results", resourceNames); err != nil {
+		return fmt.Errorf("failed to set results: %w", err)
+	}
+
+	return nil
 }
 
 func cleanSlice(names []string, resourceDefinition *ResourceStructure) []string {
@@ -542,60 +763,25 @@ func getResourceName(resourceTypeName string, separator string,
 }
 
 func getNameResult(d *schema.ResourceData, meta interface{}) error {
-	name := d.Get("name").(string)
-	prefixes := convertInterfaceToString(d.Get("prefixes").([]interface{}))
-	suffixes := convertInterfaceToString(d.Get("suffixes").([]interface{}))
-	separator := d.Get("separator").(string)
-	resourceType := d.Get("resource_type").(string)
-	resourceTypes := convertInterfaceToString(d.Get("resource_types").([]interface{}))
-	cleanInput := d.Get("clean_input").(bool)
-	passthrough := d.Get("passthrough").(bool)
-	useSlug := d.Get("use_slug").(bool)
-	randomLength := d.Get("random_length").(int)
-	randomSeed := int64(d.Get("random_seed").(int))
-	errorWhenExceedingMaxLength := d.Get("error_when_exceeding_max_length").(bool)
+	p := extractNamingParams(d)
 
-	// Validate random_length parameter
-	if randomLength < 0 {
-		return fmt.Errorf("random_length must be non-negative, got: %d", randomLength)
-	}
-
-	// Validate against resource type constraints if resource_type is specified
-	if resourceType != "" {
-		if resource, exists := ResourceDefinitions[resourceType]; exists {
-			maxLen := resource.MaxLength
-			if randomLength > maxLen {
-				return fmt.Errorf("random_length (%d) exceeds maximum length for resource type %s (%d)", randomLength, resourceType, maxLen)
-			}
-		}
-	}
-
-	convention := ConventionCafClassic
-
-	randomSuffix := randSeq(int(randomLength), &randomSeed)
-	namePrecedence := []string{"name", "slug", "random", "suffixes", "prefixes"}
-
-	isValid, err := validateResourceType(resourceType, resourceTypes)
-	if !isValid {
+	result, resourceNames, err := computeNames(p)
+	if err != nil {
 		return err
 	}
 
-	if len(resourceType) > 0 {
-		resourceName, err := getResourceName(resourceType, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence, errorWhenExceedingMaxLength)
-		if err != nil {
-			return err
-		}
-		d.Set("result", resourceName)
-	}
-	resourceNames := make(map[string]string, len(resourceTypes))
-	for _, resourceTypeName := range resourceTypes {
-		var err error
-		resourceNames[resourceTypeName], err = getResourceName(resourceTypeName, separator, prefixes, name, suffixes, randomSuffix, convention, cleanInput, passthrough, useSlug, namePrecedence, errorWhenExceedingMaxLength)
-		if err != nil {
-			return err
+	if len(p.resourceType) > 0 {
+		if err := d.Set("result", result); err != nil {
+			return fmt.Errorf("failed to set result: %w", err)
 		}
 	}
-	d.Set("results", resourceNames)
-	d.SetId(randSeq(16, nil))
+	if err := d.Set("results", resourceNames); err != nil {
+		return fmt.Errorf("failed to set results: %w", err)
+	}
+	id, err := randSeq(16, nil)
+	if err != nil {
+		return fmt.Errorf("failed to generate resource id: %w", err)
+	}
+	d.SetId(id)
 	return nil
 }

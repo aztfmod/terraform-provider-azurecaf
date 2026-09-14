@@ -112,9 +112,9 @@ func testNameResource(t *testing.T, nameResource *schema.Resource, resourceType 
 			resourceData := schema.TestResourceDataRaw(t, nameResource.Schema, testCase)
 
 			// Execute create function
-			err := nameResource.Create(resourceData, nil)
-			if err != nil {
-				t.Errorf("Failed to create name resource for %s with config %d: %v", resourceType, i+1, err)
+			diags := nameResource.CreateContext(context.Background(), resourceData, nil)
+			if diags.HasError() {
+				t.Errorf("Failed to create name resource for %s with config %d: %v", resourceType, i+1, diags)
 				return
 			}
 

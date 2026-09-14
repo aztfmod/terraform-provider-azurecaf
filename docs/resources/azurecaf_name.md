@@ -1,12 +1,14 @@
 # azurecaf_name (Resource)
 
-The `azurecaf_name` resource generates Azure-compliant resource names following the Cloud Adoption Framework guidelines. This resource provides more flexibility and comprehensive resource type support compared to the legacy `azurecaf_naming_convention` resource.
+The `azurecaf_name` resource generates Azure-compliant resource names following the Cloud Adoption Framework guidelines.
 
 > **Note**: For most use cases, the [`azurecaf_name` data source](../data-sources/azurecaf_name.md) is recommended as it evaluates names at plan time, making them visible before resource creation.
+>
+> Upgrading from `azurecaf_naming_convention`? Follow the [v2.0.0 migration guide](../migration-v2.md).
 
 ## Key Features
 
-- **405 Resource Types** - Comprehensive coverage of Azure services with accurate validation
+- **520 Resource Types** - Comprehensive coverage of Azure services with accurate validation
 - **CAF Compliance** - Follows Microsoft Cloud Adoption Framework recommendations
 - **Multi-Resource Support** - Generate names for multiple related resource types simultaneously
 - **Flexible Configuration** - Supports prefixes, suffixes, random generation, and custom patterns
@@ -45,9 +47,9 @@ Generate names for multiple related resource types with consistent settings:
 ```hcl
 resource "azurecaf_name" "webapp_resources" {
   name           = "webapp"
-  resource_type  = "azurerm_app_service"
+  resource_type  = "azurerm_linux_web_app"
   resource_types = [
-    "azurerm_app_service_plan",
+    "azurerm_service_plan",
     "azurerm_application_insights"
   ]
   prefixes       = ["prod"]
@@ -58,25 +60,24 @@ resource "azurecaf_name" "webapp_resources" {
 
 # Access names:
 # Primary: azurecaf_name.webapp_resources.result
-# Additional: azurecaf_name.webapp_resources.results["azurerm_app_service_plan"]
+# Additional: azurecaf_name.webapp_resources.results["azurerm_service_plan"]
 # Additional: azurecaf_name.webapp_resources.results["azurerm_application_insights"]
 
-resource "azurerm_app_service_plan" "example" {
-  name                = azurecaf_name.webapp_resources.results["azurerm_app_service_plan"]
+resource "azurerm_service_plan" "example" {
+  name                = azurecaf_name.webapp_resources.results["azurerm_service_plan"]
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
-  
-  sku {
-    tier = "Standard"
-    size = "S1"
-  }
+  os_type             = "Linux"
+  sku_name            = "S1"
 }
 
-resource "azurerm_app_service" "example" {
+resource "azurerm_linux_web_app" "example" {
   name                = azurecaf_name.webapp_resources.result
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
-  app_service_plan_id = azurerm_app_service_plan.example.id
+  service_plan_id     = azurerm_service_plan.example.id
+
+  site_config {}
 }
 ```
 
@@ -150,7 +151,19 @@ The following arguments are supported:
 
 * `random_length` - (Optional) Number of random characters to append. Random characters comply with the resource's allowed character set. Defaults to `0`.
 
-* `random_seed` - (Optional) Seed for random character generation. Use `0` for time-based seed (default behavior). Defaults to `0`.
+* `random_seed` - (Optional) Seed for the deterministic PRNG used to produce the random characters. Set to any **non-zero** value to make `result` reproducible and visible at plan time. Defaults to `0`.
+
+> **Important — `random_seed = 0` is treated as "unset"**
+>
+> Because Terraform's schema cannot distinguish "attribute omitted" from "attribute explicitly set to the zero value" for an integer, the provider treats `random_seed = 0` the same as not specifying `random_seed` at all. When `random_length > 0` and `random_seed` is `0` (or omitted):
+>
+> * The random suffix is generated from `crypto/rand` at apply time.
+> * `result` and `results` show as `(known after apply)` during `terraform plan` and are non-deterministic across runs.
+>
+> To get deterministic, plan-time-visible names, pass any non-zero `random_seed` (for example `random_seed = 1`).
+> Unseeded random names are generated once during apply and then preserved in Terraform state.
+>
+> If any naming input, including an element of `prefixes`, `suffixes`, or `resource_types`, depends on a value that is unknown during planning, `result` and `results` remain `(known after apply)` even when a non-zero seed is set.
 
 * `separator` - (Optional) Character used to separate name components (prefixes, resource type slug, name, suffixes). Defaults to `"-"`.
 
@@ -401,13 +414,14 @@ When using `resource_types`, the resource generates names for multiple resource 
 ```hcl
 resource "azurecaf_name" "multi" {
   name           = "webapp"
-  resource_type  = "azurerm_app_service"        # Primary type
+  resource_type  = "azurerm_linux_web_app"      # Primary type
   resource_types = [
-    "azurerm_app_service_plan",                 # Additional types
+    "azurerm_service_plan",                     # Additional types
     "azurerm_application_insights"
   ]
   prefixes       = ["prod"]
   random_length  = 3
+  random_seed    = 12345
 }
 
 # Access the names:
@@ -422,29 +436,11 @@ output "all_names" {
 
 ## Migration from azurecaf_naming_convention
 
-```hcl
-# Legacy approach (deprecated)
-resource "azurecaf_naming_convention" "old" {
-  name         = "myapp"
-  resource_type = "rg"
-  convention   = "cafrandom"
-  prefix       = "prod"
-  postfix      = "001"
-}
-
-# New approach (recommended)
-resource "azurecaf_name" "new" {
-  name          = "myapp"
-  resource_type = "azurerm_resource_group"
-  prefixes      = ["prod"]
-  suffixes      = ["001"]
-  random_length = 5
-}
-```
+The legacy resource was removed in v2.0.0. Follow the [v2.0.0 migration guide](../migration-v2.md) to preserve existing names and state safely.
 
 ## Supported Resource Types
 
-This resource supports **405 Azure resource types** with accurate naming validation rules. 
+This resource supports **520 Azure resource types** with accurate naming validation rules.
 
 For the complete list of supported resource types, validation rules, and examples, see the [main provider documentation](../index.md#supported-azure-resource-types).
 
@@ -452,10 +448,7 @@ For the complete list of supported resource types, validation rules, and example
 
 ### Data Source vs Resource
 
-**Recommendation**: Use the [`azurecaf_name` data source](../data-sources/azurecaf_name.md) instead of this resource when possible, as data sources:
-- Evaluate at plan time, showing generated names before resource creation
-- Provide better visibility in Terraform plans
-- Are generally preferred for name generation workflows
+**Recommendation**: Use the [`azurecaf_name` data source](../data-sources/azurecaf_name.md) when you need one name and do not need Terraform state. Use this resource when you need multiple related names, imports, or resource lifecycle behavior. Both produce deterministic values during planning when random generation uses an explicit seed.
 
 ### State Management
 

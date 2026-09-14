@@ -47,7 +47,8 @@ func TestRegexValidationMinLength(t *testing.T) {
 			t.Fail()
 		}
 		min := resource.MinLength
-		// Added here because there is a bug on the golang regex
+		// Preserve legacy coverage for definitions whose effective minimum is two.
+		// Definitions added or corrected for v2 are checked at their exact minimum.
 		if min == 1 {
 			min = 2
 		}

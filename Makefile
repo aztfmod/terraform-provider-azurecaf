@@ -62,7 +62,7 @@ test_resource_definition_completeness: 	## Validate all resource definitions are
 
 test_all: unittest test_integration	## Run all tests (unit and integration)
 
-test_ci: unittest test_coverage test_resource_definitions test_resource_matrix test_resource_coverage	## Run comprehensive CI tests (unit, coverage, resource validation, matrix testing)
+test_ci: unittest test_coverage test_resource_definitions test_resource_matrix test_resource_coverage test_mock_harness	## Run comprehensive CI tests (unit, coverage, resource validation, matrix testing)
 
 test_ci_fast: unittest test_coverage test_resource_definitions	## Run fast CI tests (unit, coverage, resource validation only)
 
@@ -82,6 +82,9 @@ test_complete: test_all test_all_resources test_resource_coverage	## Complete te
 MOCK_OUT_DIR ?= /tmp/azurecaf-mock/tests
 MOCK_REPORT  ?= /tmp/azurecaf-mock/report.tsv
 MOCK_SCHEMA  ?= /tmp/azurecaf-mock/azurerm-schema.json
+
+test_mock_harness:  ## Test the mock-azurerm generator and runner
+	PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/mock-test -p 'test_*.py'
 
 test_mock_azurerm_setup: build  ## Install local provider + fetch azurerm schema for the mock-azurerm tests
 	@GOOS=$$(go env GOOS); GOARCH=$$(go env GOARCH); \
@@ -190,4 +193,3 @@ test_e2e_verbose: 	## Run e2e tests with verbose output
 test_complete_with_e2e: test_complete test_e2e	## Run complete test suite including e2e tests
 
 test_ci_with_e2e: test_ci test_e2e_quick	## Run CI tests including quick e2e tests
-

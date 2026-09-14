@@ -6,7 +6,6 @@
 //
 // Key components:
 //   - azurecaf_name resource: Creates names with full validation and customization options
-//   - azurecaf_naming_convention resource: Legacy naming convention resource (deprecated)
 //   - azurecaf_name data source: Generates names during plan phase for early validation
 //   - azurecaf_environment_variable data source: Retrieves environment variables
 //
@@ -22,7 +21,6 @@ import (
 // resources and data sources.
 //
 // Resources:
-//   - azurecaf_naming_convention: Legacy naming convention resource (use azurecaf_name instead)
 //   - azurecaf_name: Primary resource for generating Azure-compliant resource names
 //
 // Data Sources:
@@ -38,8 +36,7 @@ func Provider() *schema.Provider {
 
 		// Resources that can be created and managed
 		ResourcesMap: map[string]*schema.Resource{
-			"azurecaf_naming_convention": resourceNamingConvention(), // Legacy - use azurecaf_name instead
-			"azurecaf_name":              resourceName(),             // Primary naming resource
+			"azurecaf_name": resourceName(),
 		},
 
 		// Data sources for retrieving information

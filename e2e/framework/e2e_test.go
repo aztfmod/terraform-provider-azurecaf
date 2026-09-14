@@ -13,7 +13,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -49,7 +48,7 @@ func (suite *E2ETestSuite) Setup(t *testing.T) error {
 // buildProvider compiles the terraform-provider-azurecaf from source
 func (suite *E2ETestSuite) buildProvider(t *testing.T) error {
 	t.Log("Building terraform-provider-azurecaf from source...")
-	
+
 	// Get the project root directory
 	projectRoot, err := suite.getProjectRoot()
 	if err != nil {
@@ -58,7 +57,7 @@ func (suite *E2ETestSuite) buildProvider(t *testing.T) error {
 
 	// Set provider binary path
 	suite.ProviderBinaryPath = filepath.Join(projectRoot, "terraform-provider-azurecaf")
-	
+
 	// Build the provider using make
 	makePath, err := findMakeBinary()
 	if err != nil {
@@ -71,7 +70,7 @@ func (suite *E2ETestSuite) buildProvider(t *testing.T) error {
 		"TF_IN_AUTOMATION=1",
 		"TF_CLI_ARGS_init=-upgrade=false",
 	)
-	
+
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("build failed: %w\nOutput: %s", err, output)
@@ -89,7 +88,7 @@ func (suite *E2ETestSuite) buildProvider(t *testing.T) error {
 // setupTerraform configures Terraform for local provider testing
 func (suite *E2ETestSuite) setupTerraform(t *testing.T) error {
 	t.Log("Setting up Terraform for local provider testing...")
-	
+
 	// Find terraform executable
 	terraformPath, err := exec.LookPath("terraform")
 	if err != nil {
@@ -109,17 +108,17 @@ func (suite *E2ETestSuite) setupTerraform(t *testing.T) error {
 // installProviderLocally installs the built provider in the local plugin directory
 func (suite *E2ETestSuite) installProviderLocally(t *testing.T) error {
 	t.Log("Installing provider in local plugin directory...")
-	
+
 	// Get OS and architecture
 	goos := runtime.GOOS
 	goarch := runtime.GOARCH
-	
+
 	// Create local plugin directory
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return fmt.Errorf("failed to get home directory: %w", err)
 	}
-	
+
 	pluginDir := filepath.Join(homeDir, ".terraform.d", "plugins", suite.ProviderSource, "1.0.0", fmt.Sprintf("%s_%s", goos, goarch))
 	if err := os.MkdirAll(pluginDir, 0750); err != nil {
 		return fmt.Errorf("failed to create plugin directory: %w", err)
@@ -144,27 +143,27 @@ func (suite *E2ETestSuite) installProviderLocally(t *testing.T) error {
 func (suite *E2ETestSuite) createProviderOverride(t *testing.T) error {
 	// Create a filesystem mirror structure for local provider testing
 	mirrorDir := filepath.Join(suite.WorkingDir, "terraform-mirror")
-	
+
 	goos := runtime.GOOS
 	goarch := runtime.GOARCH
-	
+
 	// Create the provider directory structure
 	providerDir := filepath.Join(mirrorDir, "aztfmod.com", "test", "azurecaf", "1.0.0", fmt.Sprintf("%s_%s", goos, goarch))
 	if err := os.MkdirAll(providerDir, 0750); err != nil {
 		return fmt.Errorf("failed to create provider directory: %w", err)
 	}
-	
+
 	// Copy the provider binary to the mirror directory
 	providerBinary := filepath.Join(providerDir, "terraform-provider-azurecaf")
 	if err := suite.copyFile(suite.ProviderBinaryPath, providerBinary); err != nil {
 		return fmt.Errorf("failed to copy provider binary: %w", err)
 	}
-	
+
 	// Make the binary executable
 	if err := os.Chmod(providerBinary, 0750); err != nil {
 		return fmt.Errorf("failed to make provider binary executable: %w", err)
 	}
-	
+
 	// Create provider installation configuration with filesystem_mirror
 	overrideConfig := fmt.Sprintf(`provider_installation {
   filesystem_mirror {
@@ -177,13 +176,13 @@ func (suite *E2ETestSuite) createProviderOverride(t *testing.T) error {
 }`, mirrorDir)
 
 	configPath := filepath.Join(suite.WorkingDir, "terraform.rc")
-	if err := ioutil.WriteFile(configPath, []byte(overrideConfig), 0644); err != nil {
+	if err := os.WriteFile(configPath, []byte(overrideConfig), 0644); err != nil {
 		return fmt.Errorf("failed to write provider override config: %w", err)
 	}
 
 	t.Logf("Provider override configuration created: %s", configPath)
 	t.Logf("Provider binary copied to mirror: %s", providerBinary)
-	
+
 	return nil
 }
 
@@ -208,7 +207,7 @@ func (suite *E2ETestSuite) copyFile(src, dst string) error {
 // RunScenario executes a single test scenario
 func (suite *E2ETestSuite) RunScenario(t *testing.T, scenario TestScenario) error {
 	t.Logf("Running scenario: %s", scenario.Name)
-	
+
 	// Create scenario directory
 	scenarioDir := filepath.Join(suite.WorkingDir, "scenarios", scenario.Name)
 	if err := os.MkdirAll(scenarioDir, 0750); err != nil {
@@ -217,7 +216,7 @@ func (suite *E2ETestSuite) RunScenario(t *testing.T, scenario TestScenario) erro
 
 	// Write Terraform configuration
 	configPath := filepath.Join(scenarioDir, "main.tf")
-	if err := ioutil.WriteFile(configPath, []byte(scenario.TerraformConfig), 0644); err != nil {
+	if err := os.WriteFile(configPath, []byte(scenario.TerraformConfig), 0644); err != nil {
 		return fmt.Errorf("failed to write terraform configuration: %w", err)
 	}
 
@@ -229,10 +228,10 @@ func (suite *E2ETestSuite) RunScenario(t *testing.T, scenario TestScenario) erro
 
 	// Set environment variables
 	tf.SetEnv(map[string]string{
-		"TF_CLI_CONFIG_FILE":   filepath.Join(suite.WorkingDir, "terraform.rc"),
-		"CHECKPOINT_DISABLE":   "1",
-		"TF_IN_AUTOMATION":     "1",
-		"TF_CLI_ARGS_init":     "-upgrade=false",
+		"TF_CLI_CONFIG_FILE": filepath.Join(suite.WorkingDir, "terraform.rc"),
+		"CHECKPOINT_DISABLE": "1",
+		"TF_IN_AUTOMATION":   "1",
+		"TF_CLI_ARGS_init":   "-upgrade=false",
 	})
 
 	// Initialize Terraform
@@ -424,14 +423,14 @@ func (suite *E2ETestSuite) getProjectRoot() (string, error) {
 		// Look for main.go and Makefile which indicate the terraform provider root
 		mainGoExists := false
 		makefileExists := false
-		
+
 		if _, err := os.Stat(filepath.Join(dir, "main.go")); err == nil {
 			mainGoExists = true
 		}
 		if _, err := os.Stat(filepath.Join(dir, "Makefile")); err == nil {
 			makefileExists = true
 		}
-		
+
 		if mainGoExists && makefileExists {
 			return dir, nil
 		}
