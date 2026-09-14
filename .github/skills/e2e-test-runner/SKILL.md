@@ -52,7 +52,44 @@ grep -E "^(ok|FAIL|---)" /tmp/e2e-output.txt
    <relevant output>
 ```
 
-### 5. Cleanup
+### 5. Lifecycle consistency check
+
+After E2E tests pass, verify plan→apply→plan consistency:
+
+```bash
+mkdir -p /tmp/e2e-lifecycle && cat > /tmp/e2e-lifecycle/main.tf << 'LCEOF'
+terraform {
+  required_providers {
+    azurecaf = {
+      source = "aztfmod/azurecaf"
+    }
+  }
+}
+
+resource "azurecaf_name" "lifecycle_test" {
+  name          = "lctest"
+  resource_type = "azurerm_resource_group"
+  prefixes      = ["dev"]
+  suffixes      = ["001"]
+  random_length = 4
+  random_seed   = 12345
+  clean_input   = true
+}
+
+output "result" { value = azurecaf_name.lifecycle_test.result }
+LCEOF
+cd /tmp/e2e-lifecycle
+terraform plan -out=tfplan
+terraform apply tfplan
+terraform plan  # Must show "No changes"
+rm -rf /tmp/e2e-lifecycle
+```
+
+The final `terraform plan` must report **"No changes"**. A drift here indicates plan-apply inconsistency.
+
+Also verify that `result` shows an actual name during the first plan (not `(known after apply)`).
+
+### 6. Cleanup
 
 ```bash
 rm -f /tmp/e2e-output.txt

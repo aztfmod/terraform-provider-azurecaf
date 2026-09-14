@@ -131,7 +131,11 @@ The following arguments are supported:
 
 * `random_length` - (Optional) Number of random characters to append. Random characters comply with the resource's allowed character set. Defaults to `0`.
 
-* `random_seed` - (Optional) Seed for random character generation. Use `0` for time-based seed (default behavior). Defaults to `0`.
+* `random_seed` - (Optional) Seed for the deterministic PRNG used to produce the random characters. The value is always used as a literal seed (including `0`), so the data source's `result` is reproducible across runs for any given configuration. Defaults to `0`.
+
+> **Note — data source vs. resource seed semantics**
+>
+> The `azurecaf_name` **data source** treats `random_seed = 0` as a literal seed and is always deterministic. This differs from the [`azurecaf_name` resource](../resources/azurecaf_name.md), which treats `random_seed = 0` as "unset" and falls back to a time-based seed. Because data sources resolve at plan/refresh time, `result` is always visible in `terraform plan` regardless of the seed value.
 
 * `separator` - (Optional) Character used to separate name components (prefixes, resource type slug, name, suffixes). Defaults to `"-"`.
 

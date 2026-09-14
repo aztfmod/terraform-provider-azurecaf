@@ -150,7 +150,16 @@ The following arguments are supported:
 
 * `random_length` - (Optional) Number of random characters to append. Random characters comply with the resource's allowed character set. Defaults to `0`.
 
-* `random_seed` - (Optional) Seed for random character generation. Use `0` for time-based seed (default behavior). Defaults to `0`.
+* `random_seed` - (Optional) Seed for the deterministic PRNG used to produce the random characters. Set to any **non-zero** value to make `result` reproducible and visible at plan time. Defaults to `0`.
+
+> **Important — `random_seed = 0` is treated as "unset"**
+>
+> Because Terraform's schema cannot distinguish "attribute omitted" from "attribute explicitly set to the zero value" for an integer, the provider treats `random_seed = 0` the same as not specifying `random_seed` at all. When `random_length > 0` and `random_seed` is `0` (or omitted):
+>
+> * The random suffix is seeded from `time.Now().UnixNano()` at apply time.
+> * `result` and `results` show as `(known after apply)` during `terraform plan` and are non-deterministic across runs.
+>
+> To get deterministic, plan-time-visible names, pass any non-zero `random_seed` (for example `random_seed = 1`).
 
 * `separator` - (Optional) Character used to separate name components (prefixes, resource type slug, name, suffixes). Defaults to `"-"`.
 
