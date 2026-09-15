@@ -18,7 +18,7 @@ Copilot subscription, so the workflows do not require a
 This requires centralized Copilot billing to be enabled under
 **Organization settings → Copilot → Policies → Copilot CLI → Allow use of
 Copilot CLI billed to the organization**. Without that policy, inference fails
-and the PAT-based authentication path is required instead. When
+and the workflows fail until the organization billing policy is enabled. When
 `copilot-requests: write` is enabled, any existing `COPILOT_GITHUB_TOKEN`
 secret is ignored for inference and can be removed after the migration is
 verified.
