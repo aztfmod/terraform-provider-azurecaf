@@ -184,9 +184,9 @@ resource "azurecaf_naming_convention" "combined" {
 // the data source returns an error when the generated name exceeds the resource's max length
 func TestAcc_DataSourceName_ErrorWhenExceedingMaxLength(t *testing.T) {
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckResourceDestroy,
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: testAccProviderFactories,
+		CheckDestroy:      testAccCheckResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: `

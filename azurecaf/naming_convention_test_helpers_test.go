@@ -1,6 +1,7 @@
 package azurecaf
 
 import (
+"context"
 	"regexp"
 	"strings"
 	"testing"
@@ -44,9 +45,9 @@ func runNamingConventionTest(t *testing.T, testCase NamingConventionTestCase) {
 
 	resourceData := schema.TestResourceDataRaw(t, namingConventionResource.Schema, testData)
 
-	err := namingConventionResource.Create(resourceData, nil)
-	if err != nil {
-		t.Fatalf("Failed to create resource: %v", err)
+	diags := namingConventionResource.CreateContext(context.Background(), resourceData, nil)
+	if diags.HasError() {
+		t.Fatalf("Failed to create resource: %v", diags)
 	}
 
 	result := resourceData.Get("result").(string)

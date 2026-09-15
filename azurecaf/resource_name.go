@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -141,9 +142,9 @@ func resourceName() *schema.Resource {
 	}
 
 	return &schema.Resource{
-		Create:        resourceNameCreate,
-		Read:          schema.Noop,
-		Delete:        schema.RemoveFromState,
+		CreateContext: resourceNameCreate,
+		ReadContext:   resourceNameRead,
+		DeleteContext: resourceNameDelete,
 		SchemaVersion: 3,
 		StateUpgraders: []schema.StateUpgrader{
 			{
@@ -267,15 +268,20 @@ func resourceName() *schema.Resource {
 	}
 }
 
-func resourceNameCreate(d *schema.ResourceData, meta interface{}) error {
-	return resourceNameRead(d, meta)
+func resourceNameCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	return resourceNameRead(ctx, d, meta)
 }
 
-func resourceNameRead(d *schema.ResourceData, meta interface{}) error {
-	return getNameResult(d, meta)
+func resourceNameRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	err := getNameResult(d, meta)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	return nil
 }
 
-func resourceNameDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceNameDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	d.SetId("")
 	return nil
 }
 

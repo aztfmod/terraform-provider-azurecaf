@@ -7,13 +7,13 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
-var testAccProviders map[string]*schema.Provider
-var testAccProvider *schema.Provider
+var testAccProviderFactories map[string]func() (*schema.Provider, error)
 
 func init() {
-	testAccProvider = Provider()
-	testAccProviders = map[string]*schema.Provider{
-		"azurecaf": testAccProvider,
+	testAccProviderFactories = map[string]func() (*schema.Provider, error){
+		"azurecaf": func() (*schema.Provider, error) {
+			return Provider(), nil
+		},
 	}
 }
 
@@ -30,7 +30,6 @@ func TestProvider_impl(t *testing.T) {
 func testAccPreCheck(t *testing.T) {
 }
 
-// Resource are locale and are no instrastructure is created in the test suite
 func testAccCheckResourceDestroy(s *terraform.State) error {
 	return nil
 }
