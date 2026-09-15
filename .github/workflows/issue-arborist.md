@@ -6,8 +6,11 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  copilot-requests: write
   issues: read
-engine: copilot
+engine:
+  id: copilot
+  model: gpt-5.6-luna
 strict: true
 network:
   allowed:

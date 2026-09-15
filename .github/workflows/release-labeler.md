@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: read
+  copilot-requests: write
   issues: read
   pull-requests: read
 
@@ -39,7 +40,9 @@ safe-outputs:
     max: 1
 
 source: local
-engine: copilot
+engine:
+  id: copilot
+  model: gpt-5.6-luna
 timeout-minutes: 45
 ---
 

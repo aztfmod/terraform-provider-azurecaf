@@ -11,12 +11,15 @@ on:
 
 permissions:
   contents: read
+  copilot-requests: write
   issues: read
   pull-requests: read
 
 network: defaults
 
 tools:
+  bash: false
+  cli-proxy: false
   github:
     # If in a public repo, setting `lockdown: false` allows
     # reading issues, pull requests and comments from 3rd-parties
@@ -33,7 +36,9 @@ safe-outputs:
     labels: [report, daily-status]
     close-older-issues: true
 source: githubnext/agentics/workflows/daily-repo-status.md@4957663821dbb3260348084fa2f1659701950fef
-engine: copilot
+engine:
+  id: copilot
+  model: gpt-5.6-luna
 ---
 
 # Daily Repo Status

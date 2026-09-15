@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: read
+  copilot-requests: write
   pull-requests: read
 
 network: defaults
@@ -120,7 +121,9 @@ steps:
       exit 0
 
 source: local
-engine: copilot
+engine:
+  id: copilot
+  model: gpt-5.6-luna
 ---
 
 # Release Validation
