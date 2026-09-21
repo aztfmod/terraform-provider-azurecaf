@@ -505,7 +505,7 @@ jobs:
         run: "set -o pipefail\n: > /tmp/results.env\n\necho \"🔨 Building provider...\"\nif make build 2>&1 | tee /tmp/build-output.txt; then\n  BUILD_EXIT=0\nelse\n  BUILD_EXIT=$?\nfi\necho \"BUILD_EXIT=$BUILD_EXIT\" >> /tmp/results.env\n\necho \"🧪 Running full mock-azurerm sweep (this is the slow one)...\"\nif make test_mock_azurerm_all 2>&1 | tee /tmp/sweep-output.txt; then\n  SWEEP_EXIT=0\nelse\n  SWEEP_EXIT=$?\nfi\necho \"SWEEP_EXIT=$SWEEP_EXIT\" >> /tmp/results.env\n\n# Quick numeric summary\nif [[ -f /tmp/azurecaf-mock/report.tsv ]]; then\n  TOTAL=$(($(wc -l < /tmp/azurecaf-mock/report.tsv) - 1))\n  PASS=$(awk -F'\\t' 'NR>1 && $2==\"PASS\"' /tmp/azurecaf-mock/report.tsv | wc -l)\n  FAIL=$(awk -F'\\t' 'NR>1 && $2==\"FAIL\"' /tmp/azurecaf-mock/report.tsv | wc -l)\n  INIT_FAIL=$(awk -F'\\t' 'NR>1 && $2==\"INIT_FAIL\"' /tmp/azurecaf-mock/report.tsv | wc -l)\n  echo \"TOTAL=$TOTAL\"           >> /tmp/results.env\n  echo \"PASS=$PASS\"             >> /tmp/results.env\n  echo \"FAIL=$FAIL\"             >> /tmp/results.env\n  echo \"INIT_FAIL=$INIT_FAIL\"   >> /tmp/results.env\n\n  # Top 30 failing resources with their one-line error summary\n  awk -F'\\t' 'NR>1 && ($2==\"FAIL\" || $2==\"INIT_FAIL\") {print $1 \"\\t\" $2 \"\\t\" $5}' \\\n    /tmp/azurecaf-mock/report.tsv | head -30 > /tmp/top-failures.tsv\nelse\n  echo \"REPORT_MISSING=1\" >> /tmp/results.env\nfi\n\n# Always exit 0 so the agent can run and report.\nexit 0\n"
       - if: always()
         name: Upload artifacts
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           if-no-files-found: ignore
           name: mock-azurerm-weekly
