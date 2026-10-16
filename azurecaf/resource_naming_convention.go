@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -34,9 +35,9 @@ func resourceNamingConvention() *schema.Resource {
 	}
 
 	return &schema.Resource{
-		Create:        resourceNamingConventionCreate,
-		Read:          schema.Noop,
-		Delete:        schema.RemoveFromState,
+		CreateContext: resourceNamingConventionCreate,
+		ReadContext:   resourceNamingConventionRead,
+		DeleteContext: resourceNamingConventionDelete,
 		SchemaVersion: 2,
 
 		DeprecationMessage: "This resource is deprecated and will be removed in a future major version. " +
@@ -116,15 +117,20 @@ func resourceNamingConvention() *schema.Resource {
 	}
 }
 
-func resourceNamingConventionCreate(d *schema.ResourceData, meta interface{}) error {
-	return resourceNamingConventionRead(d, meta)
+func resourceNamingConventionCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	return resourceNamingConventionRead(ctx, d, meta)
 }
 
-func resourceNamingConventionRead(d *schema.ResourceData, meta interface{}) error {
-	return getResult(d, meta)
+func resourceNamingConventionRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	err := getResult(d, meta)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	return nil
 }
 
-func resourceNamingConventionDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceNamingConventionDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	d.SetId("")
 	return nil
 }
 

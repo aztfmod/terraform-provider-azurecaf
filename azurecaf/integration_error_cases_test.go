@@ -1,6 +1,8 @@
 package azurecaf
 
 import (
+	"context"
+	"fmt"
 	"strings"
 	"testing"
 
@@ -28,12 +30,14 @@ func TestAcc_ErrorHandling(t *testing.T) {
 		})
 
 		// Try to create the resource - should fail validation
-		err := namingConventionResource.Create(resourceData, nil)
-		if err == nil {
+		diags := namingConventionResource.CreateContext(context.Background(), resourceData, nil)
+		if !diags.HasError() {
 			t.Error("Expected error for invalid resource type, but got none")
-		}
-		if err != nil && !strings.Contains(err.Error(), "Invalid resource type") {
-			t.Errorf("Expected error about resource type validation, got: %v", err)
+		} else {
+			diagStr := fmt.Sprintf("%v", diags)
+			if !strings.Contains(diagStr, "Invalid resource type") {
+				t.Errorf("Expected error about resource type validation, got: %v", diags)
+			}
 		}
 	})
 
@@ -53,12 +57,14 @@ func TestAcc_ErrorHandling(t *testing.T) {
 		})
 
 		// Try to create the resource - should fail validation
-		err := nameResource.Create(resourceData, nil)
-		if err == nil {
+		diags := nameResource.CreateContext(context.Background(), resourceData, nil)
+		if !diags.HasError() {
 			t.Error("Expected error for excessive random length, but got none")
-		}
-		if err != nil && !strings.Contains(err.Error(), "random_length") {
-			t.Errorf("Expected error about random_length, got: %v", err)
+		} else {
+			diagStr := fmt.Sprintf("%v", diags)
+			if !strings.Contains(diagStr, "random_length") {
+				t.Errorf("Expected error about random_length, got: %v", diags)
+			}
 		}
 	})
 
