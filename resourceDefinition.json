@@ -172,6 +172,22 @@
     }
   },
   {
+    "name": "azurerm_api_management_product",
+    "min_length": 1,
+    "max_length": 80,
+    "validation_regex": "\"^[a-zA-Z][a-zA-Z0-9-]{0,78}[a-zA-Z0-9|]$\"",
+    "scope": "parent",
+    "slug": "apimprod",
+    "dashes": true,
+    "lowercase": false,
+    "regex": "\"[^a-zA-Z0-9-]\"",
+    "official": {
+      "slug": "apimprod",
+      "resource": "API Management product",
+      "resource_provider_namespace": "Microsoft.ApiManagement/service/products"
+    }
+  },
+  {
     "name": "azurerm_api_management_service",
     "min_length": 1,
     "max_length": 50,

@@ -568,7 +568,7 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_api_management_logger | ✔ |
 |azurerm_api_management_named_value | ❌ |
 |azurerm_api_management_openid_connect_provider | ❌ |
-|azurerm_api_management_product | ❌ |
+|azurerm_api_management_product | ✔ |
 |azurerm_api_management_product_api | ❌ |
 |azurerm_api_management_product_group | ❌ |
 |azurerm_api_management_product_policy | ❌ |
