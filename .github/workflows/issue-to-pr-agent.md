@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: read
+  copilot-requests: write
   issues: read
   pull-requests: read
 
@@ -36,7 +37,9 @@ safe-outputs:
   add-comment: {}
 
 source: local
-engine: copilot
+engine:
+  id: copilot
+  model: gpt-5.6-luna
 ---
 
 # Issue to PR Agent
