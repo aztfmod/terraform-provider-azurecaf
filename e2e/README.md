@@ -1,6 +1,7 @@
 # End-to-End (E2E) Tests for terraform-provider-azurecaf
 
 This directory contains end-to-end tests for the Azure Cloud Adoption Framework (CAF) Terraform provider.
+The suite now validates real `terraform output -json` values after `apply`, not just successful planning.
 
 ## Overview
 
@@ -9,7 +10,7 @@ The E2E tests validate the complete functionality of the terraform-provider-azur
 1. **Building the provider from source**
 2. **Setting up local provider overrides** using Terraform's `dev_overrides` feature
 3. **Running actual Terraform commands** (plan, init, import, etc.) against real terraform configurations
-4. **Validating the output** to ensure the provider works correctly
+4. **Validating `terraform output -json` values** to ensure generated names, regex compliance, slugs, truncation, and state behavior are correct
 
 ## Test Structure
 
@@ -21,10 +22,16 @@ Contains the basic E2E test that validates core functionality:
 
 ### `e2e_comprehensive_test.go`
 Contains comprehensive test scenarios:
-- **TestE2EDataSource**: Tests the `azurecaf_name` data source
-- **TestE2ENamingConventions**: Tests different naming configurations (passthrough, random, etc.)
-- **TestE2EMultipleResourceTypes**: Tests multiple Azure resource types in one configuration
+- **TestE2EDataSource**: Tests the `azurecaf_name` data source and validates the generated output value
+- **TestE2ENamingConventions**: Tests `azurecaf_name` output values including passthrough and deterministic random suffixes
+- **TestE2EMultipleResourceTypes**: Tests multiple Azure resource types and validates generated values against expected patterns
 - **TestE2EImportFunctionality**: Tests terraform import functionality for existing resources
+- **TestE2E_OutputValueAssertions**: Verifies generated names match exact or regex-based expectations after `terraform apply`
+- **TestE2E_AllNamingConventions**: Covers `cafclassic`, `cafrandom`, `random`, and `passthrough`
+- **TestE2E_LengthConstraints**: Verifies truncation for max-length constrained resources such as storage accounts
+- **TestE2E_MultipleResults**: Verifies the `results` map for `resource_types`
+- **TestE2E_ErrorMessages**: Verifies clear Terraform error messages for invalid configurations
+- **TestE2E_StateConsistency**: Verifies a second plan after apply reports no drift
 
 ## Running Tests
 
@@ -117,7 +124,7 @@ All 5 tests passing in ~28 seconds
 ## Key Features
 
 ✅ **Real Provider Testing**: Uses actual built provider binary  
-✅ **Isolated Test Environment**: Each test runs in isolated temporary directory  
+✅ **Isolated Test Environment**: Each test runs in an isolated local `.e2e-work/` directory  
 ✅ **Comprehensive Coverage**: Tests resources, data sources, and import functionality  
 ✅ **Dev Overrides**: Uses Terraform's official development override mechanism  
 ✅ **Import Testing**: Validates terraform import functionality  

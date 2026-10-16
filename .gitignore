@@ -26,8 +26,8 @@ run_examples.sh
 dist/
 
 # E2E test artifacts
-e2e/go.sum
 **/azurecaf-e2e-*
+e2e/.e2e-work/
 e2e/**/.terraform
 e2e/**/*.tfstate
 e2e/**/*.tfstate.backup
