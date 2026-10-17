@@ -132,6 +132,89 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **CI/Automation**: Excluded the auto-generated `agentics-maintenance.yml` self-maintenance workflow that `gh aw compile` v0.72.1 emits. The compiler-emitted file inlined `${{ inputs.operation }}` and `${{ inputs.run_url }}` directly into shell `run:` blocks (CWE-94 script injection, SonarCloud rule `actions:S7631`). Even after refactoring those values through environment variables, SonarCloud's analyzer continues to flag any propagation of `${{ inputs.* }}` into a step that has a `run:` block. Since the maintenance workflow is optional, manually-triggered (`workflow_dispatch` / `workflow_call`), and not referenced by any other workflow in this repo, it has been removed from version control. If a future `gh aw compile` re-emits it, it must be deleted again or refactored to use `actions/github-script` (no shell `run:` block) before being committed.
 - **CI/Automation**: Added `.checkov.yaml` to suppress Checkov rule `CKV_GHA_7` ("workflow_dispatch inputs MUST be empty") for the auto-generated agentic workflow lock files. The compiler emits an internal `aw_context` input on every `workflow_dispatch` trigger; the lock files carry "DO NOT EDIT" headers, so a global skip with a documented justification is the auto-regen-safe approach. The repo is not a SLSA-tracked build-artifact producer, so the rule does not apply.
 
+## [v2.0.0] - 2026-08-03
+
+### Breaking changes
+
+- Removed the deprecated `azurecaf_naming_convention` resource. Migrate its state and references to `azurecaf_name` before upgrading; the resource schemas are not compatible with Terraform `moved` blocks.
+- Realigned 64 existing resource slugs with current Cloud Adoption Framework abbreviations and corrected historical copy/paste errors. Configurations using `use_slug = true` can produce different names and downstream replacements. See the [v2.0.0 migration guide](docs/migration-v2.md) for the complete mapping.
+- Removed the obsolete `azurerm_app_service_plan` definition in favor of `azurerm_service_plan`, removed the nonexistent `azurerm_lb_backend_pool` definition in favor of `azurerm_lb_backend_address_pool`, and removed `azurerm_role_assignment` because AzureRM requires its name to be a tenant-unique UUID rather than a CAF-prefixed name.
+- Corrected naming scope, length, and character rules for Custom Provider, Load Balancer child resources, Private Link Service, Storage Table, Synapse Workspace, and Web Application Firewall Policy. Existing names that do not satisfy the corrected rules now fail validation.
+- Corrected seeded random generation to sample all 26 alphabet characters. Because v1.x excluded `z`, the same `random_seed` can produce a different suffix in v2.0.0; review seeded data-source results and newly generated resource names before applying.
+
+### Added
+
+- Added persistent end-to-end lifecycle coverage for seeded, unseeded, zero-seed, deferred-input, multi-resource, data-source, import, replacement, refresh, and destroy behavior.
+
+- Added naming support for 29 AzureRM resource types, bringing the supported inventory from 494 to 520 after invalid and obsolete definitions were removed:
+  - API Management: `azurerm_api_management_api_version_set`, `azurerm_api_management_authorization_server`, `azurerm_api_management_named_value`, and `azurerm_api_management_openid_connect_provider`.
+  - App Service and Application Insights: `azurerm_app_service_certificate_order`, `azurerm_application_insights_analytics_item`, and `azurerm_application_insights_api_key`.
+  - Automation: `azurerm_automation_connection_certificate`, `azurerm_automation_connection_classic_certificate`, `azurerm_automation_connection_service_principal`, `azurerm_automation_dsc_nodeconfiguration`, and the bool, datetime, int, and string variable resources.
+  - Backup and Data Factory: `azurerm_backup_policy_file_share`, `azurerm_backup_policy_vm`, and `azurerm_data_factory_linked_service_azure_file_storage`.
+  - DNS, Event Grid, and Key Vault: `azurerm_dns_srv_record`, `azurerm_eventgrid_system_topic`, and `azurerm_key_vault_certificate_issuer`.
+  - Data Explorer and Log Analytics: both Kusto principal-assignment resources and the Windows event and performance-counter data sources.
+  - Networking and Site Recovery: `azurerm_network_packet_capture`, `azurerm_network_watcher_flow_log`, `azurerm_site_recovery_network_mapping`, and `azurerm_site_recovery_protection_container_mapping`.
+- Added plan-time name calculation for `azurecaf_name`. Deterministic random names are visible during planning when `random_length` uses a non-zero `random_seed`; unseeded random names remain known after apply.
+- Added generated Terraform mock-provider tests that validate CAF outputs against the AzureRM provider schema without Azure credentials, including PR-scoped and weekly full-sweep workflows.
+- Added a versioned migration guide and regression coverage for v2 resource definitions, removals, slug corrections, constraints, imports, and JSON unmarshalling.
+
+### Changed
+
+- Migrated provider, resource, and data-source operations to Terraform SDK Context CRUD APIs with `diag.Diagnostics` and context-aware provider factories.
+- Made random generation consistent across plan and apply. Seeded generation uses a local deterministic source; unseeded generation uses `crypto/rand` and returns entropy-source failures instead of panicking or silently falling back.
+- Made `go generate` format generated Go source before writing it, so freshness checks are idempotent and cannot leave a partially generated model.
+- Removed unused legacy resource maps and deprecated `ioutil` usage.
+- Regenerated the provider model from the final 520-resource definition inventory.
+
+### Fixed
+
+- Corrected the full E2E target to compile every E2E package and removed a duplicate framework implementation that had been excluded from normal test runs.
+- Aligned lifecycle-running CI and release validation with Terraform 1.15 and disabled the command wrapper so `terraform plan -detailed-exitcode` propagates change exit codes correctly.
+- Restored weekly Azure sync workflow compilation and Terraform setup after adding schema-based resource filtering, including superseded-resource exclusions.
+
+- Preserved `azurecaf_environment_variable` compatibility: missing variables always return an error, while `fails_if_empty` additionally rejects variables that exist with an empty value.
+- Propagated imported-state, `d.Set`, regex compilation, and plan-time `SetNew` errors as Terraform diagnostics instead of discarding them.
+- Corrected the `validation_regex` JSON tag so definitions loaded from JSON retain their validation expression.
+- Corrected API Management and Load Test validation expressions that accidentally allowed a trailing pipe character.
+- Corrected 29 new or updated naming definitions so their validation expressions accept the documented one-character minimum.
+- Restored unseeded `azurecaf_name` data-source behavior so omitting `random_seed` uses fresh cryptographic randomness instead of a globally constant suffix; explicitly configured seeds, including `0`, remain deterministic.
+- Preserved unseeded random names and resource IDs during refresh, eliminating plan→apply→plan output drift.
+- Deferred plan-time name generation when any naming input, including list elements, is unknown, preventing placeholder-derived names, false validation failures, and inconsistent apply results.
+- Corrected the mock-AzureRM harness to merge repeated resource overrides, emit valid HCL for constrained schemas, isolate provider initialization from user CLI settings, and verify that tests execute the local provider binary.
+- Hardened full mock-AzureRM sweeps with valid OpenShift identity and Service Bus namespace fixtures plus bounded, explicitly logged retries for transient AzureRM plugin handshake failures.
+- Prevented mock-harness unit tests from writing Python bytecode caches that can dirty tagged release worktrees before GoReleaser runs.
+- Updated the GoReleaser archive configuration to supported v2 syntax and normalized `terraform-plugin-log` as a direct module dependency so release hooks leave the source tree clean.
+- Corrected CI acceptance-test cleanup coverage and removed credential-shaped mock values while documenting the intentional deterministic PRNG used for non-secret seeded names.
+- Distinguished missing and empty environment-variable diagnostics, validated resource types before generating random suffixes, and aligned testing documentation with the 520-resource inventory.
+- Clarified that `random_seed = 0` is the resource's intentional unseeded sentinel rather than a Terraform schema limitation.
+
+### Migration impact
+
+This is a **major** release. Complete the [v2.0.0 migration guide](docs/migration-v2.md), upgrade with `terraform init -upgrade`, and review the full Terraform plan before applying.
+
+## [v1.2.34] - 2026-05-25
+
+### Added
+
+- Added 89 valid AzureRM naming definitions from the weekly Azure sync, bringing the supported inventory from 405 to 494 after excluding resources without a user-controlled name or without a real AzureRM counterpart.
+- Added mock-AzureRM PR and weekly validation infrastructure.
+
+### Changed
+
+- Upgraded Go to 1.25.8 and `terraform-plugin-sdk/v2` to v2.40.1.
+- Applied Terraform provider best practices, including state upgrade support, schema descriptions, import validation, and stronger diagnostic handling.
+- Updated the development container, CI workflows, generated-code formatting, and release validation for the newer toolchain.
+
+## [v1.2.33] - 2026-05-14
+
+### Added
+
+- Added `azurerm_network_connection_monitor`, `azurerm_nat_gateway`, `azurerm_monitor_workspace`, `azurerm_email_communication_service`, and `azurerm_vpn_server_configuration`, bringing the supported inventory from 400 to 405.
+
+### Changed
+
+- Updated provider documentation, test prerequisites, dependency alignment, and workflow hardening.
+
 ## [v1.2.32] - 2026-03-23
 
 ### Added

@@ -71,7 +71,8 @@ Follow the `terraform-mock-test` skill to:
 3. Create a test configuration with `mock_provider "azurerm"`
 4. Run `terraform test -verbose`
 5. Report results
-6. Clean up
+6. Run lifecycle consistency check (plan → apply → plan, verify "No changes")
+7. Clean up
 
 ---
 

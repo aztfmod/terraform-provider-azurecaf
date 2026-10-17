@@ -172,11 +172,11 @@ data "azurecaf_name" "with_env_var" {
   resource_type = "azurerm_resource_group"
 }
 
-# Naming convention resource that uses data source outputs
-resource "azurecaf_naming_convention" "combined" {
+# Name resource that uses data source outputs
+resource "azurecaf_name" "combined" {
   name          = "${data.azurecaf_name.with_prefixes.result}-combined"
-  resource_type = "rg"
-  convention    = "random"
+  resource_type = "azurerm_resource_group"
+  random_length = 5
 }
 `
 
@@ -184,9 +184,9 @@ resource "azurecaf_naming_convention" "combined" {
 // the data source returns an error when the generated name exceeds the resource's max length
 func TestAcc_DataSourceName_ErrorWhenExceedingMaxLength(t *testing.T) {
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckResourceDestroy,
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: testAccProviderFactories,
+		CheckDestroy:      testAccCheckResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: `
@@ -203,6 +203,37 @@ data "azurecaf_name" "test" {
 `,
 				// Match only the stable part of the error message to avoid brittleness if name composition changes.
 				ExpectError: regexp.MustCompile(`exceeds maximum length of \d+ by \d+ characters`),
+			},
+		},
+	})
+}
+
+func TestAcc_DataSourceName_ExplicitSeedsAreDeterministic(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: testAccProviderFactories,
+		CheckDestroy:      testAccCheckResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+data "azurecaf_name" "seed_zero" {
+  name          = "app"
+  resource_type = "azurerm_resource_group"
+  random_length = 12
+  random_seed   = 0
+}
+
+data "azurecaf_name" "seed_42" {
+  name          = "app"
+  resource_type = "azurerm_resource_group"
+  random_length = 12
+  random_seed   = 42
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("data.azurecaf_name.seed_zero", "result", "rg-app-cubyhizzkakb"),
+					resource.TestCheckResourceAttr("data.azurecaf_name.seed_42", "result", "rg-app-hrukpttuezpt"),
+				),
 			},
 		},
 	})

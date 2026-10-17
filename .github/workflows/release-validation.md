@@ -43,7 +43,7 @@ steps:
   - name: Setup Terraform
     uses: hashicorp/setup-terraform@v4
     with:
-      terraform_version: "~> 1.0"
+      terraform_version: "~> 1.15"
       terraform_wrapper: false
 
   - name: Build, test, and validate

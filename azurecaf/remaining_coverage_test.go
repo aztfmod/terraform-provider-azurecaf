@@ -117,32 +117,3 @@ func TestGetNameResultErrors(t *testing.T) {
 		}
 	})
 }
-
-// Test getResult with an invalid resource type
-func TestGetResultInvalidResource(t *testing.T) {
-	rd := schema.TestResourceDataRaw(t, resourceNamingConvention().Schema, map[string]interface{}{
-		"name":          "test",
-		"resource_type": "invalid_type",
-		"convention":    "random",
-	})
-
-	err := getResult(rd, nil)
-	if err == nil {
-		t.Error("Expected error with invalid resource type but got none")
-	}
-}
-
-// Test getResult with an invalid resource mapping
-func TestGetResultInvalidResourceMapping(t *testing.T) {
-	// Test with a non-existent key in ResourcesMapping
-	rd := schema.TestResourceDataRaw(t, resourceNamingConvention().Schema, map[string]interface{}{
-		"name":          "test",
-		"resource_type": "invalid_mapping",
-		"convention":    "random",
-	})
-
-	err := getResult(rd, nil)
-	if err == nil {
-		t.Error("Expected error with invalid resource mapping but got none")
-	}
-}
