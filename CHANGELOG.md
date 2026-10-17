@@ -144,6 +144,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added persistent end-to-end lifecycle coverage for seeded, unseeded, zero-seed, deferred-input, multi-resource, data-source, import, replacement, refresh, and destroy behavior.
+
 - Added naming support for 29 AzureRM resource types, bringing the supported inventory from 494 to 520 after invalid and obsolete definitions were removed:
   - API Management: `azurerm_api_management_api_version_set`, `azurerm_api_management_authorization_server`, `azurerm_api_management_named_value`, and `azurerm_api_management_openid_connect_provider`.
   - App Service and Application Insights: `azurerm_app_service_certificate_order`, `azurerm_application_insights_analytics_item`, and `azurerm_application_insights_api_key`.
@@ -166,6 +168,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Corrected the full E2E target to compile every E2E package and removed a duplicate framework implementation that had been excluded from normal test runs.
+
 - Preserved `azurecaf_environment_variable` compatibility: missing variables always return an error, while `fails_if_empty` additionally rejects variables that exist with an empty value.
 - Propagated imported-state, `d.Set`, regex compilation, and plan-time `SetNew` errors as Terraform diagnostics instead of discarding them.
 - Corrected the `validation_regex` JSON tag so definitions loaded from JSON retain their validation expression.
@@ -175,10 +179,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Preserved unseeded random names and resource IDs during refresh, eliminating plan→apply→plan output drift.
 - Deferred plan-time name generation when any naming input, including list elements, is unknown, preventing placeholder-derived names, false validation failures, and inconsistent apply results.
 - Corrected the mock-AzureRM harness to merge repeated resource overrides, emit valid HCL for constrained schemas, isolate provider initialization from user CLI settings, and verify that tests execute the local provider binary.
+- Hardened full mock-AzureRM sweeps with valid OpenShift identity and Service Bus namespace fixtures plus bounded, explicitly logged retries for transient AzureRM plugin handshake failures.
 - Prevented mock-harness unit tests from writing Python bytecode caches that can dirty tagged release worktrees before GoReleaser runs.
 - Updated the GoReleaser archive configuration to supported v2 syntax and normalized `terraform-plugin-log` as a direct module dependency so release hooks leave the source tree clean.
 - Corrected CI acceptance-test cleanup coverage and removed credential-shaped mock values while documenting the intentional deterministic PRNG used for non-secret seeded names.
 - Distinguished missing and empty environment-variable diagnostics, validated resource types before generating random suffixes, and aligned testing documentation with the 520-resource inventory.
+- Clarified that `random_seed = 0` is the resource's intentional unseeded sentinel rather than a Terraform schema limitation.
 
 ### Migration impact
 

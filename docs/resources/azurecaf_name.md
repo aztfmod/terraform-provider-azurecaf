@@ -155,7 +155,7 @@ The following arguments are supported:
 
 > **Important — `random_seed = 0` is treated as "unset"**
 >
-> Because Terraform's schema cannot distinguish "attribute omitted" from "attribute explicitly set to the zero value" for an integer, the provider treats `random_seed = 0` the same as not specifying `random_seed` at all. When `random_length > 0` and `random_seed` is `0` (or omitted):
+> The resource intentionally uses `0` as its unseeded sentinel, so explicitly setting `random_seed = 0` has the same behavior as omitting the argument. When `random_length > 0` and `random_seed` is `0` (or omitted):
 >
 > * The random suffix is generated from `crypto/rand` at apply time.
 > * `result` and `results` show as `(known after apply)` during `terraform plan` and are non-deterministic across runs.

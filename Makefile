@@ -162,7 +162,7 @@ generate_resource_table:  	## Generate resource table (output only)
 
 test_e2e: 	## Run complete end-to-end test suite
 	@echo "Running complete e2e test suite..."
-	cd e2e && CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v
+	cd e2e && CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v ./...
 
 test_e2e_quick: 	## Run quick e2e tests (basic scenarios only)
 	@echo "Running quick e2e tests..."
@@ -183,6 +183,10 @@ test_e2e_multiple_types: 	## Run e2e multiple resource types tests
 test_e2e_import: 	## Run e2e import functionality tests
 	@echo "Running e2e import functionality tests..."
 	cd e2e && CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v -run TestE2EImportFunctionality
+
+test_e2e_lifecycle: 	## Run plan/apply/refresh/replace/import/destroy lifecycle tests
+	@echo "Running e2e lifecycle tests..."
+	cd e2e && CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v -run TestE2ELifecycle
 
 test_e2e_verbose: 	## Run e2e tests with verbose output
 	@echo "Running e2e tests with verbose output..."

@@ -41,6 +41,7 @@ FAKE_SUB_ID = "00000000-0000-0000-0000-000000000000"
 FAKE_TENANT_ID = "11111111-1111-1111-1111-111111111111"
 FAKE_OBJ_ID = "22222222-2222-2222-2222-222222222222"
 RG_SCOPE = f"/subscriptions/{FAKE_SUB_ID}/resourceGroups/{FAKE_RG}"
+FAKE_USER_ASSIGNED_ID = f"{RG_SCOPE}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai-test"
 
 # Repeated HCL literals lifted to constants to keep the override tables readable
 # and to avoid magic-string duplication. Values are raw HCL literals (including
@@ -1544,6 +1545,10 @@ RESOURCE_ATTR_OVERRIDES: dict[str, dict[str, str]] = _merge_resource_attr_overri
         "service_cidr": '"172.30.0.0/16"',
         "vm_size": '"Standard_D4s_v3"',
     },
+    "azurerm_servicebus_namespace_disaster_recovery_config": {
+        "partner_namespace_id": f'"{RG_SCOPE}/providers/Microsoft.ServiceBus/namespaces/sb-partner"',
+        "primary_namespace_id": f'"{RG_SCOPE}/providers/Microsoft.ServiceBus/namespaces/sb-primary"',
+    },
     "azurerm_bot_service_azure_bot": {
         "sku": '"F0"',
     },
@@ -1625,6 +1630,18 @@ RESOURCE_EXTRA_HCL: dict[str, list[str]] = {
     "azurerm_kubernetes_cluster": [
         "  identity {",
         '    type = "SystemAssigned"',
+        "  }",
+    ],
+    "azurerm_redhat_openshift_cluster": [
+        "  identity {",
+        '    type         = "UserAssigned"',
+        f'    identity_ids = ["{FAKE_USER_ASSIGNED_ID}"]',
+        "  }",
+        "  platform_workload_identity_profile {",
+        "    platform_workload_identity {",
+        f'      identity_id = "{FAKE_USER_ASSIGNED_ID}"',
+        '      name        = "test"',
+        "    }",
         "  }",
     ],
     "azurerm_monitor_metric_alert": [
@@ -1823,7 +1840,7 @@ FAKE_IDS: dict[str, str] = {
     "search_service_id":               f"{RG_SCOPE}/providers/Microsoft.Search/searchServices/srch-test",
     "signalr_service_id":              f"{RG_SCOPE}/providers/Microsoft.SignalRService/SignalR/sigr-test",
     "blueprint_id":                    f"/providers/Microsoft.Management/managementGroups/mg-test/providers/Microsoft.Blueprint/blueprints/bp-test/versions/1.0",
-    "user_assigned_identity_id":       f"{RG_SCOPE}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai-test",
+    "user_assigned_identity_id":       FAKE_USER_ASSIGNED_ID,
     "frontdoor_id":                    f"{RG_SCOPE}/providers/Microsoft.Cdn/profiles/cdnfd-test",
     "host_pool_id":                    f"{RG_SCOPE}/providers/Microsoft.DesktopVirtualization/hostPools/hp-test",
     "virtual_desktop_host_pool_id":    f"{RG_SCOPE}/providers/Microsoft.DesktopVirtualization/hostPools/hp-test",

@@ -24,6 +24,7 @@ on:
         - quick
         - all
         - import_only
+        - lifecycle_only
         - naming_only
 
 # Restrict permissions for all jobs by default
@@ -88,6 +89,14 @@ jobs:
       - name: E2E Tests - Import Functionality
         if: github.event.inputs.test_type == 'all' || github.event.inputs.test_type == 'import_only' || github.event_name == 'pull_request'
         run: make test_e2e_import
+        env:
+          CHECKPOINT_DISABLE: 1
+          TF_IN_AUTOMATION: 1
+          TF_CLI_ARGS_init: "-upgrade=false"
+
+      - name: E2E Tests - Lifecycle
+        if: github.event.inputs.test_type == 'all' || github.event.inputs.test_type == 'lifecycle_only' || github.event_name == 'pull_request'
+        run: make test_e2e_lifecycle
         env:
           CHECKPOINT_DISABLE: 1
           TF_IN_AUTOMATION: 1

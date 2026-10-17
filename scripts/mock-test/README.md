@@ -19,7 +19,10 @@ The harness complements the existing test layers:
 - `run_all.sh` — runs every workspace, writes a TSV report, exits non-zero on
   any failure. It uses an isolated direct-install configuration for
   `terraform init`, then verifies and activates the workspace's local
-  `aztfmod/azurecaf` development override for `terraform test`.
+  `aztfmod/azurecaf` development override for `terraform test`. If AzureRM
+  fails its plugin handshake before any assertion runs, the exact transient
+  startup failure is logged and retried up to two times with a one-second
+  backoff; all other failures are reported immediately.
 - `fetch_schema.sh` — downloads the `azurerm` provider schema as JSON.
 - `test_generate_tests.py` — guards override merging, generated HCL literals,
   and local-provider activation.
