@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **1.x maintenance release path**: Enabled Go and E2E checks for `release/1.x`, updated the GoReleaser ZIP archive configuration, and made Latest/prerelease handling version-aware so stable 1.x hotfixes do not displace v2. Added release configuration regression tests and documented critical-only backports, version constraints, and signed patch releases. Classified the existing `terraform-plugin-log` dependency as direct without changing its version.
+  - Impact: Low -- CI, packaging, and documentation only; existing generated names, provider state, and runtime dependency versions are unchanged. These preparation changes alone do not require a provider release.
+
 - **`azurecaf/models_generated.go` is now gofmt-clean**: The generated file's struct-literal alignment did not match what `gofmt` produces on current Go toolchains. As a result, the v1.2.34 release pipeline failed at the `Run GoReleaser` step with `git is in a dirty state - M azurecaf/models_generated.go`, because the `Go` workflow's E2E tests call `make build` (which runs `go generate` then `go fmt ./...`), and `go fmt` reformatted the file. Regenerated and gofmt'd the file (no semantic change, same 489 resource entries) so subsequent runs of `make build` leave the working tree clean. Impact: None for end users; unblocks tag releases (next attempt should be v1.2.34 or later).
 
 ### Added

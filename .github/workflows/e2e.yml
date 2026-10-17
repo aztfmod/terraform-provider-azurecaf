@@ -3,7 +3,7 @@ name: E2E Tests
 on:
   # Run E2E tests on pull requests
   pull_request:
-    branches: [main]
+    branches: [main, release/1.x]
     paths:
       - 'azurecaf/**'
       - 'e2e/**'

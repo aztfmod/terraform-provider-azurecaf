@@ -11,6 +11,7 @@ We're excited to have you help improve the Azure Cloud Adoption Framework (CAF) 
 - [How Can I Contribute?](#how-can-i-contribute)
 - [Adding a New Resource](#adding-a-new-resource)
 - [Development Setup](#development-setup)
+- [Maintaining 1.x](#maintaining-1x)
 - [Testing Guidelines](#testing-guidelines)
 - [Submitting Changes](#submitting-changes)
 - [Documentation Standards](#documentation-standards)
@@ -262,6 +263,69 @@ Add your resource definition to the JSON file:
    git commit -m "Descriptive commit message"
    git push origin feature/add-new-resource-type
    ```
+
+## Maintaining 1.x
+
+`main` is the v2 development line. The `release/1.x` maintenance branch starts
+at the published `v1.2.34` tag, keeping its dependency versions and naming
+behavior rather than inheriting all subsequent changes from `main`.
+
+Accept only security fixes and production-blocking bug fixes that preserve
+existing generated names and provider state. Do not backport new resource
+definitions, CAF slug realignments, seeded-output changes, or removal of the
+legacy `azurecaf_naming_convention` resource. No support deadline or feature
+backport commitment is implied.
+
+### Preparing a critical fix
+
+1. Reproduce the issue on the latest published 1.x patch and add a regression
+   test. Include existing naming and state behavior in the compatibility checks.
+2. Fix `main` first when applicable, then backport the isolated fix with
+   `git cherry-pick -x`. If the urgent fix lands on 1.x first, forward-port it to
+   `main` afterward. Adapt the fix separately if the implementations differ.
+3. Open a reviewed PR against `release/1.x`, not `main`. Never merge the v2 branch
+   wholesale into the maintenance branch. Keep unrelated dependency updates out.
+4. Update `CHANGELOG.md` with the exact fix and its patch-version impact. Use the
+   diff from the last published 1.x tag to establish release contents; older
+   Unreleased entries may already have shipped.
+
+Start a maintenance topic branch with:
+
+```bash
+git fetch origin --tags
+git switch -c hotfix/critical-fix origin/release/1.x
+```
+
+Before release approval, run the existing checks and a non-publishing snapshot:
+
+```bash
+make build
+make test_ci
+make test_e2e
+goreleaser check
+goreleaser release --snapshot --clean --skip=publish,sign
+```
+
+Verify that generation leaves tracked files unchanged. Compare representative
+names with the last released 1.x version, including explicit seeds, resource and
+data-source forms, prefixes/suffixes, passthrough, and the legacy resource.
+Do not copy the main-only mock-AzureRM gate merely for parity. If a fix needs
+that harness, adapt its diff scope to the maintenance PR base, not `origin/main`.
+
+### Publishing an approved patch
+
+Only an explicit release request authorizes publishing. After the maintenance PR
+is reviewed and merged, tag its commit with the next unused normal patch version,
+such as `v1.2.35`; do not use a `-hotfix` prerelease suffix or move a published tag.
+The existing version-tag workflow builds and signs the platform archives and
+checksum manifest. Confirm the release assets, checksum signature, and Terraform
+Registry availability after publication.
+
+GoReleaser follows the tag's prerelease status and does not mark major-1 releases
+or prereleases as GitHub Latest. Stable v2 and later major releases can become
+Latest. Existing releases and their Latest status are not changed by this setup.
+CI, documentation, and packaging preparation alone do not warrant a new provider
+release; `v1.2.34` remains the final planned baseline until a critical fix is needed.
 
 ## Testing Guidelines
 

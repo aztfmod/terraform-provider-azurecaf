@@ -29,7 +29,7 @@ terraform {
   required_providers {
     azurecaf = {
       source  = "aztfmod/azurecaf"
-      version = "~> 1.2.32"  # Use the latest version
+      version = ">= 1.2.34, < 2.0.0"  # Stay on the 1.x maintenance line
     }
   }
 }
@@ -523,6 +523,21 @@ For detailed contribution guidelines, see [CONTRIBUTING.md](.github/CONTRIBUTING
 - **💬 Questions**: Reach out to tf-landingzones at microsoft dot com
 - **💭 Discussions**: Join us on [Gitter](https://gitter.im/aztfmod/community)
 - **🐛 Issues**: Report bugs and request features on [GitHub Issues](https://github.com/aztfmod/terraform-provider-azurecaf/issues)
+
+## Version support
+
+`main` is the v2 development line. `release/1.x` is reserved for security fixes
+and production-blocking bug fixes that preserve existing generated names and
+provider state. New resources and intentional naming changes belong in v2.
+
+Version 1.2.34 is the final planned 1.x baseline, not an end to critical patches.
+A qualifying hotfix receives the next unused patch version, starting with 1.2.35.
+Keep an upper bound of `< 2.0.0` in configurations that must remain on 1.x, and
+commit `.terraform.lock.hcl`.
+
+Maintenance patches are normal stable releases, but are not promoted to GitHub
+Latest. See the [1.x maintenance runbook](.github/CONTRIBUTING.md#maintaining-1x)
+for the backport and release process.
 
 ## 🔗 Related Projects
 

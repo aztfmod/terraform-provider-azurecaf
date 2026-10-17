@@ -2,11 +2,11 @@ name: Go
 
 on:
   push:
-    branches: [main]
+    branches: [main, release/1.x]
     tags:
       - "v*"
   pull_request:
-    branches: [main]
+    branches: [main, release/1.x]
   repository_dispatch:
 
 # Restrict permissions for all jobs by default

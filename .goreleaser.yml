@@ -29,7 +29,8 @@ builds:
         goarch: arm64
     binary: "{{ .ProjectName }}_v{{ .Version }}"
 archives:
-  - format: zip
+  - formats:
+      - zip
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
 checksum:
   name_template: "{{ .ProjectName }}_{{ .Version }}_SHA256SUMS"
@@ -49,5 +50,7 @@ signs:
 release:
   # Visit your project's GitHub Releases page to publish this release.
   draft: false
+  prerelease: auto
+  make_latest: '{{ and (ne .Major 1) (not .Prerelease) }}'
 changelog:
   disable: true
