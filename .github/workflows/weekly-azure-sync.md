@@ -41,6 +41,12 @@ safe-outputs:
     close-older-issues: true
 
 steps:
+  - name: Setup Terraform
+    uses: hashicorp/setup-terraform@v4
+    with:
+      terraform_version: "~> 1.15"
+      terraform_wrapper: false
+
   - name: Pre-compute resource gap and slug data
     env:
       GH_AW_OUT: ${{ github.workspace }}/.gh-aw-data
@@ -58,13 +64,12 @@ steps:
       # 3. Schema-based nameability check using terraform provider schema
       #    Only resources with a required user-controlled `name` attribute are nameable
       mkdir -p "$GH_AW_OUT/_schema_check"
-      cat > "$GH_AW_OUT/_schema_check/main.tf" <<'TF'
-terraform {
-  required_providers {
-    azurerm = { source = "hashicorp/azurerm", version = "~> 4.0" }
-  }
-}
-TF
+      printf '%s\n' \
+        'terraform {' \
+        '  required_providers {' \
+        '    azurerm = { source = "hashicorp/azurerm", version = "~> 4.0" }' \
+        '  }' \
+        '}' > "$GH_AW_OUT/_schema_check/main.tf"
       (cd "$GH_AW_OUT/_schema_check" && terraform init -input=false -no-color >/dev/null 2>&1 && \
        terraform providers schema -json > "$GH_AW_OUT/provider_schema.json" 2>/dev/null)
       SCHEMA_OK=$?
@@ -73,85 +78,85 @@ TF
         echo "SCHEMA_CHECK=ok" >> "$GH_AW_OUT/counts.env"
         # Filter: keep only resources that have a required `name` attribute
         python3 -c "
-import json, sys, os
+      import json, sys, os
 
-with open('$GH_AW_OUT/provider_schema.json') as f:
-    schema = json.load(f)
+      with open('$GH_AW_OUT/provider_schema.json') as f:
+          schema = json.load(f)
 
-# Find azurerm provider
-azurerm = None
-for key, val in schema.get('provider_schemas', {}).items():
-    if 'azurerm' in key:
-        azurerm = val
-        break
+      # Find azurerm provider
+      azurerm = None
+      for key, val in schema.get('provider_schemas', {}).items():
+          if 'azurerm' in key:
+              azurerm = val
+              break
 
-if not azurerm:
-    sys.exit('No azurerm schema found')
+      if not azurerm:
+          sys.exit('No azurerm schema found')
 
-resources = azurerm.get('resource_schemas', {})
+      resources = azurerm.get('resource_schemas', {})
 
-# Also load static exclusions as fallback for resources not in current schema
-excl_file = 'completness/non_nameable_resources.json'
-static_excl = set()
-not_caf_eligible = set()
-if os.path.exists(excl_file):
-    with open(excl_file) as f:
-        excl = json.load(f)
-    static_excl = set(excl.get('exact_resources', []) + excl.get('deprecated_in_v4', []))
-    not_caf_eligible = set(excl.get('name_not_caf_eligible', []))
-    suffix_pats = excl.get('suffix_patterns', [])
-    contains_pats = excl.get('contains_patterns', [])
-else:
-    suffix_pats, contains_pats = [], []
+      # Also load static exclusions as fallback for resources not in current schema
+      excl_file = 'completness/non_nameable_resources.json'
+      static_excl = set()
+      not_caf_eligible = set()
+      if os.path.exists(excl_file):
+          with open(excl_file) as f:
+              excl = json.load(f)
+          static_excl = set(excl.get('exact_resources', []) + excl.get('deprecated_in_v4', []))
+          not_caf_eligible = set(excl.get('name_not_caf_eligible', []))
+          suffix_pats = excl.get('suffix_patterns', [])
+          contains_pats = excl.get('contains_patterns', [])
+      else:
+          suffix_pats, contains_pats = [], []
 
-for line in open('$GH_AW_OUT/azurerm_raw.txt'):
-    r = line.strip()
-    if not r:
-        continue
+      for line in open('$GH_AW_OUT/azurerm_raw.txt'):
+          r = line.strip()
+          if not r:
+              continue
 
-    # Check via provider schema (definitive)
-    if r in resources:
-        attrs = resources[r].get('block', {}).get('attributes', {})
-        name_attr = attrs.get('name', {})
-        has_name = 'name' in attrs
-        name_required = name_attr.get('required', False)
-        # Keep only if name is required AND it's a CAF-eligible name
-        if has_name and name_required and r not in not_caf_eligible:
-            print(r)
-        continue
+          # Check via provider schema (definitive)
+          if r in resources:
+              attrs = resources[r].get('block', {}).get('attributes', {})
+              name_attr = attrs.get('name', {})
+              has_name = 'name' in attrs
+              name_required = name_attr.get('required', False)
+              # Keep only if name is required AND it's a CAF-eligible name
+              if has_name and name_required and r not in static_excl and r not in not_caf_eligible:
+                  print(r)
+              continue
 
-    # Not in schema (deprecated/removed) — use static exclusions
-    if r in static_excl:
-        continue
-    if any(r.endswith(s) for s in suffix_pats):
-        continue
-    if any(p in r for p in contains_pats):
-        continue
-    # Unknown resource not in schema and not excluded — skip (likely deprecated)
-    # Don't flag it since we can't verify nameability
-" > "$GH_AW_OUT/azurerm.txt"
+          # Not in schema (deprecated/removed) — use static exclusions
+          if r in static_excl:
+              continue
+          if any(r.endswith(s) for s in suffix_pats):
+              continue
+          if any(p in r for p in contains_pats):
+              continue
+          # Unknown resource not in schema and not excluded — skip (likely deprecated)
+          # Don't flag it since we can't verify nameability
+      " > "$GH_AW_OUT/azurerm.txt"
       else
         echo "SCHEMA_CHECK=failed" >> "$GH_AW_OUT/counts.env"
         # Fallback: use static exclusion list only
         python3 -c "
-import json, sys
-with open('completness/non_nameable_resources.json') as f:
-    excl = json.load(f)
-suffix_pats = excl.get('suffix_patterns', [])
-contains_pats = excl.get('contains_patterns', [])
-exact = set(excl.get('exact_resources', []) + excl.get('deprecated_in_v4', []) + excl.get('name_not_caf_eligible', []))
-for line in open('$GH_AW_OUT/azurerm_raw.txt'):
-    r = line.strip()
-    if not r:
-        continue
-    if r in exact:
-        continue
-    if any(r.endswith(s) for s in suffix_pats):
-        continue
-    if any(p in r for p in contains_pats):
-        continue
-    print(r)
-" > "$GH_AW_OUT/azurerm.txt"
+      import json, sys
+      with open('completness/non_nameable_resources.json') as f:
+          excl = json.load(f)
+      suffix_pats = excl.get('suffix_patterns', [])
+      contains_pats = excl.get('contains_patterns', [])
+      exact = set(excl.get('exact_resources', []) + excl.get('deprecated_in_v4', []) + excl.get('name_not_caf_eligible', []))
+      for line in open('$GH_AW_OUT/azurerm_raw.txt'):
+          r = line.strip()
+          if not r:
+              continue
+          if r in exact:
+              continue
+          if any(r.endswith(s) for s in suffix_pats):
+              continue
+          if any(p in r for p in contains_pats):
+              continue
+          print(r)
+      " > "$GH_AW_OUT/azurerm.txt"
       fi
 
       RAW_COUNT=$(wc -l < "$GH_AW_OUT/azurerm_raw.txt" | tr -d ' ')
@@ -162,11 +167,9 @@ for line in open('$GH_AW_OUT/azurerm_raw.txt'):
       comm -23 "$GH_AW_OUT/azurerm.txt" "$GH_AW_OUT/supported.txt" > "$GH_AW_OUT/missing.txt"
 
       # 5. Counts
-      {
-        echo "AZURERM_TOTAL=$FILTERED_COUNT"
-        echo "SUPPORTED_TOTAL=$(wc -l < "$GH_AW_OUT/supported.txt" | tr -d ' ')"
-        echo "MISSING_TOTAL=$(wc -l < "$GH_AW_OUT/missing.txt" | tr -d ' ')"
-      } >> "$GH_AW_OUT/counts.env"
+      echo "AZURERM_TOTAL=$FILTERED_COUNT" >> "$GH_AW_OUT/counts.env"
+      echo "SUPPORTED_TOTAL=$(wc -l < "$GH_AW_OUT/supported.txt" | tr -d ' ')" >> "$GH_AW_OUT/counts.env"
+      echo "MISSING_TOTAL=$(wc -l < "$GH_AW_OUT/missing.txt" | tr -d ' ')" >> "$GH_AW_OUT/counts.env"
 
       # 6. CAF abbreviations page (best-effort; agent should note if empty)
       if curl -fsSL --max-time 30 \
@@ -175,7 +178,7 @@ for line in open('$GH_AW_OUT/azurerm_raw.txt'):
         echo "CAF_FETCH=ok" >> "$GH_AW_OUT/counts.env"
       else
         echo "CAF_FETCH=failed" >> "$GH_AW_OUT/counts.env"
-        : > "$GH_AW_OUT/caf-abbreviations.html"
+        printf '%s' '' > "$GH_AW_OUT/caf-abbreviations.html"
       fi
 
       echo "----- counts -----"

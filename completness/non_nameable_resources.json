@@ -67,6 +67,7 @@
   ],
   "deprecated_in_v4": [
     "azurerm_api_management_property",
+    "azurerm_app_service_plan",
     "azurerm_attestation",
     "azurerm_blueprint_definition",
     "azurerm_blueprint_published_version",

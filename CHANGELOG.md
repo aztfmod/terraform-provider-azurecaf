@@ -170,6 +170,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Corrected the full E2E target to compile every E2E package and removed a duplicate framework implementation that had been excluded from normal test runs.
 - Aligned lifecycle-running CI and release validation with Terraform 1.15 and disabled the command wrapper so `terraform plan -detailed-exitcode` propagates change exit codes correctly.
+- Restored weekly Azure sync workflow compilation and Terraform setup after adding schema-based resource filtering, including superseded-resource exclusions.
 
 - Preserved `azurecaf_environment_variable` compatibility: missing variables always return an error, while `fails_if_empty` additionally rejects variables that exist with an empty value.
 - Propagated imported-state, `d.Set`, regex compilation, and plan-time `SetNew` errors as Terraform diagnostics instead of discarding them.
