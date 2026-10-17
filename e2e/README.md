@@ -12,6 +12,11 @@ The E2E tests validate the complete functionality of the terraform-provider-azur
 4. **Exercising full resource lifecycles** through plan, apply, refresh, replacement, import, and destroy
 5. **Validating the output and Terraform state** to ensure the provider converges without drift
 
+CI runs these tests with Terraform `~> 1.15` and the native Terraform binary.
+The lifecycle suite relies on `terraform_data` and asserts the exit code from
+`terraform plan -detailed-exitcode`, so command wrappers that normalize exit
+code `2` must be disabled.
+
 ## Test Structure
 
 ### `e2e_test.go`
