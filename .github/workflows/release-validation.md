@@ -36,7 +36,8 @@ steps:
 
   - name: Install tfproviderlint
     run: |
-      go install github.com/bflad/tfproviderlint/cmd/tfproviderlint@v0.31.0
+      # v0.31.0
+      go install github.com/bflad/tfproviderlint/cmd/tfproviderlint@fe5175f9de70aabcb649e78e53739d580bb7d66d
       echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
 
   - name: Setup Terraform
@@ -147,9 +148,9 @@ steps:
         echo "| CHANGELOG entry | $(status_icon "$CHANGELOG_EXIT") |"
         echo
         if [ "$VALIDATION_EXIT" -eq 0 ]; then
-          echo "Overall: **VALIDATED**"
+          printf '%s\n' 'Overall: **VALIDATED**'
         else
-          echo "Overall: **ISSUES FOUND**"
+          printf '%s\n' 'Overall: **ISSUES FOUND**'
         fi
       } >> "$GITHUB_STEP_SUMMARY"
 

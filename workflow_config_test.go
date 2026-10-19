@@ -50,6 +50,7 @@ func TestReleasePublishingRunsAllRequiredGates(t *testing.T) {
 		`github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/')`,
 		`.github/releases/${GITHUB_REF_NAME}.md`,
 		"--release-notes",
+		"tfproviderlint/cmd/tfproviderlint@fe5175f9de70aabcb649e78e53739d580bb7d66d",
 		`>> "$GITHUB_PATH"`,
 	}
 	for _, marker := range requiredMarkers {
@@ -86,12 +87,15 @@ func TestCoverageGateAndReleaseReporting(t *testing.T) {
 			"Provider coverage:",
 			"VALIDATION_EXIT",
 			"create-issue",
+			"tfproviderlint/cmd/tfproviderlint@fe5175f9de70aabcb649e78e53739d580bb7d66d",
+			"printf '%s\\n' 'Overall: **VALIDATED**'",
 		},
 		".github/workflows/release-validation.lock.yml": {
 			"/tmp/gh-aw/agent/release-validation",
 			"Provider coverage:",
 			"VALIDATION_EXIT",
 			"create_issue",
+			"tfproviderlint/cmd/tfproviderlint@fe5175f9de70aabcb649e78e53739d580bb7d66d",
 		},
 	}
 	for path, markers := range workflowMarkers {
