@@ -7,6 +7,7 @@ description: |
 on:
   issues:
     types: [labeled]
+    names: [new-resource]
 
 permissions:
   contents: read
@@ -48,7 +49,8 @@ When an issue is labeled `new-resource`, automatically research the requested Az
 
 ## Trigger condition
 
-Only proceed if the label added is `new-resource`. Otherwise, exit immediately.
+The compiled workflow gates pre-activation on the `new-resource` label. Verify
+the triggering label is still present before doing any work.
 
 ## Process
 

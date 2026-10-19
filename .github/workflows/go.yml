@@ -138,14 +138,22 @@ jobs:
           TF_IN_AUTOMATION: 1
           TF_CLI_ARGS_init: "-upgrade=false"
 
+      - name: Validate stable release metadata
+        if: startsWith(github.ref, 'refs/tags/') && !contains(github.ref_name, '-')
+        run: ./scripts/check-release-ready.sh "$GITHUB_REF_NAME"
+
       - name: Select release notes
         id: release_notes
         if: startsWith(github.ref, 'refs/tags/')
         shell: bash
         run: |
           notes=".github/releases/${GITHUB_REF_NAME}.md"
-          if [[ -f "$notes" ]]; then
+          if [[ -s "$notes" ]]; then
+            printf 'path=%s\n' "$notes" >> "$GITHUB_OUTPUT"
             printf 'args=release --clean --release-notes %s\n' "$notes" >> "$GITHUB_OUTPUT"
+          elif [[ "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Stable releases require non-empty committed release notes at $notes"
+            exit 1
           else
             echo 'args=release --clean' >> "$GITHUB_OUTPUT"
           fi
@@ -167,3 +175,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+
+      - name: Verify published release notes
+        if: startsWith(github.ref, 'refs/tags/') && !contains(github.ref_name, '-')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_NOTES_PATH: ${{ steps.release_notes.outputs.path }}
+        run: |
+          set -euo pipefail
+          expected=$(<"$RELEASE_NOTES_PATH")
+          actual=$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${GITHUB_REF_NAME}" --jq .body)
+
+          if [[ "$actual" != "$expected" ]]; then
+            echo "Published release notes differ from $RELEASE_NOTES_PATH; repairing."
+            gh release edit "$GITHUB_REF_NAME" --notes-file "$RELEASE_NOTES_PATH"
+            actual=$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${GITHUB_REF_NAME}" --jq .body)
+          fi
+
+          if [[ "$actual" != "$expected" ]]; then
+            echo "::error::Published release notes do not match $RELEASE_NOTES_PATH"
+            exit 1
+          fi

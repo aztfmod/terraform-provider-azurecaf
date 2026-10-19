@@ -100,6 +100,15 @@ Also verify that `rg_result` shows an actual name during the first plan (not `(k
 
 ### 7. Report
 
+After the release notes and CHANGELOG have been finalized, run:
+
+```bash
+./scripts/check-release-ready.sh vX.Y.Z
+```
+
+This final gate requires an empty `Unreleased` section, one dated version
+section with entries, and non-empty committed release notes.
+
 ```
 ## Pre-Release Validation Report
 
@@ -111,6 +120,7 @@ Also verify that `rg_result` shows an actual name during the first plan (not `(k
 | E2E tests | ✅ / ❌ |
 | Coverage >= 95% | ✅ (<percentage>%) / ❌ (<percentage>%) |
 | Lifecycle consistency | ✅ / ❌ |
+| Final release metadata | ✅ / ❌ |
 
 Overall: READY FOR RELEASE / NOT READY
 ```

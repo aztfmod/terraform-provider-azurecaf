@@ -52,6 +52,19 @@ If the user confirms:
 1. Update `CHANGELOG.md` — move entries from `## [Unreleased]` to `## [vX.Y.Z] - YYYY-MM-DD`
 2. Add an empty `## [Unreleased]` section at the top
 3. Commit `.github/releases/vX.Y.Z.md` with the CHANGELOG update
+4. Run `./scripts/check-release-ready.sh vX.Y.Z`
+
+If the release readiness script fails, STOP and fix the metadata before
+requesting final review.
+
+---
+
+## STEP 5: Verify merge readiness
+
+Follow `.github/RELEASE_RUNBOOK.md` and verify the final pull request SHA,
+required checks, review decision, merge state, and branch freshness. Do not
+lower branch protection. Record explicit maintainer authorization for any
+admin bypass.
 
 ---
 
@@ -66,9 +79,10 @@ Tests: ALL PASSED
 Coverage: <percentage>%
 
 Next steps:
-1. Commit the CHANGELOG.md update
-2. Create tag: git tag vX.Y.Z
-3. Push tag: git push origin vX.Y.Z
-4. GoReleaser will run the full release gates, use the committed release
+1. Merge the reviewed release pull request
+2. Wait for the main-branch workflows to pass
+3. Create tag: git tag vX.Y.Z
+4. Push tag: git push origin vX.Y.Z
+5. GoReleaser will run the full release gates, use the committed release
    notes, sign the checksum, and publish the artifacts automatically
 ```
