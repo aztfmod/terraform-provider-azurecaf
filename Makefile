@@ -1,5 +1,7 @@
 default: help
 
+COVERAGE_THRESHOLD ?= 95
+
 # Add help text after each target name starting with '\#\#'
 # Found here: https://gist.github.com/prwhite/8168133
 .PHONY: help
@@ -26,11 +28,21 @@ unittest: 	## Run unit tests without coverage
 		echo "   Install with: go install github.com/bflad/tfproviderlint/cmd/tfproviderlint@v0.31.0"; \
 	fi
 
-test_coverage: 	## Run tests with coverage reporting
-	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -cover ./...
+test_coverage: 	## Run provider tests and enforce the coverage threshold
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -coverprofile=coverage.out ./azurecaf/...
+	@coverage=$$(go tool cover -func=coverage.out | awk '/^total:/ { gsub(/%/, "", $$3); print $$3 }'); \
+	if [ -z "$$coverage" ]; then \
+		echo "Unable to determine provider coverage."; \
+		exit 1; \
+	fi; \
+	printf 'Provider coverage: %s%% (threshold: %s%%)\n' "$$coverage" "$(COVERAGE_THRESHOLD)"; \
+	if ! awk -v coverage="$$coverage" -v threshold="$(COVERAGE_THRESHOLD)" 'BEGIN { exit !(coverage + 0 >= threshold + 0) }'; then \
+		echo "Coverage $$coverage% is below the required $(COVERAGE_THRESHOLD)%."; \
+		exit 1; \
+	fi
 
 test_coverage_html: 	## Generate HTML coverage report
-	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -coverprofile=coverage.out ./...
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -coverprofile=coverage.out ./azurecaf/...
 	go tool cover -html=coverage.out -o coverage.html
 	@echo "Coverage report generated at: coverage.html"
 
@@ -62,7 +74,7 @@ test_resource_definition_completeness: 	## Validate all resource definitions are
 
 test_all: unittest test_integration	## Run all tests (unit and integration)
 
-test_ci: unittest test_coverage test_resource_definitions test_resource_matrix test_resource_coverage	## Run comprehensive CI tests (unit, coverage, resource validation, matrix testing)
+test_ci: unittest test_coverage test_resource_definitions test_resource_matrix test_resource_coverage test_mock_harness	## Run comprehensive CI tests (unit, coverage, resource validation, matrix testing)
 
 test_ci_fast: unittest test_coverage test_resource_definitions	## Run fast CI tests (unit, coverage, resource validation only)
 
@@ -82,6 +94,9 @@ test_complete: test_all test_all_resources test_resource_coverage	## Complete te
 MOCK_OUT_DIR ?= /tmp/azurecaf-mock/tests
 MOCK_REPORT  ?= /tmp/azurecaf-mock/report.tsv
 MOCK_SCHEMA  ?= /tmp/azurecaf-mock/azurerm-schema.json
+
+test_mock_harness:  ## Test the mock-azurerm generator and runner
+	PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/mock-test -p 'test_*.py'
 
 test_mock_azurerm_setup: build  ## Install local provider + fetch azurerm schema for the mock-azurerm tests
 	@GOOS=$$(go env GOOS); GOARCH=$$(go env GOARCH); \
@@ -159,7 +174,7 @@ generate_resource_table:  	## Generate resource table (output only)
 
 test_e2e: 	## Run complete end-to-end test suite
 	@echo "Running complete e2e test suite..."
-	cd e2e && CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v
+	cd e2e && CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v ./...
 
 test_e2e_quick: 	## Run quick e2e tests (basic scenarios only)
 	@echo "Running quick e2e tests..."
@@ -181,6 +196,10 @@ test_e2e_import: 	## Run e2e import functionality tests
 	@echo "Running e2e import functionality tests..."
 	cd e2e && CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v -run TestE2EImportFunctionality
 
+test_e2e_lifecycle: 	## Run plan/apply/refresh/replace/import/destroy lifecycle tests
+	@echo "Running e2e lifecycle tests..."
+	cd e2e && CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v -run TestE2ELifecycle
+
 test_e2e_verbose: 	## Run e2e tests with verbose output
 	@echo "Running e2e tests with verbose output..."
 	cd e2e && CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v
@@ -190,4 +209,3 @@ test_e2e_verbose: 	## Run e2e tests with verbose output
 test_complete_with_e2e: test_complete test_e2e	## Run complete test suite including e2e tests
 
 test_ci_with_e2e: test_ci test_e2e_quick	## Run CI tests including quick e2e tests
-

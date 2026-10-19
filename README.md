@@ -16,8 +16,11 @@ The Azure CAF provider allows you to:
 - **🎲 Add random characters** to resource names for uniqueness
 - **🏷️ Handle prefixes and suffixes** (either manual or as per Azure CAF resource conventions)
 - **✅ Validate existing names** using passthrough mode
-- **🔄 Support multiple naming conventions** (CAF classic, CAF random, passthrough, etc.)
-- **📋 Generate names for 405 Azure resource types** with accurate validation rules
+- **🔄 Generate one or multiple related names** from the same naming inputs
+- **📋 Generate names for 520 Azure resource types** with accurate validation rules
+
+> Upgrading from v1.x? Read the [v2.0.0 migration guide](docs/migration-v2.md) before changing the provider version.
+
 ## 📦 Quick Start
 
 ### Installation
@@ -29,7 +32,7 @@ terraform {
   required_providers {
     azurecaf = {
       source  = "aztfmod/azurecaf"
-      version = "~> 1.2.32"  # Use the latest version
+      version = "~> 2.0"
     }
   }
 }
@@ -47,6 +50,7 @@ data "azurecaf_name" "rg_example" {
   prefixes      = ["demo"]
   suffixes      = ["001"]
   random_length = 5
+  random_seed   = 12345
   clean_input   = true
 }
 
@@ -57,7 +61,7 @@ resource "azurerm_resource_group" "example" {
 
 output "resource_group_name" {
   value = data.azurecaf_name.rg_example.result
-  # Output: rg-demo-myproject-001-a1b2c
+  # Example output: rg-demo-myproject-001-abcde
 }
 ```
 
@@ -72,6 +76,7 @@ data "azurecaf_name" "storage_account" {
   name          = "mydata"
   resource_type = "azurerm_storage_account"
   random_length = 3
+  random_seed   = 12345
 }
 
 resource "azurerm_storage_account" "example" {
@@ -94,9 +99,9 @@ locals {
   env     = "prod"
 }
 
-data "azurecaf_name" "app_service_plan" {
+data "azurecaf_name" "service_plan" {
   name          = local.project
-  resource_type = "azurerm_app_service_plan"
+  resource_type = "azurerm_service_plan"
   prefixes      = [local.env]
   suffixes      = ["001"]
 }
@@ -116,7 +121,7 @@ data "azurecaf_name" "key_vault" {
 }
 
 # Results:
-# App Service Plan: "plan-prod-webapp-001"
+# App Service Plan: "asp-prod-webapp-001"
 # App Service: "app-prod-webapp-001"  
 # Key Vault: "kv-prod-webapp-001"
 ```
@@ -130,12 +135,13 @@ resource "azurecaf_name" "multiple_resources" {
   name           = "myapp"
   resource_type  = "azurerm_app_service"
   resource_types = [
-    "azurerm_app_service_plan",
+    "azurerm_service_plan",
     "azurerm_application_insights"
   ]
   prefixes       = ["prod"]
   suffixes       = ["web"]
   random_length  = 3
+  random_seed    = 12345
   clean_input    = true
 }
 
@@ -171,6 +177,7 @@ data "azurecaf_name" "custom_vm" {
   separator     = "_"
   use_slug      = false
   random_length = 4
+  random_seed   = 12345
   clean_input   = true
 }
 
@@ -189,12 +196,14 @@ data "azurecaf_name" "custom_vm" {
 | `prefixes` | list(string) | List of prefixes to prepend | `[]` |
 | `suffixes` | list(string) | List of suffixes to append | `[]` |
 | `random_length` | number | Number of random characters to add | `0` |
-| `random_seed` | number | Seed for random generation (0 = time-based) | `0` |
+| `random_seed` | number | Seed for deterministic random generation | unset |
 | `separator` | string | Character to separate name components | `"-"` |
 | `clean_input` | bool | Remove non-compliant characters from inputs | `true` |
 | `passthrough` | bool | Validate without modification | `false` |
 | `use_slug` | bool | Include resource type abbreviation | `true` |
 | `error_when_exceeding_max_length` | bool | Fail when generated name exceeds the resource's max length | `false` |
+
+For `azurecaf_name` data sources, explicitly set `random_seed` (including `0`) whenever `random_length > 0` and the name must remain stable across refreshes. Omitting it generates a fresh suffix on every read. For `azurecaf_name` resources, only a non-zero seed enables deterministic plan-time generation; an omitted or zero seed is generated once during apply and preserved in state.
 
 ### Output Attributes
 
@@ -206,7 +215,7 @@ data "azurecaf_name" "custom_vm" {
 
 ## 🔧 Supported Azure Resources
 
-This provider supports **405 Azure resource types** with accurate naming validation rules. Each resource type has specific constraints for:
+This provider supports **520 Azure resource types** with accurate naming validation rules. Each resource type has specific constraints for:
 - **Minimum and maximum length**
 - **Allowed characters and patterns** 
 - **Case sensitivity requirements**
@@ -227,7 +236,7 @@ This provider supports **405 Azure resource types** with accurate naming validat
 <details>
 <summary>📋 View Full Resource Type List</summary>
 
-For the complete list of 405 supported resource types, see the [Resource Types Documentation](docs/index.md#complete-supported-resource-types).
+For the complete list of 520 supported resource types, see the [Resource Types Documentation](docs/index.md#complete-supported-resource-types).
 </details>
 
 ## 🚀 Advanced Usage
@@ -255,6 +264,7 @@ data "azurecaf_name" "app_service" {
   resource_type = "azurerm_app_service"
   prefixes      = [local.current_env.prefix]
   random_length = local.current_env.random_length
+  random_seed   = 12345
 }
 ```
 
@@ -283,6 +293,7 @@ data "azurecaf_name" "resources" {
   resource_type = each.key
   prefixes      = [var.environment]
   random_length = 3
+  random_seed   = 12345
 }
 
 output "resource_names" {
@@ -396,12 +407,12 @@ The test files are organized as follows:
 - **Integration Tests**: Tests with the prefix `TestAcc` that interact with Terraform directly
 - **Error Handling Tests**: Tests that verify proper error reporting in edge cases
 - **Complete Coverage Tests**: Tests designed specifically to achieve maximum code coverage
-- **Resource Matrix Tests**: Comprehensive validation of all 405 resource types
+- **Resource Matrix Tests**: Comprehensive validation of all 520 resource types
 - **Constraint Tests**: Validation of resource naming constraints and limitations
 
 ### Comprehensive Testing Framework
 
-The provider includes a comprehensive testing framework that validates all 405 Azure resource types:
+The provider includes a comprehensive testing framework that validates all 520 Azure resource types:
 ```bash
 # Run comprehensive tests for all resource types
 make test_all_resources
@@ -414,7 +425,7 @@ make test_resource_definitions
 ```
 
 This framework ensures:
-- **100% Resource Coverage**: All 405 resource types are tested
+- **100% Resource Coverage**: All 520 resource types are tested
 - **Naming Validation**: Each resource type's naming constraints are verified
 - **Category Organization**: Resources are tested by logical categories (Compute, Networking, etc.)
 - **Edge Case Testing**: Complex naming scenarios and error conditions are validated
@@ -462,7 +473,7 @@ make test_all
 make test_ci
 
 # Comprehensive testing framework
-make test_all_resources          # Test all 405 resource types
+make test_all_resources          # Test all 520 resource types
 make test_resource_matrix        # Category-based testing and constraint validation
 make test_resource_definitions   # Resource definition completeness
 
@@ -534,7 +545,10 @@ For detailed contribution guidelines, see [CONTRIBUTING.md](.github/CONTRIBUTING
 
 ## 📊 Resource Status
 
-This provider supports 405 Azure resource types. Here's the implementation status compared to the azurerm provider:
+This provider supports 520 Azure resource types. Here's the implementation status compared to the azurerm provider:
+
+The detailed table covers AzureRM schema resources; the total also includes compatibility aliases and helper definitions.
+
 <details>
 <summary>🔍 View Detailed Resource Status Table</summary>
 
@@ -551,39 +565,39 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_api_management_api_operation_tag | ✔ |
 |azurerm_api_management_api_policy | ❌ |
 |azurerm_api_management_api_schema | ❌ |
-|azurerm_api_management_api_version_set | ❌ |
-|azurerm_api_management_authorization_server | ❌ |
+|azurerm_api_management_api_version_set | ✔ |
+|azurerm_api_management_authorization_server | ✔ |
 |azurerm_api_management_backend | ✔ |
 |azurerm_api_management_certificate | ✔ |
-|azurerm_api_management_custom_domain | ✔ |
+|azurerm_api_management_custom_domain | ❌ |
 |azurerm_api_management_diagnostic | ❌ |
 |azurerm_api_management_gateway | ✔ |
 |azurerm_api_management_group | ✔ |
-|azurerm_api_management_group_user | ✔ |
+|azurerm_api_management_group_user | ❌ |
 |azurerm_api_management_identity_provider_aad | ❌ |
 |azurerm_api_management_identity_provider_facebook | ❌ |
 |azurerm_api_management_identity_provider_google | ❌ |
 |azurerm_api_management_identity_provider_microsoft | ❌ |
 |azurerm_api_management_identity_provider_twitter | ❌ |
 |azurerm_api_management_logger | ✔ |
-|azurerm_api_management_named_value | ❌ |
-|azurerm_api_management_openid_connect_provider | ❌ |
+|azurerm_api_management_named_value | ✔ |
+|azurerm_api_management_openid_connect_provider | ✔ |
 |azurerm_api_management_product | ❌ |
 |azurerm_api_management_product_api | ❌ |
 |azurerm_api_management_product_group | ❌ |
 |azurerm_api_management_product_policy | ❌ |
 |azurerm_api_management_property | ❌ |
 |azurerm_api_management_subscription | ❌ |
-|azurerm_api_management_user | ✔ |
+|azurerm_api_management_user | ❌ |
 |azurerm_app_configuration | ✔ |
 |azurerm_app_service | ✔ |
 |azurerm_app_service_active_slot | ❌ |
 |azurerm_app_service_certificate | ✔ |
-|azurerm_app_service_certificate_order | ❌ |
+|azurerm_app_service_certificate_order | ✔ |
 |azurerm_app_service_custom_hostname_binding | ❌ |
 |azurerm_app_service_environment | ✔ |
 |azurerm_app_service_hybrid_connection | ❌ |
-|azurerm_app_service_plan | ✔ |
+|azurerm_app_service_plan | ❌ |
 |azurerm_service_plan | ✔ |
 |azurerm_app_service_slot | ✔ |
 |azurerm_app_service_slot_virtual_network_swift_connection | ❌ |
@@ -591,32 +605,32 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_app_service_virtual_network_swift_connection | ❌ |
 |azurerm_application_gateway | ✔ |
 |azurerm_application_insights | ✔ |
-|azurerm_application_insights_analytics_item | ❌ |
-|azurerm_application_insights_api_key | ❌ |
+|azurerm_application_insights_analytics_item | ✔ |
+|azurerm_application_insights_api_key | ✔ |
 |azurerm_application_insights_web_test | ✔ |
 |azurerm_application_security_group | ✔ |
 |azurerm_automation_account | ✔ |
 |azurerm_automation_certificate | ✔ |
 |azurerm_automation_connection | ✔ |
-|azurerm_automation_connection_certificate | ❌ |
-|azurerm_automation_connection_classic_certificate | ❌ |
-|azurerm_automation_connection_service_principal | ❌ |
+|azurerm_automation_connection_certificate | ✔ |
+|azurerm_automation_connection_classic_certificate | ✔ |
+|azurerm_automation_connection_service_principal | ✔ |
 |azurerm_automation_credential | ✔ |
 |azurerm_automation_dsc_configuration | ✔ |
-|azurerm_automation_dsc_nodeconfiguration | ❌ |
+|azurerm_automation_dsc_nodeconfiguration | ✔ |
 |azurerm_automation_hybrid_runbook_worker_group | ✔ |
 |azurerm_automation_job_schedule | ✔ |
 |azurerm_automation_module | ✔ |
 |azurerm_automation_runbook | ✔ |
 |azurerm_automation_schedule | ✔ |
-|azurerm_automation_variable_bool | ❌ |
-|azurerm_automation_variable_datetime | ❌ |
-|azurerm_automation_variable_int | ❌ |
-|azurerm_automation_variable_string | ❌ |
+|azurerm_automation_variable_bool | ✔ |
+|azurerm_automation_variable_datetime | ✔ |
+|azurerm_automation_variable_int | ✔ |
+|azurerm_automation_variable_string | ✔ |
 |azurerm_availability_set | ✔ |
 |azurerm_backup_container_storage_account | ❌ |
-|azurerm_backup_policy_file_share | ❌ |
-|azurerm_backup_policy_vm | ❌ |
+|azurerm_backup_policy_file_share | ✔ |
+|azurerm_backup_policy_vm | ✔ |
 |azurerm_backup_protected_file_share | ❌ |
 |azurerm_backup_protected_vm | ❌ |
 |azurerm_bastion_host | ✔ |
@@ -683,7 +697,7 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_data_factory_integration_runtime_self_hosted | ✔ |
 |azurerm_data_factory_linked_service_azure_blob_storage | ✔ |
 |azurerm_data_factory_linked_service_azure_databricks | ✔ |
-|azurerm_data_factory_linked_service_azure_file_storage | ❌ |
+|azurerm_data_factory_linked_service_azure_file_storage | ✔ |
 |azurerm_data_factory_linked_service_azure_function | ✔ |
 |azurerm_data_factory_linked_service_azure_sql_database | ✔ |
 |azurerm_data_factory_linked_service_cosmosdb | ✔ |
@@ -739,21 +753,21 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_digital_twins_endpoint_servicebus | ✔ |
 |azurerm_digital_twins_instance | ✔ |
 |azurerm_disk_encryption_set | ✔ |
-|azurerm_dns_a_record | ❌ |
-|azurerm_dns_aaaa_record | ❌ |
-|azurerm_dns_caa_record | ❌ |
-|azurerm_dns_cname_record | ❌ |
-|azurerm_dns_mx_record | ❌ |
-|azurerm_dns_ns_record | ❌ |
-|azurerm_dns_ptr_record | ❌ |
-|azurerm_dns_srv_record | ❌ |
-|azurerm_dns_txt_record | ❌ |
+|azurerm_dns_a_record | ✔ |
+|azurerm_dns_aaaa_record | ✔ |
+|azurerm_dns_caa_record | ✔ |
+|azurerm_dns_cname_record | ✔ |
+|azurerm_dns_mx_record | ✔ |
+|azurerm_dns_ns_record | ✔ |
+|azurerm_dns_ptr_record | ✔ |
+|azurerm_dns_srv_record | ✔ |
+|azurerm_dns_txt_record | ✔ |
 |azurerm_dns_zone | ✔ |
 |azurerm_email_communication_service | ✔ |
 |azurerm_eventgrid_domain | ✔ |
 |azurerm_eventgrid_domain_topic | ✔ |
 |azurerm_eventgrid_event_subscription | ✔ |
-|azurerm_eventgrid_system_topic | ❌ |
+|azurerm_eventgrid_system_topic | ✔ |
 |azurerm_eventgrid_topic | ✔ |
 |azurerm_eventhub | ✔ |
 |azurerm_eventhub_authorization_rule | ✔ |
@@ -767,9 +781,9 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_express_route_gateway | ✔ |
 |azurerm_federated_identity_credential | ✔ |
 |azurerm_firewall | ✔ |
-|azurerm_firewall_application_rule_collection | ❌ |
-|azurerm_firewall_nat_rule_collection | ❌ |
-|azurerm_firewall_network_rule_collection | ❌ |
+|azurerm_firewall_application_rule_collection | ✔ |
+|azurerm_firewall_nat_rule_collection | ✔ |
+|azurerm_firewall_network_rule_collection | ✔ |
 |azurerm_firewall_policy | ✔ |
 |azurerm_firewall_policy_rule_collection_group | ✔ |
 |azurerm_frontdoor | ✔ |
@@ -818,7 +832,7 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_ip_group | ✔ |
 |azurerm_key_vault | ✔ |
 |azurerm_key_vault_certificate | ✔ |
-|azurerm_key_vault_certificate_issuer | ❌ |
+|azurerm_key_vault_certificate_issuer | ✔ |
 |azurerm_key_vault_key | ✔ |
 |azurerm_key_vault_secret | ✔ |
 |azurerm_kubernetes_cluster | ✔ |
@@ -828,14 +842,14 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_kusto_attached_database_configuration | ✔ |
 |azurerm_kusto_cluster | ✔ |
 |azurerm_kusto_cluster_customer_managed_key | ❌ |
-|azurerm_kusto_cluster_principal_assignment | ❌ |
+|azurerm_kusto_cluster_principal_assignment | ✔ |
 |azurerm_kusto_database | ✔ |
 |azurerm_kusto_database_principal | ❌ |
-|azurerm_kusto_database_principal_assignment | ❌ |
+|azurerm_kusto_database_principal_assignment | ✔ |
 |azurerm_kusto_eventhub_data_connection | ✔ |
 |azurerm_lb | ✔ |
 |azurerm_lb_backend_address_pool | ✔ |
-|azurerm_lb_backend_address_pool_address | ✔ |
+|azurerm_lb_backend_address_pool_address | ❌ |
 |azurerm_lb_nat_pool | ✔ |
 |azurerm_lb_nat_rule | ✔ |
 |azurerm_lb_outbound_rule | ✔ |
@@ -847,13 +861,13 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_linux_virtual_machine | ✔ |
 |azurerm_linux_virtual_machine_scale_set | ✔ |
 |azurerm_linux_web_app | ✔ |
-|azurerm_linux_web_app_slot | ⚠ |
+|azurerm_linux_web_app_slot | ❌ |
 |azurerm_load_test | ✔ |
 |azurerm_local_network_gateway | ✔ |
 |azurerm_log_analytics_cluster | ✔ |
 |azurerm_log_analytics_data_export_rule | ✔ |
-|azurerm_log_analytics_datasource_windows_event | ❌ |
-|azurerm_log_analytics_datasource_windows_performance_counter | ❌ |
+|azurerm_log_analytics_datasource_windows_event | ✔ |
+|azurerm_log_analytics_datasource_windows_performance_counter | ✔ |
 |azurerm_log_analytics_linked_storage_account | ❌ |
 |azurerm_log_analytics_saved_search | ✔ |
 |azurerm_log_analytics_solution | ✔ |
@@ -867,7 +881,7 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_logic_app_trigger_http_request | ✔ |
 |azurerm_logic_app_trigger_recurrence | ✔ |
 |azurerm_logic_app_workflow | ✔ |
-|azurerm_machine_learning_compute_instance  | ✔ |
+|azurerm_machine_learning_compute_instance | ✔ |
 |azurerm_machine_learning_workspace | ✔ |
 |azurerm_maintenance_assignment_dedicated_host | ❌ |
 |azurerm_maintenance_assignment_virtual_machine | ❌ |
@@ -889,7 +903,7 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_monitor_action_group | ✔ |
 |azurerm_monitor_action_rule_action_group | ✔ |
 |azurerm_monitor_action_rule_suppression | ✔ |
-|azurerm_monitor_activity_log_alert | ❌ |
+|azurerm_monitor_activity_log_alert | ✔ |
 |azurerm_monitor_autoscale_setting | ✔ |
 |azurerm_monitor_data_collection_endpoint | ✔ |
 |azurerm_monitor_data_collection_rule | ✔ |
@@ -935,13 +949,13 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_network_interface_backend_address_pool_association | ❌ |
 |azurerm_network_interface_nat_rule_association | ❌ |
 |azurerm_network_interface_security_group_association | ❌ |
-|azurerm_network_packet_capture | ❌ |
+|azurerm_network_packet_capture | ✔ |
 |azurerm_network_profile | ✔ |
 |azurerm_network_security_group | ✔ |
 |azurerm_network_security_rule | ✔ |
 |azurerm_network_service_tags | ❌ |
 |azurerm_network_watcher | ✔ |
-|azurerm_network_watcher_flow_log | ❌ |
+|azurerm_network_watcher_flow_log | ✔ |
 |azurerm_nginx_deployment | ✔ |
 |azurerm_notification_hub | ✔ |
 |azurerm_notification_hub_authorization_rule | ✔ |
@@ -966,26 +980,26 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_postgresql_server_key | ❌ |
 |azurerm_postgresql_virtual_network_rule | ✔ |
 |azurerm_powerbi_embedded | ✔ |
-|azurerm_private_dns_a_record | ❌ |
-|azurerm_private_dns_aaaa_record | ❌ |
-|azurerm_private_dns_cname_record | ❌ |
-|azurerm_private_dns_mx_record | ❌ |
-|azurerm_private_dns_ptr_record | ❌ |
+|azurerm_private_dns_a_record | ✔ |
+|azurerm_private_dns_aaaa_record | ✔ |
+|azurerm_private_dns_cname_record | ✔ |
+|azurerm_private_dns_mx_record | ✔ |
+|azurerm_private_dns_ptr_record | ✔ |
 |azurerm_private_dns_resolver | ✔ |
 |azurerm_private_dns_resolver_dns_forwarding_ruleset | ✔ |
 |azurerm_private_dns_resolver_forwarding_rule | ✔ |
 |azurerm_private_dns_resolver_inbound_endpoint | ✔ |
 |azurerm_private_dns_resolver_outbound_endpoint | ✔ |
 |azurerm_private_dns_resolver_virtual_network_link | ✔ |
-|azurerm_private_dns_srv_record | ❌ |
-|azurerm_private_dns_txt_record | ❌ |
+|azurerm_private_dns_srv_record | ✔ |
+|azurerm_private_dns_txt_record | ✔ |
 |azurerm_private_dns_zone | ✔ |
 |azurerm_private_dns_zone_virtual_network_link | ✔ |
 |azurerm_private_endpoint | ✔ |
 |azurerm_private_endpoint_connection | ❌ |
-|azurerm_private_link_service | ❌ |
+|azurerm_private_link_service | ✔ |
 |azurerm_private_link_service_endpoint_connections | ❌ |
-|azurerm_proximity_placement_group | ❌ |
+|azurerm_proximity_placement_group | ✔ |
 |azurerm_public_ip | ✔ |
 |azurerm_public_ip_prefix | ✔ |
 |azurerm_public_ips | ❌ |
@@ -1001,7 +1015,7 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_resource_group | ✔ |
 |azurerm_resource_group_policy_assignment | ✔ |
 |azurerm_resource_group_template_deployment | ✔ |
-|azurerm_role_assignment | ✔ |
+|azurerm_role_assignment | ❌ |
 |azurerm_role_definition | ✔ |
 |azurerm_route | ✔ |
 |azurerm_route_filter | ✔ |
@@ -1035,9 +1049,9 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_shared_image_versions | ❌ |
 |azurerm_signalr_service | ✔ |
 |azurerm_site_recovery_fabric | ✔ |
-|azurerm_site_recovery_network_mapping | ❌ |
+|azurerm_site_recovery_network_mapping | ✔ |
 |azurerm_site_recovery_protection_container | ✔ |
-|azurerm_site_recovery_protection_container_mapping | ❌ |
+|azurerm_site_recovery_protection_container_mapping | ✔ |
 |azurerm_site_recovery_replicated_vm | ✔ |
 |azurerm_site_recovery_replication_policy | ✔ |
 |azurerm_snapshot | ✔ |
@@ -1120,9 +1134,9 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_virtual_hub_security_partner_provider | ✔ |
 |azurerm_virtual_machine | ✔ |
 |azurerm_virtual_machine_data_disk_attachment | ❌ |
-|azurerm_virtual_machine_extension | ❌ |
+|azurerm_virtual_machine_extension | ✔ |
 |azurerm_virtual_machine_scale_set | ✔ |
-|azurerm_virtual_machine_scale_set_extension | ❌ |
+|azurerm_virtual_machine_scale_set_extension | ✔ |
 |azurerm_virtual_network | ✔ |
 |azurerm_virtual_network_gateway | ✔ |
 |azurerm_virtual_network_gateway_connection | ✔ |
@@ -1143,7 +1157,6 @@ This provider supports 405 Azure resource types. Here's the implementation statu
 |azurerm_windows_virtual_machine | ✔ |
 |azurerm_windows_virtual_machine_scale_set | ✔ |
 |azurerm_windows_web_app | ✔ |
-|azurerm_app_service_custom_hostname_binding | ❌ |
 
 </details>
 

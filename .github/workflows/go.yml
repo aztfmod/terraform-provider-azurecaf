@@ -33,13 +33,15 @@ jobs:
 
       - name: Install tfproviderlint
         run: |
-          go install github.com/bflad/tfproviderlint/cmd/tfproviderlint@v0.31.0
-          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+          # v0.31.0
+          go install github.com/bflad/tfproviderlint/cmd/tfproviderlint@fe5175f9de70aabcb649e78e53739d580bb7d66d
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v4
         with:
-          terraform_version: "~> 1.12.0"
+          terraform_version: "~> 1.15"
+          terraform_wrapper: false
 
       - name: Build
         run: go build -v ./...
@@ -128,13 +130,25 @@ jobs:
           TF_IN_AUTOMATION: 1
           TF_CLI_ARGS_init: "-upgrade=false"
 
-      - name: E2E Tests (Full) - Pull Requests Only
-        if: github.event_name == 'pull_request'
+      - name: E2E Tests (Full) - Pull Requests and Tags
+        if: github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/')
         run: make test_e2e
         env:
           CHECKPOINT_DISABLE: 1
           TF_IN_AUTOMATION: 1
           TF_CLI_ARGS_init: "-upgrade=false"
+
+      - name: Select release notes
+        id: release_notes
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          notes=".github/releases/${GITHUB_REF_NAME}.md"
+          if [[ -f "$notes" ]]; then
+            printf 'args=release --clean --release-notes %s\n' "$notes" >> "$GITHUB_OUTPUT"
+          else
+            echo 'args=release --clean' >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Import GPG key
         id: import_gpg
@@ -149,7 +163,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           version: '~> v2'
-          args: release --clean
+          args: ${{ steps.release_notes.outputs.args }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}

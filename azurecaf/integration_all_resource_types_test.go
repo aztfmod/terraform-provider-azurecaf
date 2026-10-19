@@ -51,9 +51,9 @@ func TestAcc_ResourceTypeBatch(t *testing.T) {
 				})
 
 				// Execute create function
-				err := nameResource.Create(resourceData, nil)
-				if err != nil {
-					t.Errorf("Failed to create name resource for %s: %v", resourceType, err)
+				diags := nameResource.CreateContext(context.Background(), resourceData, nil)
+				if diags.HasError() {
+					t.Errorf("Failed to create name resource for %s: %v", resourceType, diags)
 					return
 				}
 

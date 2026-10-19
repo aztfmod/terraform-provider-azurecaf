@@ -9,7 +9,7 @@ The `azurecaf_name` data source generates Azure-compliant resource names followi
 - **CAF guidelines** - Follows Microsoft Cloud Adoption Framework recommendations
 - **Flexible configuration** - Supports prefixes, suffixes, random generation, and custom separators
 - **Input sanitization** - Cleans inputs to ensure compliance
-- **405 resource types** - Comprehensive coverage of Azure services
+- **520 resource types** - Comprehensive coverage of Azure services
 
 ## Example Usage
 
@@ -22,6 +22,7 @@ data "azurecaf_name" "example" {
   prefixes      = ["prod"]
   suffixes      = ["001"]
   random_length = 3
+  random_seed   = 12345
   clean_input   = true
 }
 
@@ -43,6 +44,7 @@ data "azurecaf_name" "rg_example" {
   name          = "demogroup"
   resource_type = "azurerm_resource_group"
   random_length = 5
+  random_seed   = 12345
   clean_input   = true
 }
 
@@ -78,6 +80,7 @@ data "azurecaf_name" "app_service" {
   prefixes      = [var.environment, var.project]
   suffixes      = ["web", "001"]
   random_length = 4
+  random_seed   = 12345
   separator     = "-"
 }
 
@@ -107,6 +110,7 @@ data "azurecaf_name" "custom" {
   separator     = "_"
   use_slug      = false
   random_length = 4
+  random_seed   = 12345
 }
 
 # Output: "corp_prod_database_server_db_001_a1b2"
@@ -131,7 +135,11 @@ The following arguments are supported:
 
 * `random_length` - (Optional) Number of random characters to append. Random characters comply with the resource's allowed character set. Defaults to `0`.
 
-* `random_seed` - (Optional) Seed for random character generation. Use `0` for time-based seed (default behavior). Defaults to `0`.
+* `random_seed` - (Optional) Seed for the deterministic PRNG used to produce random characters. An explicitly configured value is used literally, including `0`. When omitted, the data source uses fresh cryptographic randomness on each read.
+
+> **Note — data source vs. resource seed semantics**
+>
+> The `azurecaf_name` **data source** is deterministic only when `random_seed` is explicitly configured; `0` is a valid deterministic seed. If `random_seed` is omitted while `random_length > 0`, each plan or refresh can produce a different `result`. This differs from the [`azurecaf_name` resource](../resources/azurecaf_name.md), which treats `random_seed = 0` as unset and preserves its generated value in Terraform state. Set an explicit seed on the data source whenever the generated name must remain stable.
 
 * `separator` - (Optional) Character used to separate name components (prefixes, resource type slug, name, suffixes). Defaults to `"-"`.
 
@@ -174,6 +182,7 @@ data "azurecaf_name" "example" {
   prefixes      = ["corp", "prod"]
   suffixes      = ["web", "001"]
   random_length = 3
+  random_seed   = 12345
   separator     = "-"
 }
 ```
@@ -246,6 +255,7 @@ data "azurecaf_name" "example" {
   resource_type = "azurerm_storage_account"
   suffixes      = ["production", "web", "001"] # Multiple suffixes
   random_length = 8                          # 8 chars
+  random_seed   = 12345
   use_slug      = true                       # "st" = 2 chars
 }
 ```
@@ -347,6 +357,7 @@ data "azurecaf_name" "example" {
   prefixes      = ["prod"]
   suffixes      = ["001"]
   random_length = 3
+  random_seed   = 12345
 }
 # Result: "stprodapi001abc" (15 chars - well within 24 char limit)
 ```
@@ -385,6 +396,6 @@ The data source automatically validates:
 ## Notes
 
 - **Plan Visibility**: Names are generated during `terraform plan`, making them visible before resource creation
-- **Deterministic**: Given the same inputs, the data source produces the same output (except when using time-based random seed)
+- **Deterministic when seeded**: Given the same inputs and an explicitly configured `random_seed` (including `0`), the data source produces the same output; omitting the seed generates fresh randomness on each read
 - **Resource Compliance**: All generated names are guaranteed to comply with Azure naming requirements
-- **Migration**: This data source is the recommended replacement for the `azurecaf_naming_convention` resource
+- **Migration**: Follow the [v2.0.0 migration guide](../migration-v2.md) when replacing `azurecaf_naming_convention`

@@ -47,8 +47,18 @@ export TF_PLUGIN_CACHE_DIR="${TF_PLUGIN_CACHE_DIR:-${HOME}/.terraform.d/plugin-c
 mkdir -p "$TF_PLUGIN_CACHE_DIR"
 export TF_IN_AUTOMATION=1
 export CHECKPOINT_DISABLE=1
+TRANSIENT_PROVIDER_STARTUP_ERROR="could not create provider instance: Unrecognized remote plugin message"
+PROVIDER_STARTUP_MAX_ATTEMPTS=3
+PROVIDER_STARTUP_RETRY_DELAY_SECONDS=1
 
 printf 'resource\tstatus\tpass\tfail\terror_summary\n' > "$REPORT_FILE"
+
+INIT_CLI_CONFIG="$LOG_DIR/terraform-init.rc"
+cat > "$INIT_CLI_CONFIG" <<'EOF'
+provider_installation {
+  direct {}
+}
+EOF
 
 total=0
 pass=0
@@ -60,30 +70,72 @@ for d in "$OUT_DIR"/*/ ; do
   rt="$(basename "$d")"
   total=$((total+1))
   log="$LOG_DIR/${rt}.log"
+  rc="${d%/}/terraform.rc"
 
   pushd "$d" > /dev/null || { echo "pushd failed for $d" >&2; continue; }
 
-  if ! terraform init -no-color -input=false > "$log" 2>&1 ; then
+  if [[ ! -f "$rc" ]]; then
+    printf 'Missing Terraform CLI configuration: %s\n' "$rc" > "$log"
+    printf '%s\tINIT_FAIL\t0\t0\tmissing terraform.rc\n' "$rt" >> "$REPORT_FILE"
+    init_fail=$((init_fail+1))
+    popd > /dev/null || true
+    continue
+  fi
+
+  plugin_dir="$(awk -F '"' '/"aztfmod\/azurecaf"/ { print $4; exit }' "$rc")"
+  plugin_binary="$plugin_dir/terraform-provider-azurecaf"
+  if [[ -z "$plugin_dir" || ! -x "$plugin_binary" ]]; then
+    printf 'Invalid azurecaf development override in %s; expected executable %s\n' \
+      "$rc" "$plugin_binary" > "$log"
+    printf '%s\tINIT_FAIL\t0\t0\tinvalid azurecaf development override\n' "$rt" >> "$REPORT_FILE"
+    init_fail=$((init_fail+1))
+    popd > /dev/null || true
+    continue
+  fi
+
+  printf 'Using local azurecaf development override: %s\n' "$plugin_binary" > "$log"
+
+  if ! TF_CLI_CONFIG_FILE="$INIT_CLI_CONFIG" terraform init -no-color -input=false >> "$log" 2>&1 ; then
     printf '%s\tINIT_FAIL\t0\t0\tinit failed\n' "$rt" >> "$REPORT_FILE"
     init_fail=$((init_fail+1))
     popd > /dev/null || true
     continue
   fi
 
-  if TF_CLI_CONFIG_FILE="$PWD/terraform.rc" terraform test -no-color >> "$log" 2>&1 ; then
+  test_passed=0
+  attempt=1
+  while (( attempt <= PROVIDER_STARTUP_MAX_ATTEMPTS )); do
+    last_attempt_start=$(($(wc -l < "$log") + 1))
+    if TF_CLI_CONFIG_FILE="$rc" terraform test -no-color >> "$log" 2>&1 ; then
+      test_passed=1
+      break
+    fi
+    if ! tail -n +"$last_attempt_start" "$log" | grep -Fq "$TRANSIENT_PROVIDER_STARTUP_ERROR"; then
+      break
+    fi
+    if (( attempt == PROVIDER_STARTUP_MAX_ATTEMPTS )); then
+      break
+    fi
+    attempt=$((attempt+1))
+    printf '\nTransient provider startup failure detected; retrying attempt %d of %d after %ds.\n' \
+      "$attempt" "$PROVIDER_STARTUP_MAX_ATTEMPTS" "$PROVIDER_STARTUP_RETRY_DELAY_SECONDS" >> "$log"
+    sleep "$PROVIDER_STARTUP_RETRY_DELAY_SECONDS"
+  done
+
+  if (( test_passed == 1 )); then
     line=$(grep -E "Success!|Failure!" "$log" | tail -1)
     p=$(echo "$line" | sed -nE 's/.*Success! ([0-9]+) passed.*/\1/p')
     [[ -z "$p" ]] && p=0
     printf '%s\tPASS\t%s\t0\t\n' "$rt" "$p" >> "$REPORT_FILE"
     pass=$((pass+1))
   else
-    line=$(grep -E "Success!|Failure!" "$log" | tail -1)
+    line=$(tail -n +"$last_attempt_start" "$log" | grep -E "Success!|Failure!" | tail -1)
     p=$(echo "$line" | sed -nE 's/.*Failure! ([0-9]+) passed.*/\1/p')
     f=$(echo "$line" | sed -nE 's/.*Failure! [0-9]+ passed, ([0-9]+) failed.*/\1/p')
     [[ -z "$p" ]] && p=0
     [[ -z "$f" ]] && f=1
-    summary=$(grep -E "^Error:" "$log" | head -1 | tr -d '\n' | head -c 160)
-    [[ -z "$summary" ]] && summary=$(grep -m1 -E "error_message" "$log" | head -c 160)
+    summary=$(tail -n +"$last_attempt_start" "$log" | grep -E "^Error:" | head -1 | tr -d '\n' | head -c 160)
+    [[ -z "$summary" ]] && summary=$(tail -n +"$last_attempt_start" "$log" | grep -m1 -E "error_message" | head -c 160)
     printf '%s\tFAIL\t%s\t%s\t%s\n' "$rt" "$p" "$f" "$summary" >> "$REPORT_FILE"
     fail=$((fail+1))
   fi

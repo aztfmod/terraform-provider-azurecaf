@@ -39,7 +39,8 @@ Present the recommendation to the user and ask for confirmation.
 Follow the `release-notes-generator` skill to:
 1. Extract unreleased CHANGELOG entries
 2. Format them as GitHub Release notes
-3. Prepare the CHANGELOG update with the new version section
+3. Save them as `.github/releases/vX.Y.Z.md`
+4. Prepare the CHANGELOG update with the new version section
 
 Show the release notes to the user for review.
 
@@ -50,6 +51,7 @@ Show the release notes to the user for review.
 If the user confirms:
 1. Update `CHANGELOG.md` — move entries from `## [Unreleased]` to `## [vX.Y.Z] - YYYY-MM-DD`
 2. Add an empty `## [Unreleased]` section at the top
+3. Commit `.github/releases/vX.Y.Z.md` with the CHANGELOG update
 
 ---
 
@@ -67,5 +69,6 @@ Next steps:
 1. Commit the CHANGELOG.md update
 2. Create tag: git tag vX.Y.Z
 3. Push tag: git push origin vX.Y.Z
-4. GoReleaser will handle the rest automatically
+4. GoReleaser will run the full release gates, use the committed release
+   notes, sign the checksum, and publish the artifacts automatically
 ```

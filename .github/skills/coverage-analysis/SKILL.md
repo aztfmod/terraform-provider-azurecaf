@@ -16,14 +16,17 @@ make test_coverage 2>&1 | tee /tmp/coverage-output.txt
 ### 2. Extract coverage percentage
 
 ```bash
-grep "coverage:" /tmp/coverage-output.txt | tail -1
+grep "^Provider coverage:" /tmp/coverage-output.txt | tail -1
 ```
 
-Parse the percentage value (e.g., `99.3%`).
+Parse the percentage value (e.g., `95.6%`). The target reports coverage for
+the provider implementation under `./azurecaf/...`, not command/helper
+packages that are not part of the provider runtime.
 
 ### 3. Check threshold
 
-The minimum coverage threshold is **95%**.
+The minimum coverage threshold is **95%**. `make test_coverage` enforces this
+threshold and exits non-zero when coverage is lower or cannot be parsed.
 
 ### 4. Report
 

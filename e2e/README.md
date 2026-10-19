@@ -9,7 +9,13 @@ The E2E tests validate the complete functionality of the terraform-provider-azur
 1. **Building the provider from source**
 2. **Setting up local provider overrides** using Terraform's `dev_overrides` feature
 3. **Running actual Terraform commands** (plan, init, import, etc.) against real terraform configurations
-4. **Validating the output** to ensure the provider works correctly
+4. **Exercising full resource lifecycles** through plan, apply, refresh, replacement, import, and destroy
+5. **Validating the output and Terraform state** to ensure the provider converges without drift
+
+CI runs these tests with Terraform `~> 1.15` and the native Terraform binary.
+The lifecycle suite relies on `terraform_data` and asserts the exit code from
+`terraform plan -detailed-exitcode`, so command wrappers that normalize exit
+code `2` must be disabled.
 
 ## Test Structure
 
@@ -25,6 +31,16 @@ Contains comprehensive test scenarios:
 - **TestE2ENamingConventions**: Tests different naming configurations (passthrough, random, etc.)
 - **TestE2EMultipleResourceTypes**: Tests multiple Azure resource types in one configuration
 - **TestE2EImportFunctionality**: Tests terraform import functionality for existing resources
+
+### `lifecycle_test.go`
+Contains stateful lifecycle scenarios:
+- Seeded results are visible during plan and identical after apply
+- Omitted and zero resource seeds remain unknown during plan, then persist through refresh
+- Unknown list inputs defer name generation until apply and converge on the next plan
+- Multiple resource-type results match between plan and state
+- Data-source seed `0` and non-zero seeds remain deterministic while omitted seeds refresh
+- Imported resources converge without resource drift
+- Replacements and destroys leave the expected state
 
 ## Running Tests
 
@@ -42,6 +58,7 @@ make test_e2e_data_source
 make test_e2e_naming
 make test_e2e_multiple_types
 make test_e2e_import        # NEW: Import functionality tests
+make test_e2e_lifecycle     # Stateful plan/apply/refresh/replace/import/destroy tests
 ```
 
 ### Direct Go Commands
@@ -49,6 +66,9 @@ make test_e2e_import        # NEW: Import functionality tests
 ```bash
 # Run all tests
 cd e2e && go test -v
+
+# Run all E2E packages, including framework compilation
+cd e2e && go test -v ./...
 
 # Run specific test
 cd e2e && go test -v -run TestE2EImportFunctionality
@@ -79,6 +99,14 @@ cd e2e && go test -v -run TestE2EImportFunctionality
 - Validates import format: `azurerm_storage_account:stmyexistingapp`
 - Verifies imported resource appears correctly in terraform state
 - Confirms import process completes successfully
+
+### Lifecycle Test
+- Verifies seeded names are concrete in the initial plan
+- Verifies unseeded and zero-seed resource names are known after apply and stable afterward
+- Requires clean plan → apply → refresh → plan convergence
+- Verifies ForceNew changes produce replacement plans with deterministic outputs
+- Verifies explicit data-source seeds remain stable and omitted seeds refresh
+- Verifies import → apply → plan convergence and final destroy cleanup
 
 ## Import Test Details
 
@@ -122,6 +150,7 @@ All 5 tests passing in ~28 seconds
 ✅ **Dev Overrides**: Uses Terraform's official development override mechanism  
 ✅ **Import Testing**: Validates terraform import functionality  
 ✅ **Cleanup**: Automatic cleanup of temporary directories  
+✅ **Lifecycle Coverage**: Validates plan/apply/refresh/replace/import/destroy behavior
 ✅ **Fast Execution**: Simple and efficient test execution  
 
 ## Integration with CI/CD
@@ -143,6 +172,7 @@ The E2E tests are fully integrated into GitHub Actions CI/CD pipelines:
   - `quick` - Basic functionality only
   - `all` - Complete test suite
   - `import_only` - Import functionality only
+  - `lifecycle_only` - Stateful lifecycle validation only
   - `naming_only` - Naming convention tests only
 
 ### CI Integration Features
