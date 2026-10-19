@@ -48,7 +48,9 @@ All E2E tests must pass.
 make test_coverage 2>&1 | tee /tmp/prerelease-coverage.txt
 ```
 
-Coverage must be >= 95%.
+Coverage for the provider implementation under `./azurecaf/...` must be
+>= 95%. The command enforces the threshold and prints a final
+`Provider coverage: <percentage>%` line.
 
 ### 6. Lifecycle consistency check
 

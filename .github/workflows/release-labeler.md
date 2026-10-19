@@ -120,7 +120,11 @@ After processing, create a summary:
 ...
 ```
 
-Post the report as a comment on the latest release (for tag push) or as a new issue (for backfill runs).
+GitHub Releases do not support comments, and this workflow does not expose an
+`add-comment` safe output. For tag pushes, the workflow run output is the
+report; use safe outputs only to apply labels. For manual backfills, create one
+issue when a persistent report is useful. If any label operation fails, create
+one issue summarizing the failures.
 
 ## Important rules
 

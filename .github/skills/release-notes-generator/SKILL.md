@@ -58,6 +58,9 @@ Prepare the CHANGELOG update — replace `## [Unreleased]` content with a new ve
 
 ### 4. Output
 
+Write the formatted release notes to `.github/releases/vX.Y.Z.md` so the tag
+workflow passes them to GoReleaser with `--release-notes`.
+
 Return:
-- The formatted release notes (for GitHub Release body)
+- The formatted release notes path and content
 - The updated CHANGELOG.md content (for committing)

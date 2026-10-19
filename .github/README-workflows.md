@@ -41,8 +41,21 @@ gh aw compile --validate
 ### `go.yml`
 Main CI/CD workflow that:
 - Builds the provider
-- Runs comprehensive tests (unit, integration, coverage)
-- Creates releases when tags are pushed
+- Runs comprehensive tests (unit, integration, enforced provider coverage)
+- Runs the full stateful E2E lifecycle suite on pull requests and release tags
+- Uses `.github/releases/<tag>.md` when curated release notes are available
+- Signs checksums and creates releases when tags are pushed
+
+### Release tag workflows
+
+Pushing a stable `v*` tag starts three complementary workflows:
+
+- `go.yml` is the publishing gate. GoReleaser runs only after build, unit,
+  coverage, integration, and full E2E checks pass.
+- `release-validation.lock.yml` writes a release-validation job summary and
+  opens one issue when any validation check fails.
+- `release-labeler.lock.yml` applies the release version label to closed issues
+  and merged pull requests in the release range.
 
 ### `codeql.yml`
 CodeQL security analysis workflow that:

@@ -1,5 +1,7 @@
 default: help
 
+COVERAGE_THRESHOLD ?= 95
+
 # Add help text after each target name starting with '\#\#'
 # Found here: https://gist.github.com/prwhite/8168133
 .PHONY: help
@@ -26,11 +28,21 @@ unittest: 	## Run unit tests without coverage
 		echo "   Install with: go install github.com/bflad/tfproviderlint/cmd/tfproviderlint@v0.31.0"; \
 	fi
 
-test_coverage: 	## Run tests with coverage reporting
-	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -cover ./...
+test_coverage: 	## Run provider tests and enforce the coverage threshold
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -coverprofile=coverage.out ./azurecaf/...
+	@coverage=$$(go tool cover -func=coverage.out | awk '/^total:/ { gsub(/%/, "", $$3); print $$3 }'); \
+	if [ -z "$$coverage" ]; then \
+		echo "Unable to determine provider coverage."; \
+		exit 1; \
+	fi; \
+	printf 'Provider coverage: %s%% (threshold: %s%%)\n' "$$coverage" "$(COVERAGE_THRESHOLD)"; \
+	if ! awk -v coverage="$$coverage" -v threshold="$(COVERAGE_THRESHOLD)" 'BEGIN { exit !(coverage + 0 >= threshold + 0) }'; then \
+		echo "Coverage $$coverage% is below the required $(COVERAGE_THRESHOLD)%."; \
+		exit 1; \
+	fi
 
 test_coverage_html: 	## Generate HTML coverage report
-	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -coverprofile=coverage.out ./...
+	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -coverprofile=coverage.out ./azurecaf/...
 	go tool cover -html=coverage.out -o coverage.html
 	@echo "Coverage report generated at: coverage.html"
 

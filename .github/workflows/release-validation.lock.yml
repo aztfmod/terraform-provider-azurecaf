@@ -1,5 +1,5 @@
-# gh-aw-metadata: {"schema_version":"v4","frontmatter_hash":"b46846eea8133bb5883793cd2fd64c9b13e4007fb0f5498948ed014d269ecb00","body_hash":"8928e226530585d011f86eee05a3054261a7da41e7442d073b0ada74e0330510","compiler_version":"v0.88.7","strict":true,"agent_id":"copilot","agent_model":"gpt-5.6-luna","engine_versions":{"copilot":"1.0.80"}}
-# gh-aw-manifest: {"version":1,"secrets":["GH_AW_DEFAULT_OTLP_HEADERS","GH_AW_GITHUB_MCP_SERVER_TOKEN","GH_AW_GITHUB_TOKEN","GITHUB_TOKEN"],"actions":[{"repo":"actions/cache/restore","sha":"55cc8345863c7cc4c66a329aec7e433d2d1c52a9","version":"v6.1.0"},{"repo":"actions/cache/save","sha":"55cc8345863c7cc4c66a329aec7e433d2d1c52a9","version":"v6.1.0"},{"repo":"actions/checkout","sha":"3d3c42e5aac5ba805825da76410c181273ba90b1","version":"v7.0.1"},{"repo":"actions/download-artifact","sha":"3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c","version":"v8.0.1"},{"repo":"actions/github-script","sha":"3a2844b7e9c422d3c10d287c895573f7108da1b3","version":"v9.0.0"},{"repo":"actions/setup-go","sha":"924ae3a1cded613372ab5595356fb5720e22ba16","version":"v6"},{"repo":"actions/setup-node","sha":"820762786026740c76f36085b0efc47a31fe5020","version":"v7.0.0"},{"repo":"actions/upload-artifact","sha":"043fb46d1a93c77aae656e7c1c64a875d1fc6a0a","version":"v7.0.1"},{"repo":"github/gh-aw-actions/setup","sha":"5e508589e03a7757a7e05b26e834292f5445bfb6","version":"v0.88.7"},{"repo":"hashicorp/setup-terraform","sha":"dfe3c3f87815947d99a8997f908cb6525fc44e9e","version":"v4"}],"containers":[{"image":"ghcr.io/github/gh-aw-firewall/agent:0.28.14","digest":"sha256:f7df036c86575527b61f3f7df91c4412349a12b2a74988d929eafa2999230c98","pinned_image":"ghcr.io/github/gh-aw-firewall/agent:0.28.14@sha256:f7df036c86575527b61f3f7df91c4412349a12b2a74988d929eafa2999230c98"},{"image":"ghcr.io/github/gh-aw-firewall/api-proxy:0.28.14","digest":"sha256:6f95e2234dd9bd6333a8ff28ccea7ecf0204acd4a09108723844dbd2bf6268c5","pinned_image":"ghcr.io/github/gh-aw-firewall/api-proxy:0.28.14@sha256:6f95e2234dd9bd6333a8ff28ccea7ecf0204acd4a09108723844dbd2bf6268c5"},{"image":"ghcr.io/github/gh-aw-firewall/squid:0.28.14","digest":"sha256:2ce8df3abf3e9b76e9c0cf5863da41f1ab3f89b20ad14b988806ab89e7bf2cd5","pinned_image":"ghcr.io/github/gh-aw-firewall/squid:0.28.14@sha256:2ce8df3abf3e9b76e9c0cf5863da41f1ab3f89b20ad14b988806ab89e7bf2cd5"},{"image":"ghcr.io/github/gh-aw-mcpg:v0.4.18","digest":"sha256:85b940556a8faa4e1fdbef124bfd75f2c4ebd855a10b88a1c3b6f3e97f6f1a53","pinned_image":"ghcr.io/github/gh-aw-mcpg:v0.4.18@sha256:85b940556a8faa4e1fdbef124bfd75f2c4ebd855a10b88a1c3b6f3e97f6f1a53"},{"image":"ghcr.io/github/gh-aw-node","digest":"sha256:0daa8971fa4732b647150cb6524a6b0804b68d5d24f6f58b5dd1af23bd63fb23","pinned_image":"ghcr.io/github/gh-aw-node@sha256:0daa8971fa4732b647150cb6524a6b0804b68d5d24f6f58b5dd1af23bd63fb23"},{"image":"ghcr.io/github/github-mcp-server:v1.11.0","digest":"sha256:fbec75de11c255213fa08d80fb166abe73d851fff631c51c0079872967720699","pinned_image":"ghcr.io/github/github-mcp-server:v1.11.0@sha256:fbec75de11c255213fa08d80fb166abe73d851fff631c51c0079872967720699"}],"mcp_servers":[{"name":"github","tools":["get_pull_request","get_pull_request_comments","get_pull_request_diff","get_pull_request_files","get_pull_request_review_comments","get_pull_request_reviews","get_pull_request_status","list_pull_requests","pull_request_read","search_pull_requests"]},{"name":"safeoutputs","tools":["add_comment","missing_data","missing_tool","noop"]}]}
+# gh-aw-metadata: {"schema_version":"v4","frontmatter_hash":"ad9915d75b2ae5472fd5b250f79740eb9bc37c26928e6462e53c128814fd3e07","body_hash":"c2e00e5f66063ec127d7971971acf92461109dca92438acc3c128c0bb66e7b97","compiler_version":"v0.88.7","strict":true,"agent_id":"copilot","agent_model":"gpt-5.6-luna","engine_versions":{"copilot":"1.0.80"}}
+# gh-aw-manifest: {"version":1,"secrets":["GH_AW_DEFAULT_OTLP_HEADERS","GH_AW_GITHUB_MCP_SERVER_TOKEN","GH_AW_GITHUB_TOKEN","GITHUB_TOKEN"],"actions":[{"repo":"actions/cache/restore","sha":"55cc8345863c7cc4c66a329aec7e433d2d1c52a9","version":"v6.1.0"},{"repo":"actions/cache/save","sha":"55cc8345863c7cc4c66a329aec7e433d2d1c52a9","version":"v6.1.0"},{"repo":"actions/checkout","sha":"3d3c42e5aac5ba805825da76410c181273ba90b1","version":"v7.0.1"},{"repo":"actions/download-artifact","sha":"3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c","version":"v8.0.1"},{"repo":"actions/github-script","sha":"3a2844b7e9c422d3c10d287c895573f7108da1b3","version":"v9.0.0"},{"repo":"actions/setup-go","sha":"b7ad1dad31e06c5925ef5d2fc7ad053ef454303e","version":"v7.0.0 (source v7)"},{"repo":"actions/setup-node","sha":"820762786026740c76f36085b0efc47a31fe5020","version":"v7.0.0"},{"repo":"actions/upload-artifact","sha":"043fb46d1a93c77aae656e7c1c64a875d1fc6a0a","version":"v7.0.1"},{"repo":"github/gh-aw-actions/setup","sha":"5e508589e03a7757a7e05b26e834292f5445bfb6","version":"v0.88.7"},{"repo":"hashicorp/setup-terraform","sha":"dfe3c3f87815947d99a8997f908cb6525fc44e9e","version":"v4"}],"containers":[{"image":"ghcr.io/github/gh-aw-firewall/agent:0.28.14","digest":"sha256:f7df036c86575527b61f3f7df91c4412349a12b2a74988d929eafa2999230c98","pinned_image":"ghcr.io/github/gh-aw-firewall/agent:0.28.14@sha256:f7df036c86575527b61f3f7df91c4412349a12b2a74988d929eafa2999230c98"},{"image":"ghcr.io/github/gh-aw-firewall/api-proxy:0.28.14","digest":"sha256:6f95e2234dd9bd6333a8ff28ccea7ecf0204acd4a09108723844dbd2bf6268c5","pinned_image":"ghcr.io/github/gh-aw-firewall/api-proxy:0.28.14@sha256:6f95e2234dd9bd6333a8ff28ccea7ecf0204acd4a09108723844dbd2bf6268c5"},{"image":"ghcr.io/github/gh-aw-firewall/squid:0.28.14","digest":"sha256:2ce8df3abf3e9b76e9c0cf5863da41f1ab3f89b20ad14b988806ab89e7bf2cd5","pinned_image":"ghcr.io/github/gh-aw-firewall/squid:0.28.14@sha256:2ce8df3abf3e9b76e9c0cf5863da41f1ab3f89b20ad14b988806ab89e7bf2cd5"},{"image":"ghcr.io/github/gh-aw-mcpg:v0.4.18","digest":"sha256:85b940556a8faa4e1fdbef124bfd75f2c4ebd855a10b88a1c3b6f3e97f6f1a53","pinned_image":"ghcr.io/github/gh-aw-mcpg:v0.4.18@sha256:85b940556a8faa4e1fdbef124bfd75f2c4ebd855a10b88a1c3b6f3e97f6f1a53"},{"image":"ghcr.io/github/gh-aw-node","digest":"sha256:0daa8971fa4732b647150cb6524a6b0804b68d5d24f6f58b5dd1af23bd63fb23","pinned_image":"ghcr.io/github/gh-aw-node@sha256:0daa8971fa4732b647150cb6524a6b0804b68d5d24f6f58b5dd1af23bd63fb23"},{"image":"ghcr.io/github/github-mcp-server:v1.11.0","digest":"sha256:fbec75de11c255213fa08d80fb166abe73d851fff631c51c0079872967720699","pinned_image":"ghcr.io/github/github-mcp-server:v1.11.0@sha256:fbec75de11c255213fa08d80fb166abe73d851fff631c51c0079872967720699"}],"mcp_servers":[{"name":"github","tools":["get_commit","get_file_contents","get_latest_release","get_me","get_pull_request","get_pull_request_comments","get_pull_request_diff","get_pull_request_files","get_pull_request_review_comments","get_pull_request_reviews","get_pull_request_status","get_release_by_tag","get_tag","issue_read","list_branches","list_commits","list_issue_types","list_issues","list_pull_requests","list_releases","list_starred_repositories","list_tags","pull_request_read","search_code","search_issues","search_pull_requests","search_repositories"]},{"name":"safeoutputs","tools":["create_issue","missing_data","missing_tool","noop"]}]}
 # This file was automatically generated by gh-aw (v0.88.7). DO NOT EDIT. To debug this workflow, load the skill at https://github.com/github/gh-aw/blob/main/debug.md
 #
 #    ___                   _   _
@@ -24,8 +24,8 @@
 # For more information: https://github.github.com/gh-aw/introduction/overview/
 #
 # Release validation workflow that runs comprehensive checks when a
-# version tag is pushed. Posts validation results as a comment on the
-# associated GitHub Release.
+# version tag is pushed. Writes a workflow summary and opens an issue
+# when any validation check fails.
 #
 # Source: local
 #
@@ -42,7 +42,7 @@
 #   - actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
 #   - actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
 #   - actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0 (source v9)
-#   - actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+#   - actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0 (source v7)
 #   - actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
 #   - actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
 #   - github/gh-aw-actions/setup@5e508589e03a7757a7e05b26e834292f5445bfb6 # v0.88.7
@@ -145,9 +145,6 @@ jobs:
           GH_AW_INFO_FRONTMATTER_SOURCE: "local"
           GH_AW_INFO_BODY_MODIFIED: "false"
           GH_AW_COMPILED_STRICT: "true"
-          GITHUB_MCP_LOCKDOWN_EXPLICIT: "true"
-          GH_AW_GITHUB_TOKEN: ${{ secrets.GH_AW_GITHUB_TOKEN }}
-          GH_AW_GITHUB_MCP_SERVER_TOKEN: ${{ secrets.GH_AW_GITHUB_MCP_SERVER_TOKEN }}
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
@@ -275,7 +272,7 @@ jobs:
           GH_AW_GITHUB_RUN_ID: ${{ github.run_id }}
           GH_AW_GITHUB_WORKSPACE: ${{ github.workspace }}
           GH_AW_PROMPT_CONTENT_0000: "<system>\n"
-          GH_AW_PROMPT_CONTENT_0001: "<safe-output-tools>\nTools: add_comment, missing_tool, missing_data, noop\n"
+          GH_AW_PROMPT_CONTENT_0001: "<safe-output-tools>\nTools: create_issue, missing_tool, missing_data, noop\n"
           GH_AW_PROMPT_CONTENT_0002: "</safe-output-tools>\n"
           GH_AW_PROMPT_CONTENT_0003: "<github-context>\nThe following GitHub context information is available for this workflow:\n{{#if github.actor}}\n- **actor**: __GH_AW_GITHUB_ACTOR__\n{{/if}}\n{{#if github.repository}}\n- **repository**: __GH_AW_GITHUB_REPOSITORY__\n{{/if}}\n{{#if github.workspace}}\n- **workspace**: __GH_AW_GITHUB_WORKSPACE__\n{{/if}}\n{{#if github.event.issue.number || (github.aw.context.item_type == 'issue' && github.aw.context.item_number)}}\n- **issue-number**: #__GH_AW_EXPR_802A9F6A__\n{{/if}}\n{{#if github.event.discussion.number || (github.aw.context.item_type == 'discussion' && github.aw.context.item_number)}}\n- **discussion-number**: #__GH_AW_EXPR_1A3A194A__\n{{/if}}\n{{#if github.event.pull_request.number || (github.aw.context.item_type == 'pull_request' && github.aw.context.item_number)}}\n- **pull-request-number**: #__GH_AW_EXPR_463A214A__\n{{/if}}\n{{#if github.event.comment.id || github.aw.context.comment_id}}\n- **comment-id**: __GH_AW_EXPR_FF1D34CE__\n{{/if}}\n{{#if github.run_id}}\n- **workflow-run-id**: __GH_AW_GITHUB_RUN_ID__\n{{/if}}\n</github-context>\n\n"
           GH_AW_PROMPT_CONTENT_0004: "</system>\n"
@@ -354,7 +351,7 @@ jobs:
           cp -a "${RUNNER_TEMP}/gh-aw/aw-prompts/." /tmp/gh-aw/aw-prompts/
       - name: Upload activation artifact
         if: success() || failure()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: activation
           include-hidden-files: true
@@ -378,7 +375,6 @@ jobs:
     permissions:
       contents: read
       copilot-requests: write
-      pull-requests: read
     timeout-minutes: 60
     env:
       DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
@@ -467,13 +463,13 @@ jobs:
           name: activation
           path: /tmp/gh-aw
       - name: Set up Go
-        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0 (source v7)
         with:
           cache: true
           go-version-file: ./go.mod
       - name: Install tfproviderlint
         run: |
-          go install github.com/bflad/tfproviderlint/cmd/tfproviderlint@latest
+          go install github.com/bflad/tfproviderlint/cmd/tfproviderlint@v0.31.0
           echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4
@@ -485,7 +481,7 @@ jobs:
           TF_CLI_ARGS_init: -upgrade=false
           TF_IN_AUTOMATION: "1"
         name: Build, test, and validate
-        run: "set -o pipefail\n: > /tmp/results.env\n\nTAG_NAME=\"${GITHUB_REF_NAME:-${GITHUB_REF##*/}}\"\necho \"TAG_NAME=${TAG_NAME}\" >> /tmp/results.env\n\necho \"🔨 Building provider...\"\nif make build 2>&1 | tee /tmp/build-output.txt; then\n  BUILD_EXIT=0\nelse\n  BUILD_EXIT=$?\nfi\necho \"BUILD_EXIT=$BUILD_EXIT\" >> /tmp/results.env\n\necho \"🧪 Running CI tests...\"\nif make test_ci 2>&1 | tee /tmp/test-ci-output.txt; then\n  TEST_EXIT=0\nelse\n  TEST_EXIT=$?\nfi\necho \"TEST_EXIT=$TEST_EXIT\" >> /tmp/results.env\n\necho \"🔬 Running E2E tests...\"\nif make test_e2e 2>&1 | tee /tmp/e2e-output.txt; then\n  E2E_EXIT=0\nelse\n  E2E_EXIT=$?\nfi\necho \"E2E_EXIT=$E2E_EXIT\" >> /tmp/results.env\n\necho \"📊 Running coverage...\"\nif make test_coverage 2>&1 | tee /tmp/coverage-output.txt; then\n  COV_EXIT=0\nelse\n  COV_EXIT=$?\nfi\necho \"COV_EXIT=$COV_EXIT\" >> /tmp/results.env\n\n# Extract overall coverage percentage from the \"total:\" line (go tool cover output).\n# `|| true` keeps the script alive when grep finds no match (script runs under `bash -e` +\n# `set -o pipefail`; a failing pipeline inside a command substitution would otherwise abort).\nCOV_PCT=$(grep -E \"^total:\" /tmp/coverage-output.txt | awk '{print $NF}' | tail -n 1 || true)\nif [ -z \"$COV_PCT\" ]; then\n  COV_PCT=$(grep -Eo \"coverage: [0-9.]+% of statements\" /tmp/coverage-output.txt | awk '{print $2}' | tail -n 1 || true)\nfi\necho \"COV_PCT=${COV_PCT:-unknown}\" >> /tmp/results.env\n\n# Check CHANGELOG for the tag version (strip leading \"v\" for the version-only match too).\nVERSION_NO_V=\"${TAG_NAME#v}\"\nif grep -qE \"^## \\[?${VERSION_NO_V}\\]?\" CHANGELOG.md 2>/dev/null \\\n   || grep -qE \"^## \\[?${TAG_NAME}\\]?\" CHANGELOG.md 2>/dev/null; then\n  CHANGELOG_EXIT=0\n  grep -nE \"^## \\[?(${VERSION_NO_V}|${TAG_NAME})\\]?\" CHANGELOG.md > /tmp/changelog-entry.txt 2>/dev/null || true\nelse\n  CHANGELOG_EXIT=1\n  echo \"No section matching ${TAG_NAME} or ${VERSION_NO_V} found in CHANGELOG.md\" > /tmp/changelog-entry.txt\nfi\necho \"CHANGELOG_EXIT=$CHANGELOG_EXIT\" >> /tmp/results.env\n\n# Extract test summary lines for the agent to consume.\n{\n  grep -E \"^(ok|FAIL|---)\" /tmp/test-ci-output.txt 2>/dev/null || true\n  grep -E \"^(ok|FAIL|---)\" /tmp/e2e-output.txt 2>/dev/null || true\n} > /tmp/test-summary.txt\n\n# Always exit 0 so the agent runs and reports the results.\nexit 0"
+        run: "set -o pipefail\nRESULTS_DIR=\"/tmp/gh-aw/agent/release-validation\"\nmkdir -p \"$RESULTS_DIR\"\n: > \"$RESULTS_DIR/results.env\"\n\nTAG_NAME=\"${GITHUB_REF_NAME:-${GITHUB_REF##*/}}\"\necho \"TAG_NAME=${TAG_NAME}\" >> \"$RESULTS_DIR/results.env\"\n\necho \"🔨 Building provider...\"\nif make build 2>&1 | tee \"$RESULTS_DIR/build-output.txt\"; then\n  BUILD_EXIT=0\nelse\n  BUILD_EXIT=$?\nfi\necho \"BUILD_EXIT=$BUILD_EXIT\" >> \"$RESULTS_DIR/results.env\"\n\necho \"🧪 Running CI tests...\"\nif make test_ci 2>&1 | tee \"$RESULTS_DIR/test-ci-output.txt\"; then\n  TEST_EXIT=0\nelse\n  TEST_EXIT=$?\nfi\necho \"TEST_EXIT=$TEST_EXIT\" >> \"$RESULTS_DIR/results.env\"\n\necho \"🔬 Running E2E tests...\"\nif make test_e2e 2>&1 | tee \"$RESULTS_DIR/e2e-output.txt\"; then\n  E2E_EXIT=0\nelse\n  E2E_EXIT=$?\nfi\necho \"E2E_EXIT=$E2E_EXIT\" >> \"$RESULTS_DIR/results.env\"\n\necho \"📊 Running coverage...\"\nif make test_coverage 2>&1 | tee \"$RESULTS_DIR/coverage-output.txt\"; then\n  COV_EXIT=0\nelse\n  COV_EXIT=$?\nfi\n\nCOV_PCT=$(grep -Eo \"Provider coverage: [0-9.]+%\" \"$RESULTS_DIR/coverage-output.txt\" \\\n  | awk '{print $3}' | tail -n 1 || true)\nif [ -z \"$COV_PCT\" ]; then\n  COV_PCT=unknown\n  COV_EXIT=1\nfi\necho \"COV_EXIT=$COV_EXIT\" >> \"$RESULTS_DIR/results.env\"\necho \"COV_PCT=$COV_PCT\" >> \"$RESULTS_DIR/results.env\"\n\n# Check CHANGELOG for the tag version (strip leading \"v\" for the version-only match too).\nVERSION_NO_V=\"${TAG_NAME#v}\"\nif grep -qE \"^## \\[?${VERSION_NO_V}\\]?\" CHANGELOG.md 2>/dev/null \\\n   || grep -qE \"^## \\[?${TAG_NAME}\\]?\" CHANGELOG.md 2>/dev/null; then\n  CHANGELOG_EXIT=0\n  grep -nE \"^## \\[?(${VERSION_NO_V}|${TAG_NAME})\\]?\" CHANGELOG.md \\\n    > \"$RESULTS_DIR/changelog-entry.txt\" 2>/dev/null || true\nelse\n  CHANGELOG_EXIT=1\n  echo \"No section matching ${TAG_NAME} or ${VERSION_NO_V} found in CHANGELOG.md\" \\\n    > \"$RESULTS_DIR/changelog-entry.txt\"\nfi\necho \"CHANGELOG_EXIT=$CHANGELOG_EXIT\" >> \"$RESULTS_DIR/results.env\"\n\n# Extract test summary lines for the agent to consume.\n{\n  grep -E \"^(ok|FAIL|---)\" \"$RESULTS_DIR/test-ci-output.txt\" 2>/dev/null || true\n  grep -E \"^(ok|FAIL|---)\" \"$RESULTS_DIR/e2e-output.txt\" 2>/dev/null || true\n} > \"$RESULTS_DIR/test-summary.txt\"\n\nVALIDATION_EXIT=0\nfor result in \"$BUILD_EXIT\" \"$TEST_EXIT\" \"$E2E_EXIT\" \"$COV_EXIT\" \"$CHANGELOG_EXIT\"; do\n  if [ \"$result\" -ne 0 ]; then\n    VALIDATION_EXIT=1\n  fi\ndone\necho \"VALIDATION_EXIT=$VALIDATION_EXIT\" >> \"$RESULTS_DIR/results.env\"\n\nstatus_icon() {\n  if [ \"$1\" -eq 0 ]; then\n    printf '✅'\n  else\n    printf '❌'\n  fi\n}\n\n{\n  echo \"### 🏷️ Release Validation: $TAG_NAME\"\n  echo\n  echo \"| Check | Status |\"\n  echo \"|-------|--------|\"\n  echo \"| Build | $(status_icon \"$BUILD_EXIT\") |\"\n  echo \"| CI test suite | $(status_icon \"$TEST_EXIT\") |\"\n  echo \"| E2E tests | $(status_icon \"$E2E_EXIT\") |\"\n  echo \"| Coverage >= 95% | $(status_icon \"$COV_EXIT\") $COV_PCT |\"\n  echo \"| CHANGELOG entry | $(status_icon \"$CHANGELOG_EXIT\") |\"\n  echo\n  if [ \"$VALIDATION_EXIT\" -eq 0 ]; then\n    echo \"Overall: **VALIDATED**\"\n  else\n    echo \"Overall: **ISSUES FOUND**\"\n  fi\n} >> \"$GITHUB_STEP_SUMMARY\"\n\n# Always exit 0 so the agent runs and reports the results.\nexit 0"
 
       - name: Configure Git credentials
         env:
@@ -555,7 +551,7 @@ jobs:
         env:
           GH_AW_FILE_ROOT: "${{ runner.temp }}/gh-aw"
           GH_AW_FILE_CONFIG: "{\"files\":[{\"path\":\"safeoutputs/config.json\",\"content_env\":\"GH_AW_SAFE_OUTPUTS_CONFIG\"}]}"
-          GH_AW_SAFE_OUTPUTS_CONFIG: "{\"add_comment\":{\"max\":1},\"create_report_incomplete_issue\":{},\"missing_data\":{},\"missing_tool\":{},\"noop\":{\"max\":1,\"report-as-issue\":\"false\"},\"report_incomplete\":{}}"
+          GH_AW_SAFE_OUTPUTS_CONFIG: "{\"create_issue\":{\"close_older_issues\":true,\"max\":1,\"title_prefix\":\"[Release Validation] \"},\"create_report_incomplete_issue\":{},\"missing_data\":{},\"missing_tool\":{},\"noop\":{\"max\":1,\"report-as-issue\":\"false\"},\"report_incomplete\":{}}"
         with:
           script: |
             const path = require('path');
@@ -569,51 +565,48 @@ jobs:
           GH_AW_TOOLS_META_JSON: |
             {
               "description_suffixes": {
-                "add_comment": " CONSTRAINTS: Maximum 1 comment(s) can be added. Supports reply_to_id for discussion threading."
+                "create_issue": " CONSTRAINTS: Maximum 1 issue(s) can be created. Title will be prefixed with \"[Release Validation] \"."
               },
               "repo_params": {},
               "dynamic_tools": []
             }
           GH_AW_VALIDATION_JSON: |
             {
-              "add_comment": {
+              "create_issue": {
                 "defaultMax": 1,
                 "fields": {
+                  "blocked_by": {},
                   "body": {
                     "required": true,
                     "type": "string",
                     "sanitize": true,
-                    "maxLength": 65000
+                    "maxLength": 65000,
+                    "minLength": 20
                   },
-                  "comment_id": {
-                    "optionalPositiveInteger": true
+                  "fields": {
+                    "type": "array"
                   },
-                  "item_number": {
+                  "labels": {
+                    "type": "array",
+                    "itemType": "string",
+                    "itemSanitize": true,
+                    "itemMaxLength": 128
+                  },
+                  "parent": {
                     "issueOrPRNumber": true
-                  },
-                  "pr": {
-                    "issueOrPRNumber": true
-                  },
-                  "pr_number": {
-                    "issueOrPRNumber": true
-                  },
-                  "reply_to_id": {
-                    "type": "string",
-                    "maxLength": 256
                   },
                   "repo": {
                     "type": "string",
                     "maxLength": 256
                   },
-                  "target": {
-                    "type": "string",
-                    "enum": [
-                      "status"
-                    ]
-                  },
                   "temporary_id": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "required": true,
                     "type": "string",
-                    "pattern": "^#?aw_[A-Za-z0-9_]{3,12}$"
+                    "sanitize": true,
+                    "maxLength": 128
                   }
                 }
               },
@@ -748,7 +741,7 @@ jobs:
 
           mkdir -p "$HOME/.copilot"
           GH_AW_NODE=$(which node 2>/dev/null || command -v node 2>/dev/null || echo node)
-          cat << GH_AW_MCP_CONFIG_72a6b9cbc88a5692_EOF | "$GH_AW_NODE" "${RUNNER_TEMP}/gh-aw/actions/start_mcp_gateway.cjs"
+          cat << GH_AW_MCP_CONFIG_46604863f3d8e286_EOF | "$GH_AW_NODE" "${RUNNER_TEMP}/gh-aw/actions/start_mcp_gateway.cjs"
           {
             "mcpServers": {
               "github": {
@@ -757,10 +750,9 @@ jobs:
                 "env": {
                   "GITHUB_FEATURES": "fields_param",
                   "GITHUB_HOST": "${GITHUB_SERVER_URL}",
-                  "GITHUB_LOCKDOWN_MODE": "1",
                   "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_MCP_SERVER_TOKEN}",
                   "GITHUB_READ_ONLY": "1",
-                  "GITHUB_TOOLSETS": "pull_requests"
+                  "GITHUB_TOOLSETS": "context,repos,issues,pull_requests"
                 },
                 "guard-policies": {
                   "allow-only": {
@@ -824,7 +816,7 @@ jobs:
               }
             }
           }
-          GH_AW_MCP_CONFIG_72a6b9cbc88a5692_EOF
+          GH_AW_MCP_CONFIG_46604863f3d8e286_EOF
       - name: Mount MCP servers as CLIs
         id: mount-mcp-clis
         continue-on-error: true
@@ -1110,7 +1102,7 @@ jobs:
       - name: Upload agent output fallback artifact
         if: always()
         continue-on-error: true
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: agent-output-fallback
           path: |
@@ -1120,7 +1112,7 @@ jobs:
       - name: Upload agent artifacts
         if: always()
         continue-on-error: true
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: agent
           path: |
@@ -1158,7 +1150,6 @@ jobs:
     permissions:
       actions: read
       issues: write
-      pull-requests: write
     concurrency:
       group: "gh-aw-conclusion-release-validation"
       cancel-in-progress: false
@@ -1226,7 +1217,7 @@ jobs:
       - name: Upload usage artifact
         if: always()
         continue-on-error: true
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: usage
           path: |
@@ -1278,7 +1269,7 @@ jobs:
         id: upload-daily-aic-cache
         if: always()
         continue-on-error: true
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: aic-usage-cache
           path: /tmp/gh-aw/agentic-workflow-usage-cache.jsonl
@@ -1372,7 +1363,7 @@ jobs:
           GH_AW_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           GH_AW_AGENT_CONCLUSION: ${{ needs.agent.result }}
           GH_AW_WORKFLOW_ID: "release-validation"
-          GH_AW_ACTION_FAILURE_ISSUE_EXPIRES_HOURS: "168"
+          GH_AW_ACTION_FAILURE_ISSUE_EXPIRES_HOURS: "0"
           GH_AW_ENGINE_ID: "copilot"
           GH_AW_CHECKOUT_PR_SUCCESS: ${{ needs.agent.outputs.checkout_pr_success }}
           GH_AW_EFFECTIVE_TOKENS: ${{ needs.agent.outputs.effective_tokens || '' }}
@@ -1528,7 +1519,7 @@ jobs:
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         env:
           WORKFLOW_NAME: "Release Validation"
-          WORKFLOW_DESCRIPTION: "Release validation workflow that runs comprehensive checks when a\nversion tag is pushed. Posts validation results as a comment on the\nassociated GitHub Release."
+          WORKFLOW_DESCRIPTION: "Release validation workflow that runs comprehensive checks when a\nversion tag is pushed. Writes a workflow summary and opens an issue\nwhen any validation check fails."
           HAS_PATCH: ${{ needs.agent.outputs.has_patch }}
           GH_AW_DETECTION_CONTINUE_ON_ERROR: "true"
           GH_AW_DETECTION_SKIP_PROMPT_SUMMARY: "true"
@@ -1548,7 +1539,7 @@ jobs:
       - name: Install AWF binary
         run: bash "${RUNNER_TEMP}/gh-aw/actions/install_awf_binary.sh" v0.28.14 --rootless
       - name: Setup Node.js
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '24'
           package-manager-cache: false
@@ -1597,7 +1588,7 @@ jobs:
           S2STOKENS: true
           TRACEPARENT: ${{ env.GITHUB_AW_OTEL_TRACE_ID != '' && env.GITHUB_AW_OTEL_PARENT_SPAN_ID != '' && format('00-{0}-{1}-01', env.GITHUB_AW_OTEL_TRACE_ID, env.GITHUB_AW_OTEL_PARENT_SPAN_ID) || '' }}
           WORKFLOW_NAME: "Release Validation"
-          WORKFLOW_DESCRIPTION: "Release validation workflow that runs comprehensive checks when a\nversion tag is pushed. Posts validation results as a comment on the\nassociated GitHub Release."
+          WORKFLOW_DESCRIPTION: "Release validation workflow that runs comprehensive checks when a\nversion tag is pushed. Writes a workflow summary and opens an issue\nwhen any validation check fails."
           HAS_PATCH: ${{ needs.agent.outputs.has_patch }}
           GH_AW_DETECTION_CONTINUE_ON_ERROR: "true"
         run: |
@@ -1662,7 +1653,7 @@ jobs:
           if [ -d /tmp/gh-aw/sandbox/firewall/audit ]; then mkdir -p /tmp/gh-aw/threat-detection/sandbox/firewall/audit && cp -r /tmp/gh-aw/sandbox/firewall/audit/. /tmp/gh-aw/threat-detection/sandbox/firewall/audit/; fi
       - name: Upload threat detection artifact
         if: always() && steps.detection_guard.outputs.run_detection == 'true'
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: detection
           path: |
@@ -1744,7 +1735,6 @@ jobs:
     runs-on: ubuntu-slim
     permissions:
       issues: write
-      pull-requests: write
     timeout-minutes: 45
     env:
       GH_AW_AGENT_AIC: ${{ needs.agent.outputs.aic }}
@@ -1764,10 +1754,10 @@ jobs:
     outputs:
       code_push_failure_count: ${{ steps.process_safe_outputs.outputs.code_push_failure_count }}
       code_push_failure_errors: ${{ steps.process_safe_outputs.outputs.code_push_failure_errors }}
-      comment_id: ${{ steps.process_safe_outputs.outputs.comment_id }}
-      comment_url: ${{ steps.process_safe_outputs.outputs.comment_url }}
       create_discussion_error_count: ${{ steps.process_safe_outputs.outputs.create_discussion_error_count }}
       create_discussion_errors: ${{ steps.process_safe_outputs.outputs.create_discussion_errors }}
+      created_issue_number: ${{ steps.process_safe_outputs.outputs.created_issue_number }}
+      created_issue_url: ${{ steps.process_safe_outputs.outputs.created_issue_url }}
       process_safe_outputs_items_applied: ${{ steps.process_safe_outputs.outputs.items_applied }}
       process_safe_outputs_items_cancelled: ${{ steps.process_safe_outputs.outputs.items_cancelled }}
       process_safe_outputs_items_deferred: ${{ steps.process_safe_outputs.outputs.items_deferred }}
@@ -1831,7 +1821,7 @@ jobs:
           GH_AW_ALLOWED_DOMAINS: "api.snapcraft.io,archive.ubuntu.com,azure.archive.ubuntu.com,crl.geotrust.com,crl.globalsign.com,crl.identrust.com,crl.sectigo.com,crl.thawte.com,crl.usertrust.com,crl.verisign.com,crl3.digicert.com,crl4.digicert.com,crls.ssl.com,json-schema.org,json.schemastore.org,keyserver.ubuntu.com,ocsp.digicert.com,ocsp.geotrust.com,ocsp.globalsign.com,ocsp.identrust.com,ocsp.sectigo.com,ocsp.ssl.com,ocsp.thawte.com,ocsp.usertrust.com,ocsp.verisign.com,packagecloud.io,packages.cloud.google.com,packages.microsoft.com,ppa.launchpad.net,s.symcb.com,s.symcd.com,security.ubuntu.com,ts-crl.ws.symantec.com,ts-ocsp.ws.symantec.com,www.googleapis.com"
           GITHUB_SERVER_URL: ${{ github.server_url }}
           GITHUB_API_URL: ${{ github.api_url }}
-          GH_AW_SAFE_OUTPUTS_HANDLER_CONFIG: "{\"add_comment\":{\"max\":1},\"create_report_incomplete_issue\":{},\"missing_data\":{},\"missing_tool\":{},\"noop\":{\"max\":1,\"report-as-issue\":\"false\"},\"report_incomplete\":{}}"
+          GH_AW_SAFE_OUTPUTS_HANDLER_CONFIG: "{\"create_issue\":{\"close_older_issues\":true,\"max\":1,\"title_prefix\":\"[Release Validation] \"},\"create_report_incomplete_issue\":{},\"missing_data\":{},\"missing_tool\":{},\"noop\":{\"max\":1,\"report-as-issue\":\"false\"},\"report_incomplete\":{}}"
         with:
           github-token: ${{ secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
           script: |
@@ -1843,7 +1833,7 @@ jobs:
             await main();
       - name: Upload Safe Outputs Items
         if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: safe-outputs-items
           path: |

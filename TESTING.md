@@ -365,10 +365,9 @@ func TestCoverageImprovement_ErrorHandling(t *testing.T) {
 
 ### Current Coverage Status
 
-The project aims for high test coverage (>95%) across all components. Current metrics:
-
-- **Overall Coverage**: 99.3%
-- **Functions Requiring Additional Tests**: `getNameResult` (94.7%)
+The provider implementation under `./azurecaf/...` must maintain at least 95%
+statement coverage. Command/helper packages are tested by `make unittest` but
+are not included in the provider coverage percentage.
 
 ### Checking Coverage
 
@@ -394,7 +393,7 @@ go tool cover -html=coverage.out
 ### Coverage Goals and Maintenance
 
 **Target Metrics:**
-- Minimum 95% statement coverage
+- Minimum 95% statement coverage for `./azurecaf/...` (enforced by `make test_coverage`)
 - All public functions covered
 - All error paths tested
 - All resource types validated
