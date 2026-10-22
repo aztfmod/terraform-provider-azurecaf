@@ -48,7 +48,7 @@ release_section=$(
     in_section { print }
   ' "$changelog"
 )
-if ! grep -Eq '^(### |\- )' <<<"$release_section"; then
+if ! grep -Eq '^-[[:space:]]+[^[:space:]]' <<<"$release_section"; then
   fail "CHANGELOG.md section for $tag has no release entries"
 fi
 
