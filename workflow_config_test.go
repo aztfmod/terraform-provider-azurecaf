@@ -50,6 +50,10 @@ func TestReleasePublishingRunsAllRequiredGates(t *testing.T) {
 		`github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/')`,
 		`.github/releases/${GITHUB_REF_NAME}.md`,
 		"--release-notes",
+		`./scripts/check-release-ready.sh "$GITHUB_REF_NAME"`,
+		`[[ -s "$notes" ]]`,
+		"Verify published release notes",
+		`gh release edit "$GITHUB_REF_NAME" --notes-file "$RELEASE_NOTES_PATH"`,
 		"tfproviderlint/cmd/tfproviderlint@fe5175f9de70aabcb649e78e53739d580bb7d66d",
 		`>> "$GITHUB_PATH"`,
 	}
@@ -86,6 +90,9 @@ func TestCoverageGateAndReleaseReporting(t *testing.T) {
 			"/tmp/gh-aw/agent/release-validation",
 			"Provider coverage:",
 			"VALIDATION_EXIT",
+			"RELEASE_METADATA_EXIT",
+			"Enforce release validation result",
+			"scripts/check-release-ready.sh",
 			"create-issue",
 			"tfproviderlint/cmd/tfproviderlint@fe5175f9de70aabcb649e78e53739d580bb7d66d",
 			"printf '%s\\n' 'Overall: **VALIDATED**'",
@@ -94,6 +101,9 @@ func TestCoverageGateAndReleaseReporting(t *testing.T) {
 			"/tmp/gh-aw/agent/release-validation",
 			"Provider coverage:",
 			"VALIDATION_EXIT",
+			"RELEASE_METADATA_EXIT",
+			"Enforce release validation result",
+			"scripts/check-release-ready.sh",
 			"create_issue",
 			"tfproviderlint/cmd/tfproviderlint@fe5175f9de70aabcb649e78e53739d580bb7d66d",
 		},
@@ -126,6 +136,64 @@ func TestCoverageGateAndReleaseReporting(t *testing.T) {
 	}
 	if strings.Contains(string(labeler), "Post the report as a comment on the latest release") {
 		t.Fatal("release-labeler.md must not instruct the agent to comment on a GitHub Release")
+	}
+}
+
+func TestAgenticReleaseWorkflowGuardrails(t *testing.T) {
+	t.Parallel()
+
+	sourceMarkers := map[string][]string{
+		".github/workflows/issue-to-pr-agent.md": {
+			"names: [new-resource]",
+			"gates pre-activation on the `new-resource` label",
+		},
+		".github/workflows/release-labeler.md": {
+			`allowed: ["v*"]`,
+			`target: "*"`,
+			"max: 50",
+			"create-if-missing: true",
+			"do not sample or truncate",
+		},
+	}
+	for path, markers := range sourceMarkers {
+		content, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatalf("read %s: %v", path, err)
+		}
+		for _, marker := range markers {
+			if !strings.Contains(string(content), marker) {
+				t.Fatalf("%s is missing workflow guardrail marker %q", path, marker)
+			}
+		}
+	}
+
+	lockMarkers := map[string][]string{
+		".github/workflows/issue-to-pr-agent.lock.yml": {
+			"github.event.label.name == 'new-resource'",
+		},
+		".github/workflows/release-labeler.lock.yml": {
+			`create_if_missing\":true`,
+			`\"max\":50`,
+			`\"target\":\"*\"`,
+		},
+	}
+	for path, markers := range lockMarkers {
+		content, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatalf("read %s: %v", path, err)
+		}
+		for _, marker := range markers {
+			if !strings.Contains(string(content), marker) {
+				t.Fatalf("%s is missing compiled workflow guardrail marker %q", path, marker)
+			}
+		}
+	}
+
+	if _, err := os.Stat(".github/RELEASE_RUNBOOK.md"); err != nil {
+		t.Fatalf("release runbook must be committed: %v", err)
+	}
+	if _, err := os.Stat("scripts/check-release-ready.sh"); err != nil {
+		t.Fatalf("release readiness checker must be committed: %v", err)
 	}
 }
 

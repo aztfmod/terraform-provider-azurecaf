@@ -34,7 +34,11 @@ tools:
 safe-outputs:
   mentions: false
   allowed-github-references: []
-  add-labels: {}
+  add-labels:
+    allowed: ["v*"]
+    target: "*"
+    max: 50
+    create-if-missing: true
   create-issue:
     title-prefix: "[Release Labeler] "
     max: 1
@@ -103,6 +107,9 @@ For each issue and PR identified in a release:
 - Check if it already has the version label.
 - If not, add the version label.
 - Skip open issues/PRs — only label closed issues and merged PRs.
+- Build the complete sorted target list before emitting safe outputs.
+- Emit one `add_labels` request for every target that is not already labeled;
+  do not sample or truncate the release set.
 
 ### 6. Report
 

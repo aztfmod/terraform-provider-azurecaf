@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Release automation guardrails**: Added native `new-resource` event gating, bounded version-label creation, deterministic release metadata validation, published release-note verification and repair, validation failure propagation, and a maintainer release runbook.
+  - Impact: Low -- release and agentic workflow reliability only; provider runtime behavior is unchanged.
+
 ## [v2.0.0] - 2026-10-19
 
 ### Breaking changes

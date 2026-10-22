@@ -1,8 +1,8 @@
 ---
 description: |
   Release validation workflow that runs comprehensive checks when a
-  version tag is pushed. Writes a workflow summary and opens an issue
-  when any validation check fails.
+  version tag is pushed. Writes a workflow summary, opens an issue, and
+  fails the workflow when any validation check fails.
 
 on:
   push:
@@ -100,19 +100,20 @@ steps:
       echo "COV_EXIT=$COV_EXIT" >> "$RESULTS_DIR/results.env"
       echo "COV_PCT=$COV_PCT" >> "$RESULTS_DIR/results.env"
 
-      # Check CHANGELOG for the tag version (strip leading "v" for the version-only match too).
-      VERSION_NO_V="${TAG_NAME#v}"
-      if grep -qE "^## \[?${VERSION_NO_V}\]?" CHANGELOG.md 2>/dev/null \
-         || grep -qE "^## \[?${TAG_NAME}\]?" CHANGELOG.md 2>/dev/null; then
-        CHANGELOG_EXIT=0
-        grep -nE "^## \[?(${VERSION_NO_V}|${TAG_NAME})\]?" CHANGELOG.md \
-          > "$RESULTS_DIR/changelog-entry.txt" 2>/dev/null || true
+      echo "📦 Validating release metadata..."
+      if [[ "$TAG_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        if ./scripts/check-release-ready.sh "$TAG_NAME" \
+          2>&1 | tee "$RESULTS_DIR/release-metadata-output.txt"; then
+          RELEASE_METADATA_EXIT=0
+        else
+          RELEASE_METADATA_EXIT=$?
+        fi
       else
-        CHANGELOG_EXIT=1
-        echo "No section matching ${TAG_NAME} or ${VERSION_NO_V} found in CHANGELOG.md" \
-          > "$RESULTS_DIR/changelog-entry.txt"
+        RELEASE_METADATA_EXIT=0
+        echo "Prerelease tag $TAG_NAME: stable release metadata checks skipped." \
+          | tee "$RESULTS_DIR/release-metadata-output.txt"
       fi
-      echo "CHANGELOG_EXIT=$CHANGELOG_EXIT" >> "$RESULTS_DIR/results.env"
+      echo "RELEASE_METADATA_EXIT=$RELEASE_METADATA_EXIT" >> "$RESULTS_DIR/results.env"
 
       # Extract test summary lines for the agent to consume.
       {
@@ -121,7 +122,7 @@ steps:
       } > "$RESULTS_DIR/test-summary.txt"
 
       VALIDATION_EXIT=0
-      for result in "$BUILD_EXIT" "$TEST_EXIT" "$E2E_EXIT" "$COV_EXIT" "$CHANGELOG_EXIT"; do
+      for result in "$BUILD_EXIT" "$TEST_EXIT" "$E2E_EXIT" "$COV_EXIT" "$RELEASE_METADATA_EXIT"; do
         if [ "$result" -ne 0 ]; then
           VALIDATION_EXIT=1
         fi
@@ -145,7 +146,7 @@ steps:
         echo "| CI test suite | $(status_icon "$TEST_EXIT") |"
         echo "| E2E tests | $(status_icon "$E2E_EXIT") |"
         echo "| Coverage >= 95% | $(status_icon "$COV_EXIT") $COV_PCT |"
-        echo "| CHANGELOG entry | $(status_icon "$CHANGELOG_EXIT") |"
+        echo "| Release metadata | $(status_icon "$RELEASE_METADATA_EXIT") |"
         echo
         if [ "$VALIDATION_EXIT" -eq 0 ]; then
           printf '%s\n' 'Overall: **VALIDATED**'
@@ -154,8 +155,22 @@ steps:
         fi
       } >> "$GITHUB_STEP_SUMMARY"
 
-      # Always exit 0 so the agent runs and reports the results.
+      # Keep this step successful so the agent can report failures. The
+      # post-step below propagates VALIDATION_EXIT after safe-output capture.
       exit 0
+
+post-steps:
+  - name: Enforce release validation result
+    if: always()
+    run: |
+      set -euo pipefail
+      results="/tmp/gh-aw/agent/release-validation/results.env"
+      validation_exit=$(grep '^VALIDATION_EXIT=' "$results" | tail -n 1 | cut -d= -f2)
+      if [[ ! "$validation_exit" =~ ^[01]$ ]]; then
+        echo "::error::Missing or invalid VALIDATION_EXIT in $results"
+        exit 1
+      fi
+      exit "$validation_exit"
 
 source: local
 engine:
@@ -167,23 +182,24 @@ engine:
 
 When a version tag is pushed, the pre-agent host steps build the provider,
 run the full CI + E2E test suites, compute coverage, and verify the tag is
-present in `CHANGELOG.md`. The host step writes the complete status table to
-the GitHub Actions job summary. This agent reads the precomputed results and
-opens one actionable issue only when validation fails.
+ready for publication. The host step writes the complete status table to the
+GitHub Actions job summary. This agent reads the precomputed results and opens
+one actionable issue when validation fails; the post-step then fails the
+workflow.
 
 ## Inputs (precomputed by host steps)
 
 - `/tmp/gh-aw/agent/release-validation/results.env` — `TAG_NAME`,
   `BUILD_EXIT`, `TEST_EXIT`, `E2E_EXIT`, `COV_EXIT`, `COV_PCT`,
-  `CHANGELOG_EXIT`, and `VALIDATION_EXIT`.
+  `RELEASE_METADATA_EXIT`, and `VALIDATION_EXIT`.
 - `/tmp/gh-aw/agent/release-validation/build-output.txt` — full `make build` log.
 - `/tmp/gh-aw/agent/release-validation/test-ci-output.txt` — full `make test_ci` log.
 - `/tmp/gh-aw/agent/release-validation/e2e-output.txt` — full `make test_e2e` log.
 - `/tmp/gh-aw/agent/release-validation/coverage-output.txt` — full `make test_coverage` log.
 - `/tmp/gh-aw/agent/release-validation/test-summary.txt` — `ok` / `FAIL` /
   `---` lines from test runs.
-- `/tmp/gh-aw/agent/release-validation/changelog-entry.txt` — matched
-  `CHANGELOG.md` heading(s) or a "not found" message.
+- `/tmp/gh-aw/agent/release-validation/release-metadata-output.txt` —
+  output from `scripts/check-release-ready.sh` or the prerelease skip notice.
 
 ## Process
 
@@ -208,7 +224,7 @@ opens one actionable issue only when validation fails.
 | CI test suite | ✅ / ❌ |
 | E2E tests | ✅ / ❌ |
 | Coverage | ✅ <COV_PCT> / ❌ <COV_PCT> |
-| CHANGELOG entry | ✅ / ❌ |
+| Release metadata | ✅ / ❌ |
 
 Overall: **VALIDATED** / **ISSUES FOUND**
 ```

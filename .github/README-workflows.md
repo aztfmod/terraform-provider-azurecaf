@@ -38,12 +38,18 @@ After changing an agentic workflow, regenerate and validate the lock files:
 gh aw compile --validate
 ```
 
+The Issue-to-PR workflow uses a native `new-resource` label filter so unrelated
+issue labels do not start an agent session.
+
 ### `go.yml`
 Main CI/CD workflow that:
 - Builds the provider
 - Runs comprehensive tests (unit, integration, enforced provider coverage)
 - Runs the full stateful E2E lifecycle suite on pull requests and release tags
-- Uses `.github/releases/<tag>.md` when curated release notes are available
+- Requires finalized CHANGELOG metadata and non-empty committed notes for
+  stable release tags
+- Uses `.github/releases/<tag>.md` and verifies the published GitHub Release
+  body, repairing it from the committed file when necessary
 - Signs checksums and creates releases when tags are pushed
 
 ### Release tag workflows
@@ -51,11 +57,15 @@ Main CI/CD workflow that:
 Pushing a stable `v*` tag starts three complementary workflows:
 
 - `go.yml` is the publishing gate. GoReleaser runs only after build, unit,
-  coverage, integration, and full E2E checks pass.
+  coverage, integration, full E2E, and release metadata checks pass.
 - `release-validation.lock.yml` writes a release-validation job summary and
-  opens one issue when any validation check fails.
+  opens one issue before failing when any validation check fails.
 - `release-labeler.lock.yml` applies the release version label to closed issues
-  and merged pull requests in the release range.
+  and merged pull requests in the release range, creating the version label
+  when necessary.
+
+See [RELEASE_RUNBOOK.md](RELEASE_RUNBOOK.md) for merge readiness, publication,
+verification, and recovery steps.
 
 ### `codeql.yml`
 CodeQL security analysis workflow that:
