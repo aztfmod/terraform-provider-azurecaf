@@ -200,15 +200,13 @@ func Check(file string, definitions []string, table Table, excluded map[string]s
 // CheckCounts reports "<N> ... resource types" phrases that disagree with want.
 func CheckCounts(file, content string, want int) []Issue {
 	var issues []Issue
-	for i, l := range strings.Split(content, "\n") {
-		for _, m := range countPattern.FindAllStringSubmatch(l, -1) {
-			got, err := strconv.Atoi(m[1])
-			if err != nil || got == want {
-				continue
-			}
-			issues = append(issues, Issue{Kind: KindCountMismatch, File: file, Line: i + 1,
-				Detail: fmt.Sprintf("states %d resource types, resourceDefinition.json defines %d", got, want), Fixable: true})
+	for _, m := range countPattern.FindAllStringSubmatchIndex(content, -1) {
+		got, err := strconv.Atoi(content[m[2]:m[3]])
+		if err != nil || got == want {
+			continue
 		}
+		issues = append(issues, Issue{Kind: KindCountMismatch, File: file, Line: strings.Count(content[:m[0]], "\n") + 1,
+			Detail: fmt.Sprintf("states %d resource types, resourceDefinition.json defines %d", got, want), Fixable: true})
 	}
 	return issues
 }
