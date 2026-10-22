@@ -41,16 +41,41 @@ gh aw compile --validate
 The Issue-to-PR workflow uses a native `new-resource` label filter so unrelated
 issue labels do not start an agent session.
 
+The compiler pins actions from its built-in list, which can be older than the
+pins Dependabot has written into the committed `.lock.yml` files. After
+compiling, review `uses:` lines in the diff and restore any downgraded pins.
+
+Agentic workflows are reserved for tasks that need judgment. Deterministic
+checks run as plain Actions workflows: the nightly regression run lives in
+`go.yml` and the weekly full mock-azurerm sweep lives in `mock-azurerm.yml`.
+The remaining agentic workflows avoid empty runs with trigger filters:
+
+| Workflow | Trigger | Run filter |
+|----------|---------|------------|
+| Issue Triage Agent | Weekdays 14:00 UTC | `skip-if-no-match: is:issue is:open no:label` |
+| Issue Arborist | Weekly | — |
+| Weekly Repo Status (`daily-repo-status.md`) | Weekly | — |
+| Issue to PR Agent | Issue `labeled` | `names: [new-resource]` |
+| PR Review Agent | PR `opened`, `ready_for_review` | `skip-bots` (Dependabot, Actions, Copilot) |
+
 ### `go.yml`
 Main CI/CD workflow that:
 - Builds the provider
 - Runs comprehensive tests (unit, integration, enforced provider coverage)
 - Runs the full stateful E2E lifecycle suite on pull requests and release tags
+- Runs nightly on `main` at 03:00 UTC; a scheduled failure opens (or comments on)
+  a `[nightly-regression]` issue
 - Requires finalized CHANGELOG metadata and non-empty committed notes for
   stable release tags
 - Uses `.github/releases/<tag>.md` and verifies the published GitHub Release
   body, repairing it from the committed file when necessary
 - Signs checksums and creates releases when tags are pushed
+
+### `mock-azurerm.yml`
+Validates CAF-generated names against the azurerm schema with `mock_provider`:
+- On pull requests: only resources changed in `resourceDefinition.json`
+- Weekly (Mondays 09:00 UTC) and via `workflow_dispatch` with `scope: all`: the
+  full sweep; a scheduled failure opens (or comments on) a `[mock-azurerm]` issue
 
 ### Release tag workflows
 

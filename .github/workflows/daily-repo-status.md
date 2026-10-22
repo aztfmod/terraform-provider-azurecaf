@@ -1,12 +1,12 @@
 ---
 description: |
-  This workflow creates daily repo status reports. It gathers recent repository
+  This workflow creates weekly repo status reports. It gathers recent repository
   activity (issues, PRs, discussions, releases, code changes) and generates
   engaging GitHub issues with productivity insights, community highlights,
   and project recommendations.
 
 on:
-  schedule: daily
+  schedule: weekly
   workflow_dispatch:
 
 permissions:
@@ -41,9 +41,9 @@ engine:
   model: gpt-5.6-luna
 ---
 
-# Daily Repo Status
+# Weekly Repo Status
 
-Create an upbeat daily status report for the repo as a GitHub issue.
+Create an upbeat weekly status report covering the past 7 days of repo activity as a GitHub issue.
 
 ## What to include
 

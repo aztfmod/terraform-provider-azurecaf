@@ -2,11 +2,13 @@
 description: |
   PR review agent that validates pull request compliance. Checks that
   resourceDefinition.json changes include regenerated models, CHANGELOG
-  is updated, and tests pass. Runs on PR open and update.
+  is updated, and tests pass. Runs when a PR is opened or marked ready for
+  review; bot-authored PRs are skipped.
 
 on:
   pull_request:
-    types: [opened, synchronize]
+    types: [opened, ready_for_review]
+  skip-bots: [dependabot, github-actions, copilot]
 
 permissions:
   contents: read
@@ -33,7 +35,7 @@ safe-outputs:
 
 steps:
   - name: Set up Go
-    uses: actions/setup-go@v6
+    uses: actions/setup-go@v7
     with:
       go-version-file: './go.mod'
       cache: true

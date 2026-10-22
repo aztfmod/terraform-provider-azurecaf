@@ -73,12 +73,13 @@ Agents orchestrate skills into multi-step workflows.
 ### Automated (GitHub Actions Agentic Workflows)
 | Workflow | File | Trigger |
 |----------|------|---------|
-| Daily Repo Status | `.github/workflows/daily-repo-status.md` | Daily (existing) |
-| Issue Triage | `.github/workflows/issue-triage-agent.md` | Weekdays (existing) |
-| Issue Arborist | `.github/workflows/issue-arborist.md` | Daily (existing) |
-| Nightly Regression | `.github/workflows/nightly-regression.md` | Nightly at 3 AM UTC |
-| PR Review | `.github/workflows/pr-review-agent.md` | PR opened/updated |
+| Weekly Repo Status | `.github/workflows/daily-repo-status.md` | Weekly |
+| Issue Triage | `.github/workflows/issue-triage-agent.md` | Weekdays, only when unlabeled open issues exist |
+| Issue Arborist | `.github/workflows/issue-arborist.md` | Weekly |
+| PR Review | `.github/workflows/pr-review-agent.md` | PR opened/ready for review (bots skipped) |
 | Issue to PR | `.github/workflows/issue-to-pr-agent.md` | Issue labeled `new-resource` |
 | Contributor Welcome | `.github/workflows/contributor-welcome.md` | First-time contributor PR |
 | Weekly Azure Sync | `.github/workflows/weekly-azure-sync.md` | Weekly Monday 9 AM UTC |
 | Release Validation | `.github/workflows/release-validation.md` | Tag push (v*) |
+
+Nightly regression (`go.yml`, 3 AM UTC) and the weekly full mock-azurerm sweep (`mock-azurerm.yml`, Monday 9 AM UTC) run as plain GitHub Actions schedules.

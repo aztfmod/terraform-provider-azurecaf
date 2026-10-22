@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Reduced empty agentic workflow runs. The agentic Nightly Regression and Weekly mock-azurerm sweep workflows are replaced by plain GitHub Actions schedules in `go.yml` (nightly) and `mock-azurerm.yml` (weekly full sweep). Scheduled failures open or update a tracking issue. Issue Triage now starts only when unlabeled open issues exist. Issue Arborist and Repo Status run weekly instead of daily. PR Review runs on `opened`/`ready_for_review` only and skips bot-authored PRs. CI/automation only; no provider behavior change (no version bump).
+
 ### Fixed
 
 - **Release automation guardrails**: Added native `new-resource` event gating, bounded version-label creation, deterministic release metadata validation, published release-note verification and repair, validation failure propagation, and a maintainer release runbook.

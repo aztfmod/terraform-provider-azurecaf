@@ -5,7 +5,9 @@ name: Mock azurerm validation
 # `terraform test` with `mock_provider azurerm`. No Azure credentials needed.
 #
 # Scope: diff-only on PRs (only resources changed in resourceDefinition.json).
-# A full sweep can also be run manually via workflow_dispatch with `scope: all`.
+# A full sweep runs weekly on schedule (replacing the former agentic
+# "Weekly mock-azurerm sweep") and can be run manually via workflow_dispatch
+# with `scope: all`.
 
 on:
   pull_request:
@@ -15,6 +17,8 @@ on:
       - 'azurecaf/**'
       - 'scripts/mock-test/**'
       - '.github/workflows/mock-azurerm.yml'
+  schedule:
+    - cron: "0 9 * * 1"  # Mondays at 9:00 UTC, full sweep
   workflow_dispatch:
     inputs:
       scope:
@@ -28,8 +32,32 @@ permissions:
   contents: read
 
 jobs:
+  report-sweep-failure:
+    name: Report weekly sweep failure
+    needs: mock-azurerm
+    if: failure() && github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Open or update mock-azurerm issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          title="[mock-azurerm] Weekly full sweep failed"
+          body="Weekly full mock-azurerm sweep failed: ${RUN_URL} (see the mock-azurerm-report artifact)."
+          existing=$(gh issue list --state open --search "\"${title}\" in:title" --json number --jq '.[0].number // empty')
+          if [[ -n "$existing" ]]; then
+            gh issue comment "$existing" --body "$body"
+          else
+            gh issue create --title "$title" --body "$body" --label bug --label automated
+          fi
+
   mock-azurerm:
-    name: Mock azurerm validation (changed resources)
+    name: Mock azurerm validation (${{ (github.event_name == 'schedule' || github.event.inputs.scope == 'all') && 'all resources' || 'changed resources' }})
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -71,8 +99,9 @@ jobs:
         env:
           CHECKPOINT_DISABLE: '1'
           TF_IN_AUTOMATION: '1'
+          SCOPE: ${{ github.event_name == 'schedule' && 'all' || github.event.inputs.scope }}
         run: |
-          if [[ "${{ github.event.inputs.scope }}" == "all" ]]; then
+          if [[ "$SCOPE" == "all" ]]; then
             make test_mock_azurerm_all
           else
             make test_mock_azurerm_changed
