@@ -8,12 +8,39 @@ on:
   pull_request:
     branches: [main]
   repository_dispatch:
+  # Nightly regression run on main (replaces the former agentic Nightly Regression workflow)
+  schedule:
+    - cron: "0 3 * * *"
 
 # Restrict permissions for all jobs by default
 permissions:
   contents: read
 
 jobs:
+  report-nightly-failure:
+    name: Report nightly failure
+    needs: build
+    if: failure() && github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Open or update nightly regression issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          title="[nightly-regression] Scheduled CI failed on main"
+          body="Scheduled run failed: ${RUN_URL}"
+          existing=$(gh issue list --state open --search "\"${title}\" in:title" --json number --jq '.[0].number // empty')
+          if [[ -n "$existing" ]]; then
+            gh issue comment "$existing" --body "$body"
+          else
+            gh issue create --title "$title" --body "$body" --label bug --label automated --label nightly
+          fi
+
   build:
     name: Build
     runs-on: ubuntu-latest

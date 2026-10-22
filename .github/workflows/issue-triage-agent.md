@@ -4,6 +4,8 @@ strict: true
 on:
   schedule: "0 14 * * 1-5"
   workflow_dispatch:
+  # Only start the agent when there is something to triage
+  skip-if-no-match: "is:issue is:open no:label"
 permissions:
   copilot-requests: write
   issues: read

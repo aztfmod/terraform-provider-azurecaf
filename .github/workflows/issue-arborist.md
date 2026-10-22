@@ -1,8 +1,8 @@
 ---
-description: Daily workflow that analyzes recent issues and links related issues as sub-issues
+description: Weekly workflow that analyzes recent issues and links related issues as sub-issues
 name: Issue Arborist
 on:
-  schedule: daily
+  schedule: weekly
   workflow_dispatch:
 permissions:
   contents: read
@@ -64,7 +64,7 @@ steps:
       cat "${DATA_DIR}/issues-schema.json" | jq .
 safe-outputs:
   create-issue:
-    expires: 2d
+    expires: 7d
     title-prefix: "[Parent] "
     max: 5
     group: true
@@ -183,7 +183,7 @@ Create a discussion summarizing your analysis with:
 Your discussion should include:
 
 ```markdown
-## 🌳 Issue Arborist Daily Report
+## 🌳 Issue Arborist Weekly Report
 
 **Date**: [Current Date]
 **Issues Analyzed** (`issues_analyzed`): 100 (Scope: Open issues without parent, see scratchpad/metrics-glossary.md)

@@ -250,3 +250,68 @@ func TestWeeklyAzureSyncLockIncludesSchemaFiltering(t *testing.T) {
 		})
 	}
 }
+
+func TestAgenticWorkflowRunBudget(t *testing.T) {
+	t.Parallel()
+
+	markers := map[string][]string{
+		".github/workflows/go.yml": {
+			`cron: "0 3 * * *"`,
+			"if: failure() && github.event_name == 'schedule'",
+			"[nightly-regression]",
+		},
+		".github/workflows/mock-azurerm.yml": {
+			`cron: "0 9 * * 1"`,
+			"github.event_name == 'schedule' && 'all'",
+			"if: failure() && github.event_name == 'schedule'",
+		},
+		".github/workflows/issue-triage-agent.md": {
+			`skip-if-no-match: "is:issue is:open no:label"`,
+		},
+		".github/workflows/issue-triage-agent.lock.yml": {
+			"check_skip_if_no_match",
+		},
+		".github/workflows/issue-arborist.md":    {"schedule: weekly", "expires: 7d"},
+		".github/workflows/daily-repo-status.md": {"schedule: weekly"},
+		".github/workflows/pr-review-agent.md": {
+			"types: [opened, ready_for_review]",
+			"skip-bots: [dependabot, github-actions, copilot]",
+		},
+		".github/workflows/pr-review-agent.lock.yml": {"check_skip_bots"},
+	}
+	for path, want := range markers {
+		content, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatalf("read %s: %v", path, err)
+		}
+		for _, marker := range want {
+			if !strings.Contains(string(content), marker) {
+				t.Errorf("%s is missing run-budget marker %q", path, marker)
+			}
+		}
+	}
+
+	for _, path := range []string{
+		".github/workflows/pr-review-agent.md",
+		".github/workflows/pr-review-agent.lock.yml",
+	} {
+		content, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatalf("read %s: %v", path, err)
+		}
+		if strings.Contains(string(content), "synchronize") {
+			t.Errorf("%s must not run on every push (synchronize)", path)
+		}
+	}
+
+	for _, removed := range []string{
+		".github/workflows/nightly-regression.md",
+		".github/workflows/nightly-regression.lock.yml",
+		".github/workflows/weekly-mock-azurerm.md",
+		".github/workflows/weekly-mock-azurerm.lock.yml",
+	} {
+		if _, err := os.Stat(removed); err == nil {
+			t.Errorf("%s was replaced by a plain Actions schedule and must not be reintroduced", removed)
+		}
+	}
+}
