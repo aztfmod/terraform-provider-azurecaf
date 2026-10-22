@@ -74,13 +74,19 @@ test_resource_definition_completeness: 	## Validate all resource definitions are
 
 test_all: unittest test_integration	## Run all tests (unit and integration)
 
-test_ci: unittest test_coverage test_resource_definitions test_resource_matrix test_resource_coverage test_mock_harness	## Run comprehensive CI tests (unit, coverage, resource validation, matrix testing)
+test_ci: unittest test_coverage test_resource_definitions test_readme_consistency test_resource_matrix test_resource_coverage test_mock_harness	## Run comprehensive CI tests (unit, coverage, resource validation, matrix testing)
 
-test_ci_fast: unittest test_coverage test_resource_definitions	## Run fast CI tests (unit, coverage, resource validation only)
+test_ci_fast: unittest test_coverage test_resource_definitions test_readme_consistency	## Run fast CI tests (unit, coverage, resource validation only)
 
 test_ci_complete: test_ci test_integration test_all_resources	## Run complete CI tests including integration tests
 
 test_resource_definitions: test_resource_definition_completeness	## Validate all resource definitions are complete
+
+test_readme_consistency: 	## Check README status table and docs counts against resourceDefinition.json
+	go run ./cmd/readme-consistency
+
+fix_readme_consistency: 	## Auto-fix README status table and docs counts from resourceDefinition.json
+	go run ./cmd/readme-consistency -fix
 
 test_resource_matrix: 	## Test resources by category and validate constraints
 	CHECKPOINT_DISABLE=1 TF_IN_AUTOMATION=1 TF_CLI_ARGS_init="-upgrade=false" go test -v ./azurecaf/... -run="TestResourceMatrix|TestResourceConstraints"
