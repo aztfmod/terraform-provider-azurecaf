@@ -186,7 +186,12 @@ Add your resource definition to the JSON file:
 
 ### Step 7: Update Documentation
 
-1. **Update README**: The resource status table should automatically reflect your addition
+1. **Update README**: Mark the resource ✔ in the [resource status table](../README.md#-resource-status) and keep the "N resource types" counts in `README.md` and `docs/` in sync. CI enforces this; run the check locally and apply automatic fixes with:
+   ```bash
+   make test_readme_consistency   # report discrepancies (fails on drift)
+   make fix_readme_consistency    # mark defined resources ✔, add missing rows, update counts
+   ```
+   The fixer never removes rows. If a ✔ row has no definition, fix it by hand. If a definition is an alias or helper that should not have a table row, add it with a reason to `internal/readmeconsistency/exclusions.go`.
 2. **Add Examples**: Include usage examples in documentation if the resource type is commonly used
 3. **Test Documentation**: Ensure all links and references work correctly
 

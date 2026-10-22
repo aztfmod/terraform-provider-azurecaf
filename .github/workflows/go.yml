@@ -80,6 +80,9 @@ jobs:
           TF_IN_AUTOMATION: 1
           TF_CLI_ARGS_init: "-upgrade=false"
 
+      - name: README Consistency Check
+        run: make test_readme_consistency
+
       - name: Resource Matrix Testing
         run: make test_resource_matrix
         env:

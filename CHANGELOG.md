@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **README consistency check** ([#324](https://github.com/aztfmod/terraform-provider-azurecaf/issues/324)): Added a Go validator (`internal/readmeconsistency`, `cmd/readme-consistency`) that compares the README resource status table and the "N resource types" counts in `README.md` and `docs/` with `resourceDefinition.json`. It reports missing rows, resources not marked ✔, ✔ rows without a definition, duplicate rows, invalid statuses, stale alias exclusions, and wrong counts. `make test_readme_consistency` runs the check in the Go CI workflow and in `go test ./...`. `make fix_readme_consistency` applies the safe fixes.
+  - Impact: Low -- CI and contributor tooling only; no provider behavior change (no version bump).
+
 ### Changed
 
 - Reduced empty agentic workflow runs. The agentic Nightly Regression and Weekly mock-azurerm sweep workflows are replaced by plain GitHub Actions schedules in `go.yml` (nightly) and `mock-azurerm.yml` (weekly full sweep). Scheduled failures open or update a tracking issue. Issue Triage now starts only when unlabeled open issues exist. Issue Arborist and Repo Status run weekly instead of daily. PR Review runs on `opened`/`ready_for_review` only and skips bot-authored PRs. CI/automation only; no provider behavior change (no version bump).

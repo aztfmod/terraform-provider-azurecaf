@@ -19,7 +19,7 @@ git diff --name-only origin/main...HEAD
 |------|-----------|-------|
 | **Generated code fresh** | `resourceDefinition.json` changed | `models_generated.go` must also be changed |
 | **CHANGELOG updated** | Any code change | `CHANGELOG.md` must be modified |
-| **README updated** | Resource added/removed | `README.md` must be modified |
+| **README updated** | Resource added/removed | `README.md` must be modified and `make test_readme_consistency` must pass |
 | **Tests pass** | Any code change | `make build` must succeed |
 
 ### 3. Verify generated code
