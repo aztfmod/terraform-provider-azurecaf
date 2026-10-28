@@ -36,7 +36,16 @@ For each new or changed resource, format the row following the existing table st
 
 ### 5. Verify
 
-After updating, ensure:
+Run the deterministic checker. It is also enforced in CI and by `go test ./...`:
+
+```bash
+make test_readme_consistency   # fails on drift
+make fix_readme_consistency    # auto-fix ✔ status, missing rows, and resource counts
+```
+
+Aliases and helpers that intentionally have no row are listed in `internal/readmeconsistency/exclusions.go`.
+
+After updating, also ensure:
 - No duplicate rows
 - All rows follow the same column format
 - Resource count matches `resourceDefinition.json` entry count

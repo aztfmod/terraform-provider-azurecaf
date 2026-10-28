@@ -9,7 +9,7 @@
 - [ ] I have read the [CONTRIBUTING.MD instructions](./CONTRIBUTING.md)
 - [ ] I have changed the `resourceDefinition.json`
 - [ ] I have generated the resource model (there's a ```models_generated.go``` file in my PR)
-- [ ] I have updated the [README.md#resource-status](../README.md)
+- [ ] I have updated the [README.md#resource-status](../README.md) (`make test_readme_consistency` passes)
 - [ ] I have checked to ensure there aren't other open Pull Requests for the same update/change?
 
 ## Description
